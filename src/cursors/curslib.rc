@@ -1,0 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+1                       CURSOR  DISCARDABLE     "cursors\\cross.cur"
+2                       CURSOR  DISCARDABLE     "cursors\\fed.cur"
+3                       CURSOR  DISCARDABLE     "cursors\\kli.cur"
+4                       CURSOR  DISCARDABLE     "cursors\\loc.cur"
+5                       CURSOR  DISCARDABLE     "cursors\\map.cur"
+6                       CURSOR  DISCARDABLE     "cursors\\ori.cur"
+7                       CURSOR  DISCARDABLE     "cursors\\rom.cur"
+8                       CURSOR  DISCARDABLE     "cursors\\trek.cur"
+9                       CURSOR  DISCARDABLE     "cursors\\warn.cur"
+

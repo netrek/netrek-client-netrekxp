@@ -1,0 +1,21 @@
+1 VERSIONINFO
+FILEVERSION 1, 0, 0, 1
+PRODUCTVERSION 1, 0, 0, 1
+FILEOS VOS_DOS_WINDOWS32
+FILETYPE VFT_APP
+{ BLOCK "StringFileInfo" 
+{  BLOCK "040904E4" 
+ {
+   VALUE "CompanyName", "Netrek\000"
+   VALUE "FileDescription", "Netrek XP (Colorized) Client\000"
+   VALUE "FileVersion", "123456789012345678901234567890\000"
+   VALUE "InternalName", "Netrek XP\000"
+   VALUE "LegalCopyright", "Copyright © 1986-2002\000"
+   VALUE "OriginalFilename", "netrek.rc\000"
+   VALUE "ProductName", "Netrek XP Client\000"
+   VALUE "ProductVersion", "123456789012345678901234567890\000" 
+ }
+ }
+}
+
+MAIN ICON DISCARDABLE "main.ico"

@@ -1,0 +1,110 @@
+NETREK XP LICENSE
+
+It's really simple.  Permission is granted similar to the copyright notices 
+from Chris Guthrie, Kevin Smith and Scott Silvey.
+
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  No representations are made about the suitability of this
+ * software for any purpose.  It is provided "as is" without express or
+ * implied warranty.
+ 
+With one restriction.
+
+You may not re-license this code under the GNU General Public License or even 
+the Lesser GPL(LGPL) licenses, or any other viral license which requires the 
+forced release of source code as a condition for binary release.
+
+CREDITS
+
+Various people over the years have contributed to Netrek, many of their names 
+have been forgotten over the years.  It's impossible to name them all here, but 
+I shall try.
+
+NetrekXP was derived from COW which lists these individuals as contributing: 
+Chris Guthrie, Ed James, Scott Silvey, and Kevin Smith,        Tedd Hadley, Andy 
+McFadden, Eric Mehlhaff, J. Mark Noworolski, Nick Trown, Lars Bernhardsson, Sam 
+Shen, Rick Weinstein,     Jeff Nelson, Jeff Waller, Robert Kenney, Steve 
+Sheldon,    Jonathan Shekter, Dave Gosselin, Heiko Wengler, Neil Cook, Kurt 
+Siegl and many others.  (They forgot Kevin Powell, Nathan Doss, Michael Kantner)
+
+Special thanks should be given to Jonathan Shekter for doing the original 
+Windows port of COW-lite.
+
+Further thanks should go to Shawn Collenburg for adapting the COW-lite changes 
+to COW.
+
+Extra Special Thanks should go to Rony Muliana for the Rabbit Ear bitmaps!  They RULE!
+
+Special thanks for the getname.c ideas that came from Greg Chung.  
+
+Many ideas adapted from COW-lite came from Kevin Powell and Jeff Nelson.
+
+Many of the bitmaps were taken from Paradise version of the Netrek client.  I am 
+not sure who to credit for these, but Michael Kellen's name has come up in past 
+discussions.  That probably also means Michael McGrath, Brandon Gillepsie and 
+others helped, possibly.
+
+Joe Rumsey should be credited, as I'm sure he did something useful at some point. :)
+
+Trent Piepho is given thanks for pointing out some major bugs, giving some 
+feedback on the Observer filter(which needs Server support and doesn't seem to 
+work, but ohwell) and probably for even contributing some code that nobody knows 
+about.
+
+ORIGINAL COPYRIGHT NOTICES
+
+/*
+   Copyright 1989               Kevin P. Smith
+   Scott Silvey
+
+   Permission to use, copy, modify, and distribute this
+   software and its documentation for any purpose and without
+   fee is hereby granted, provided that the above copyright
+   notice appear in all copies.
+ */
+
+
+/* Copyright (c) 1986   Chris Guthrie
+ * 
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  No representations are made about the suitability of this
+ * software for any purpose.  It is provided "as is" without express or
+ * implied warranty.
+ * 
+ * ----------------------------------------------------------- Copyright 1989
+ * Kevin P. Smith Scott Silvey
+ * 
+ * ditto.
+ * 
+ * ----------------------------------------------------------- Copyright 1993
+ * 
+ * As above.  Use at your own risk.
+ * 
+ * COW (BRM) authors (including but not limitted to: Kevin Powell Nick Trown
+ * Jeff Nelson Kurt Siegl)
+ * ----------------------------------------------------------- Copyright 1994
+ * 
+ * As above.
+ * 
+ * Hockey Lines added to COW by Nathan Doss Michael Kantner
+ *
+ * ----------------------------------------------------------- Copyright 1998
+ * As above.
+ *
+ * Netrek 1999
+ * Steve Sheldon (sheldon@visi.com)
+ *
+ * ----------------------------------------------------------- Copyright 2002
+ *
+ * As above.
+ *
+ * Netrek XP Mod
+ * Stas Pirogov (keyos@keyos.org)
+ *
+ */

@@ -1,0 +1,114 @@
+20-Jan-2003:
+
+- fixed colorfulPhasers option to shrink in case that shrinkage is used
+- added phaserShrinkStyle option to enable switch between standard COW
+  phaser shrink code and BRMH shrink code (phaser shrinks during rechange time)
+  0 - COW style
+  1 - BRMH style
+
+19-Jan-2003:
+
+- Alt+End will minimize netrek window
+- Alt+Enter will show titlebar of main window (this is old feature that wasn't documented)
+
+18-Jan-2003:
+
+- added player status window toggle 'S' to playback mode
+- changed normal playback speed to more 'normal'
+- fixed playback help window
+
+13-Jan-2003:
+
+- added "saveMacro", "saveRCD", "saveRCM" boolean rc options to enable saving of
+  macros, distresses and messages.
+- added new Save_Menu options menu that has options on what information to include
+  in the saveFile.
+
+12-Jan-2003:
+
+- added keymap and buttonmap to save options code
+- changed saveBig to be on by default
+
+11-Jan-2003:
+
+- expanded options menu to contain some missing options
+- changed code for tractor/pressor clearing
+- fixed player statistics window for playback mode
+
+10-Jan-2003:
+
+- added some string variables to options save file. probably it is enough for most
+  players
+
+09-Jan-2003:
+
+- added "saveFile: filename" rc option to define file to save options to 
+  (default xtrekrc.sav). Currently can save only integer and boolean options.
+- added "saveBig: on/off" rc option to save options with/without remarks. 
+  on - the saveFile will contain description of each variable and possible 
+       values for some of them.
+  off - only options with their values will be saved.
+- mapped " (double quote) to save current options to saveFile
+- updated help window
+
+08-Jan-2003:
+
+- removed player number from Puck player on hockey server (local window)
+
+07-Jan-2003:
+
+- added support for 19FLAGS feature.
+
+01-Jan-2003:
+
+- added help window for playback mode
+- added support for wheel mouse scroll in text windows
+
+31-Dec-2002:
+
+- added functionality to player list window. Now you can get info on any player or
+  lock on any player (observers can lock on cloacked teammates) by just pointing
+  at the player line in the list and pushing appropriate key.
+
+24-Dec-2002:
+
+- changed phaserMsg to be printed to review window by default. This was done to
+  enable newbie players to see phaser messages by default.
+- added "SHOW_ALL_TRACTORS" feature support. This feature enables code that shows 
+  tractor/pressor beams of every player in the game. It is server side decision 
+  to enable this feature. By default it is enabled only for observers.
+- added "showAllTractorPressor on/off" to be able to disable the code of
+  SHOW_ALL_TRACTORS even if server supports it
+- added option menu for "showAllTractorPressor" variable.
+
+17-Dec-2002:
+
+- added xtrekrc_options.txt file that contains a full list of available xtrekrc options
+- renamed sample.xtrekrc to xtrekrc_sample.txt and formatted appropriately
+- changed "showHockeyLines" to "showHockeyLinesLocal"
+- added "showHockeyLinesMap" to show hockey lines on galaxy
+- added menu line for showHockeyLinesMap
+- mapped "G" to toggle hockey lines on galaxy window
+- updated help window
+
+16-Dec-2002:
+
+- mapped "H" to toggle hockey lines
+- moved all documentation to docs folder
+- changed loaddocs() function to strip first two characters of the document line
+  if they are ^[b or ^[i. In case these are the first two characters of netrekxp.doc 
+  the line will appear in bold for ^[b or in underline for ^[i (^[ character here is
+  ascii x1b that represents ESC char)
+- added cow.doc, cow.txt, newbie.txt to distribution. As I know these files can be
+  distributed freely.
+- added sample.xtrekrc (actually some strips from mine xtrekrc).
+
+15-Dec-2002:
+
+- added "hockeyLines on/off" to show hockey lines on tactical
+- Changed help window text to match current working keys
+- Fixed bitmaps location in playback.c
+- changed default documentation file to be netrekxp.doc instead of brm.doc
+- compiled netrekxp.doc from old version of cow.doc. Still some features missing
+- fixed some bitmaps 
+- reduced bitmap sizes

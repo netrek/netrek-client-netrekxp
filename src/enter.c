@@ -1,0 +1,463 @@
+/******************************************************************************/
+/***  File:  enter.c                                                        ***/
+/***                                                                        ***/
+/***  Function: This version modified to work as the client in a socket     ***/
+/***            based protocol.                                             ***/
+/***                                                                        ***/
+/***  Revisions:                                                            ***/
+/***    ssheldon - Cleaned up source code, added #include "proto.h"         ***/
+/***               and function header comments                             ***/
+/******************************************************************************/
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <pwd.h>
+#include <string.h>
+#include <ctype.h>
+
+#include "config.h"
+#include "copyright.h"
+#include "Wlib.h"
+#include "defs.h"
+#include "struct.h"
+#include "data.h"
+#include "proto.h"
+
+/******************************************************************************/
+/***  enter()                                                               ***/
+/***  Enter the game                                                        ***/
+/******************************************************************************/
+void
+enter (void)
+{
+    drawTstats ();
+    delay = 0;
+}
+
+/******************************************************************************/
+/***  openmem()                                                             ***/
+/******************************************************************************/
+void
+openmem (void)
+{
+    int i;
+
+    players = universe.players;
+    torps = universe.torps;
+    plasmatorps = universe.plasmatorps;
+    status = universe.status;
+    planets = universe.planets;
+    phasers = universe.phasers;
+    mctl = universe.mctl;
+    messages = universe.messages;
+    for (i = 0; i < MAXPLAYER; i++)
+    {
+        players[i].p_status = PFREE;
+        players[i].p_cloakphase = 0;
+        players[i].p_no = i;
+        players[i].p_ntorp = 0;
+        players[i].p_explode = 1;
+        players[i].p_stats.st_tticks = 1;
+    }
+    mctl->mc_current = 0;
+    status->time = 1;
+    status->timeprod = 1;
+    status->kills = 1;
+    status->losses = 1;
+    status->time = 1;
+    status->planets = 1;
+    status->armsbomb = 1;
+    for (i = 0; i < MAXPLAYER * MAXTORP; i++)
+    {
+        torps[i].t_status = TFREE;
+        torps[i].t_owner = (i / MAXTORP);
+    }
+    for (i = 0; i < MAXPLAYER; i++)
+    {
+        phasers[i].ph_status = PHFREE;
+    }
+    for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
+    {
+        plasmatorps[i].pt_status = PTFREE;
+        plasmatorps[i].pt_owner = (i / MAXPLASMA);
+    }
+    for (i = 0; i < MAXPLANETS; i++)
+    {
+        planets[i].pl_no = i;
+    }
+    /* initialize planet redraw for moving planets */
+    for (i = 0; i < MAXPLANETS; i++)
+    {
+        pl_update[i].plu_update = -1;
+    }
+
+    /* initialize pointers if ghost start */
+    if (ghoststart)
+    {
+        me = &players[ghost_pno];
+        myship = &(me->p_ship);
+        mystats = &(me->p_stats);
+    }
+}
+
+/******************************************************************************/
+/***  drawTstats()                                                          ***/
+/******************************************************************************/
+void
+drawTstats (void)
+{
+    char buf[BUFSIZ];
+
+    if (newDashboard)
+        return;
+    sprintf (buf,
+             "Flags        Warp Dam Shd Torps  Kills Armies   Fuel  Wtemp Etemp");
+    W_WriteText (tstatw, 50, 5, textColor, buf, strlen (buf), W_RegularFont);
+    sprintf (buf,
+             "Maximum:      %2d  %3d %3d               %3d   %6d   %3d   %3d",
+             me->p_ship.s_maxspeed, me->p_ship.s_maxdamage,
+             me->p_ship.s_maxshield, me->p_ship.s_maxarmies,
+             me->p_ship.s_maxfuel, me->p_ship.s_maxwpntemp / 10,
+             me->p_ship.s_maxegntemp / 10);
+    W_WriteText (tstatw, 50, 27, textColor, buf, strlen (buf), W_RegularFont);
+}
+
+#ifdef HOCKEY_LINES
+/******************************************************************************/
+/***  hockey_mode()                                                         ***/
+/******************************************************************************/
+int hockey_mode (void)
+{
+    int i;
+
+    for (i = 0; i < MAXPLAYER; i++)
+    {
+        if (strcmp(players[i].p_name, "Puck") == 0 &&
+            strcmp(players[i].p_login, "Robot") == 0 &&
+            players[i].p_team == NOBODY &&
+            players[i].p_ship.s_type == SCOUT)
+            return 1;
+    }
+    return 0;
+}
+
+/******************************************************************************/
+/***  init_hockey_lines()                                                   ***/
+/******************************************************************************/
+void
+init_hockey_lines (void)
+{
+    int i = 0;                  /* This is incremented for
+                                 * each line added */
+
+    /* For speed, the normal netrek walls are not done this way */
+
+    /* Defines for Hockey lines and the Hockey lines themselves */
+#define RINK_TOP 0
+#define RINK_BOTTOM (GWIDTH)
+#define TENTH (((RINK_BOTTOM - RINK_TOP)/10))
+#define R_MID (((RINK_BOTTOM - RINK_TOP)/2))    /* center (red) line */
+#define RINK_LENGTH ((RINK_BOTTOM - RINK_TOP))
+#define RINK_WIDTH ((GWIDTH*2/3))
+#define G_MID ((GWIDTH/2))      /* center of goal */
+#define RINK_LEFT ((G_MID-(RINK_WIDTH/2)))
+#define RINK_RIGHT ((G_MID+(RINK_WIDTH/2)))
+#define G_LFT (R_MID-TENTH)     /* left edge of goal */
+#define G_RGT (R_MID+TENTH)     /* right edge of goal */
+#define RED_1 (RINK_LEFT + (1*RINK_WIDTH/5))
+#define RED_2 (RINK_LEFT + (2*RINK_WIDTH/5))
+#define RED_3 (RINK_LEFT + (3*RINK_WIDTH/5))
+#define RED_4 (RINK_LEFT + (4*RINK_WIDTH/5))
+#define ORI_G (RINK_BOTTOM - /*2* */TENTH)      /* Ori goal line */
+#define ORI_E (RINK_BOTTOM -   TENTH/2) /* end of Ori goal */
+#define ORI_B (RINK_BOTTOM - (RINK_LENGTH/3))   /* Ori blue line */
+#define KLI_G (RINK_TOP    + /*2* */TENTH)      /* Kli goal line */
+#define KLI_E (RINK_TOP    +   TENTH/2) /* end of Kli goal */
+#define KLI_B (RINK_TOP    + (RINK_LENGTH/3))   /* Kli blue line */
+
+    /* This part defines galaxy lines */
+#define G_RINK_TOP 0
+#define G_RINK_BOTTOM (WINSIDE)
+#define G_TENTH (((G_RINK_BOTTOM - G_RINK_TOP)/10))
+#define G_R_MID (((G_RINK_BOTTOM - G_RINK_TOP)/2)-1)    /* center (red) line */
+#define G_RINK_LENGTH ((G_RINK_BOTTOM - G_RINK_TOP))
+#define G_RINK_WIDTH ((WINSIDE*2/3))
+#define G_G_MID ((WINSIDE/2))   /* center of goal */
+#define G_RINK_LEFT ((G_G_MID-(G_RINK_WIDTH/2))-2)
+#define G_RINK_RIGHT ((G_G_MID+(G_RINK_WIDTH/2))-1)
+#define G_G_LFT (G_R_MID-G_TENTH)       /* left edge of goal */
+#define G_G_RGT (G_R_MID+G_TENTH)       /* right edge of goal */
+#define G_RED_1 (G_RINK_LEFT + (1*G_RINK_WIDTH/5) - 1)
+#define G_RED_2 (G_RINK_LEFT + (2*G_RINK_WIDTH/5) - 1)
+#define G_RED_3 (G_RINK_LEFT + (3*G_RINK_WIDTH/5) - 1)
+#define G_RED_4 (G_RINK_LEFT + (4*G_RINK_WIDTH/5) - 1)
+#define G_ORI_G (G_RINK_BOTTOM - G_TENTH - 1)   /* Ori goal line */
+#define G_ORI_E (G_RINK_BOTTOM - G_TENTH/2 - 1) /* end of Ori goal */
+#define G_ORI_B (G_RINK_BOTTOM - (G_RINK_LENGTH/3) - 2) /* Ori blue line */
+#define G_KLI_G (G_RINK_TOP + G_TENTH - 1)      /* Kli goal line */
+#define G_KLI_E (G_RINK_TOP + G_TENTH/2 - 1)    /* end of Kli goal */
+#define G_KLI_B (G_RINK_TOP + (G_RINK_LENGTH/3) - 1)    /* Kli blue line */
+
+    /* local window hockey lines */
+
+    i = 0;
+    /* The Kli goal line */
+    local_hockey_lines[i].begin_x = G_LFT;
+    local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = KLI_G;
+    local_hockey_lines[i].color = W_Red;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"Kli Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The left side goal line */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = G_LFT;
+    local_hockey_lines[i].begin_y = KLI_G;
+    local_hockey_lines[i].end_y = KLI_E;
+    local_hockey_lines[i].color = W_Green;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"L K Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The right side goal line */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = KLI_G;
+    local_hockey_lines[i].end_y = KLI_E;
+    local_hockey_lines[i].color = W_Green;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"K R Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The End of kli goal line */
+    local_hockey_lines[i].begin_x = G_LFT;
+    local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = KLI_E;
+    local_hockey_lines[i].color = W_Green;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"K B Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The Kli blue line */
+    local_hockey_lines[i].begin_x = RINK_LEFT;
+    local_hockey_lines[i].end_x = RINK_RIGHT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = KLI_B;
+    local_hockey_lines[i].color = W_Cyan;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"Kli Blue: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The Ori goal line */
+    local_hockey_lines[i].begin_x = G_LFT;
+    local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = ORI_G;
+    local_hockey_lines[i].color = W_Red;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"Ori Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The left side goal line */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = G_LFT;
+    local_hockey_lines[i].begin_y = ORI_G;
+    local_hockey_lines[i].end_y = ORI_E;
+    local_hockey_lines[i].color = W_Cyan;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"O L Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The right side goal line */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = ORI_G;
+    local_hockey_lines[i].end_y = ORI_E;
+    local_hockey_lines[i].color = W_Cyan;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"O R Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The End of ori goal line */
+    local_hockey_lines[i].begin_x = G_LFT;
+    local_hockey_lines[i].end_x = G_RGT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = ORI_E;
+    local_hockey_lines[i].color = W_Cyan;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"O B Goal: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The Ori blue line */
+    local_hockey_lines[i].begin_x = RINK_LEFT;
+    local_hockey_lines[i].end_x = RINK_RIGHT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = ORI_B;
+    local_hockey_lines[i].color = W_Cyan;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"Ori Blue: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* The red line */
+    local_hockey_lines[i].begin_x = RINK_LEFT;
+    local_hockey_lines[i].end_x = RINK_RIGHT;
+    local_hockey_lines[i].begin_y = local_hockey_lines[i].end_y = R_MID;
+    local_hockey_lines[i].color = W_Red;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+    /* fprintf(stderr,"Red Line: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* Right rink boundary */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = RINK_RIGHT;
+    local_hockey_lines[i].begin_y = 0;
+    local_hockey_lines[i].end_y = GWIDTH - 1;
+    local_hockey_lines[i].color = W_Grey;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"Rt. Line: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* Left rink boundary */
+    local_hockey_lines[i].begin_x = local_hockey_lines[i].end_x = RINK_LEFT;
+    local_hockey_lines[i].begin_y = 0;
+    local_hockey_lines[i].end_y = GWIDTH - 1;
+    local_hockey_lines[i].color = W_Grey;
+    local_hockey_lines[i].flag = &showHockeyLinesLocal;
+    local_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+    /* fprintf(stderr,"Lef Line: x: %i to %i, y: %i to
+     * %i\n",local_hockey_lines[i-1].begin_x,
+     * local_hockey_lines[i-1].end_x,local_hockey_lines[i-1].begin_y,local_hockey_lines[i-1].end_y); */
+
+    /* NOTE:  The number of lines must EXACTLY match the NUM_HOCKEY_LINES */
+    /* in defs.h for it to run properly.                           */
+
+    /* galaxy window hockey lines */
+
+    i = 0;
+    /* The Kli goal line */
+    map_hockey_lines[i].begin_x = G_G_LFT;
+    map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_KLI_G;
+    map_hockey_lines[i].color = W_Red;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The left side goal line */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_G_LFT;
+    map_hockey_lines[i].begin_y = G_KLI_G;
+    map_hockey_lines[i].end_y = G_KLI_E;
+    map_hockey_lines[i].color = W_Green;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* The right side goal line */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = G_KLI_G;
+    map_hockey_lines[i].end_y = G_KLI_E;
+    map_hockey_lines[i].color = W_Green;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* The End of kli goal line */
+    map_hockey_lines[i].begin_x = G_G_LFT;
+    map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_KLI_E;
+    map_hockey_lines[i].color = W_Green;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The Kli blue line */
+    map_hockey_lines[i].begin_x = G_RINK_LEFT;
+    map_hockey_lines[i].end_x = G_RINK_RIGHT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_KLI_B;
+    map_hockey_lines[i].color = W_Cyan;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The Ori goal line */
+    map_hockey_lines[i].begin_x = G_G_LFT;
+    map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_ORI_G;
+    map_hockey_lines[i].color = W_Red;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The left side goal line */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_G_LFT;
+    map_hockey_lines[i].begin_y = G_ORI_G;
+    map_hockey_lines[i].end_y = G_ORI_E;
+    map_hockey_lines[i].color = W_Cyan;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* The right side goal line */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = G_ORI_G;
+    map_hockey_lines[i].end_y = G_ORI_E;
+    map_hockey_lines[i].color = W_Cyan;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* The End of ori goal line */
+    map_hockey_lines[i].begin_x = G_G_LFT;
+    map_hockey_lines[i].end_x = G_G_RGT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_ORI_E;
+    map_hockey_lines[i].color = W_Cyan;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The Ori blue line */
+    map_hockey_lines[i].begin_x = G_RINK_LEFT;
+    map_hockey_lines[i].end_x = G_RINK_RIGHT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_ORI_B;
+    map_hockey_lines[i].color = W_Cyan;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* The red line */
+    map_hockey_lines[i].begin_x = G_RINK_LEFT;
+    map_hockey_lines[i].end_x = G_RINK_RIGHT;
+    map_hockey_lines[i].begin_y = map_hockey_lines[i].end_y = G_R_MID;
+    map_hockey_lines[i].color = W_Red;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_HORIZONTAL;
+
+    /* Right rink boundary */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_RINK_RIGHT;
+    map_hockey_lines[i].begin_y = 0;
+    map_hockey_lines[i].end_y = WINSIDE - 1;
+    map_hockey_lines[i].color = W_Grey;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* Left rink boundary */
+    map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_RINK_LEFT;
+    map_hockey_lines[i].begin_y = 0;
+    map_hockey_lines[i].end_y = WINSIDE - 1;
+    map_hockey_lines[i].color = W_Grey;
+    map_hockey_lines[i].flag = &showHockeyLinesMap;
+    map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
+
+    /* NOTE:  The number of lines must EXACTLY match the NUM_HOCKEY_LINES */
+    /* in defs.h for it to run properly.                           */
+
+}
+
+#endif

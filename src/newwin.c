@@ -1,0 +1,1459 @@
+/******************************************************************************/
+/***  File:  newwin.c
+/***
+/***  Function:
+/***
+/***  Revisions:
+/***    ssheldon - Cleaned up source code, added #include "proto.h"
+/***               and function header comments
+/******************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <signal.h>
+#include <sys/types.h>
+
+#include <time.h>
+#include <winsock.h>
+
+#include "config.h"
+#include "copyright.h"
+#include "Wlib.h"
+#include "defs.h"
+#include "struct.h"
+#include "data.h"
+#include "playerlist.h"
+#include "bitmaps.h"
+#include "parsemeta.h"
+#include "packets.h"
+#include "spopt.h"
+#include "proto.h"
+
+extern HINSTANCE MyInstance;
+
+static int line = 0;
+int MaxMotdLine = 0;
+
+/* if a motd line from the server is this, the client will junk all motd *
+ * data it currently has.  New data may be received */
+#define MOTDCLEARLINE  "\033\030CLEAR_MOTD\000"
+
+#define SIZEOF(a)       (sizeof (a) / sizeof (*(a)))
+
+#define BOXSIDE         (WINSIDE / 5)
+#define TILESIDE        16
+#define MESSAGESIZE     20
+#define STATSIZE        (MESSAGESIZE * 2 + BORDER)
+#define YOFF            -25
+
+
+/******************************************************************************/
+/***  handleMessageWindowKeyDown()
+/******************************************************************************/
+static void
+handleMessageWindowKeyDown (W_Event * event)
+{
+    smessage (event->key);
+}
+
+/******************************************************************************/
+/***  handleMessageWindowButton()
+/******************************************************************************/
+static void
+handleMessageWindowButton (W_Event * event)
+{
+}
+
+/******************************************************************************/
+/***  newwin()
+/******************************************************************************/
+newwin (char *hostmon,
+        char *progname)
+{
+    int i;
+
+    W_Initialize (hostmon);
+
+    baseWin = W_MakeWindow ("netrek", 0, 0, 1024, 768, NULL, BORDER, gColor);
+
+    iconWin =
+        W_MakeWindow ("netrek_icon", 0, 0, icon_width, icon_height, NULL,
+                      BORDER, gColor);
+    W_SetWindowExposeHandler (iconWin, drawIcon);
+
+    W_SetIconWindow (baseWin, iconWin);
+    w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin,
+                      THICKBORDER, foreColor);
+
+    mapw = W_MakeWindow ("map", WINSIDE + 6, 0, WINSIDE, WINSIDE, baseWin,
+                         THICKBORDER, foreColor);
+
+    tstatw =
+        W_MakeWindow ("tstat", WINSIDE + 6, WINSIDE + 6, WINSIDE + 3,
+                      STATSIZE + 6, baseWin, BORDER, foreColor);
+
+    W_SetWindowExposeHandler (tstatw, redrawTstats);
+
+    warnw =
+        W_MakeWindow ("warn", 0, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
+                      baseWin, BORDER, foreColor);
+    W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
+
+    messagew = W_MakeWindow ("message", 0, WINSIDE + 6,
+                             WINSIDE + 4, MESSAGESIZE - 4, baseWin, BORDER,
+                             foreColor);
+    W_SetWindowKeyDownHandler (messagew, handleMessageWindowKeyDown);
+    W_SetWindowButtonHandler (messagew, handleMessageWindowButton);
+
+    planetw = W_MakeTextWindow ("planet", 10, 10, 53, MAXPLANETS + 3, w, 2);
+    W_SetWindowExposeHandler (planetw, planetlist);
+
+    rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
+    W_SetWindowExposeHandler (rankw, ranklist);
+
+    playerw = W_MakeTextWindow ("player", WINSIDE + 6, WINSIDE + 50,
+                                PlistMaxWidth (), 21, baseWin, 2);
+    W_SetWindowExposeHandler (playerw, RedrawPlayerList);
+
+#ifdef RECORDGAME
+    if (playback)
+        helpWin = W_MakeTextWindow ("help", 286,
+                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
+                          72, 18, NULL, BORDER);
+    else
+#endif
+        helpWin = W_MakeTextWindow ("help", 20,
+                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
+                          160, 18, NULL, BORDER);
+
+#ifdef RECORDGAME
+    if (playback)
+        W_SetWindowExposeHandler (helpWin, pbfillhelp);
+    else
+#endif
+        W_SetWindowExposeHandler (helpWin, fillhelp);
+
+#ifdef META
+    metaWin = W_MakeMenu ("MetaServer List", 0, 0, 72, num_servers + 1,
+                          NULL, 2);
+    W_SetWindowKeyDownHandler (metaWin, metaaction);
+    W_SetWindowButtonHandler (metaWin, metaaction);
+#endif
+
+    messwa = W_MakeScrollingWindow ("review_all", 0,
+                                    668, 81, 5, baseWin, BORDER);
+    W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
+    messwt =
+        W_MakeScrollingWindow ("review_team", 0, 579, 81, 8, baseWin, BORDER);
+    W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
+    messwi =
+        W_MakeScrollingWindow ("review_your", 0, 540, 81, 3, baseWin, BORDER);
+    W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
+    messwk =
+        W_MakeScrollingWindow ("review_kill", 0, 727, 81, 3, baseWin, BORDER);
+    phaserwin =
+        W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER,
+                               YOFF + WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
+                               15 * W_Textheight + 16, 80, 4, baseWin,
+                               BORDER);
+    reviewWin =
+        W_MakeScrollingWindow ("review", 0, 540, 81, 22, baseWin, BORDER);
+    W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
+
+    pStats =
+        W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
+                      NULL, 1, foreColor);
+    W_SetWindowExposeHandler (pStats, redrawPStats);
+
+    udpWin = W_MakeMenu ("UDP", WINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS,
+                         NULL, 2);
+    W_SetWindowButtonHandler (udpWin, udpaction);
+
+#ifdef SHORT_PACKETS
+    spWin =
+        W_MakeMenu ("network", WINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS,
+                    NULL, 2);
+    W_SetWindowKeyDownHandler (spWin, spaction);
+    W_SetWindowButtonHandler (spWin, spaction);
+#endif
+
+#ifdef SOUND
+    soundWin = W_MakeMenu ("sound", WINSIDE + 20, -BORDER + 10, 30,
+                           MESSAGE_SOUND + 4, NULL, 2);
+    W_SetWindowKeyDownHandler (soundWin, soundaction);
+    W_SetWindowButtonHandler (soundWin, soundaction);
+    W_DefineArrowCursor (soundWin);
+#endif
+
+#ifdef TOOLS
+    toolsWin = W_MakeScrollingWindow ("tools", WINSIDE + BORDER, BORDER,
+                                      80, TOOLSWINLEN, NULL, BORDER);
+    W_DefineTrekCursor (toolsWin);
+#endif
+
+#ifdef XTREKRC_HELP
+    defWin = W_MakeTextWindow ("xtrekrc_help", 1, 100, 174, 41, NULL, BORDER);
+#endif
+
+#ifdef DOC_WIN
+    docwin = W_MakeWindow ("DocWin", 0, 181, 500, 500, 0, 2, foreColor);
+    xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, 500, 500, 0, 2,
+                               foreColor);
+#endif
+
+    for (i = 0; i < 4; i++)
+    {
+        teamWin[i] =
+            W_MakeWindow (teamshort[1 << i], i * BOXSIDE, WINSIDE - BOXSIDE,
+                          BOXSIDE, BOXSIDE, w, 1, foreColor);
+    }
+    qwin =
+        W_MakeWindow ("quit", 4 * BOXSIDE, WINSIDE - BOXSIDE, BOXSIDE,
+                      BOXSIDE, w, 1, foreColor);
+
+    statwin =
+        W_MakeWindow ("stats", 405, 506, 100, 80, baseWin, BORDER, foreColor);
+
+    W_SetWindowExposeHandler (statwin, redrawStats);
+
+    scanwin =
+        W_MakeWindow ("scanner", 422, 13, 160, 120, baseWin, 5, foreColor);
+    W_DefineTrekCursor (baseWin);
+    W_DefineLocalcursor (w);
+    W_DefineMapcursor (mapw);
+    W_DefineTrekCursor (pStats);
+    W_DefineTextCursor (warnw);
+    W_DefineTrekCursor (messwt);
+    W_DefineTrekCursor (messwi);
+    W_DefineTrekCursor (helpWin);
+
+#ifdef META
+    W_DefineArrowCursor (metaWin);
+#endif
+
+    W_DefineTrekCursor (reviewWin);
+    W_DefineTrekCursor (messwk);
+    W_DefineTrekCursor (phaserwin);
+    W_DefineTrekCursor (playerw);
+    W_DefineTrekCursor (rankw);
+    W_DefineTrekCursor (statwin);
+    W_DefineTrekCursor (iconWin);
+    W_DefineTextCursor (messagew);
+    W_DefineTrekCursor (tstatw);
+    W_DefineWarningCursor (qwin);
+    W_DefineTrekCursor (scanwin);
+    W_DefineArrowCursor (udpWin);
+
+#ifdef SHORT_PACKETS
+    W_DefineArrowCursor (spWin);
+#endif
+
+/* SRS these are not defined? Oh, because it's a inline def... grrr*/
+    W_DefineFedCursor (teamWin[0]);
+    W_DefineRomCursor (teamWin[1]);
+    W_DefineKliCursor (teamWin[2]);
+    W_DefineOriCursor (teamWin[3]);
+
+#define WARHEIGHT 2
+#define WARWIDTH 20
+#define WARBORDER 2
+
+    war = W_MakeMenu ("war", WINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin,
+                      WARBORDER);
+    W_SetWindowButtonHandler (war, waraction);
+
+    W_DefineArrowCursor (war);
+
+    getResources (progname);
+    savebitmaps ();
+}
+
+
+/******************************************************************************/
+/***  mapAll()
+/******************************************************************************/
+mapAll (void)
+{
+    initinput ();
+    W_MapWindow (mapw);
+    W_MapWindow (tstatw);
+    W_MapWindow (warnw);
+#ifdef XTRA_MESSAGE_UI
+    /* Grr. checkMapped() defaults to off - not nice */
+    if (booleanDefault ("message.mapped", 1))
+#endif
+        W_MapWindow (messagew);
+    W_MapWindow (w);
+    W_MapWindow (baseWin);
+    /* since we aren't mapping windows that have root as parent in x11window.c
+     * (since that messes up the TransientFor feature) we have to map them
+     * here. (If already mapped, W_MapWindow returns) */
+
+    if (checkMapped ("planet"))
+        W_MapWindow (planetw);
+    if (checkMapped ("rank"))
+        W_MapWindow (rankw);
+    if (checkMapped ("help"))
+        W_MapWindow (helpWin);
+
+#ifdef META
+    if (checkMapped ("MetaServer List"))
+        metawindow ();
+#endif
+
+    if (checkMapped ("review_all"))
+        W_MapWindow (messwa);
+    if (checkMapped ("review_team"))
+        W_MapWindow (messwt);
+    if (checkMapped ("review_your"))
+        W_MapWindow (messwi);
+    if (checkMapped ("review_kill"))
+        W_MapWindow (messwk);
+    if (checkMapped ("pingStats"))
+        W_MapWindow (pStats);
+    if (checkMapped ("review_phaser"))
+    {
+        W_MapWindow (phaserwin);
+        phaserWindow = 1;
+    }
+    if (checkMappedPref ("player", 1))
+        W_MapWindow (playerw);
+    if (checkMappedPref ("review", 1))
+        W_MapWindow (reviewWin);
+    if (checkMapped ("UDP"))
+        udpwindow ();
+
+#ifdef SHORT_PACKETS
+    if (checkMapped ("network"))
+        spwindow ();
+#endif
+
+}
+
+
+/******************************************************************************/
+/***  savebitmaps()
+/******************************************************************************/
+savebitmaps (void)
+{
+    int i, j, k;
+    char *Planlib;
+    char *MPlanlib;
+
+    planetBitmap = intDefault ("planetBitmap", planetBitmap);
+
+    switch (planetBitmap)
+    {
+    case 1:
+        Planlib = "bitmaps/planlibm/planM.bmp";
+        MPlanlib = "bitmaps/planlibm/mplanM.bmp";
+        break;
+    case 2:
+        Planlib = "bitmaps/planlibm/planR.bmp";
+        MPlanlib = "bitmaps/planlibm/mplanR.bmp";
+        break;
+    default:
+        Planlib = "bitmaps/planlibm/plan.bmp";
+        MPlanlib = "bitmaps/planlibm/mplan.bmp";
+        break;
+    }
+
+    if (colorClient > 0)
+    {
+        ship_bitmaps[0] =
+            W_StoreBitmap3 (fed_ship_bmp, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+                            LR_DEFAULTCOLOR);
+        ship_bitmaps[1] =
+            W_StoreBitmap3 (ind_ship_bmp, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+                            LR_DEFAULTCOLOR);
+        ship_bitmaps[2] =
+            W_StoreBitmap3 (kli_ship_bmp, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+                            LR_DEFAULTCOLOR);
+        ship_bitmaps[3] =
+            W_StoreBitmap3 (ori_ship_bmp, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+                            LR_DEFAULTCOLOR);
+        ship_bitmaps[4] =
+            W_StoreBitmap3 (rom_ship_bmp, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+                            LR_DEFAULTCOLOR);
+
+        if (colorClient == 1)
+        {
+            ship_bitmapsG[0] =
+                W_StoreBitmap3 (fed_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[1] =
+                W_StoreBitmap3 (ind_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[2] =
+                W_StoreBitmap3 (kli_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[3] =
+                W_StoreBitmap3 (ori_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[4] =
+                W_StoreBitmap3 (rom_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+                                LR_DEFAULTCOLOR);
+        }
+        else
+        {
+            ship_bitmapsG[0] =
+                W_StoreBitmap3 (fed_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[1] =
+                W_StoreBitmap3 (ind_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[2] =
+                W_StoreBitmap3 (kli_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[3] =
+                W_StoreBitmap3 (ori_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+                                LR_DEFAULTCOLOR);
+            ship_bitmapsG[4] =
+                W_StoreBitmap3 (rom_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+                                BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+                                LR_DEFAULTCOLOR);
+        }
+
+        for (j = 0; j < NUM_TYPES; j++)
+        {
+            for (k = 0; k < SHIP_VIEWS; k++)
+            {
+                fed_bitmapsG[j][k] =
+                    W_PointBitmap2 (ship_bitmapsG[0], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                fed_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[0], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ind_bitmapsG[j][k] =
+                    W_PointBitmap2 (ship_bitmapsG[1], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ind_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[1], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                kli_bitmapsG[j][k] =
+                    W_PointBitmap2 (ship_bitmapsG[2], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                kli_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[2], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ori_bitmapsG[j][k] =
+                    W_PointBitmap2 (ship_bitmapsG[3], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ori_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[3], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                rom_bitmapsG[j][k] =
+                    W_PointBitmap2 (ship_bitmapsG[4], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                rom_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[4], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+            }
+        }
+    }
+    else
+    {
+        ship_bitmaps[0] =
+            W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+                            LR_MONOCHROME);
+        ship_bitmaps[1] =
+            W_StoreBitmap3 (ind_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+                            LR_MONOCHROME);
+        ship_bitmaps[2] =
+            W_StoreBitmap3 (kli_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+                            LR_MONOCHROME);
+        ship_bitmaps[3] =
+            W_StoreBitmap3 (ori_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+                            LR_MONOCHROME);
+        ship_bitmaps[4] =
+            W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+                            BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+                            LR_MONOCHROME);
+
+        for (j = 0; j < NUM_TYPES; j++)
+        {
+            for (k = 0; k < SHIP_VIEWS; k++)
+            {
+                fed_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[0], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ind_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[1], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                kli_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[2], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                ori_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[3], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+                rom_bitmaps[j][k] =
+                    W_PointBitmap2 (ship_bitmaps[4], j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+            }
+        }
+    }
+
+
+/* Experimental weapons */
+#ifdef COLORIZEWEAPON
+/* Not implemented... have to redo code with StoreBitmap3
+  for (i = 0; i < BMP_TORPDET_FRAMES; i++)
+    {
+     cloud[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
+                       BMP_FED_TORP_DET + i, w, LR_DEFAULTCOLOR);
+     cloud[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
+                       BMP_ORI_TORP_DET + i, w, LR_DEFAULTCOLOR);
+     cloud[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
+                       BMP_KLI_TORP_DET + i, w, LR_DEFAULTCOLOR);
+     cloud[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
+                       BMP_ROM_TORP_DET + i, w, LR_DEFAULTCOLOR);
+     cloud[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
+                       BMP_IND_TORP_DET + i, w, LR_DEFAULTCOLOR);
+
+     plasmacloud[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_FED_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+     plasmacloud[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_ORI_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+     plasmacloud[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_KLI_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+     plasmacloud[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_ROM_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+     plasmacloud[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_IND_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+
+     }
+  for (i = 0; i < BMP_TORP_FRAMES; i++)
+    {
+    	torpIcon[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_FED_TORP+i, w, LR_DEFAULTCOLOR);
+    	torpIcon[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_ORI_TORP+i, w, LR_DEFAULTCOLOR);
+    	torpIcon[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_KLI_TORP+i, w, LR_DEFAULTCOLOR);
+    	torpIcon[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_ROM_TORP+i, w, LR_DEFAULTCOLOR);
+    	torpIcon[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_IND_TORP+i, w, LR_DEFAULTCOLOR);
+    	plasmatorpIcon[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_FED_PLASMA+i, w, LR_DEFAULTCOLOR);
+    	plasmatorpIcon[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_ORI_PLASMA+i, w, LR_DEFAULTCOLOR);
+    	plasmatorpIcon[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_KLI_PLASMA+i, w, LR_DEFAULTCOLOR);
+    	plasmatorpIcon[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_ROM_PLASMA+i, w, LR_DEFAULTCOLOR);
+    	plasmatorpIcon[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_IND_PLASMA+i, w, LR_DEFAULTCOLOR);
+    }
+*/
+#else /* COLORIZEWEAPON */
+    cloud[0] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/cloud1.bmp", BMP_TORPDET_WIDTH,
+                        BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
+    cloud[1] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/cloud2.bmp", BMP_TORPDET_WIDTH,
+                        BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
+    cloud[2] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/cloud3.bmp", BMP_TORPDET_WIDTH,
+                        BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
+    cloud[3] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/cloud4.bmp", BMP_TORPDET_WIDTH,
+                        BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
+    cloud[4] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/cloud5.bmp", BMP_TORPDET_WIDTH,
+                        BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
+
+    plasmacloud[0] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+                        BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_PLCLOUD, w, LR_MONOCHROME);
+    plasmacloud[1] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+                        BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_PLCLOUD, w, LR_MONOCHROME);
+    plasmacloud[2] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+                        BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_PLCLOUD, w, LR_MONOCHROME);
+    plasmacloud[3] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+                        BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_PLCLOUD, w, LR_MONOCHROME);
+    plasmacloud[4] =
+        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+                        BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
+                        BMP_PLCLOUD, w, LR_MONOCHROME);
+
+    etorp =
+        W_StoreBitmap3 ("bitmaps/weaplibm/etorp.bmp", BMP_TORP_WIDTH,
+                        BMP_TORP_HEIGHT, BMP_ETORP, w, LR_MONOCHROME);
+    mtorp =
+        W_StoreBitmap3 ("bitmaps/weaplibm/mtorp.bmp", BMP_TORP_WIDTH,
+                        BMP_TORP_HEIGHT, BMP_MTORP, w, LR_MONOCHROME);
+    eplasmatorp =
+        W_StoreBitmap3 ("bitmaps/weaplibm/eplasma.bmp", BMP_EPLASMA_WIDTH,
+                        BMP_EPLASMA_HEIGHT, BMP_EPLASMA, w, LR_MONOCHROME);
+    mplasmatorp =
+        W_StoreBitmap3 ("bitmaps/weaplibm/mplasma.bmp", BMP_MPLASMA_WIDTH,
+                        BMP_MPLASMA_HEIGHT, BMP_MPLASMA, w, LR_MONOCHROME);
+
+#endif /* COLORIZEWEAPON */
+
+    base_planets =
+        W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
+                        BMP_PLANET000, w, LR_MONOCHROME);
+    base_mplanets =
+        W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
+                        BMP_MPLANET000, mapw, LR_MONOCHROME);
+
+    for (k = 0; k < PLANET_VIEWS; k++)
+    {
+        bplanets[k] =
+            W_PointBitmap2 (base_planets, 0, k, BMP_PLANET_WIDTH,
+                            BMP_PLANET_HEIGHT);
+        bmplanets[k] =
+            W_PointBitmap2 (base_mplanets, 0, k, BMP_MPLANET_WIDTH,
+                            BMP_MPLANET_HEIGHT);
+    }
+
+    if (colorClient > 0)
+    {
+        base_expview =
+            W_StoreBitmap3 ("bitmaps/misclib/shexpl.bmp", BMP_SHIPEXPL_WIDTH,
+                            BMP_SHIPEXPL_HEIGHT * BMP_SHIPEXPL_FRAMES,
+                            BMP_SHIP_EXPLOSION, w, LR_DEFAULTCOLOR);
+        base_sbexpview =
+            W_StoreBitmap3 ("bitmaps/misclib/sbexpl.bmp", BMP_SBEXPL_WIDTH,
+                            BMP_SBEXPL_HEIGHT * BMP_SBEXPL_FRAMES,
+                            BMP_SB_EXPLOSION, w, LR_DEFAULTCOLOR);
+    }
+    else
+    {
+        base_expview =
+            W_StoreBitmap3 ("bitmaps/misclib/shexplM.bmp", BMP_SHIPEXPL_WIDTH,
+                            BMP_SHIPEXPL_HEIGHT * BMP_SHIPEXPL_FRAMES,
+                            BMP_SHIP_EXPLOSION, w, LR_DEFAULTCOLOR);
+        base_sbexpview =
+            W_StoreBitmap3 ("bitmaps/misclib/sbexplM.bmp", BMP_SBEXPL_WIDTH,
+                            BMP_SBEXPL_HEIGHT * BMP_SBEXPL_FRAMES,
+                            BMP_SB_EXPLOSION, w, LR_DEFAULTCOLOR);
+    }
+
+    for (i = 0; i < BMP_SHIPEXPL_FRAMES; i++)
+    {
+        expview[i] =
+            W_PointBitmap2 (base_expview, 0, i, BMP_SHIPEXPL_WIDTH,
+                            BMP_SHIPEXPL_HEIGHT);
+    }
+    for (i = 0; i < BMP_SBEXPL_FRAMES; i++)
+    {
+        sbexpview[i] =
+            W_PointBitmap2 (base_sbexpview, 0, i, BMP_SBEXPL_WIDTH,
+                            BMP_SBEXPL_HEIGHT);
+    }
+
+#ifndef VSHIELD_BITMAPS
+    shield =
+        W_StoreBitmap3 ("bitmaps/misclib/shield.bmp", BMP_SHIELD_WIDTH,
+                        BMP_SHIELD_HEIGHT, BMP_SHIELD, w, LR_MONOCHROME);
+#else
+    base_vshield =
+        W_StoreBitmap3 ("bitmaps/misclib/vshield.bmp", BMP_SHIELD_WIDTH,
+                        BMP_SHIELD_HEIGHT * SHIELD_FRAMES, BMP_SHIELD, w,
+                        LR_MONOCHROME);
+    for (i = 0; i < SHIELD_FRAMES; i++)
+        shield[i] =
+            W_PointBitmap2 (base_vshield, 0, i, BMP_SHIELD_WIDTH,
+                            BMP_SHIELD_HEIGHT);
+#endif
+
+    cloakicon =
+        W_StoreBitmap3 ("bitmaps/misclib/cloak.bmp", BMP_CLOAK_WIDTH,
+                        BMP_CLOAK_HEIGHT, BMP_CLOAK, w, LR_MONOCHROME);
+    icon =
+        W_StoreBitmap3 ("bitmaps/misclib/icon.bmp", BMP_ICON_WIDTH,
+                        BMP_ICON_HEIGHT, BMP_ICON, iconWin, LR_MONOCHROME);
+    stipple =
+        W_StoreBitmap3 ("bitmaps/misclib/stipple.bmp", BMP_STIPPLE_WIDTH,
+                        BMP_STIPPLE_HEIGHT, BMP_STIPPLE, w, LR_MONOCHROME);
+    clockpic =
+        W_StoreBitmap3 ("bitmaps/misclib/clock.bmp", BMP_CLOCK_WIDTH,
+                        BMP_CLOCK_HEIGHT, BMP_CLOCK, qwin, LR_MONOCHROME);
+
+}
+
+
+/******************************************************************************/
+/***  entrywindow()
+/***   This routine throws up an entry window for the player. */
+/******************************************************************************/
+void
+entrywindow (int *team,
+             int *s_type)
+{
+    int typeok = 0, i = 0;
+    time_t startTime;
+    W_Event event;
+    int lastplayercount[4];
+    int okayMask, lastOkayMask;
+    int resetting = 0;
+    int tiled = 0;
+    time_t lasttime = -1;
+    time_t spareTime = 1000;    /* Allow them an extra 240
+                                 * seconds, as LONG */
+
+    /* fast quit? - jn */
+    if (fastQuit)
+    {
+        *team = -1;
+        return;
+    }
+
+
+    /* The following allows quick choosing of teams */
+
+    lastOkayMask = okayMask = tournMask;
+
+    for (i = 0; i < 4; i++)
+    {
+        if (okayMask & (1 << i))
+        {
+            tiled = 0;
+        }
+        else
+        {
+            tiled = 1;
+        }
+
+        if (tiled)
+        {
+            W_TileWindow (teamWin[i], stipple);
+        }
+        else
+        {
+            W_UnTileWindow (teamWin[i]);
+        }
+        W_MapWindow (teamWin[i]);
+        lastplayercount[i] = -1;        /* force redraw first time
+                                         * through */
+    }
+    W_MapWindow (qwin);
+
+    *team = -1;
+    startTime = time (0);
+    if (me->p_whydead != KWINNER && me->p_whydead != KGENOCIDE)
+        showMotdWin (w, line);
+
+    run_clock (startTime);
+    updatedeath ();
+
+    if (remap[me->p_team] == NOBODY)
+        RedrawPlayerList ();    /* When you first login */
+    else
+        UpdatePlayerList ();    /* Otherwise */
+
+
+    autoQuit = (time_t) intDefault ("autoQuit", autoQuit);      /* allow extra */
+    /* quit time -RW */
+
+    do
+    {
+        while (!W_EventsPending ())
+        {
+            time_t elapsed;
+            fd_set rfds;
+            struct timeval tv;
+
+            me->p_ghostbuster = 0;
+            /* Since we don't have a socket to check on Win32
+               for windowing system events, we set the timeout to zero and
+               effectively poll. Yes, I could do the correct thing
+               and call WaitForMultipleObjects() etc. but I don't feel like it */
+            tv.tv_sec = 0;
+            tv.tv_usec = 0;
+            FD_ZERO (&rfds);
+            FD_SET (sock, &rfds);
+            if (udpSock >= 0)
+                FD_SET (udpSock, &rfds);
+            select (32, &rfds, 0, 0, &tv);      /* hmm,  32 might be too
+                                                 * small */
+
+            if (FD_ISSET (sock, &rfds) ||
+                (udpSock >= 0 && FD_ISSET (udpSock, &rfds)))
+            {
+                readFromServer (&rfds);
+            }
+            elapsed = time (0) - startTime;
+            if (elapsed > autoQuit)
+            {
+                printf ("Auto-Quit.\n");
+                *team = 4;
+                break;
+            }
+            if (lasttime != time (0))
+            {
+                run_clock (lasttime);
+                updatedeath ();
+                if (W_IsMapped (playerw))
+                    UpdatePlayerList ();
+                showTimeLeft (elapsed, autoQuit);
+                lasttime = time (0);
+            }
+
+            okayMask = tournMask;
+
+            for (i = 0; i < 4; i++)
+            {
+                if ((okayMask ^ lastOkayMask) & (1 << i))
+                {
+                    if (okayMask & (1 << i))
+                    {
+                        W_UnTileWindow (teamWin[i]);
+                    }
+                    else
+                    {
+                        W_TileWindow (teamWin[i], stipple);
+                    }
+                    lastplayercount[i] = -1;    /* force update */
+                }
+                redrawTeam (teamWin[i], i, &lastplayercount[i]);
+            }
+            lastOkayMask = okayMask;
+        }
+        if (*team == 4)
+            break;
+
+        if (time (0) - startTime <= spareTime)
+        {
+            spareTime -= time (0) - startTime;
+            startTime = time (0);
+        }
+        else
+        {
+            startTime += spareTime;
+            spareTime = 0;
+        }
+        if (!W_EventsPending ())
+            continue;
+        W_NextEvent (&event);
+        typeok = 1;
+        switch ((int) event.type)
+        {
+        case W_EV_KEY:
+            switch (event.key)
+            {
+            case 's':
+                *s_type = SCOUT;
+                break;
+            case 'd':
+                *s_type = DESTROYER;
+                break;
+            case 'c':
+                *s_type = CRUISER;
+                break;
+            case 'b':
+                *s_type = BATTLESHIP;
+                break;
+            case 'g':
+                *s_type = SGALAXY;
+                break;
+            case 'X':
+                *s_type = ATT;
+                break;
+            case 'a':
+                *s_type = ASSAULT;
+                break;
+            case 'o':
+                *s_type = STARBASE;
+                break;
+            case ' ':
+                switch (me->p_team)
+                {
+                case FED:
+                    *team = 0;
+                    break;
+                case ROM:
+                    *team = 1;
+                    break;
+                case KLI:
+                    *team = 2;
+                    break;
+                case ORI:
+                    *team = 3;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            default:
+                typeok = 0;
+                break;
+            }
+            if (event.Window == w)
+            {
+                switch (event.key)
+                {
+                case 'y':
+                    if (resetting)
+                    {
+                        sendResetStatsReq ('Y');
+                        warning
+                            ("OK, your reset request has been sent to the server.");
+                        resetting = 0;
+                    }
+                    break;
+                case 'n':
+                    if (resetting)
+                    {
+                        warning ("Yeah, WHATever.");
+                        resetting = 0;
+                    }
+                    break;
+                case 'R':
+                    warning ("Please confirm reset request. (y/n)");
+                    resetting = 1;
+                    break;
+                case 'f':      /* Scroll motd forward */
+                    line = line + 28;
+                    if (line > MaxMotdLine)
+                    {
+                        line = line - 28;
+                        break;
+                    }
+                    W_ClearWindow (w);
+                    showMotdWin (w, line);
+                    break;
+                case 'b':      /* Scroll motd backward */
+                    if (line == 0)
+                        break;
+                    line = line - 28;
+                    if (line < 0)
+                        line = 0;
+                    W_ClearWindow (w);
+                    showMotdWin (w, line);
+                    break;
+                case 'F':      /* Scroll motd forward */
+                    line = line + 4;
+                    if (line > MaxMotdLine)
+                    {
+                        line = line - 4;
+                        break;
+                    }
+                    W_ClearWindow (w);
+                    showMotdWin (w, line);
+                    break;
+                case 'B':      /* Scroll motd backward */
+                    if (line == 0)
+                        break;
+                    line = line - 4;
+                    if (line < 0)
+                        line = 0;
+                    W_ClearWindow (w);
+                    showMotdWin (w, line);
+                    break;
+                }
+            }
+            /* No break, we just fall through */
+        case W_EV_BUTTON:
+            if (typeok == 0)
+                break;
+            for (i = 0; i < 4; i++)
+                if (event.Window == teamWin[i])
+                {
+                    *team = i;
+                    break;
+                }
+            if (event.Window == qwin /* new */  &&
+                event.type == W_EV_BUTTON)
+            {
+                *team = 4;
+                break;
+            }
+            if (*team != -1 && !teamRequest (*team, *s_type))
+            {
+                *team = -1;
+            }
+            break;
+        case W_EV_EXPOSE:
+            for (i = 0; i < 4; i++)
+                if (event.Window == teamWin[i])
+                {
+                    lastplayercount[i] = -1;    /* force update */
+                    redrawTeam (teamWin[i], i, &lastplayercount[i]);
+                    break;
+                }
+            if (event.Window == qwin)
+            {
+                run_clock (lasttime);
+                redrawQuit ();
+            }
+            else if (event.Window == tstatw)
+                redrawTstats ();
+            else if (event.Window == iconWin)
+                drawIcon ();
+            else if (event.Window == w)
+            {
+                run_clock (lasttime);
+                showMotdWin (w, line);
+            }
+            else if (event.Window == helpWin)
+#ifdef RECORDGAME
+                if (playback)
+                    pbfillhelp();
+                else
+#endif
+                    fillhelp ();
+
+#ifdef NBT
+            else if (event.Window == macroWin)
+                fillmacro ();
+#endif
+
+            else if (event.Window == playerw)
+                RedrawPlayerList ();
+            else if (event.Window == warnw)
+                W_ClearWindow (warnw);
+            else if (event.Window == messagew)
+                W_ClearWindow (messagew);
+            break;
+        }
+    }
+    while (*team < 0);
+    if (event.Window != qwin)
+    {
+        char buf[80];
+
+        sprintf (buf, "Welcome aboard %s!", ranks[me->p_stats.st_rank].name);
+        warning (buf);
+    }
+
+    if (*team == 4)
+    {
+        *team = -1;
+        return;
+    }
+
+    for (i = 0; i < 4; i++)
+        W_UnmapWindow (teamWin[i]);
+    W_UnmapWindow (qwin);
+}
+
+
+/******************************************************************************/
+/***  teamRequest()
+/***   Attempt to pick specified team & ship
+/******************************************************************************/
+teamRequest (int team,
+             int ship)
+{
+    time_t lastTime;
+
+    pickOk = -1;
+    sendTeamReq (team, ship);
+    lastTime = time (NULL);
+    while (pickOk == -1)
+    {
+        if (lastTime + 3 < time (NULL))
+        {
+            sendTeamReq (team, ship);
+        }
+        socketPause ();
+        readFromServer (NULL);
+        if (isServerDead ())
+        {
+            printf ("Oh SHIT,  We've been ghostbusted!\n");
+            printf ("hope you weren't in a base\n");
+            /* UDP fail-safe */
+            commMode = commModeReq = COMM_TCP;
+            commSwitchTimeout = 0;
+            if (udpSock >= 0)
+                closeUdpConn ();
+            if (udpWin)
+            {
+                udprefresh (UDP_CURRENT);
+                udprefresh (UDP_STATUS);
+            }
+            connectToServer (nextSocket);
+            printf (" We've been resurrected!\n");
+            pickOk = 0;
+            break;
+        }
+    }
+    return (pickOk);
+}
+
+
+/******************************************************************************/
+/***  numShips()
+/******************************************************************************/
+numShips (int owner)
+{
+    int i, num = 0;
+    struct player *p;
+
+    for (i = 0, p = players; i < MAXPLAYER; i++, p++)
+        if (p->p_status == PALIVE && p->p_team == owner)
+            num++;
+    return (num);
+}
+
+
+/******************************************************************************/
+/***  realNumShips()
+/******************************************************************************/
+realNumShips (int owner)
+{
+    int i, num = 0;
+    struct player *p;
+
+    for (i = 0, p = players; i < MAXPLAYER; i++, p++)
+        if (p->p_status != PFREE && p->p_team == owner)
+            num++;
+    return (num);
+}
+
+
+/******************************************************************************/
+/***  deadTeam()
+/******************************************************************************/
+deadTeam (int owner)
+/* The team is dead if it has no planets and cannot coup it's home planet */
+{
+    int i, num = 0;
+    struct planet *p;
+
+    if (planets[remap[owner] * 10 - 10].pl_couptime == 0)
+        return (0);
+    for (i = 0, p = planets; i < MAXPLANETS; i++, p++)
+    {
+        if (p->pl_owner & owner)
+        {
+            num++;
+        }
+    }
+    if (num != 0)
+        return (0);
+    return (1);
+}
+
+
+/******************************************************************************/
+/***  checkBold()
+/******************************************************************************/
+checkBold (char *line)
+/* Determine if that line should be highlighted on sign-on screen */
+/* Which is done when it is the players own score being displayed */
+{
+    char *s, *t;
+    int i;
+    int end = 0;
+
+    if (strlen (line) < 60)
+        return (0);
+    s = line + 4;
+    t = me->p_name;
+
+    if (me == NULL)
+        return (0);
+
+    for (i = 0; i < 16; i++)
+    {
+        if (!end)
+        {
+            if (*t == '\0')
+                end = 1;
+            else if (*t != *s)
+                return (0);
+        }
+        if (end)
+        {
+            if (*s != ' ')
+                return (0);
+        }
+        s++;
+        t++;
+    }
+    return (1);
+}
+
+struct list
+{
+    char bold;
+    struct list *next;
+    char *data;
+};
+static struct list *motddata = NULL;    /* pointer to first bit of
+                                         * motddata */
+static int first = 1;
+
+
+/******************************************************************************/
+/***  showMotdWin()
+/******************************************************************************/
+showMotdWin (W_Window motdwin, int atline)
+{
+    int i, length, top, center;
+    struct list *data;
+    int count;
+    char buf[128];
+
+    sprintf (buf, "---  %s  ---", (char *) query_cowid ());
+    length = strlen (buf);
+    center = WINSIDE / 2 - (length * W_Textwidth) / 2;
+    W_WriteText (motdwin, center, W_Textheight, textColor,
+                 buf, length, W_BoldFont);
+    sprintf (buf, CBUGS);
+    length = strlen (buf);
+    center = WINSIDE / 2 - (length * W_Textwidth) / 2;
+    W_WriteText (motdwin, center, 3 * W_Textheight, textColor,
+                 buf, length, W_RegularFont);
+
+    top = 10;
+
+    if (first)
+    {
+        first = 0;
+        data = motddata;
+        while (data != NULL)
+        {
+            data->bold = checkBold (data->data);
+            data = data->next;
+        }
+    }
+
+    data = motddata;
+    for (i = 0; i < atline; i++)
+    {
+        if (data == NULL)
+        {
+            atline = 0;
+            data = motddata;
+            break;
+        }
+        data = data->next;
+    }
+    count = 28;                 /* Magical # of lines to
+                                 * display */
+    for (i = top; i < 50; i++)
+    {
+        if (data == NULL)
+            break;
+        if (!strcmp (data->data, "\t@@@"))      /* ATM */
+            break;
+        if (data->bold)
+        {
+            W_WriteText (motdwin, 20, i * W_Textheight, textColor, data->data,
+                         strlen (data->data), W_BoldFont);
+        }
+        else
+        {
+            W_WriteText (motdwin, 20, i * W_Textheight, textColor, data->data,
+                         strlen (data->data), W_RegularFont);
+        }
+        data = data->next;
+        count--;
+        if (count <= 0)
+            break;
+    }
+
+    showValues (data);
+}
+
+
+/******************************************************************************/
+/***  showValues()
+/***   ATM: show the current values of the .sysdef parameters. */
+/******************************************************************************/
+void
+showValues (struct list *data)
+{
+    int i;
+    static char *msg = "OPTIONS SET WHEN YOU STARTED WERE:";
+
+    /* try to find the start of the info */
+    while (1)
+    {
+        if (data == NULL)
+            return;
+        if (!strcmp (data->data, STATUS_TOKEN))
+            break;
+        data = data->next;
+    }
+    data = data->next;
+
+    W_WriteText (mapw, 20, 14 * W_Textheight, textColor, msg,
+                 strlen (msg), W_RegularFont);
+    for (i = 16; i < 50; i += 2)
+    {
+        if (data == NULL)
+            break;
+        if (data->data[0] == '+')       /* quick boldface hack */
+            W_WriteText (mapw, 20, i * W_Textheight, textColor,
+                         data->data + 1, strlen (data->data) - 1, W_BoldFont);
+        else
+            W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
+                         strlen (data->data), W_RegularFont);
+        data = data->next;
+    }
+}
+
+/******************************************************************************/
+/***  ClearMotd()
+/***   Free the current motdData
+/******************************************************************************/
+ClearMotd (void)
+{
+    struct list *temp, *temp2;
+
+    temp = motddata;            /* start of motd information */
+    while (temp != NULL)
+    {
+        temp2 = temp;
+        temp = temp->next;
+        free (temp2->data);
+        free (temp2);
+    }
+
+    first = 1;                  /* so that it'll check bold
+                                 * next time around */
+}
+
+/******************************************************************************/
+/***  newMotdLine()
+/******************************************************************************/
+void
+newMotdLine (char *line)
+{
+    static struct list **temp = &motddata;
+    static int statmode = 0;    /* ATM */
+
+    if (!statmode && !strcmp (line, STATUS_TOKEN))
+        statmode = 1;
+    if (!statmode)
+        MaxMotdLine++;          /* ATM - don't show on left */
+    (*temp) = (struct list *) malloc (sizeof (struct list));
+
+    if ((*temp) == NULL)
+    {                           /* malloc error checking --
+                                 * 10/30/92 EM */
+        printf ("Warning:  Couldn't malloc space for a new motd line!");
+        return;
+    }
+    /* Motd clearing code */
+    if (strcmp (line, MOTDCLEARLINE) == 0)
+    {
+        ClearMotd ();
+        return;
+    }
+
+    (*temp)->next = NULL;
+    (*temp)->data = malloc (strlen (line) + 1);
+    strcpy ((*temp)->data, line);
+    temp = &((*temp)->next);
+}
+
+
+/******************************************************************************/
+/***  getResources()
+/******************************************************************************/
+getResources (char *prog)
+{
+    getColorDefs ();
+}
+
+
+/******************************************************************************/
+/***  redrawTeam()
+/******************************************************************************/
+void
+redrawTeam (W_Window win,
+            int teamNo,
+            int *lastnum)
+{
+    char buf[BUFSIZ];
+    static char *teams[] = { "Federation", "Romulan", "Klingon", "Orion" };
+    int num = numShips (1 << teamNo);
+
+    /* Only redraw if number of players has changed */
+    if (*lastnum == num)
+        return;
+
+    W_ClearWindow (win);
+    W_WriteText (win, 5, 5, shipCol[teamNo + 1], teams[teamNo],
+                 strlen (teams[teamNo]), W_RegularFont);
+    (void) sprintf (buf, "%d", num);
+    W_MaskText (win, 5, 46, shipCol[teamNo + 1], buf, strlen (buf),
+                W_BigFont);
+    *lastnum = num;
+}
+
+
+/******************************************************************************/
+/***  redrawQuit()
+/******************************************************************************/
+redrawQuit (void)
+{
+    W_WriteText (qwin, 5, 5, textColor, "Quit COW  ", 10, W_RegularFont);
+}
+
+/******************************************************************************/
+/***  drawIcon()
+/******************************************************************************/
+void
+drawIcon (void)
+{
+    W_WriteBitmap (0, 0, icon, W_White);
+}
+
+#define CLOCK_WID       (BOXSIDE * 9 / 10)
+#define CLOCK_HEI       (BOXSIDE * 2 / 3)
+#define CLOCK_BDR       0
+#define CLOCK_X         (BOXSIDE / 2 - CLOCK_WID / 2)
+#define CLOCK_Y         (BOXSIDE / 2 - CLOCK_HEI / 2)
+
+#define XPI             3.141592654
+
+/******************************************************************************/
+/***  showTimeLeft()
+/******************************************************************************/
+showTimeLeft (time_t time, time_t max)
+{
+    char buf[BUFSIZ], *cp;
+    int cx, cy, ex, ey, tx, ty;
+
+    if ((max - time) < 10 && time & 1)
+    {
+        W_Beep ();
+    }
+    /* XFIX */
+    W_ClearArea (qwin, CLOCK_X, CLOCK_Y, CLOCK_WID, CLOCK_HEI);
+
+    cx = CLOCK_X + CLOCK_WID / 2;
+    cy = CLOCK_Y + (CLOCK_HEI - W_Textheight) / 2;
+    ex = cx - BMP_CLOCK_WIDTH / 2;
+    ey = cy - BMP_CLOCK_HEIGHT / 2;
+    W_WriteBitmap (ex, ey, clockpic, foreColor);
+
+    ex = (int) (cx - BMP_CLOCK_WIDTH * sin (2 * XPI * time / max) / 2);
+    ey = (int) (cy - BMP_CLOCK_HEIGHT * cos (2 * XPI * time / max) / 2);
+    W_MakeLine (qwin, cx, cy, ex, ey, foreColor);
+
+    sprintf (buf, "%d", max - time);
+    tx = cx - W_Textwidth * strlen (buf) / 2;
+    ty = cy - W_Textheight / 2;
+    W_WriteText (qwin, tx, ty, textColor, buf, strlen (buf), W_RegularFont);
+
+    cp = "Auto Quit";
+    tx = CLOCK_X + cx - W_Textwidth * strlen (cp) / 2;
+    ty = CLOCK_Y + CLOCK_HEI - W_Textheight;
+    W_WriteText (qwin, tx, ty, textColor, cp, strlen (cp), W_RegularFont);
+}
