@@ -18,8 +18,8 @@
  * the use of it.)
  * 
  * $Log: defwin.c,v $
- * Revision 1.1  2003/01/21 21:28:34  keyos
- * Initial revision
+ * Revision 1.1.1.1  2003/01/21 21:28:34  keyos
+ * First rimport to CVS
  *
  * Revision 1.2  1999/06/13 05:51:49  sheldon
  * Added code for Cambot playback
