@@ -971,9 +971,9 @@ newWindow (char *name,
         // WS_THICKFRAME adds resizing frame to window without adding titlebar
         mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
         if (mainResizeable)
-            SpecialStyle |= WS_THICKFRAME | WS_MINIMIZEBOX | WS_SYSMENU;
+            SpecialStyle |= WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
         else
-            SpecialStyle |= WS_MINIMIZEBOX | WS_SYSMENU;
+            SpecialStyle |= WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
 //        else
 //          SpecialStyle |= WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
     }
