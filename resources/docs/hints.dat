@@ -1,4 +1,9 @@
 to  disable  this  window  permanently  you  should  add  "showHints: off"  to  your  rc  file
+you can use Alt+Enter to toggle the main title bar on and off.
+you can send messages from the player list window. Left click for individual messages, middle mouse button click for all board messages, and right click for team messages.
+you can remap keys by pointing at the key in the help window and pushing the key you want that option to be.
+you can open the NetrekXP help program with the F1 key.
+you can change the dashboard clock to a timer through the Visuals Menu. The \ key is default for reseting the timer.
 when you are low on planets, you should let the more experienced players pick the armies. Those should not be wasted.
 when you are in doubt, you should ask a Commodore, Rear Adm. or Admiral for advice.
 when your team has lots of armies, you should not be afraid to pick them. They'll get bombed anyway.
@@ -78,23 +83,25 @@ if a starbase dies, it takes 30 minutes to get a new one. Ask your team if it's 
 information is the most valuable commodity in netrek. Use the teamboard. Read it. Write to it.
 you should not be afraid to admit that you screwed up. Trust us, everyone else knows you did.
 having a thick skin helps. Saying "sorry, I'm new" if you're being yelled at can work wonders.
-everyone has a bad day, try not to take things personal.
+everyone has a bad day, try not to take things personally.
 you can ignore messages from individual people by sending them :ita. If people are abusive to you, just ignore them.
 you should learn to recognize the good players by their login IDs and player handles. They are the best way to get better at this game. Watch them and/or talk to them.
 people with an offense rating of over 1.50 are to be respected. Can you maintain an offense of over 1.50?
-dying is a good thing. (In netrek anyway).
+dying is a good thing (in netrek anyways).
 if you are down to 5 planets or less, you should only bomb the planets outside of your core five. Let the more experienced players decide when to bomb the other ones.
-a cruiser (CA), can fly up to warp 9, has 10.000 fuel, 100 hull, 100 shields, 40 pt torps and can do up to 100 pt maximum phaser damage.
-an assault ship (AS), can fly up to warp 8, has 6.000 fuel, 200 hull, 80 shields, 30 pt torps and can do up to 80 pt maximum phaser damage.
-a battle ship (BB), can fly up to warp 8, has 14.000 fuel, 130 hull, 130 shields, 40 pt torps and can do up to 105 pt maximum phaser damage.
-a scout (SC), can fly up to warp 12, has 5.000 fuel, 75 hull, 75 shields, 25 pt torps and can do up to 75 pt maximum phaser damage.
-a destroyer (DD), can fly up to warp 10, has 7.000 fuel, 85 hull, 85 shields, 30 pt torps and can do up to 85 pt maximum phaser damage.
-a starbase (SB), can fly up to warp 2, has 60.000 fuel, 600 hull, 500 shields, 30 pt torps and can do up to 120 pt maximum phaser damage.
+a cruiser (CA), can fly up to warp 9, has 10,000 fuel, 100 hull, 100 shields, 40 pt torps and can do up to 100 pt maximum phaser damage.
+an assault ship (AS), can fly up to warp 8, has 6,000 fuel, 200 hull, 80 shields, 30 pt torps and can do up to 80 pt maximum phaser damage.
+a battle ship (BB), can fly up to warp 8, has 14,000 fuel, 130 hull, 130 shields, 40 pt torps and can do up to 105 pt maximum phaser damage.
+a scout (SC), can fly up to warp 12, has 5,000 fuel, 75 hull, 75 shields, 25 pt torps and can do up to 75 pt maximum phaser damage.
+a destroyer (DD), can fly up to warp 10, has 7,000 fuel, 85 hull, 85 shields, 30 pt torps and can do up to 85 pt maximum phaser damage.
+a starbase (SB), can fly up to warp 2, has 60,000 fuel, 600 hull, 500 shields, 30 pt torps and can do up to 120 pt maximum phaser damage.
 assault ships have the best cloaking capabilities in the game and are mainly used for taking heavily guarded planets.
 battleships have the strongest fire power of non-star bases, but they must operate near a fuel planet to be effective.
-cruisers are the most well rounded ship, having high firepower and good manoeuvrability.
-scouts offer the fastest speed and manueverability, but are best used for bombing or taking. They are too brittle to be used for space controlling.
+cruisers are the most well rounded ship, having high firepower and good maneuverability.
+destroyers are best used only by experienced players. In most situations, a cruiser is the right ship choice.
+scouts offer the fastest speed and maneuverability, but are best used for bombing or taking. They are too brittle to be used for space controlling.
 starbases are the strongest ships in terms of fire power and can only be killed by a concentrated team effort.
+starbases can fire phasers twice as fast as any other ship
 "to ogg" means, the process of cloaking and appearing adjacent to an enemy while firing torps and tractoring on to him, with the purpose to kill that player, without caring about dying in the process.
 "to doosh" means, killing an enemy ship which is carrying armies. People often yell "doosh!" after they kill a huge carrier. 
 a "planet scum" is someone who only cares about taking planets so he gets good ratings. This often hurts the team because the wrong planets are taken, or the planets are taken with little armies and easily captured back.
