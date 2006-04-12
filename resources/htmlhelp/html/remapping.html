@@ -1,0 +1,155 @@
+<html>
+<head>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+<title>Changing Defaults</title>
+</head>
+<body>
+<h1>Changing Defaults</h1>
+<p>
+In order to change default buttons and keys bindings you should be familiar
+with <a href="configfile.html">Configuration File</a> and be able to edit
+it.
+<p>
+It is possible to change keyboard mappings in game by going to help window ('h' in
+default keymap) and remapping keys by pointing on desired action and pushing key that
+you want this action to be bound to. The main problem with that is that these remappings
+are not saved anywhere (unless you save them using "Save options" action) and will be
+lost after you close the program.
+<p>
+There are three configuration commands that deal with keyboard and mouse buttons
+rebinding (remapping):
+<ul>
+<li><b>keymap</b> - allows to change keyboard default bindings</li>
+<li><b>buttonmap</b> - allows to change mouse default bindings</li>
+<li><b>ckeymap</b> - allows to change Ctrl+Key keyboard bindings</li>
+</ul>
+<p>
+<h2>Syntax</h2>
+<p>
+Same syntax is applied for all of the configuration commands above:
+<p>
+<code>command: [&lt;key to bind&gt;&lt;action to perform&gt;]+</code>
+<p>
+Examples:
+<p>
+<ul>
+<li><code>keymap: a2d%</code> - will bind warp 2 speed to key 'a' and maxwarp to key 'b'.</li>
+<li><code>buttonmap: 1i3l</code> - will bind info action to mouse button 1 (left button) and
+lock action to mouse button 3 (right button).</li>
+<li><code>ckeymap: ^cc^vl</code> - will bind cloak action to Ctrl-c and lock action to Ctrl-v</li>
+</ul>
+<p>
+<code><b>buttonmap</b></code> is the tricky one because you should know what button gets what name.
+<br>
+So here is a table that will list all possible buttons that can be bound there:
+<table border=1 cellspacing=0 cellpadding=3>
+<tr>
+<td><b>Mouse Button</b></td>
+<td><b>ButtonMap Representation</b></td>
+</tr>
+</tr>
+<tr>
+<td>Left</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Right</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Fourth</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Fifth</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Wheel Up</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Wheel Down</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Shift+Left</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Shift+Middle</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Shift+Right</td>
+<td>a</td>
+</tr>
+<tr>
+<td>Shift+Fourth</td>
+<td>b</td>
+</tr>
+<tr>
+<td>Shift+Fifth</td>
+<td>c</td>
+</tr>
+<tr>
+<td>Ctrl+Left</td>
+<td>d</td>
+</tr>
+<tr>
+<td>Ctrl+Middle</td>
+<td>e</td>
+</tr>
+<tr>
+<td>Ctrl+Right</td>
+<td>f</td>
+</tr>
+<tr>
+<td>Ctrl+Fourth</td>
+<td>g</td>
+</tr>
+<tr>
+<td>Ctrl+Fifth</td>
+<td>h</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+Left</td>
+<td>i</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+Middle</td>
+<td>j</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+Right</td>
+<td>k</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+Fourth</td>
+<td>l</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+Fifth</td>
+<td>m</td>
+</tr>
+</table>
+<p>
+For example <code><b>'buttonmap: 1p4dhi'</b></code> - will create following mapping:
+<p>
+<ul>
+<li><b>Left Mouse Button</b> will map to <b>phaser</b></li>
+<li><b>Fourth Mouse Button</b> will map to <b>detonate enemy torps</b></li>
+<li><b>Ctrl+Fifth Mouse Button</b> will map to <b>info</b></li>
+</ul>
+<p>
+Almost all players at some point will remap (rebind) default keyboard (and probably mouse) actions
+to keys that satisfy their requirements. Feel free to play with key bindings and try to get most
+out of it. Just remember that once you got used to some specific layout it will be difficult to
+switch to something else.
+</body>
+</html>

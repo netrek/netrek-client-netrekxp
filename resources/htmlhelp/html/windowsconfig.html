@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>Windows Configuration</title>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Windows Configuration</h1>
+<p>
+First of all let's list names of NetrekXP Mod windows:
+<ul>
+<li><b>netrek</b> - Main window</li>
+<li><b>local</b> - Tactical window</li>
+<li><b>map</b> - Galaxy window</li>
+<li><b>warn</b> - Warning window. Here all warnings are displayed</li>
+<li><b>message</b> - Message window. Here you type messages</li>
+<li><b>review</b> - Review window</li>
+<li><b>review_all</b> - Window that receives All messages</li>
+<li><b>review_team</b> - Window that receives Team messages</li>
+<li><b>review_your</b> - Window that receives Personal messages</li>
+<li><b>review_kill</b> - Window that receives Kill messages</li>
+<li><b>review_phaser</b> - Window that receives Phaser messages</li>
+<li><b>planet</b> - Planet list window</li>
+<li><b>player</b> - Player list window</li>
+<li><b>war</b> - War declaration window</li>
+<li><b>fed</b> - Federation selection window</li>
+<li><b>ori</b> - Orion selection window</li>
+<li><b>rom</b> - Romulan selection window</li>
+<li><b>kli</b> - Klingon selection window</li>
+<li><b>quit</b> - Quit countdown window</li>
+<li><b>option</b> - Option menu window</li>
+<li><b>rank</b> - Rank window</li>
+<li><b>stats</b> - Statistics window</li>
+<li><b>help</b> - Help window</li>
+<li><b>udp</b> - UDP options window</li>
+<li><b>pingstats</b> - Ping statistics window</li>
+<li><b>xtrekrc_help</b> - xtrekrc help window</li>
+<li><b>macro</b> - Macros window</li>
+</ul>
+<p>
+<code><b>&lt;window&gt;.map: [on/off]</b></code> - show window on startup
+<p>
+Example:<br>
+<code>pingstats.mapped: on</code>
+<p>
+<code><b>&lt;window&gt;.parent: &lt;value&gt;</b></code> - set parent window of &lt;window&gt;
+<p>
+Example:<br>
+<code>fed.parent: map</code> - will move Feds selection window from tactical to galaxy
+<p>
+<code><b>&lt;window&gt;.geometry: &lt;geometry&gt;</b></code> - set window placement and size
+<p>
+<code>&lt;geometry&gt;</code> parameter can be presented by three different states:
+<ul>
+<li><code><b>&lt;window&gt;.geometry: &lt;width&gt;x&lt;height&gt;+&lt;xpos&gt;+&lt;ypos&gt</b></code>
+	<ul>
+	<li><code><b>&lt;width&gt;</b></code> - window width</li>
+	<li><code><b>&lt;height&gt;</b></code> - window height</li>
+	<li><code><b>&lt;xpos&gt;</b></code> - window x coordinate</li>
+	<li><code><b>&lt;ypos&gt;</b></code> - window y coordinate</li>
+	</ul>
+</li>
+<li><code><b>&lt;window&gt;.geometry: &lt;width&gt;x&lt;height&gt;</b></code>
+	<ul>
+	<li><code><b>&lt;width&gt;</b></code> - window width</li>
+	<li><code><b>&lt;height&gt;</b></code> - window height</li>
+	</ul>
+</li>
+<li><code><b>&lt;window&gt;.geometry: +&lt;xpos&gt;+&lt;ypos&gt</b></code>
+	<ul>
+	<li><code><b>&lt;xpos&gt;</b></code> - window x coordinate</li>
+	<li><code><b>&lt;ypos&gt;</b></code> - window y coordinate</li>
+	</ul>
+</li>
+</ul>
+<p>
+Examples:<br>
+netrek.geometry: 1024x768+0+0 - default main window geometry<br>
+netrek.geometry: 1024x768 - only size parameters<br>
+netrek.geometry: +0+0 - only placement parameters
+<p>
+Above options can be used with any window.
+<p>
+Next option can only be used with message windows:
+<p>
+<code><b>&lt;message window&gt;.allow: [A][T][I][P][K]</b></code> - choose type of messages printed in message window
+<ul>
+	<li><b>A</b> - All messages</li>
+	<li><b>T</b> - Team messages</li>
+	<li><b>I</b> - Personal (Individual) messages</li>
+	<li><b>P</b> - Phaser messages</li>
+	<li><b>K</b> - Kill messages</li>
+</ul>
+So if for instance you would like to make bigger review_team, but still don't want to mess it with review_all you
+can just define '<code><b>review_team.allow:&nbsp;TIPK</b></code>' to watch after any except All messages.
+</ul>
+</body>
+</html>

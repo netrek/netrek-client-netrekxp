@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>Macros Configuration</title>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1>Macros Configuration</h1>
+<p>
+Macros can be divided in two main categories:
+<ul>
+<li>Regular Macros</li>
+<li>Receiver Configurable Distress Macros</li>
+</ul>
+The main difference between two is that you send the first type by yourself while second
+type is actually how you want other's macros to be showed on your client.
+<p>
+In order to trigger any of these you should enter Macro Mode. Some macros are used
+by players very frequently, so in order to speedup the process you can use
+following configuration option:
+<p>
+<code><b>singleMacro: &lt;keys list for one-push macros&gt;</b></code>
+<p>
+Example:<br>
+<code>singleMacro: FE^q</code> - will allow triggering macros defined for F, E and Ctrl-q
+by single key push.
+<p>
+<h2>Regular Macros</h2>
+Regular macros can be either single or multiline and their general syntax is:
+<p>
+<code><b>mac.&lt;key&gt;.&ltrecipient&gt;: &lt;macro string&gt;</b></code>
+<p>
+<ul>
+<li>
+<code><b>&lt;key&gt;</b></code> - key to press in macro mode to send macro
+<p>
+The key can be in form of:
+	<ul>
+	<li><b>char</b> - press key on keyboard</li>
+	<li><b>^char</b> - press Ctrl+key on keyboard</li>
+	</ul>
+</li>
+<p>
+<li>
+<code><b>&ltrecipient&gt;</b></code> - recipient of the macro
+<p>
+Recipient can be one of:
+	<ul>
+	<li><code><b>(empty)</b></code> - you will be asked to specify recipient after macro activation</li>
+	<li><code><b>A</b></code> - send to All</li>
+	<li><code><b>T</b></code> - send to your Team</li>
+	<li><code><b>F</b></code> - send to Federation</li>
+	<li><code><b>K</b></code> - send to Klingons</li>
+	<li><code><b>O</b></code> - send ti Orions</li>
+	<li><code><b>R</b></code> - send to Romulans</li>
+	<li><code><b>a-z</b></code> - send to player</li>
+	<li><code><b>%I, %i, %c</b></code> - send to yourself</li>
+	<li><code><b>%U, %u, %p</b></code> - send to player nearest your mouse pointer</li>
+	<li><code><b>%Z, %z, %t</b></code> - send to a team whose player nearest your mouse pointer</li>
+	<li><code><b>%g</b></code> - send to friendly player nearest your mouse pointer</li>
+	<li><code><b>%h</b></code> - send to enemy player nearest your mouse pointer</li>
+	</ul>
+</li>
+<p>
+<li>
+<code><b>&lt;macro string&gt;</b></code> - text string
+<p>
+In addition to regular text, macro string can contain:
+	<ul>
+	<li><code><b>%a</b></code> - armies carried by sender</li>
+	<li><code><b>%d</b></code> - sender damage percentage</li>
+	<li><code><b>%s</b></code> - sender shields percentage</li>
+	<li><code><b>%f</b></code> - sender fuel percentage</li>
+	<li><code><b>%w</b></code> - sender wtemp percentage</li>
+	<li><code><b>%e</b></code> - sender etemp percentage</li>
+	<li><code><b>%t</b></code> - team id character of target planet</li>
+	<li><code><b>%T</b></code> - team id character of sender team</li>
+	<li><code><b>%c</b></code> - sender id character</li>
+	<li><code><b>%n</b></code> - armies on target planet</li>
+	<li><code><b>%E</b></code> - 1 if etemped, 0 if not</li>
+	<li><code><b>%W</b></code> - 1 if wtemped, 0 if not</li>
+	<li><code><b>%S</b></code> - sender two character ship type</li>
+	<li><code><b>%p</b></code> - id character of target player</li>
+	<li><code><b>%g</b></code> - id character of target friendly player</li>
+	<li><code><b>%h</b></code> - id character of target enemy player</li>
+	<li><code><b>%P</b></code> - id character of player nearest sender</li>
+	<li><code><b>%G</b></code> - id character of friendly player nearest sender</li>
+	<li><code><b>%H</b></code> - id character of enemy player nearest sender</li>
+	<li><code><b>%l</b></code> - three character name of target planet</li>
+	<li><code><b>%L</b></code> - three character name of target planet in capitals</li>
+	<li><code><b>%i</b></code> - sender full player name</li>
+	<li><code><b>%I</b></code> - sender full player name in capitals</li>
+	<li><code><b>%u</b></code> - full name of target player</li>
+	<li><code><b>%U</b></code> - full name of target player in capitals</li>
+	<li><code><b>%z</b></code> - three letter team id of target planet</li>
+	<li><code><b>%Z</b></code> - three letter team id of target planet in capitals</li>
+	<li><code><b>%b</b></code> - planet nearest sender</li>
+	<li><code><b>%B</b></code> - planet nearest sender in capitals</li>
+	<li><code><b>%o</b></code> - three letter sender team name</li>
+	<li><code><b>%O</b></code> - three letter sender team name in capitals</li>
+	<li><code><b>%k</b></code> - sender number of kills</li>
+	<li><code><b>%K</b></code> - number of kills target player has</li>
+	<li><code><b>%(SPACE)</b></code> - adds space to message</li>
+	<li><code><b>%v</b></code> - average ping round trip time</li>
+	<li><code><b>%V</b></code> - standard deviation of ping round trip time</li>
+	<li><code><b>%y</b></code> - percentage of total packet loss identified by server</li>
+	<li><code><b>%m</b></code> - the last message you sent</li>
+	<li><code><b>%M</b></code> - the last message you sent in capitals</li>
+	</ul>
+<p>
+It is also possible to create complex macros using conditional tests:
+	<ul>
+	<li><code><b>&lt;condition&gt;%{output if true%!output if false%}</b></code></li>
+	<li><code><b>%?</b></code> - introduce test</li>
+	<li><code><b>=</b></code> - equivalence</li>
+	<li><code><b>&lt;</b></code> - less</li>
+	<li><code><b>&gt;</b></code> - greater</li>
+	</ul>
+</li>
+</ul>
+<p>
+Examples:
+<pre>
+      mac.F.T:   Help!  Carrying %a!!
+      mac.f:     Help!  Carrying %a!!
+      mac.c.T:   %p++ near %l
+      mac.b.T:   %?%n>4%{bomb %l at %n%!bomb%}
+      mac.d.T:   %E%{%!%W%{%!I'm fine.  How are you? %}%}%E%{ETEMPED!!!  %}
+                 %W%{WTEMPED!!!  %}Carrying %?%a>0%{%a armies!%!NO armies.%}
+      mac.a.T:   %E%{ETEMPED!!!  %}%W%{WTEMPED!!!  %}Carrying %?%a>0%{%a 
+                 armies! %!NO armies.%}
+      mac.R.A:   I'm a %?%S=SB%{star base!%!twink!%}
+      mac.K.A:   KissMy%S
+      mac.t:     thanks
+      mac.y:     yes
+      mac.n:     no
+      mac.B:     bye, getting hungry/sleep/horny
+      mac.e.T:   need escort going to %l%?%a>0%{, carrying %a armies!%}
+      mac.v.%t   %T%c PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
+</pre>
+<p>
+<h2>Receiver Configurable Distresses</h2>
+<p>
+As we already told RCD is opposite to the macro. You decide what do display instead of something that was received
+from another player.
+<p>
+There is a limited amount of RCDs because server doesn't actually send any text to you, but instead it tells
+your client that player 'x' sent RCD number 'y'. The client then looks what should be displayed when receiving
+RCD 'y' and creates text that is only displayed in your client.
+<p>
+RCD syntax also defines key that will trigger RCD to be sent to others. The distress text will be shown same
+whether you send specific RCD or you receive it from other player:
+<p>
+<code><b>dist.&lt;key&gt;.&lt;distress name&gt;: &lt;distress text&gt;</b></code>
+<ul>
+<li><code><b>&lt;key&gt;</b></code> - same as in regular macros</li>
+<li><code><b>&lt;distress name&gt;</b></code> - predefined distress name
+	<ul>
+	<li><code><b>save_planet</b></code> - general distress call for help</li>
+	<li><code><b>base_ogg</b></code> - distress to prepare for enemy starbase ogg</li>
+	<li><code><b>help1</b></code> - general distress call for help</li>
+	<li><code><b>help2</b></code> - general distress call for help</li>
+	<li><code><b>asw</b></code> - ASW (Anti Scout War) distress</li>
+	<li><code><b>asbomb</b></code> - distress for bomb request</li>
+	<li><code><b>doing1</b></code> - general distress</li>
+	<li><code><b>doing2</b></code> - general distress</li>
+	<li><code><b>pickup</b></code> - calls armies pickup of enemy player</li>
+	<li><code><b>pop</b></code> - calls planet pop</li>
+	<li><code><b>other1</b></code> - general distress</li>
+	<li><code><b>other2</b></code> - general distress</li>
+	<li><code><b>help</b></code> - distress for help</li>
+	<li><code><b>escorting</b></code> - escorting friendly player distress</li>
+	<li><code><b>taking</b></code> - taking planet distress</li>
+	<li><code><b>ogg</b></code> - ogg distress</li>
+	<li><code><b>ogging</b></code> - ogging distress</li>
+	<li><code><b>carrying</b></code> - carried armies call</li>
+	<li><code><b>free_beer</b></code> - free beer enemy call</li>
+	<li><code><b>crippled</b></code> - crippled enemy call</li>
+	<li><code><b>controlling</b></code> - space controlling distress</li>
+	<li><code><b>space_control</b></code> - space control call</li>
+	<li><code><b>bomb</b></code> - bomb call</li>
+	<li><code><b>no_gas</b></code> - no gas distress</li>
+	<li><code><b>bombing</b></code> - bombing distress</li>
+	</ul>
+</li>
+</ul>
+<p>
+All RCDs are predefined by client and can be changed if needed.
+</body>
+</html>

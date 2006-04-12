@@ -1,0 +1,1098 @@
+<html>
+<head>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+<title>General Configuration Options</title>
+</head>
+<body>
+<h1>General Configuration Options</h1>
+<p>
+Following table contains all possible general configuration options and their defaults:
+<table border=1 cellspacing=0 cellpadding=3>
+<tr>
+<td><b>Name</b></td>
+<td><b>Action</b></td>
+<td><b>Possible Values</b></td>
+</tr>
+<tr>
+<td><code><b>agriCAPS</b></code></td>
+<td>ARGI planet names in capital letters on galaxy</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>agriColor</b></code</td>
+<td>Color of AGRI planet on galaxy</td>
+<td>
+	<ul>
+	<li><b>0</b> - owner race color</li>
+	<li><b>1</b> - white</li>
+	<li><b>2 (default)</b> - grey</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>autoQuit</b></code></td>
+<td>Autoquit timer</td>
+<td><b>integer</b><br>default: 60</td>
+</tr>
+<tr>
+<td><code><b>baseUdpLocalPort</b></code></td>
+<td>Base port for UDP connections</td>
+<td><b>integer</b><br>default: 0</td>
+</tr>
+<tr>
+<td><code><b>b1Keymap</b></code></td>
+<td>Keymap for left mouse button for mouseAsShift mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>b2Keymap</b></code></td>
+<td>Keymap for middle mouse button for mouseAsShift mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>b3Keymap</b></code></td>
+<td>Keymap for right mouse button for mouseAsShift mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>b4Keymap</b></code></td>
+<td>Keymap for fourth mouse button for mouseAsShift mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>b5Keymap</b></code></td>
+<td>Keymap for fifth mouse button for mouseAsShift mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>beepOnPrivateMessage</b></code></td>
+<td>Sound beep if received personal message<br>
+Doesn't beep for messages from GOD and yourself</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>buttonMap</b></code></td>
+<td>Buttonmap settings for mouse</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>buttonMap-&lt;ship&gt;</b><br>&lt;ship&gt; can be one of sc,dd,cs,bb,as,sb,ga,att</code></td>
+<td>Buttonmap settings for specific ship type</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>ckeyMap</b></code></td>
+<td>Keymap for Ctrl+key mappings</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>ckeyMap-&lt;ship&gt;</b><br>&lt;ship&gt; can be one of sc,dd,cs,bb,as,sb,ga,att</code></td>
+<td>Keymap for Ctrl+key for specific ship type</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>cloakChars</b></code></td>
+<td>What characters display on galaxy for cloaked player</td>
+<td><b>two characters</b></td>
+</tr>
+<tr>
+<td><code><b>color.&lt;color&gt;</b></code></td>
+<td>Replace &lt;color&gt; with value</td>
+<td><b>color name</b></td>
+</tr>
+<tr>
+<td><code><b>colorClient</b></code></td>
+<td>type of bitmaps to load on startup</td>
+<td>
+	<ul>
+	<li><b>0</b> - monochrome bitmaps</li>
+	<li><b>1 (default)</b> - color bitmaps</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>colorfulPhasers</b></code></td>
+<td>Display Jubilee phasers</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>continueTractor</b></code></td>
+<td>Show tractor/pressor beams after they are locked on player</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>continuousMouse</b></code></td>
+<td>Use continuous mouse<br>
+This can be disabled by server</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>continuousMouseFix</b></code></td>
+<td>Fix continuousMouse behavior to execute two actions<br>
+in case two buttons are pressed at the same time
+</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>disableWinkey</b></code></td>
+<td>Disable Windows and Context keyboard keys</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>documentation</b></code></td>
+<td>Path to text file that is displayed as netrek help</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>enemyPhasers</b></code></td>
+<td>Angle between enemy phaser lines</td>
+<td><b>1-10</b></td>
+</tr>
+<tr>
+<td><code><b>extraAlertBorder</b></code></td>
+<td>Extend alert border</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>fedshipbmpfile</b></code></td>
+<td>Path to Fed bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>fedshipGbmpfile</b></code></td>
+<td>Path to Fed grayscale bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>fedshipTbmpfile</b></code></td>
+<td>Path to Fed tainted bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>fedshipMbmpfile</b></code></td>
+<td>Path to Fed monochrome bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>forceDisplay</b></code></td>
+<td>Force specific number of colors to display</td>
+<td>
+	<ul>
+	<li><b>0</b> - two colors</li>
+	<li><b>1</b> - 16 colors</li>
+	<li><b>2</b> - 256 colors</li>
+	<li><b>3 (default)</b> - true color</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>forceMono</b></code></td>
+<td>Use old monochrome bitmaps</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>highlightFriendlyPhasers</b></code></td>
+<td>Highlight phasers of friendly players</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>indshipbmpfile</b></code></td>
+<td>Path to Ind bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>indshipGbmpfile</b></code></td>
+<td>Path to Ind grayscale bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>indshipTbmpfile</b></code></td>
+<td>Path to Ind tainted bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>indshipMbmpfile</b></code></td>
+<td>Path to Ind monochrome bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>ignoreCaps</b></code></td>
+<td>Ignore Caps Lock key state</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>keepInfo</b></code></td>
+<td>Number of updates to keep Info window</td>
+<td><b>integer</b><br>default: 15<br>to disable: 0</td>
+</tr>
+<tr>
+<td><code><b>keepPeace</b></code></td>
+<td>Keep peace with enemy team after you've been killed</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>keyMap</b></code></td>
+<td>Key mappings</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>keyMap-&lt;ship&gt;</b><br>&lt;ship&gt; can be one of sc,dd,cs,bb,as,sb,ga,att</code></td>
+<td>Key mappings for specific ship type</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>klishipbmpfile</b></code></td>
+<td>Path to Kli bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>klishipGbmpfile</b></code></td>
+<td>Path to Kli grayscale bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>klishipTbmpfile</b></code></td>
+<td>Path to Kli tainted bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>klishipMbmpfile</b></code></td>
+<td>Path to Kli monochrome bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>logFile</b></code></td>
+<td>Path to log file</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>logging</b></code></td>
+<td>Log all messages to log file</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>login</b></code></td>
+<td>Character login name</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>macroKey</b></code></td>
+<td>Key that will toggle macro mode</td>
+<td><b>char, ESC, TAB</b></td>
+</tr>
+<tr>
+<td><code><b>mainResizeable</b></code></td>
+<td>Enable resize caption on main window</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>messageHoldThresh</b></code></td>
+<td>Threshold value to put message on hold</td>
+<td><b>integer</b><br>default: 0</td>
+</tr>
+<tr>
+<td><code><b>messageHUD</b></code></td>
+<td>Output message on local window while typing</td>
+<td>
+	<ul>
+	<li><b>0 (default)</b> - output only in message window</li>
+	<li><b>1</b> - output on the top of local window</li>
+	<li><b>2</b> - output on the bottom of local window</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>metaCache</b></code></td>
+<td>Path to cache file for Metaserver data</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>metaPort</b></code></td>
+<td>Port of Metaserver</td>
+<td><b>integer</b><br>default: 3521</td>
+</tr>
+<tr>
+<td><code><b>metaServer</b></code></td>
+<td>Metaserver address</td>
+<td><b>hostname</b></td>
+</tr>
+<tr>
+<td><code><b>metaStatusLevel</b></code></td>
+<td>What servers to list in Metaserver Window</td>
+<td>
+	<ul>
+	<li><b>0</b> - list servers with players</li>
+	<li><b>1</b> - as 0 or with someone in queue</li>
+	<li><b>2</b> - as 1 or with nobody playing</li>
+	<li><b>3 (default)</b> - as 2 or timed out servers</li>
+	<li><b>4</b> - as 3 or servers refusing connections</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>metaPing</b></code></td>
+<td>Show PING round trip time in Metaserver Window</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>motionThresh</b></code></td>
+<td>Threshold for mouse motion</td>
+<td><b>integer</b>default: 16</td>
+</tr>
+<tr>
+<td><code><b>mouseAsShift</b></code></td>
+<td>Use mouse buttons as Shift keys</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>mungScrollbarColors</b></code></td>
+<td>Show black scrollbars in message windows</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>name</b></code></td>
+<td>Your character nickname</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>netrek.w32caption</b></code></td>
+<td>Hide titlebar in the main window</td>
+<td>
+	<ul>
+	<li><b>on</b> - hide titlebar</li>
+	<li><b>off</b> - show titlebar</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>newDashboard</b></code></td>
+<td>Dashboard style</td>
+<td>
+	<ul>
+	<li><b>0</b> - text dashboard</li>
+	<li><b>1</b> - COW dashboard</li>
+	<li><b>2 (default)</b> - KRP dashboard</li>
+	<li><b>3</b> - LABs dashboard</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>newDistress</b></code></td>
+<td>Indent RCD messages</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>omitTeamLetter</b></code></td>
+<td>Don't draw team letter on galaxy</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>orishipbmpfile</b></code></td>
+<td>Path to Ori bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>orishipGbmpfile</b></code></td>
+<td>Path to Ori grayscale bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>orishipTbmpfile</b></code></td>
+<td>Path to Ori tainted bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>orishipMbmpfile</b></code></td>
+<td>Path to Ori monochrome bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>partitionPlist</b></code></td>
+<td>Separate teams by space in player list</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>password</b></code></td>
+<td>Password for your character auto-authentication</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>phaserShrink</b></code></td>
+<td>Draw shorter by x/16 phaser line</td>
+<td>
+	<ul>
+	<li><b>0-16</b> - for COW style phaser shrink</li>
+	<li><b>0-11</b> - for BRMH style phaser shrink</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>phaserShrinkStyle</b></code></td>
+<td>Style of phaser shrinking</td>
+<td>
+	<ul>
+	<li><b>0</b> - COW style</li>
+	<li><b>1 (default)</b> - BRMH style</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>phaserStats</b></code></td>
+<td>Add hit percentage and average hitpoints to standard phaser report</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>phaserWindow</b></code></td>
+<td>Show phaser window</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>planetBitmap</b></code></td>
+<td>Style of planet bitmaps on tactical</td>
+<td>
+	<ul>
+	<li><b>0 (default)</b> - Bronco bitmaps</li>
+	<li><b>1</b> - Moo bitmaps</li>
+	<li><b>2</b> - Rabbitear bitmaps</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>playerList</b></code></td>
+<td>Player list manual style</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>playerListHack</b></code></td>
+<td>Suppose that players from 'f' and further in playerlist are observers</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>playerListMessaging</b></code></td>
+<td>Click playerlist to send messages<br>
+LeftClick - send personal<br>
+MiddleClick - send ALL<br>
+RightClick - send TEAM</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>playerListObserver</b></code></td>
+<td>What players to display in player list</td>
+<td>
+	<ul>
+	<li><b>0 (default)</b> - show everyone</li>
+	<li><b>1</b> - show only players</li>
+	<li><b>2</b> - show only observers</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>playerListStyle</b></code></td>
+<td>Style of player list</td>
+<td>
+	<ul>
+	<li><b>0</b> - use style defined in playerList</li>
+	<li><b>1</b> - old style "nTRNKWLr O D d"</li>
+	<li><b>2 (default)</b> - COW style "nTR N  K lrSd"</li>
+	<li><b>3</b> - KillWatch style "nTK  RNlr Sd"</li>
+	<li><b>4</b> - BRMH style "nTR N  K l M"</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>port</b></code></td>
+<td>Default server port</td>
+<td><b>integer</b><br>default: 2592</td>
+</tr>
+<tr>
+<td><code><b>portSwap</b></code></td>
+<td>Use UDP port swap code</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>rcfile-&lt;ship&gt;</b><br>&lt;ship&gt; can be one of sc,dd,cs,bb,as,sb,ga,att</b></code></td>
+<td>Path to separate defaults for specific ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>redrawDelay</b></code></td>
+<td>Number of updates before redraw</td>
+<td><b>1-10</b><br>default: 0</td>
+</tr>
+<tr>
+<td><code><b>rejectMacro</b></code></td>
+<td>Reject macros</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>reportKills</b></code></td>
+<td>Report kills</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>romshipbmpfile</b></code></td>
+<td>Path to Rom bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>romshipGbmpfile</b></code></td>
+<td>Path to Rom grayscale bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>romshipTbmpfile</b></code></td>
+<td>Path to Rom tainted bitmaps for your ship</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>romshipMbmpfile</b></code></td>
+<td>Path to Rom monochrome bitmaps for players</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>saveBig</b></code></td>
+<td>Save options with comments</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>saveMacro</b></code></td>
+<td>Save macros when saving settings</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>saveRCD</b></code></td>
+<td>Save RCD settings when saving</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>saveRCM</b></code></td>
+<td>Save RCM settings when saving</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>server</b></code></td>
+<td>Server name to connect to by default</td>
+<td><b>hostname</b></td>
+</tr>
+<tr>
+<td><code><b>shellTools</b></code></td>
+<td>Enable shell tools</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>shiftedMouse</b></code></td>
+<td>Shift/Ctrl/Shift+Ctrl + Mouse button generates action</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showAllTractorPressor</b></code></td>
+<td>Show tractor/pressor beams of all players<br>
+This can be disabled on server</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showHints</b></code></td>
+<td>Show hints window</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showHockeyLinesMap</b></code></td>
+<td>Show hockey lines on galaxy</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showHockeyLinesLocal</b></code></td>
+<td>Show hockey lines on tactical</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showHockeyScore</b></code></td>
+<td>Show score of hockey game on galaxy</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showIND</b></code></td>
+<td>Show X over independent planets</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showLock</b></code></td>
+<td>Show lock triangle</td>
+<td>
+	<ul>
+	<li><b>0</b> - don't show</li>
+	<li><b>1</b> - show on galaxy</li>
+	<li><b>2</b> - show on tactical</li>
+	<li><b>3 (default)</b> - show on both galaxy and tactical</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showMotd</b></code></td>
+<td>Show MOTD if waiting on queue</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showMySpeed</b></code></td>
+<td>Show your ship speed on tactical</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showPlanetNames</b></code></td>
+<td>Show planet names on tactical</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showPlanetOwner</b></code></td>
+<td>Show planet owner on galaxy</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showStars</b></code></td>
+<td>Show background stars on tactical</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showStats</b></code></td>
+<td>Show ship statistics window</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>showTractorPressor</b></code></td>
+<td>Show tractor/pressor beams</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>shrinkPhaserOnMiss</b></code></td>
+<td>Shrink phasers on miss</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>singleMacro</b></code></td>
+<td>Define macro keys that will trigger macro without entering macro mode</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>sortMyTeamFirst</b></code></td>
+<td>Put your team first in player list</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>sortPlayers</b></code></td>
+<td>Sort players by team</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>sound</b></code></td>
+<td>Enable sounds</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>soundDir</b></code></td>
+<td>Directory where all sounds are located</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>theirPhaserShrink</b></code></td>
+<td>Shrink enemy phasers by x/16</td>
+<td><b>1-16</b><br>default: 1</td>
+</tr>
+<tr>
+<td><code><b>timerType</b></code></td>
+<td>Type of timer to show on dashboard</td>
+<td>
+	<ul>
+	<li><b>0</b> - none</li>
+	<li><b>1</b> - current time</li>
+	<li><b>2</b> - server time</li>
+	<li><b>3</b> - time in ship</li>
+	<li><b>4</b> - user-set time</li>
+</td>
+</tr>
+<tr>
+<td><code><b>tpDotDist</b></code></td>
+<td>Distance between tractor/pressor dots</td>
+<td><b>integer</b><br>default: 10</td>
+</tr>
+<tr>
+<td><code><b>tryShort</b></code></td>
+<td>Use short packets for communications</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>tryUdp</b></code></td>
+<td>Use UDP for communications with server</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>udpClientReceive</b></code></td>
+<td>Type of incoming UDP traffic</td>
+<td>
+	<ul>
+	<li><b>0</b> - use TCP only</li>
+	<li><b>1 (default)</b> - use simple UDP</li>
+	<li><b>2</b> - use fat UDP</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>udpClientSend</b></code></td>
+<td>Type of outgoing UDP traffic</td>
+<td>
+	<ul>
+	<li><b>0</b> - use TCP only</li>
+	<li><b>1 (default)</b> - use simple UDP</li>
+	<li><b>2</b> - enforced UDP (state)</li>
+	<li><b>3</b> - enforced UDP (state and weapons)</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>udpDebug</b></code></td>
+<td>Output UDP debug information</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>udpSequenceCheck</b></code></td>
+<td>Check sequence of UDP packets</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>updatesPerSec</b></code></td>
+<td>Number of updates per second</td>
+<td><b>1-10</b><br>default: 10</td>
+</tr>
+<tr>
+<td><code><b>useRsa</b></code></td>
+<td>Use RSA client verification</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>varyShields</b></code></td>
+<td>Vary shields color by damage</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>viewBox</b></code></td>
+<td>Show tactical window boundaries on galaxy map</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>warnShields</b></code></td>
+<td>Use shields as proximity alert</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>warpStreaks</b></code></td>
+<td>Show streaks while warping to starbase</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>windowMove</b></code></td>
+<td>Enable moving internal windows</td>
+<td>
+	<ul>
+	<li><b>on</b></li>
+	<li><b>off (default)</b></li>
+	</ul>
+</td>
+</tr>
+</table>
+</body>
+</html>

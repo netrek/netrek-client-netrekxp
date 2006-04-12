@@ -1,0 +1,119 @@
+<html>
+<head>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+<title>Configuration File Syntax</title>
+</head>
+<body>
+<h1>Configuration File Syntax</h1>
+<p>
+Configuration file is regular text file that can contain comments, empty lines and
+configuration definitions.
+<p>
+<h2>Comments</h2>
+<p>
+Every line that has hashmark (<b>#</b>) as its first character is comment line and
+will be ignored.
+<p>
+<h2>Configuration Options</h2>
+<p>
+The general syntax for any of configuration options is:
+<p>
+<code><b>keyword: &lt;value&gt;</b></code>
+<p>
+All configuration option keywords are <b>case incensitive</b>
+<p>
+Most of option keywords can have three additional suffixes to enable fine tuning
+of options:
+<p>
+<ul>
+<li>
+<code><b>keyword.observer: &lt;value&gt;</b></code> - this suffix will enable
+option only in case you are logged in to server as observer
+<p>
+Example:
+<br>
+<code>buttonmap.observer: 1l2I3i</code> - will set different buttonmap when you
+observe game
+</li>
+<p>
+<li><code><b>keyword.&lt;servernick&gt;: &lt;value&gt;</b></code> - this suffix will
+set option only if you are connected to server &lt;servernick&gt;
+<p>
+Note that in order to define &lt;servernick&gt; you should define
+<b><code>server.&lt;servernick&gt;: &lt;server host name&gt;</code></b>
+<p>
+Example:
+<br>
+<code>server.continuum: continuum.us.netrek.org</code> - this option sets
+servernick for continuum.us.netrek.org to be continuum
+<br>
+<code>keymap.continuum: a2d%</code> - this option defines custom keymap for
+server with 'continuum' as its servernick
+</li>
+<p>
+<li><code><b>keyword.&lt;servertype&gt;: &lt;value&gt;</b></code> - this suffix will
+set option only if you are connected to server with &lt;servertype&gt; type.
+<p>
+Note: the client will automatically set &lt;servertype&gt; only if you connect from <a href="metaserver.html">Metaserver Window</a>
+<p>
+If you want to define &lt;servertype&gt; for specific server that is not there or
+you connect to server from command line you can use <b><code>servertype.&lt;servernick&gt;: &lt;type of server&gt;</code></b> where
+&lt;type of server&gt; can be one of following:
+	<ul>
+	<li><code>paradise</code></li>
+	<li><code>bronco</code></li>
+	<li><code>chaos</code></li>
+	<li><code>inl</code></li>
+	<li><code>sturgeon</code></li>
+	<li><code>hockey</code></li>
+	<li><code>dogfight</code></li>
+	</ul>
+<p>
+Example:
+<br>
+<code>server.continuum: continuum.us.netrek.org</code> - this will set servernick
+for continuum.us.netrek.org to be continuum
+<br>
+<code>serverType.continuum: bronco</code> - this will set servertype for continuum
+to be bronco
+<br>
+<code>keymap.bronco: a2d%</code> - this will set keymap for any bronco server
+</li>
+</ul>
+<p>
+The precedence for the keywords is as follows:
+<ul>
+<li><code><b>keyword.observer: &lt;value&gt;</b></code></li> - best match
+<li><code><b>keyword.&ltservernick&gt;: &lt;value&gt;</b></code></li>
+<li><code><b>keyword.&ltservertype&gt;: &lt;value&gt;</b></code></li>
+<li><code><b>keyword: &lt;value&gt;</b></code></li> - worst match
+</ul>
+<p>
+There are three types of values that can appear in the configuration:
+<p>
+<ul>
+<li>Boolean</li>
+	<ul>
+	<li><b>on</b>, <b>true</b>, <b>1</b> - to enable option</li>
+	<li><b>off</b>, <b>false</b>, <b>0</b> - to disable option</li>
+	</ul>
+<li>Number</li>
+	<ul>
+	<li><b>integer</b></li>
+	</ul>
+<li>String</li>
+	<ul>
+	<li><b>string of characters</b></li>
+	</ul>
+</ul>
+<p>
+Examples:
+<p>
+<ul>
+<li><code>keepPeace: on</code> - will enable keepPeace option</li>
+<li><code>planetBitmap: 2</code> - will assign value of 2 to planetBitmap option</li>
+<li><code>buttonmap: 1t2p3k</code> - will assign string '1t2p3k' to buttonmap option</li>
+</ul>
+</body>
+</html>

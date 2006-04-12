@@ -1,0 +1,46 @@
+<html>
+<head>
+<style>@import url(main.css);</style>
+<link disabled href="main.css" rel="stylesheet" type="text/css">
+<title>Command Line Options</title>
+</head>
+<body>
+<h1>Command Line Options</h1>
+<p>
+Most of times you will not use command line to start client.
+However it is handy to remember -h and -p options, so you will be able
+to connect to server even when something is wrong with metaserver (which happens
+from time to time). Or for instance the server you want to connect to
+doesn't report itself to metaserver (so it won't appear in the metaserver window).
+<p>
+It is good to remember that default ports for most of servers are 2592 for players
+and 2593 for observers. So if you want to observe game on continuum.us.netrek.org
+you will use "netrek -h continuum.us.netrek.org -p 2593".
+<p>
+Here is the list of command options for NetrekXP Mod:<br>
+<br>
+<pre>
+  -h &lt;server&gt;               : specify server name to connect to
+  -p &lt;port&gt;                 : specify port number to connect to
+  -r &lt;configuration file&gt;   : specify configuration file to read
+  -s &lt;socket port&gt;          : specify socket port
+  -u                        : show usage information
+  -A &lt;password&gt;             : specify character password
+  -C &lt;name&gt;                 : specify character name
+  -U &lt;udp port&gt;             : specify UDP port
+  -o                        : use old style binary verification
+  -R                        : use RSA binary verification
+  -P                        : log server packets
+  -c                        : check players on server and return list
+  -f &lt;file name&gt;            : record game to file (can be viewed later with -F)
+  -F &lt;file name&gt;            : view recorded game
+  -l &lt;file name&gt;            : record all messages to log file
+  -m                        : connect to metaserver (default)
+  -k                        : display known servers
+  -n                        : show console window
+  -v                        : display client version info
+</pre>
+<br>
+
+</body>
+</html>
