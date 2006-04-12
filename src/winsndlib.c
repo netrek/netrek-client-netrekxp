@@ -50,8 +50,13 @@ struct sound *newest, *oldest, *current;
 int bytesused;
 
 /* Sound cache size */
-#define MAXBYTES (256*1024)
+#define MAXBYTES (256*1024*10)
 
+int caps_vol = 0;   /* can control volume */
+int caps_lr = 0;    /* has separate volume control for each channel */
+
+/* Macro to create DWORD from HIWORD and LOWORD */
+#define MAKEDWORD(a, b)  ((DWORD) (((WORD) (a)) | ((DWORD) ((WORD) (b))) << 16)) 
 
 /* Here we use the Windows multimedia file io (mmio) library which makes reading
    RIFF waveform files really easy */
@@ -310,6 +315,7 @@ StartSound (char *name)
     static PCMWAVEFORMAT lastfmt;
     struct sound *snd;
     DWORD err;
+    WAVEOUTCAPS caps;
 
 #ifdef DEBUG
     printf ("Request to play sound %s\n", name);
@@ -326,7 +332,7 @@ StartSound (char *name)
             printf ("Initial open of wave device\n");
 #endif
             if (err =
-                waveOutOpen (&hw, WAVE_MAPPER, (WAVEFORMAT *) & snd->fmt, 0,
+                waveOutOpen (&hw, WAVE_MAPPER, (LPWAVEFORMATEX) & snd->fmt, 0,
                              0, 0))
                 fprintf (stderr, "Could not open wave device, error %d\n",
                          err);
@@ -341,7 +347,7 @@ StartSound (char *name)
             waveOutClose (hw);
             memcpy (&lastfmt, &snd->fmt, sizeof (PCMWAVEFORMAT));
             if (err =
-                waveOutOpen (&hw, WAVE_MAPPER, (WAVEFORMAT *) & snd->fmt, 0,
+                waveOutOpen (&hw, WAVE_MAPPER, (LPWAVEFORMATEX) & snd->fmt, 0,
                              0, 0))
                 fprintf (stderr, "Could not open wave device, error %d\n",
                          err);
@@ -354,6 +360,23 @@ StartSound (char *name)
         waveOutPrepareHeader (hw, &snd->hdr, sizeof (WAVEHDR));
         waveOutWrite (hw, &snd->hdr, sizeof (WAVEHDR));
 
+        /* Now let's see whether our device supports volume control */
+        waveOutGetDevCaps (WAVE_MAPPER, &caps, sizeof (WAVEOUTCAPS));
+        if (caps.dwSupport & WAVECAPS_VOLUME)
+            caps_vol = 1;
+        if (caps.dwSupport & WAVECAPS_LRVOLUME)
+            caps_lr = 1;
+
+        /* Now let's see whether volume is balanced or not */
+        if (caps_lr)
+        {
+            DWORD curvol;
+            
+            waveOutGetVolume (hw, &curvol);
+
+            if (LOWORD(curvol) != HIWORD(curvol))
+                waveOutSetVolume (hw, MAKEDWORD(LOWORD(curvol), LOWORD(curvol)));
+        }
 
         return 0;
     }
@@ -381,4 +404,48 @@ SoundPlaying ()
     printf ("%d\n", playing);
 #endif
     return playing;
+}
+
+void
+ChangeVolume (int vol)
+{
+    DWORD curvol;
+
+    /* If our WAVE_MAPPER doesn't support volume control we'll just issue
+       warning and return */
+    if (!caps_vol)
+    {
+        warning ("The sound device doesn't support volume adjustment");
+        return;
+    }
+
+    waveOutGetVolume (hw, &curvol);
+
+    switch (vol)
+    {
+    case 1:
+        if (caps_lr)
+            if (curvol + 0x11111111 < curvol)
+                waveOutSetVolume (hw, 0xFFFFFFFF);
+            else
+                waveOutSetVolume (hw, curvol + 0x11111111);
+        else
+            if (LOWORD(curvol) + 0x1111 < LOWORD(curvol))
+                waveOutSetVolume (hw, MAKEDWORD(HIWORD(curvol), 0xFFFF));
+            else
+                waveOutSetVolume (hw, MAKEDWORD(HIWORD(curvol), LOWORD(curvol) + 0x1111));
+        break;
+    case -1:
+        if (caps_lr)
+            if (curvol - 0x11111111 > curvol)
+                waveOutSetVolume (hw, 0x0);
+            else
+                waveOutSetVolume (hw, curvol - 0x11111111);
+        else
+            if (LOWORD(curvol) - 0x1111 > LOWORD(curvol))
+                waveOutSetVolume (hw, MAKEDWORD(HIWORD(curvol), 0x0000));
+            else
+                waveOutSetVolume (hw, MAKEDWORD(HIWORD(curvol), LOWORD(curvol) - 0x1111));
+        break;
+    }
 }

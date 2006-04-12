@@ -115,7 +115,7 @@ static void PlistLine (struct player *j,
 static void WriteSortedPlist (void);
 static void WriteUnsortedPlist (void);
 
-
+int pl_row[MAXPLAYER];  /* players location in current plist */
 
 void
 InitPlayerList ()
@@ -221,7 +221,7 @@ PlistMaxWidth ()
 
 void
 RedrawPlayerList ()
-/* Completly redraw the player list, rather than incrimentally updating the
+/* Completly redraw the player list, rather than incrementally updating the
  * list as with UpdatePlayerList().
  * 
  * This function should be called if the playerListStyle changes or if the
@@ -334,13 +334,30 @@ UpdatePlistFn ()
             /* We should not get updates for free players any more, but just
              * incase a packet arrives late... */
 
-            if ((players[count].p_status != PFREE) &&
-                ((playerListObserver == 0) ||
-                ((playerListObserver == 1) &&
-                 !(players[count].p_flags & PFOBSERV)) ||
-                ((playerListObserver == 2) &&
-                 (players[count].p_flags & PFOBSERV))))
-                PlistLine (players + count, plistPos[count]);
+            if (playerListHack)
+            {
+                if (players[count].p_status != PFREE)
+                {
+                    if (playerListObserver == 0)
+                        PlistLine (players + count, plistPos[count]);
+                    else if (playerListObserver == 1 &&
+                             players[count].p_mapchars[1] <= 'f')
+                        PlistLine (players + count, plistPos[count]);
+                    else if (playerListObserver == 2 &&
+                            !(players[count].p_mapchars[1] <= 'f'))
+                        PlistLine (players + count, plistPos[count]);
+                }
+            }
+            else
+            {
+                if ((players[count].p_status != PFREE) &&
+                    ((playerListObserver == 0) ||
+                    ((playerListObserver == 1) &&
+                    !(players[count].p_flags & PFOBSERV)) ||
+                    ((playerListObserver == 2) &&
+                    (players[count].p_flags & PFOBSERV))))
+                    PlistLine (players + count, plistPos[count]);
+            }
         }
     }
     else
@@ -400,12 +417,29 @@ WriteSortedPlist ()
 
     for (current = players + MAXPLAYER - 1; current >= players; --current)
     {
-        if ((current->p_status != PFREE) &&
-            ((playerListObserver == 0) ||
-             ((playerListObserver == 1) && !(current->p_flags & PFOBSERV))
-             || ((playerListObserver == 2)
-              && (current->p_flags & PFOBSERV))))
-            ++teamPos[remap[current->p_team]];
+        if (playerListHack)
+        {
+            if (current->p_status != PFREE)
+            {
+                if (playerListObserver == 0)
+                    ++teamPos[remap[current->p_team]];
+                else if (playerListObserver == 1 &&
+                         current->p_mapchars[1] <= 'f')
+                    ++teamPos[remap[current->p_team]];
+                else if (playerListObserver == 2 &&
+                        !(current->p_mapchars[1] <= 'f'))
+                    ++teamPos[remap[current->p_team]];
+            }
+        }
+        else
+        {
+            if ((current->p_status != PFREE) &&
+                ((playerListObserver == 0) ||
+                ((playerListObserver == 1) && !(current->p_flags & PFOBSERV))
+                || ((playerListObserver == 2)
+                && (current->p_flags & PFOBSERV))))
+                ++teamPos[remap[current->p_team]];
+        }
     }
 
 
@@ -496,18 +530,59 @@ WriteSortedPlist ()
             updatePlayer[i] = FALSE;
             continue;
         }
-        if ((playerListObserver == 0) ||
-            ((playerListObserver == 1) && !(current->p_flags & PFOBSERV)) ||
-            ((playerListObserver == 2) && (current->p_flags & PFOBSERV)))
+        if (playerListHack)
         {
-            row = --(teamPos[remap[current->p_team]]);
-            if ((!updatePlayer[i]) && plistPos[i] == row)
-                continue;
+            if (playerListObserver == 0)
+            {
+                row = --(teamPos[remap[current->p_team]]);
+                if ((!updatePlayer[i]) && plistPos[i] == row)
+                    continue;
 
-            plistPos[i] = row;
-            updatePlayer[i] = FALSE;
+                plistPos[i] = row;
+                updatePlayer[i] = FALSE;
 
-            PlistLine (current, row);
+                PlistLine (current, row);
+            }
+            else if (playerListObserver == 1 &&
+                     current->p_mapchars[1] <= 'f')
+            {
+                row = --(teamPos[remap[current->p_team]]);
+                if ((!updatePlayer[i]) && plistPos[i] == row)
+                    continue;
+
+                plistPos[i] = row;
+                updatePlayer[i] = FALSE;
+
+                PlistLine (current, row);
+            }
+            else if (playerListObserver == 2 &&
+                    !(current->p_mapchars[1] <= 'f'))
+            {
+                row = --(teamPos[remap[current->p_team]]);
+                if ((!updatePlayer[i]) && plistPos[i] == row)
+                    continue;
+
+                plistPos[i] = row;
+                updatePlayer[i] = FALSE;
+
+                PlistLine (current, row);
+            }
+        }            
+        else
+        {
+            if ((playerListObserver == 0) ||
+                ((playerListObserver == 1) && !(current->p_flags & PFOBSERV)) ||
+                ((playerListObserver == 2) && (current->p_flags & PFOBSERV)))
+            {
+                row = --(teamPos[remap[current->p_team]]);
+                if ((!updatePlayer[i]) && plistPos[i] == row)
+                    continue;
+
+                plistPos[i] = row;
+                updatePlayer[i] = FALSE;
+
+                PlistLine (current, row);
+            }
         }
     }
 
@@ -635,40 +710,94 @@ PlistHeader (char *layout,
             num += 17;
             break;
         case 'K':              /* Kills */
-            STRNCPY (&header[num], " Kills", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Kills", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Kills", 6);
+                num += 6;
+            }
             break;
         case 'l':              /* Login Name */
             STRNCPY (&header[num], " Login           ", 17);
             num += 17;
             break;
         case 'O':              /* Offense */
-            STRNCPY (&header[num], " Offse", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Offse", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Offse", 6);
+                num += 6;
+            }
             break;
         case 'W':              /* Wins */
             STRNCPY (&header[num], "  Wins", 6);
             num += 6;
             break;
         case 'D':              /* Defense */
-            STRNCPY (&header[num], " Defse", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Defse", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }   
+            else
+            {
+                STRNCPY (&header[num], " Defse", 6);
+                num += 6;
+            }
             break;
         case 'L':              /* Losses */
             STRNCPY (&header[num], "  Loss", 6);
             num += 6;
             break;
         case 'S':              /* Total Rating (stats) */
-            STRNCPY (&header[num], " Stats", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Stats", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Stats", 6);
+                num += 6;
+            }
             break;
         case 'r':              /* Ratio */
-            STRNCPY (&header[num], " Ratio", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Ratio", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Ratio", 6);
+                num += 6;
+            }
             break;
         case 'd':              /* Damage Inflicted (DI) */
-            STRNCPY (&header[num], "      DI", 8);
-            num += 8;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], "   DI   ", 6 + (*(layout + 1) - '0'));
+                num += 6 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], "      DI", 8);
+                num += 8;
+            }
             break;
         case ' ':              /* White Space */
             header[num] = ' ';
@@ -677,16 +806,34 @@ PlistHeader (char *layout,
 
 #ifdef PLIST1
         case 'B':              /* Bombing */
-            STRNCPY (&header[num], " Bmbng", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Bmbng", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Bmbng", 6);
+                num += 6;
+            }
             break;
         case 'b':              /* Armies Bombed */
             STRNCPY (&header[num], " Bmbed", 6);
             num += 6;
             break;
         case 'P':              /* Planets */
-            STRNCPY (&header[num], " Plnts", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Plnts", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Plnts", 6);
+                num += 6;
+            }
             break;
         case 'p':              /* Planets Taken */
             STRNCPY (&header[num], " Plnts", 6);
@@ -697,20 +844,56 @@ PlistHeader (char *layout,
             num += 17;
             break;
         case 'H':              /* Hours Played */
-            STRNCPY (&header[num], " Hours ", 7);
-            num += 7;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Hours ", 5 + (*(layout + 1) - '0'));
+                num += 5 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Hours ", 7);
+                num += 7;
+            }
             break;
         case 'k':              /* Max Kills */
-            STRNCPY (&header[num], " Max K", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '2')
+            {
+                STRNCPY (&header[num], " Max K", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], " Max K", 6);
+                num += 6;
+            }
             break;
         case 'V':              /* Kills per hour */
-            STRNCPY (&header[num], "   KPH", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '1')
+            {
+                STRNCPY (&header[num], "   KPH", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], "   KPH", 6);
+                num += 6;
+            }
             break;
         case 'v':              /* Deaths per hour */
-            STRNCPY (&header[num], "   DPH", 6);
-            num += 6;
+            if (*(layout + 1) >= '0' && *(layout + 1) <= '1')
+            {
+                STRNCPY (&header[num], "   DPH", 4 + (*(layout + 1) - '0'));
+                num += 4 + (*(layout + 1) - '0');
+                layout++;
+            }
+            else
+            {
+                STRNCPY (&header[num], "   DPH", 6);
+                num += 6;
+            }
             break;
 #endif
 
@@ -756,6 +939,9 @@ PlistLine (struct player *j,
     float KillsPerHour, LossesPerHour;  /* Added 12/27/93 ATH */
     double ratio, max_kills;
 
+    /* Fill pl_row to get right player placement in the list */
+    pl_row[j->p_no] = pos;
+
     if (j->p_ship.s_type == STARBASE)
     {
         kills = j->p_stats.st_sbkills;
@@ -767,11 +953,11 @@ PlistLine (struct player *j,
         else
             my_ticks = j->p_stats.st_tticks;
 
-        KillsPerHour = (float) (my_ticks == 0) ? 0.0 :
-            (float) kills *36000.0 / (float) my_ticks;
+        KillsPerHour = (float) ((float) (my_ticks == 0) ? 0.0 :
+            (float) kills *36000.0 / (float) my_ticks);
 
-        LossesPerHour = (float) (my_ticks == 0) ? 0.0 :
-            (float) losses *36000.0 / (float) my_ticks;
+        LossesPerHour = (float) ((float) (my_ticks == 0) ? 0.0 :
+            (float) losses *36000.0 / (float) my_ticks);
     }
     else
     {
@@ -779,10 +965,10 @@ PlistLine (struct player *j,
         losses = j->p_stats.st_losses + j->p_stats.st_tlosses;
         max_kills = j->p_stats.st_maxkills;
         my_ticks = j->p_stats.st_tticks;
-        KillsPerHour = (float) (my_ticks == 0) ? 0.0 :
-            (float) j->p_stats.st_tkills * 36000.0 / (float) my_ticks;
-        LossesPerHour = (float) (my_ticks == 0) ? 0.0 :
-            (float) j->p_stats.st_tlosses * 36000.0 / (float) my_ticks;
+        KillsPerHour = (float) ((float) (my_ticks == 0) ? 0.0 :
+            (float) j->p_stats.st_tkills * 36000.0 / (float) my_ticks);
+        LossesPerHour = (float) ((float) (my_ticks == 0) ? 0.0 :
+            (float) j->p_stats.st_tlosses * 36000.0 / (float) my_ticks);
     }
 
     if (losses == 0)
@@ -863,12 +1049,25 @@ PlistLine (struct player *j,
             break;
 
         case 'K':              /* Kills */
-            if (j->p_kills > 100.0)
-                /* Cheat a bit */
-                ftoa (j->p_kills, buffPoint - 1, 0, 3, 2);
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                if (j->p_kills > 100.0)
+                    /* Cheat a bit */
+                    ftoa (j->p_kills, buffPoint - 1, 0, 3, (*(ptr + 1) - '0'));
+                else
+                    ftoa (j->p_kills, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
             else
-                ftoa (j->p_kills, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            {
+                if (j->p_kills > 100.0)
+                    /* Cheat a bit */
+                    ftoa (j->p_kills, buffPoint - 1, 0, 3, 2);
+                else
+                    ftoa (j->p_kills, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'l':              /* Login Name */
@@ -877,8 +1076,17 @@ PlistLine (struct player *j,
             break;
 
         case 'O':              /* Offense */
-            ftoa (oRating, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa (oRating, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (oRating, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'W':              /* Wins */
@@ -887,8 +1095,17 @@ PlistLine (struct player *j,
             break;
 
         case 'D':              /* Defense */
-            ftoa (dRating, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa (dRating, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (dRating, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'L':              /* Losses */
@@ -897,19 +1114,47 @@ PlistLine (struct player *j,
             break;
 
         case 'S':              /* Total Rating (stats) */
-            ftoa (Ratings, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa (Ratings, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (Ratings, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'r':              /* Ratio */
-            ftoa (ratio, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa ((float) ratio, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa ((float) ratio, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'd':              /* Damage Inflicted (DI) */
-            ftoa (Ratings * (j->p_stats.st_tticks / 36000.0),
-                  buffPoint, 0, 4, 2);
-            buffPoint += 7;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa ((float) (Ratings * (j->p_stats.st_tticks / 36000.0)),
+                        buffPoint, 0, 4, (*(ptr + 1) - '0'));
+                buffPoint += 5 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa ((float) (Ratings * (j->p_stats.st_tticks / 36000.0)),
+                        buffPoint, 0, 4, 2);
+                buffPoint += 7;
+            }
             break;
 
         case ' ':              /* White Space */
@@ -917,8 +1162,17 @@ PlistLine (struct player *j,
 
 #ifdef PLIST1
         case 'B':              /* Bombing */
-            ftoa (bRating, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa (bRating, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (bRating, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'b':              /* Armies Bombed */
@@ -928,8 +1182,17 @@ PlistLine (struct player *j,
             break;
 
         case 'P':              /* Planets */
-            ftoa (pRating, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa (pRating, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (pRating, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'p':              /* Planets Taken */
@@ -944,23 +1207,59 @@ PlistLine (struct player *j,
             break;
 
         case 'H':              /* Hours Played */
-            ftoa (my_ticks / 36000.0, buffPoint, 0, 3, 2);
-            buffPoint += 6;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa ((float) (my_ticks / 36000.0), buffPoint, 0, 3, (*(ptr + 1) - '0'));
+                buffPoint += 4 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa ((float) (my_ticks / 36000.0), buffPoint, 0, 3, 2);
+                buffPoint += 6;
+            }
             break;
 
         case 'k':              /* Max Kills  */
-            ftoa (max_kills, buffPoint, 0, 2, 2);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
+            {
+                ftoa ((float) max_kills, buffPoint, 0, 2, (*(ptr + 1) - '0'));
+                buffPoint += 3 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa ((float) max_kills, buffPoint, 0, 2, 2);
+                buffPoint += 5;
+            }
             break;
 
         case 'V':              /* Kills Per Hour  */
-            ftoa (KillsPerHour, buffPoint, 0, 3, 1);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '1')
+            {
+                ftoa (KillsPerHour, buffPoint, 0, 3, (*(ptr + 1) - '0'));
+                buffPoint += 4 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (KillsPerHour, buffPoint, 0, 3, 1);
+                buffPoint += 5;
+            }
             break;
 
         case 'v':              /* Deaths Per Hour  */
-            ftoa (LossesPerHour, buffPoint, 0, 3, 1);
-            buffPoint += 5;
+            if (*(ptr + 1) >= '0' && *(ptr + 1) <= '1')
+            {
+                ftoa (LossesPerHour, buffPoint, 0, 3, (*(ptr + 1) - '0'));
+                buffPoint += 4 + (*(ptr + 1) - '0');
+                ptr++;
+            }
+            else
+            {
+                ftoa (LossesPerHour, buffPoint, 0, 3, 1);
+                buffPoint += 5;
+            }
             break;
 #endif
 
@@ -999,22 +1298,113 @@ GetPlayerFromPlist (int x, int y)
 {
     int i;
     int player_no = MAXPLAYER; /* just to be sure the player does not exist */
+    int flag = 0;
 
     if (y > MAXPLAYER - 1) y = MAXPLAYER - 1;
     else if (y < 0) y = 0;
 
     /* Let's find what player sits in poition y in the list */
     for (i=0; i < MAXPLAYER; i++)
-        if (plistPos[i] == y)
+        if (pl_row[i] == y)
         {
-            player_no = i;
-            break;
+            if (playerListHack)
+            {
+                if (playerListObserver == 0)
+                {
+                    player_no = i;
+                    break;
+                }
+                else if (playerListObserver == 1 &&
+                        (players[i].p_mapchars[1] <= 'f'))
+                {
+                    player_no = i;
+                    break;
+                }
+                else if (playerListObserver == 2 &&
+                       !(players[i].p_mapchars[1] <= 'f'))
+                {
+                    player_no = i;
+                    break;
+                }
+            }
+            else
+            {
+                if (playerListObserver == 0)
+                {
+                    player_no = i;
+                    break;
+                }
+                else if (playerListObserver == 1 &&
+                       !(players[i].p_flags & PFOBSERV))
+                {
+                    player_no = i;
+                    break;
+                }
+                else if (playerListObserver == 2 &&
+                        (players[i].p_flags & PFOBSERV))
+                {
+                    player_no = i;
+                    break;
+                }
+            }
         }
 
-    if (players[player_no].p_status & PALIVE ||
-        players[player_no].p_status & POBSERV)
-        return player_no;
-    else
-        return me->p_no;
-    
+    if (player_no != MAXPLAYER)
+    {
+        if (playerListHack)
+        {
+            if (playerListObserver == 0)
+                flag = 1;
+            else if (playerListObserver == 1 &&
+                    (players[player_no].p_mapchars[1] <= 'f'))
+                flag = 1;
+            else if (playerListObserver == 2 &&
+                   !(players[player_no].p_mapchars[1] <= 'f'))
+                flag = 1;
+        }
+        else
+        {
+            if (playerListObserver == 0)
+                flag = 1;
+            else if (playerListObserver == 1 &&
+                   !(players[player_no].p_flags & PFOBSERV))
+                flag = 1;
+            else if (playerListObserver == 2 &&
+                    (players[player_no].p_flags & PFOBSERV))
+                flag = 1;
+        }
+    }
+
+    if (flag)
+    {
+        if (playerListHack)
+        {
+            if (players[player_no].p_mapchars[1] <= 'f')
+            {
+                if (!((players[player_no].p_flags & PFCLOAK) &&
+                      (players[player_no].p_team != me->p_team)) &&
+                    ((players[player_no].p_x != -10000) && (players[player_no].p_y != -10000)) &&
+					((players[player_no].p_x != -100000) && (players[player_no].p_y != -100000)))
+                 return player_no;
+            }
+            else
+                return player_no;
+        }
+        else
+        {
+            if (!(players[player_no].p_flags & PFOBSERV))
+            {
+                if (!((players[player_no].p_flags & PFCLOAK) && 
+                      (players[player_no].p_team != me->p_team)) &&
+                    ((players[player_no].p_x != -10000) && (players[player_no].p_y != -10000)) &&
+					((players[player_no].p_x != -100000) && (players[player_no].p_y != -100000)))
+                 return player_no;
+            }
+            else
+                return player_no;
+        }
+    }
+
+	// We didn't find player or its state is wrong
+    return (-1);
 }

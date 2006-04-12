@@ -37,15 +37,16 @@ warning (char *text)
         W_ClearArea (warnw, 5, 5, W_Textwidth * warncount, W_Textheight);
     }
 
-    doPhaser = phaserMsg && (strncmp (text, "Phaser burst", 12) == 0);
+    doPhaser = (strncmp (text, "Phaser burst", 12) == 0);
 
     warncount = strlen (text);
 #ifdef PHASER_STATS
     if (doPhaser && phaserStats)
     {
-        sprintf (newtext, "%s [%3d%%]", text,
-                 phaserStatTry ? (phaserStatHit * 100) / phaserStatTry : 0);
-        warncount += 7;
+        sprintf (newtext, "%s [%3d%%] [%2u]", text,
+                 phaserStatTry ? (phaserStatHit * 100) / phaserStatTry : 0,
+                 phaserStatTry ? phaserStatDamage / phaserStatTry : 0);
+        warncount += 13;
         W_WriteText (warnw, 5, 5, textColor, newtext, warncount,
                      W_RegularFont);
     }
@@ -81,37 +82,6 @@ warning (char *text)
         }
 
         if (doPhaser)
-        {
-            W_WriteText (phaserwin, 0, 0, textColor, newtext, warncount, 0);
-            switch (phaserMsg)
-            {
-                /* 0 -- none
-                   1 -- review all
-                   2 -- review team
-                   3 -- review indiv
-                   4 -- review kill
-                   5 -- total */
-            case 0:
-                break;
-            case 1:
-                W_WriteText (messwa, 0, 0, textColor, newtext, warncount, 0);
-                break;
-            case 2:
-                W_WriteText (messwt, 0, 0, textColor, newtext, warncount, 0);
-                break;
-            case 3:
-                W_WriteText (messwi, 0, 0, textColor, newtext, warncount, 0);
-                break;
-            case 4:
-                W_WriteText (messwk, 0, 0, textColor, newtext, warncount, 0);
-                break;
-            case 5:
-                W_WriteText (reviewWin, 0, 0, textColor, newtext, warncount,
-                             0);
-                break;
-            default:
-                break;
-            }
-        }
+            W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext, warncount, 0);
     }
 }

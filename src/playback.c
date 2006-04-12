@@ -26,7 +26,6 @@
 #include "data.h"
 #include "packets.h"
 #include "version.h"
-#include "patchlevel.h"
 #include "cowapi.h"
 #include "map.h"
 #include "spopt.h"
@@ -208,6 +207,8 @@ pbmain (char *name)
         mystats->st_keymap[i + 192] = i + 32;
         mystats->st_keymap[i + 288] = i + 32;
         mystats->st_keymap[i + 384] = i + 32;
+        mystats->st_keymap[i + 480] = i + 32;
+        mystats->st_keymap[i + 576] = i + 32;
 #endif
     }
     mystats->st_keymap[95] = 0;
@@ -251,6 +252,12 @@ pbmain (char *name)
 
 #ifdef SOUND
     Init_Sound ();
+#endif
+
+    initStars ();
+
+#ifdef HOCKEY_LINES
+    init_hockey_lines ();
 #endif
 
     i = setjmp (env);           /* Reentry point of game */
@@ -305,10 +312,6 @@ pbmain (char *name)
     Play_Sound (ENGINE_SOUND);
 #endif
 
-#ifdef HOCKEY_LINES
-    init_hockey_lines ();
-#endif
-
     while (1)
     {
 #ifdef nodef
@@ -327,11 +330,9 @@ pbmain (char *name)
         if (W_EventsPending ())
         {
             process_event ();
-            /*      W_Flush(); */
         }
 
         intrupt ();
-        W_Flush ();
         Sleep (pbdelay);
     }
 }
@@ -506,6 +507,31 @@ pb_dopacket (char *buf)
         );
     return 0;
 }
+
+
+void
+pb_framectr(int xloc, int yloc)
+{
+    char buf[20];
+
+    switch (playback)
+    {
+    case PL_PAUSE:
+        strcpy (buf, "PAU");
+        break;
+    case PL_FORWARD:
+        strcpy (buf, "FWD");
+        break;
+    case PL_REVERSE:
+        strcpy (buf, "REV");
+        break;
+    }
+
+    sprintf((buf+3),":%8d",udcounter);
+
+    W_WriteText(tstatw, xloc, yloc, textColor, buf, 12, W_RegularFont);
+}
+
 
 int
 readFromFile ()

@@ -163,8 +163,6 @@ extern int W_WindowWidth (W_Window window);
 extern int W_WindowHeight (W_Window window);
 extern int W_Socket (void);
 extern void W_ClearWindow (W_Window window);
-extern void W_SetIconWindow (W_Window main,
-                             W_Window icon);
 extern void W_CacheLine (W_Window,
                          int,
                          int,
@@ -194,8 +192,6 @@ extern void W_CacheClearArea (W_Window,
                               int,
                               int,
                               int);
-extern void W_FlushClearAreaCache (W_Window);
-extern void W_FlushLineCaches (W_Window);
 extern void W_OverlayBitmap (int,
                              int,
                              W_Icon,
@@ -223,26 +219,38 @@ extern void W_WriteTriangle (W_Window,
 #define W_EV_CM_BUTTON	5
 #endif
 
-#define W_LBUTTON	1
-#define W_MBUTTON	2
-#define W_RBUTTON	3
+#define W_LBUTTON	    1
+#define W_MBUTTON	    2
+#define W_RBUTTON	    3
+
+/* Microsoft XButtons support */
+#define W_XBUTTON1	    4
+#define W_XBUTTON2	    5
+
+/* Wheel Mouse support */
+#define W_WHEELUP	    6
+#define W_WHEELDOWN     7
 
 #ifdef SHIFTED_MOUSE
-#define W_LBUTTON2	4
-#define W_MBUTTON2	5
-#define W_RBUTTON2	6
+#define W_LBUTTON2	    8
+#define W_MBUTTON2	    9
+#define W_RBUTTON2	    10
+#define W_XBUTTON1_2	11
+#define W_XBUTTON2_2	12
 
-#define W_LBUTTON3	7
-#define W_MBUTTON3	8
-#define W_RBUTTON3	9
+#define W_LBUTTON3	    13
+#define W_MBUTTON3	    14
+#define W_RBUTTON3	    15
+#define W_XBUTTON1_3	16
+#define W_XBUTTON2_3	17
 
-#define W_LBUTTON4	10
-#define W_MBUTTON4	11
-#define W_RBUTTON4	12
+#define W_LBUTTON4	    18
+#define W_MBUTTON4	    19
+#define W_RBUTTON4	    20
+#define W_XBUTTON1_4	21
+#define W_XBUTTON2_4	22
 #endif
 
 #define W_BoldFont W_HighlightFont
-
-
 
 #endif /* _h_Wlib */

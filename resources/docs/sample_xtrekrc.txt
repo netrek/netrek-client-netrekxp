@@ -172,19 +172,19 @@ updatesPersec: 10
 #war.geometry:           +800
 #war.mapped:		off
 
-#fed.parent:             netrek
+#fed.parent:             local
 #fed.mapped:		on
 
-#ori.parent:             netrek
+#ori.parent:             local
 #ori.mapped:		on
 
-#rom.parent:             netrek
+#rom.parent:             local
 #rom.mapped:		on
 
-#kli.parent:             netrek
+#kli.parent:             local
 #kli.mapped:		on
 
-#quit.parent:            netrek
+#quit.parent:            local
 #quit.mapped:		on
 
 #option.parent:          netrek

@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include <math.h>
+#include <process.h>
 
 #include "Wlib.h"
 #include "defs.h"
@@ -53,6 +54,7 @@ GetExeDir ()
     return ExeDir;
 }
 
+
 #ifdef _MSC_VER_ACK2
 /* Micro$oft, in their infinite wisdom, no longer support main(int, char**)
  * in Win32! (or at least in the version I got). So write a WinMain that is
@@ -76,10 +78,10 @@ WinMain (HINSTANCE MyInstance,
          int showCmd)
 {
     char *c;
-    WSADATA data;
+	WSADATA data;
     char *lpCmdLineCopy;        // Gotta free it later :/
     int argc;
-    char *argv[];
+    char **argv;
 
     lpCmdLineCopy = calloc (1, strlen (lpCmdLine) + 10);
 
@@ -92,7 +94,7 @@ WinMain (HINSTANCE MyInstance,
     }
 
 
-    for (argc = 0, c = lpCmdLineCopy; c != NULL; c++)
+    for (argc = 0, c = lpCmdLineCopy; *c != 0; c++)
         if (*c == ' ')
             argc++;
 
@@ -102,9 +104,10 @@ WinMain (HINSTANCE MyInstance,
     if (argc)
     {
         int t;                  //MSCV can do it :)
-
-        c = strtok (lpCmdLineCopy, " ");
-        for (t = 1; c; c = strtok (" ", lpCmdLineCopy), t++)
+        c = lpCmdLineCopy;
+		c = strtok (c, " ");
+		c = strtok (NULL, " "); // remove binary name
+        for (t = 1; c != NULL; c = strtok (NULL, " "), t++)
             argv[t] = c;
 
     }

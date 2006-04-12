@@ -20,7 +20,6 @@
 #include "struct.h"
 #include "data.h"
 #include "version.h"
-#include "patchlevel.h"
 #include "proto.h"
 
 static int version_sent = 0;
@@ -105,12 +104,10 @@ CheckFeatures (char *m)
 
     /* printf("%s\n", buf); */
 
-    W_WriteText (reviewWin, 0, 0, W_White, buf, strlen (buf), 0);
-
 #ifdef TOOLS
     W_WriteText (toolsWin, 0, 0, textColor, buf, strlen (buf), W_RegularFont);
 #else
-    W_WriteText (messwi, 0, 0, W_White, buf, strlen (buf), 0);
+    W_MessageAllowedWindows (WAM_INDIV, 0, 0, W_White, buf, stlen (buf), 0);
 #endif
 }
 
@@ -200,30 +197,33 @@ dmessage (char *message,
         }
         if ((flags == team) || (flags == take) || (flags == destroy))
         {
-            W_WriteText (messwt, 0, 0, color, message, len, shipFont (me));
+            W_MessageAllowedWindows (WAM_TEAM, 0, 0, color, message, len, shipFont (me));
             if ((flags == team) &&
                 !strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
                 printf ("dmessage:flags==team PIG call from=%d\n", from);
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
         }
 
         else if ((flags == kill) || (flags == killp) ||
                  (flags == killa) || (flags == bomb))
         {
-            W_WriteText (messwk, 0, 0, color, message, len, 0);
+            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
             if (!reportKills)
                 return;         /* HW */
         }
 
         else if (flags & MINDIV)
         {
-            W_WriteText (messwi, 0, 0, color, message, len, 0);
+            if (beepOnPrivateMessage && me->p_no != from && from != 255)
+                MessageBeep (MB_ICONASTERISK);
+
+            W_MessageAllowedWindows (WAM_INDIV, 0, 0, color, message, len, 0);
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
                 printf ("dmessage:MINDIV PIG call from=%d\n", from);
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
 #ifdef CLUECHECKBORG
             if (from == 255)
@@ -238,13 +238,12 @@ dmessage (char *message,
                                  * the message beLONGs by
                                  * this time, stick it in
                                  * the all board... */
-            W_WriteText (messwa, 0, 0, color, message, len, 0);
+            W_MessageAllowedWindows (WAM_ALL, 0, 0, color, message, len, 0);
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
         }
-        W_WriteText (reviewWin, 0, 0, color, message, len, 0);
 
     }
     else
@@ -255,13 +254,13 @@ dmessage (char *message,
 
         if ((strncmp (message, "GOD->ALL", 8) == 0 &&
              (instr (message, "was kill") ||
-              instr (message, "killed by"))) ||
+              instr (message, "killed by")) ||
+              instr (message, "Credit for")) ||
             (*message != ' ' && instr (message, "We are being attacked")))
         {
-            W_WriteText (messwk, 0, 0, color, message, len, 0);
+            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
             if (!reportKills)
                 return;
-            W_WriteText (reviewWin, 0, 0, color, message, len, 0);
             if (logging)
             {
                 if (logFile != NULL)
@@ -281,10 +280,10 @@ dmessage (char *message,
         switch (flags & (MTEAM | MINDIV | MALL))
         {
         case MTEAM:
-            W_WriteText (messwt, 0, 0, color, message, len, 0);
+            W_MessageAllowedWindows (WAM_TEAM, 0, 0, color, message, len, 0);
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
             if (logging)
             {
@@ -303,10 +302,15 @@ dmessage (char *message,
             break;
         case MINDIV:
             if (!(flags & MCONFIG))
-                W_WriteText (messwi, 0, 0, color, message, len, 0);
+			{
+				if (beepOnPrivateMessage && me->p_no != from && from != 255)
+					MessageBeep (MB_ICONASTERISK);
+
+                W_MessageAllowedWindows (WAM_INDIV, 0, 0, color, message, len, 0);
+			}
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
             if (logging)
             {
@@ -324,10 +328,10 @@ dmessage (char *message,
             }
             break;
         default:
-            W_WriteText (messwa, 0, 0, color, message, len, 0);
+            W_MessageAllowedWindows (WAM_ALL, 0, 0, color, message, len, 0);
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                pmessage (PIGCALL, from, MINDIV);
+                pmessage (pigcall, from, MINDIV);
             }
             if (logging)
             {
@@ -345,7 +349,6 @@ dmessage (char *message,
             }
             break;
         }
-        W_WriteText (reviewWin, 0, 0, color, message, len, 0);
     }
 }
 
@@ -379,7 +382,7 @@ sendVersion (void)
     if (!version_sent)
     {
         version_sent = 1;
-        sprintf (client_ver, "@%s.%d", mvers, PATCHLEVEL);
+        sprintf (client_ver, "@%s", mvers);
 
         pmessage (client_ver, (short) me->p_no, MINDIV | MCONFIG);
     }

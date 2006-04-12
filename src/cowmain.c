@@ -25,7 +25,6 @@
 #include "data.h"
 #include "packets.h"
 #include "version.h"
-#include "patchlevel.h"
 #include "playerlist.h"
 #include "parsemeta.h"
 #include "map.h"
@@ -271,10 +270,6 @@ getUdpPort ()
     }
     else
         gw_local_port = 5000;
-
-    /* printf("gw_mach: \'%s\'\n", gw_mach); printf("gw_local_port: %d\n",
-     * gw_local_port); printf("gw_serv_port: %d\n", gw_serv_port);
-     * printf("gw_port: %d\n", gw_port); */
 }
 
 /* In the event of problems assiocated with the above include files the
@@ -491,7 +486,10 @@ handle_exception (int _dummy)
 char *
 query_cowid (void)
 {
-    return COWID;
+	if (strlen (cowid) == 0)
+		sprintf (cowid, "%s %s", version, mvers);
+
+    return cowid;
 }
 
 /* Variables passing Optional Arguments to cowmain */
@@ -515,7 +513,6 @@ cowmain (char *server,
          int port,
          char *name)
 {
-    int intrupt (fd_set * readfds);
     int team, s_type;
 
     char *cp;
@@ -590,9 +587,7 @@ cowmain (char *server,
         }
     }
     for (i = 0; i < 80; i++)
-    {
         outmessage[i] = '\0';
-    }
 
 #ifndef DEBUG
     (void) SIGNAL (SIGFPE, handle_exception);
@@ -603,6 +598,7 @@ cowmain (char *server,
     initDefaults (deffile);
 
     xtrekPort = port;
+
     if (server)
     {
         if (xtrekPort < 0)
@@ -761,6 +757,17 @@ cowmain (char *server,
     }
 #endif
 
+	/* Now we want get serverNick */
+	if (serverName)
+		serverNick = getServerNick (serverName);
+
+	/* If we have nickname then we probably have type.serverNick defined */
+	if (serverType == ST_UNKNOWN && serverNick)
+		serverType = getServerType (serverNick);
+
+	/* Set observer flag as soon as we know port number */
+	setObserverMode (xtrekPort);
+
     resetdefaults ();
 
     /* open memory...? */
@@ -800,17 +807,16 @@ cowmain (char *server,
 
 
     if (!passive)
-    {
         callServer (xtrekPort, serverName);
-    }
     else
-    {
         connectToServer (xtrekPort);
-    }
 
 #ifdef FEATURE_PACKETS
     sendFeature ("FEATURE_PACKETS", 'S', 1, 0, 0);
 #endif
+
+    /* TIMER */
+    timeStart = time(NULL);
 
     findslot ();
 
@@ -832,12 +838,17 @@ cowmain (char *server,
     loggedIn = 1;
     phaserWindow = booleanDefault ("phaserWindow", phaserWindow);
 
+    /* TIMER */
+    timeBank[T_SERVER] = timeStart;
+    timeBank[T_DAY] = 0;
+
 #ifdef AUTOKEY
     /* autokey.c */
     autoKeyDefaults ();
 #endif /* AUTOKEY */
 
     initkeymap ();
+
     sendOptionsPacket ();
 
     /* Set p_hostile to hostile, so if keepPeace is on, the guy starts off
@@ -874,6 +885,14 @@ cowmain (char *server,
     }
 #endif
 
+    /* Initialize Stars Array */
+    initStars ();
+
+#ifdef HOCKEY_LINES
+    /* Initialize Hockey Lines Array */
+    init_hockey_lines ();
+#endif
+
 #ifdef SOUND
     Init_Sound ();
 #endif
@@ -883,7 +902,6 @@ cowmain (char *server,
     i = setjmp (env);           /* Reentry point of game */
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
-
 
 #ifdef SOUND
     Abort_Sound (ENGINE_SOUND);
@@ -972,11 +990,20 @@ cowmain (char *server,
     me->p_ghostbuster = 0;
     PlistNoteUpdate (me->p_no);
 
+    /* TIMER */
+    timeBank[T_SHIP] = time(NULL);
+
     if (showStats)              /* Default showstats are on. */
         W_MapWindow (statwin);
 
+    if (showHints)
+        W_MapWindow (hintWin);
+
     if (W_IsMapped (pStats))    /* support ping stuff */
+	{
+		BringWindowToTop (((Window *) pStats)->hwnd);
         redrawPStats ();
+	}
 
     if (isFirstEntry)
     {
@@ -1010,10 +1037,6 @@ cowmain (char *server,
 #ifdef SOUND
     Play_Sound (ENTER_SHIP_SOUND);
     Play_Sound (ENGINE_SOUND);
-#endif
-
-#ifdef HOCKEY_LINES
-    init_hockey_lines ();
 #endif
 
     /* Get input until the player quits or dies */

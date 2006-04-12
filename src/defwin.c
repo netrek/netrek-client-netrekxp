@@ -18,8 +18,11 @@
  * the use of it.)
  * 
  * $Log: defwin.c,v $
- * Revision 1.1  2003/01/21 21:28:34  keyos
- * Initial revision
+ * Revision 1.2  2006/04/12 04:20:03  modemhero
+ * Update to version 4.4.0.3
+ *
+ * Revision 1.1.1.1  2004/02/09 23:56:10  stas_p
+ * First import of full source
  *
  * Revision 1.2  1999/06/13 05:51:49  sheldon
  * Added code for Cambot playback

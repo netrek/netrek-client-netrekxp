@@ -67,7 +67,7 @@ check (void)
         }
     }
     addr.sin_family = AF_INET;
-    addr.sin_port = htons (xtrekPort);
+    addr.sin_port = htons ((u_short) xtrekPort);
     if ((sock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror ("socket");

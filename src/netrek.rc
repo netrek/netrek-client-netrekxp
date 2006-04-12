@@ -44,14 +44,18 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
+            VALUE "Comments", "\0"
             VALUE "CompanyName", "Netrek\0"
-            VALUE "FileDescription", "Netrek XP (Colorized) Client\0"
-            VALUE "FileVersion", "123456789012345678901234567890\0"
-            VALUE "InternalName", "Netrek XP\0"
-            VALUE "LegalCopyright", "Copyright © 1986-2002\0"
+            VALUE "FileDescription", "Netrek XP Mod (Colorized) Client\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "Netrek XP Mod\0"
+            VALUE "LegalCopyright", "Copyright © 1986-2004\0"
+            VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "netrek.rc\0"
-            VALUE "ProductName", "Netrek XP Client\0"
-            VALUE "ProductVersion", "123456789012345678901234567890\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "Netrek XP Mod Client\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"

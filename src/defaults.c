@@ -19,15 +19,7 @@
 #include "data.h"
 #include "playerlist.h"
 #include "proto.h"
-
-struct stringlist
-{
-    char *string;
-    char *value;
-    struct stringlist *next;
-};
-
-struct stringlist *defaults = NULL;
+#include "version.h"
 
 #define DEFAULTSHIP NUM_TYPES
 
@@ -47,6 +39,21 @@ int myshiptype = DEFAULTSHIP;
 struct shipdef *myshipdef = &shipdefaults[DEFAULTSHIP];
 
 struct save_options save_options[] = {
+    {"agriCAPS", &agriCAPS, RC_BOOL,
+        {
+            "Show AGRI planet names in caps on map",
+            NULL
+        }
+    },
+    {"agriColor", &agriColor, RC_INT,
+        {
+            "Color of AGRI planet name on the map",
+            "0 - owner race color",
+            "1 - white",
+            "2 - gray",
+            NULL
+        }
+    },
     {"autoQuit", &autoQuit, RC_INT,
         {
             "Autoquit timer (default 60)",
@@ -56,6 +63,12 @@ struct save_options save_options[] = {
     {"baseUdpLocalPort", &baseUdpLocalPort, RC_INT,
         {
             "Base UDP local port",
+            NULL
+        }
+    },
+    {"beepOnPrivateMessage", &beepOnPrivateMessage, RC_BOOL,
+        {
+            "Beep if received private message",
             NULL
         }
     },
@@ -84,11 +97,24 @@ struct save_options save_options[] = {
 #ifdef MOTION_MOUSE
     {"continuousMouse", &continuousMouse, RC_BOOL,
         {
-            "Use mouse for continuous steering",
+            "Use mouse for continuous steering and firing",
+            NULL
+        }
+    },
+    {"continuousMouseFix", &continuousMouseFix, RC_BOOL,
+        {
+            "When in continuousMouse mode allow more than one button to be pressed",
+            "to generate more actions",
             NULL
         }
     },
 #endif
+    {"disableWinkey", &disableWinkey, RC_BOOL,
+        {
+            "Disable Windows and Context Keys",
+            NULL
+        }
+    },
     {"enemyPhasers", &enemyPhasers, RC_INT,
         {
             "Angle between enemy phaser lines",
@@ -148,6 +174,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"mainResizeable", &logging, RC_BOOL,
+        {
+            "Make main window resizeable",
+            NULL
+        }
+    },
 #ifdef XTRA_MESSAGE_UI
     {"messageHoldThresh", &messageHoldThresh, RC_INT,
         {
@@ -165,6 +197,7 @@ struct save_options save_options[] = {
         }
     },
 #endif
+#ifdef META
     {"metaPort", &metaPort, RC_INT,
         {
             "Metaserver port",
@@ -182,6 +215,16 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef METAPING
+    {"metaPing", &metaPing, RC_BOOL,
+        {
+            "Use ICMP to ping the metaserver list",
+            NULL
+        }
+    },
+#endif
+#endif
+
 #ifdef MOTION_MOUSE
     {"motionThresh", &motionThresh, RC_INT,
         {
@@ -220,21 +263,15 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"partitionPlist", &partitionPlist, RC_BOOL,
+    {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
-            "Add space between teams in player list",
+            "Omit team letter on galaxy",
             NULL
         }
     },
-    {"phaserMsg", &phaserMsg, RC_INT,
+    {"partitionPlist", &partitionPlist, RC_BOOL,
         {
-            "Window to write phaser messages to",
-            "0 - none",
-            "1 - all",
-            "2 - team",
-            "3 - indiv",
-            "4 - kill",
-            "5 - total (default)",
+            "Add space between teams in player list",
             NULL
         }
     },
@@ -274,6 +311,18 @@ struct save_options save_options[] = {
             "0 - Bronco (default)",
             "1 - Moo",
             "2 - Rabbitear",
+            NULL
+        }
+    },
+    {"playerListHack", &playerListHack, RC_BOOL,
+        {
+            "Suppose that players with letter greater than \'f\' are observers",
+            NULL
+        }
+    },
+    {"playerListMessaging", &playerListMessaging, RC_BOOL,
+        {
+            "Enable mouse clicks in player list to send messages",
             NULL
         }
     },
@@ -379,6 +428,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"showHints", &showHints, RC_BOOL,
+        {
+            "Show hints window",
+            NULL
+        }
+    },
 #ifdef HOCKEY_LINES
     {"showHockeyLinesMap", &showHockeyLinesMap, RC_BOOL,
         {
@@ -390,6 +445,13 @@ struct save_options save_options[] = {
     {"showHockeyLinesLocal", &showHockeyLinesLocal, RC_BOOL,
         {
             "Show hockey lines on local",
+            "Works only on hockey server",
+            NULL
+        }
+    },
+    {"showHockeyScore", &showHockeyScore, RC_BOOL,
+        {
+            "Show hockey score on the galaxy top left corner",
             "Works only on hockey server",
             NULL
         }
@@ -423,12 +485,6 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"sortMyTeamFirst", &sortMyTeamFirst, RC_BOOL,
-        {
-            "Put my team first in the player list",
-            NULL
-        }
-    },
     {"showPlanetNames", &showPlanetNames, RC_BOOL,
         {
             "Show planet names on local",
@@ -438,6 +494,12 @@ struct save_options save_options[] = {
     {"showPlanetOwner", &showPlanetOwner, RC_BOOL,
         {
             "Show planet owner on galaxy",
+            NULL
+        }
+    },
+    {"showStars", &showStars, RC_BOOL,
+        {
+            "Draw background stars",
             NULL
         }
     },
@@ -459,9 +521,21 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"sortMyTeamFirst", &sortMyTeamFirst, RC_BOOL,
+        {
+            "Put my team first in the player list",
+            NULL
+        }
+    },
     {"sortPlayers", &sortPlayers, RC_BOOL,
         {
             "Sort players by team",
+            NULL
+        }
+    },
+    {"sound", &sound_init, RC_BOOL,
+        {
+            "Enable sound",
             NULL
         }
     },
@@ -469,6 +543,17 @@ struct save_options save_options[] = {
         {
             "Shrink enemy phaser by x/16 of its length",
             "1-16 range",
+            NULL
+        }
+    },
+    {"timerType", &timerType, RC_INT,
+        {
+            "Type of dashboard timer to show",
+            "0 - don't show timer",
+            "1 - show current time",
+            "2 - show time on server",
+            "3 - show time in ship",
+            "4 - show user-set time",
             NULL
         }
     },
@@ -546,9 +631,27 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"viewBox", &viewBox, RC_BOOL,
+        {
+            "Show limits of tactical display on galaxy",
+            NULL
+        }
+    },
     {"warnShields", &warnShields, RC_BOOL,
         {
             "Change shields color on enemy approach",
+            NULL
+        }
+    },
+    {"warpStreaks", &warpStreaks, RC_BOOL,
+        {
+            "Draw warp streaks while transwarping to starbase",
+            NULL
+        }
+    },
+    {"windowMove", &windowMove, RC_BOOL,
+        {
+            "Enable internal windows moving",
             NULL
         }
     },
@@ -567,6 +670,8 @@ char *GetExeDir ();
 
 #define XTREKRC "xtrekrc"
 #define NETREKRC "netrekrc"
+#define XTREKRCTXT "xtrekrc.txt"
+#define NETREKRCTXT "netrekrc.txt"
 
 
 /******************************************************************************/
@@ -577,7 +682,6 @@ initDefaults (char *deffile)
 {
     FILE *fp;
     char file[256];
-// SRS not referenced char   *home;
     char *v;
     struct stringlist *new;
     struct dmacro_list *dm;
@@ -585,6 +689,7 @@ initDefaults (char *deffile)
     int notdone;
     unsigned char c;
     char *str;
+	struct stringlist *sl;
 
 #ifdef MULTILINE_MACROS
     unsigned char keysused[256];
@@ -597,6 +702,16 @@ initDefaults (char *deffile)
 #ifdef DEBUG
     printf ("Initdefaults\n");
 #endif
+
+    /* Clear defaults if they exist */
+	while (defaults != NULL)
+	{
+        sl = defaults;
+        defaults = defaults->next;
+        free (sl->string);
+        free (sl->value);
+        free (sl);
+	}
 
     /* sizeof doesn't work if it isn't in the same source file, shoot me */
     MCOPY (dist_defaults, dist_prefered, sizedist);
@@ -883,6 +998,76 @@ char *
 getdefault (char *str)
 {
     struct stringlist *sl;
+	char tmp[256];
+
+	/* We want to be able to have option.observer or option.serverNick in rc */
+	if (observerMode)
+	{
+		strcpy (tmp, str);
+		strcat (tmp, ".observer");
+
+		sl = defaults;
+		while (sl != NULL)
+		{
+			if (strcmpi (sl->string, tmp) == 0)
+				return (sl->value);
+			sl = sl->next;
+		}
+	}
+
+	if (serverNick)
+	{
+		strcpy (tmp, str);
+		strcat (tmp, ".");
+		strcat (tmp, serverNick);
+
+		sl = defaults;
+		while (sl != NULL)
+		{
+			if (strcmpi (sl->string, tmp) == 0)
+				return (sl->value);
+			sl = sl->next;
+		}
+	}
+
+	if (serverType != ST_UNKNOWN)
+	{
+		strcpy (tmp, str);
+		switch (serverType)
+		{
+		case ST_PARADISE:
+			strcat (tmp, ".paradise");
+			break;
+		case ST_BRONCO:
+			strcat (tmp, ".bronco");
+			break;
+		case ST_CHAOS:
+			strcat (tmp, ".chaos");
+			break;
+		case ST_INL:
+			strcat (tmp, ".inl");
+			break;
+		case ST_STURGEON:
+			strcat (tmp, ".sturgeon");
+			break;
+		case ST_HOCKEY:
+			strcat (tmp, ".hockey");
+			break;
+		case ST_DOGFIGHT:
+			strcat (tmp, ".dogfight");
+			break;
+		default:
+			strcat (tmp, ".unknown");
+		}
+
+		sl = defaults;
+		while (sl != NULL)
+		{
+			if (strcmpi (sl->string, tmp) == 0)
+				return (sl->value);
+			sl = sl->next;
+		}
+	}
 
     sl = defaults;
     while (sl != NULL)
@@ -896,6 +1081,68 @@ getdefault (char *str)
     return (NULL);
 }
 
+
+/******************************************************************************/
+/***  getServerNick()                                                       ***/
+/******************************************************************************/
+char *
+getServerNick (char *srvName)
+{
+    struct stringlist *sl;
+	char *tmpServerNick;
+
+    sl = defaults;
+    while (sl != NULL)
+    {
+        if (strcmpi (sl->value, srvName) == 0)
+        {
+			tmpServerNick = strtok (sl->string, ".");	/* Remove server. */
+			tmpServerNick = strtok (NULL, ".");			/* Get actual server nick */
+            return strdup (tmpServerNick);
+        }
+        sl = sl->next;
+    }
+    return (NULL);
+}
+
+
+/******************************************************************************/
+/***  getServerType()                                                       ***/
+/******************************************************************************/
+int
+getServerType (char *srvName)
+{
+    struct stringlist *sl;
+	char tmpTypeStr[128];
+
+	sprintf (tmpTypeStr, "servertype.%s", srvName);
+
+    sl = defaults;
+    while (sl != NULL)
+    {
+        if (strcmpi (sl->string, tmpTypeStr) == 0)
+        {
+			if (strcmpi (sl->value, "paradise") == 0)
+				return ST_PARADISE;
+			else if (strcmpi (sl->value, "bronco") == 0)
+				return ST_BRONCO;
+			else if (strcmpi (sl->value, "chaos") == 0)
+				return ST_CHAOS;
+			else if (strcmpi (sl->value, "inl") == 0)
+				return ST_INL;
+			else if (strcmpi (sl->value, "sturgeon") == 0)
+				return ST_STURGEON;
+			else if (strcmpi (sl->value, "hockey") == 0)
+				return ST_HOCKEY;
+			else if (strcmpi (sl->value, "dogfight") == 0)
+				return ST_DOGFIGHT;
+			else
+				return ST_UNKNOWN;
+        }
+        sl = sl->next;
+    }
+    return ST_UNKNOWN;
+}
 
 #ifndef __BORLANDC__
 /******************************************************************************/
@@ -937,7 +1184,7 @@ strncmpi (char *str1, char *str2, int max)
 #endif
 
 /******************************************************************************/
-/***  stringDefault()                                                          ***/
+/***  stringDefault()                                                       ***/
 /******************************************************************************/
 char *
 stringDefault (char *def)
@@ -946,7 +1193,10 @@ stringDefault (char *def)
 
     str = getdefault (def);
 
-    return (str);
+    if (str)
+        return strdup (str);
+    else
+        return (NULL);
 }
 
 
@@ -1004,16 +1254,21 @@ intDefault (char *def, int preferred)
 /******************************************************************************/
 // SRS - flag for later followup, what is the purpose of deffile?
 int
-findDefaults (char *deffile,
-              char *file)
+findDefaults (char *deffile, char *file)
 {
 
     /* Check base names */
     if (findfile (NETREKRC, file))
         return 1;
 
+	if (findfile (NETREKRCTXT, file))
+		return 1;
+
     if (findfile (XTREKRC, file))
         return 1;
+
+	if (findfile (XTREKRCTXT, file))
+		return 1;
 
 #ifdef SYSTEM_DEFAULTFILE
     /* now try for a system default defaults file */
@@ -1034,11 +1289,24 @@ resetdefaults (void)
     char tmp[100];
     int i;
 
+	if (strlen (pigcall) == 0)
+		sprintf (pigcall, "Netrek XP Mod (%s) - the smarter netrek eXPerience!", mvers);
+
+    timerType = intDefault ("timerType", timerType);
+    if (timerType < T_NONE || timerType >= T_TOTAL)
+        timerType = T_SHIP;
+
+    tpDotDist = intDefault ("tpDotDist", tpDotDist);
+    omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
+	beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
+    viewBox = booleanDefault ("viewBox", viewBox);
+    warpStreaks = booleanDefault ("warpStreaks", warpStreaks);
+    showStars = booleanDefault ("showStars", showStars);
+
 #ifdef HOCKEY_LINES
-    showHockeyLinesLocal =
-        booleanDefault ("showHockeyLinesLocal", showHockeyLinesLocal);
-    showHockeyLinesMap =
-        booleanDefault ("showHockeyLinesMap", showHockeyLinesMap);
+    showHockeyLinesLocal = booleanDefault ("showHockeyLinesLocal", showHockeyLinesLocal);
+    showHockeyLinesMap = booleanDefault ("showHockeyLinesMap", showHockeyLinesMap);
+	showHockeyScore = booleanDefault ("showHockeyScore", showHockeyScore);
 #endif
 
     saveBig = booleanDefault ("saveBig", saveBig);
@@ -1048,6 +1316,7 @@ resetdefaults (void)
     saveRCM = booleanDefault ("saveRCM", saveRCM);
 #endif
 
+    playerListHack = booleanDefault ("playerListHack", playerListHack);
     keepInfo = intDefault ("keepInfo", keepInfo);
     showPlanetOwner = booleanDefault ("showPlanetOwner", showPlanetOwner);
     newDashboard = intDefault ("newDashboard", newDashboard);
@@ -1066,9 +1335,9 @@ resetdefaults (void)
     if (phaserShrink > 16)
         phaserShrink = 16;
 
-    shrinkPhaserOnMiss =
-        booleanDefault ("shrinkPhaserOnMiss", shrinkPhaserOnMiss);
+    shrinkPhaserOnMiss = booleanDefault ("shrinkPhaserOnMiss", shrinkPhaserOnMiss);
 
+    windowMove = booleanDefault ("windowMove", windowMove);
 
 #ifdef VSHIELD_BITMAPS
     varyShields = booleanDefault ("varyShields", varyShields);
@@ -1091,27 +1360,32 @@ resetdefaults (void)
     }
 #endif
 
+#ifdef METAPING
+    metaPing = booleanDefault ("metaPing", metaPing);
+#endif
 
     showLock = intDefault ("showLock", showLock);
     if (showLock > 3)
         showLock = 3;
 
-    phaserMsg = intDefault ("phaserMsg", phaserMsg);
+#ifdef PHASER_STATS
+    phaserStats = booleanDefault ("phaserStats", phaserStats);
+#endif
+
+    /* Now let's set Window Allowed Messages for all message windows */
+    for (i = 0; i < 6; i++)
+        W_SetWAM (wam_windows[i]);
+
 #ifdef XTRA_MESSAGE_UI
     messageHUD = intDefault ("messageHUD", messageHUD);
     messageHoldThresh = intDefault ("messageHoldThresh", messageHoldThresh);
 #endif
-    phaserMsg = intDefault ("phaserMsg", phaserMsg);
-#ifdef PHASER_STATS
-    phaserStats = booleanDefault ("phaserStats", phaserStats);
-#endif
     showStats = booleanDefault ("showStats", showStats);
+    showHints = booleanDefault ("showHints", showHints);
     keepPeace = booleanDefault ("keepPeace", keepPeace);
     continueTractor = booleanDefault ("continueTractor", continueTractor);
-    showTractorPressor =
-        booleanDefault ("showTractorPressor", showTractorPressor);
-    showAllTractorPressor =
-        booleanDefault ("showAllTractorPressor", showAllTractorPressor);
+    showTractorPressor = booleanDefault ("showTractorPressor", showTractorPressor);
+    showAllTractorPressor = booleanDefault ("showAllTractorPressor", showAllTractorPressor);
     extraAlertBorder = booleanDefault ("extraAlertBorder", extraAlertBorder);
     showPlanetNames = booleanDefault ("showPlanetNames", 1);
     reportKills = booleanDefault ("reportKills", reportKills);
@@ -1139,6 +1413,10 @@ resetdefaults (void)
     showIND = booleanDefault ("showIND", showIND);
     InitPlayerList ();
 
+    agriCAPS = booleanDefault ("agriCAPS", agriCAPS);
+    agriColor = intDefault ("agriColor", agriColor);
+
+	playerListMessaging = booleanDefault ("playerListMessaging", playerListMessaging);
 
     highlightFriendlyPhasers = booleanDefault ("highlightFriendlyPhasers",
                                                highlightFriendlyPhasers);
@@ -1149,6 +1427,7 @@ resetdefaults (void)
 
 #ifdef MOTION_MOUSE
     continuousMouse = booleanDefault ("continuousMouse", continuousMouse);
+    continuousMouseFix = booleanDefault ("continuousMouseFix", continuousMouseFix);
 
     motionThresh = intDefault ("motionThresh", motionThresh);
 #endif
@@ -1178,13 +1457,9 @@ resetdefaults (void)
     portSwap = booleanDefault ("portSwap", TRUE);
 #endif
 
-
-    shipdefaults[DEFAULTSHIP].keymap =
-        (unsigned char *) stringDefault ("keymap");
-    shipdefaults[DEFAULTSHIP].buttonmap =
-        (unsigned char *) stringDefault ("buttonmap");
-    shipdefaults[DEFAULTSHIP].ckeymap =
-        (unsigned char *) stringDefault ("ckeymap");
+    shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
+    shipdefaults[DEFAULTSHIP].buttonmap = (unsigned char *) stringDefault ("buttonmap");
+    shipdefaults[DEFAULTSHIP].ckeymap = (unsigned char *) stringDefault ("ckeymap");
 
     for (i = DEFAULTSHIP; i >= 0; i--)
     {
@@ -1217,6 +1492,50 @@ resetdefaults (void)
             shipdefaults[i].buttonmap = shipdefaults[DEFAULTSHIP].buttonmap;
     }
     myshipdef = &shipdefaults[myshiptype];
+
+	/* Let's check whether windows settings had changed */
+/* Not working yet
+	updateWindowsGeometry (baseWin);
+	updateWindowsGeometry (w);
+	updateWindowsGeometry (mapw);
+	updateWindowsGeometry (tstatw);
+	updateWindowsGeometry (warnw);
+	updateWindowsGeometry (messagew);
+	updateWindowsGeometry (planetw);
+	updateWindowsGeometry (rankw);
+	updateWindowsGeometry (playerw);
+	updateWindowsGeometry (helpWin);
+	updateWindowsGeometry (messwa);
+	updateWindowsGeometry (messwt);
+	updateWindowsGeometry (messwi);
+	updateWindowsGeometry (messwk);
+	updateWindowsGeometry (phaserwin);
+	updateWindowsGeometry (reviewWin);
+	updateWindowsGeometry (pStats);
+	updateWindowsGeometry (udpWin);
+#ifdef SHORT_PACKETS
+	updateWindowsGeometry (spWin);
+#endif
+#ifdef SOUND
+	updateWindowsGeometry (soundWin);
+#endif
+#ifdef TOOLS
+	updateWindowsGeometry (toolsWin);
+#endif
+#ifdef XTREKRC_HELP
+	updateWindowsGeometry (defWin);
+#endif
+#ifdef DOC_WIN
+	updateWindowsGeometry (docwin);
+#endif
+	for (i = 0; i < 4; i++)
+		updateWindowsGeometry (teamWin[i]);
+
+	updateWindowsGeometry (qwin);
+	updateWindowsGeometry (statwin);
+	updateWindowsGeometry (scanwin);
+	updateWindowsGeometry (war);
+*/
 }
 
 /******************************************************************************/
@@ -1259,8 +1578,7 @@ shipchange (int type)
 /***  findfile()                                                            ***/
 /******************************************************************************/
 int
-findfile (char *fname,
-          char *found)
+findfile (char *fname, char *found)
 {
     int accessible;
     char *home;
@@ -1308,36 +1626,17 @@ findfile (char *fname,
 /***  gethexfromdec()                                                       ***/
 /******************************************************************************/
 char
-gethexfromdec (int dec)
+getcharfromdec (int dec)
 {
     char str[2];
 
-    if (dec > 12)
+    if (dec < 1 || dec > 22)
         return '\0';
 
-    switch (dec)
-    {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
+    if (dec < 10)
         sprintf (str, "%d", dec);
-        break;
-    case 10:
-        strcpy (str, "a");
-        break;
-    case 11:
-        strcpy (str, "b");
-        break;
-    case 12:
-        strcpy (str, "c");
-        break;
-    }
+    else
+        sprintf (str, "%c", dec + 87);
 
     return str[0];
 }
@@ -1353,7 +1652,7 @@ saveOptions ()
     char *exe_dir, save_file[256];
     struct save_options *so;
     struct dmacro_list *dm;
-    unsigned int i, num_buttons;
+    unsigned int i;
     unsigned char c;
     char macroKey[3] = "";
 
@@ -1362,7 +1661,7 @@ saveOptions ()
     if (!saveFile)
     {
         saveFile = (char *) malloc (sizeof (char) * 12); 
-        sprintf (saveFile, "%s", "xtrekrc.sav");
+        sprintf (saveFile, "%s", "netrekrc.sav");
     }
 
     exe_dir = GetExeDir ();
@@ -1378,6 +1677,9 @@ saveOptions ()
     fp = fopen (save_file, "w+");
     if (fp == NULL)
         return;
+
+    sprintf (str, "Saving options to: %s", save_file);
+    warning (str);
 
     so = save_options;
     while (so->name != NULL)
@@ -1410,27 +1712,28 @@ saveOptions ()
         so++;
     }
 
-    // buttonmap
-#ifdef SHIFTED_MOUSE
-    num_buttons = 12;
-#else
-    num_buttons = 3;
-#endif
 
+    // Let's print buttonmap
     str[0] = '\0';
     str1[0] = '\0';
-    for (i = 1; i <= num_buttons; i++)
+
+#ifdef SHIFTED_MOUSE
+    for (i = W_LBUTTON; i <= W_XBUTTON2_4; i++)
+#else
+    for (i = W_LBUTTON; i <= W_WHEELDOWN; i++)
+#endif
     {
         if (buttonmap[i] != 0)
         {
             c = getkeyfromctrl (buttonmap[i]);
             if (c == '^')
-                sprintf (str, "%c^^", gethexfromdec (i));
+                sprintf (str, "%c^^", getcharfromdec (i));
             else
-                sprintf (str, "%c%c", gethexfromdec (i), getkeyfromctrl (buttonmap[i]));
+                sprintf (str, "%c%c", getcharfromdec (i), getkeyfromctrl (buttonmap[i]));
             strcat (str1, str);
         }
     }
+
     if (saveBig && strlen (str1) != 0)
         fputs ("# Mouse button mapping\n", fp);
     if (strlen (str1) != 0)
@@ -1708,7 +2011,7 @@ saveOptions ()
         }
 
         // Macros
-        for (i = 2; i < MAX_MACRO; i++)
+        for (i = 0; i < MAX_MACRO; i++)
         {
             switch (macro[i].type)
             {

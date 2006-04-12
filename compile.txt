@@ -1,4 +1,4 @@
-This source tree was tested with MS Visual C++ 6.0 and Broland C Builder 5.5
+This source tree was tested with MS Visual C++ 6.0 and Borland C Builder 5.5
 
 - Edit build.cmd to set following variables:
 

@@ -14,6 +14,7 @@
 #include <time.h>
 
 #include "config.h"
+#include "version.h"
 #include "copyright.h"
 #include "cowapi.h"
 #include "Wlib.h"
@@ -29,7 +30,7 @@ char *servertmp = NULL;
 static void
 printUsage (char *prog)
 {
-    printf ("%s\n", COWID);
+    printf ("%s %s\n", version, mvers);
     printf ("Usage: %s [options] [display-name]\n", prog);
     printf ("Options:\n");
     printf (" [-h servername]     Specify a server\n");
@@ -58,7 +59,10 @@ printUsage (char *prog)
 #endif
 
     printf (" [-c]   to just do ck_players on the server\n");
+#ifdef RECORDGAME
+    printf (" [-F filename]   View recorded game from 'filename'\n");
     printf (" [-f filename]   Record game into 'filename'\n");
+#endif
     printf (" [-l filename]   Record messages into 'filename'\n");
 
 #ifdef META
@@ -66,6 +70,7 @@ printUsage (char *prog)
     printf (" [-k]   display known servers\n");
 #endif
 
+	printf (" [-n]   show console window\n");
     printf (" [-v]   display client version info\n");
 
 }
@@ -80,6 +85,7 @@ main2 (int argc,
     int usage = 0;
     int err = 0;
     int inplayback = 0;
+	int	hideConsole = 1;
     char *name, *ptr;
     int i;
 
@@ -135,11 +141,11 @@ main2 (int argc,
                     usage++;
                 break;
 
-            case 'u':
+            case 'u':           /* program usage */
                 usage++;
                 break;
 
-            case 'c':
+            case 'c':           /* run ck_players */
                 checking = 1;
                 break;
 
@@ -265,86 +271,118 @@ main2 (int argc,
                 hset++;
                 if (i < argc)
                 {
-                netaddr = strToNetaddr (argv[i + 1]; i++;}
-                                        else
-                                        usage++; break;
+                    netaddr = strToNetaddr (argv[i + 1];
+                    i++;
+                }
+                else
+                    usage++;
+                break;
 #endif
             case 'U':
-                                        if (i < argc)
-                                        {
-                                        if ((baseUdpLocalPort =
-                                             atoi (argv[i + 1])) == 0)
-                                        {
-                                        fprintf (stderr,
-                                                 "Error: -U requires a port number\n");
-                                        exit (1);}
-                                        i++;}
-                                        else
-                                        usage++; break;
+                if (i < argc)
+                {
+                    if ((baseUdpLocalPort = atoi (argv[i + 1])) == 0)
+                    {
+                        fprintf (stderr, "Error: -U requires a port number\n");
+                        exit (1);
+                    }
+                    i++;
+                }
+                else
+                    usage++;
+                break;
+
 #ifdef PACKET_LOG
             case 'P':
-                                        log_packets++; break;
+                log_packets++;
+                break;
 #endif
             case 'G':
-                                        if (i < argc)
-                                        {
-                                        ghoststart++;
-                                        ghost_pno = atoi (argv[i + 1]);
-                                        printf
-                                        ("Emergency restart being attempted...\n");
-                                        i++;}
-                                        else
-            usage++; break; case 't':
-                                        if (i < argc)
-                                        {
-                                        title = argv[i + 1]; i++;}
-                                        else
-            usage++; break; case 'r':
-                                        if (i < argc)
-                                        {
-                                        deffile = argv[i + 1]; i++;}
-                                        else
-            usage++; break; case 'D':
-            debug++; break; case 'v':
-                                        printf ("%s\n", COWID);
-                                        printf ("%s\n", CBUGS);
+                if (i < argc)
+                {
+                    ghoststart++;
+                    ghost_pno = atoi (argv[i + 1]);
+                    printf ("Emergency restart being attempted...\n");
+                    i++;
+                }
+                else
+                    usage++;
+                break;
+            
+            case 't':
+                if (i < argc)
+                {
+                    title = argv[i + 1];
+                    i++;
+                }
+                else
+                    usage++;
+                break;
+            
+            case 'r':
+                if (i < argc)
+                {
+                    deffile = argv[i + 1];
+                    i++;
+                }
+                else
+                    usage++;
+                break;
+            
+            case 'D':
+                debug++;
+                break;
+            
+			case 'n':
+				hideConsole = 0;
+				break;
+
+            case 'v':
+				printf ("%s %s\n", version, mvers);
+				printf ("%s\n", CBUGS);
 #ifdef RSA
-                                        printf
-                                        ("RSA key installed: %s --- Created by: %s\n",
-                                         key_name, client_creator);
-                                        printf ("     Client type: %s\n",
-                                                client_type);
-                                        printf ("     Client arch: %s\n",
-                                                client_arch);
-                                        printf
-                                        ("     Key permutation date: %s\n",
-                                         client_key_date);
-                                        printf ("     Comments: %s\n",
-                                                client_comments);
+                printf ("RSA key installed: %s --- Created by: %s\n", key_name, client_creator);
+                printf ("Client type: %s\n", client_type);
+                printf ("Client arch: %s\n", client_arch);
+                printf ("Key permutation date: %s\n", client_key_date);
+                printf ("Comments: %s\n", client_comments);
 #endif
-            exit (0); break; default:
-                                        fprintf (stderr, "%s: unknown option '%c'\n", name, *ptr); err++; break;}       /* end switch */
+                exit (0);
+                break;
+            
+            default:
+                fprintf (stderr, "%s: unknown option '%c'\n", name, *ptr);
+                err++; 
+                break;
+            }   /* end switch */
 
-                                        ptr++;} /* end while */
-                                        }       /* end for */
+            ptr++;
+        }       /* end while */
+    }           /* end for */
 
-                                        if (usage || err)
-                                        {
-                                        printUsage (name); exit (err);}
+    if (usage || err)
+    {
+        printUsage (name);
+        exit (err);
+    }
+
+	if (hideConsole)
+		FreeConsole ();
 
 #ifdef GATEWAY
-                                        if (!hset) use_trekhopd = 0;    /* allow use via normal
-                                                                         * connections */
-                                        if (netaddr == 0)
-                                        {
-                                        fprintf (stderr,
-                                                 "netrek: no remote address set (-H).  Restricted server will not work.\n");}
+    if (!hset) use_trekhopd = 0;        /* allow use via normal
+                                         * connections */
+    if (netaddr == 0)
+        fprintf (stderr, "netrek: no remote address set (-H).  
+                          Restricted server will not work.\n");
 #endif
 
 #ifdef RECORDGAME
-                                        if (inplayback) err = pbmain (name);
-                                        else
+    if (inplayback)
+        err = pbmain (name);
+    else
 #endif
-                                        err =
-                                        cowmain (servertmp, xtrekPort, name);
-                                        exit (err);}
+        err = cowmain (servertmp, xtrekPort, name);
+                                        
+    exit (err);
+}

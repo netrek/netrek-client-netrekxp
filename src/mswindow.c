@@ -12,6 +12,11 @@
 /***               and function header comments
 /******************************************************************************/
 
+/* WINVER and _WIN32_WINNT are for wheel mouse and 5 mouse button support */
+#ifndef WINVER
+#define WINVER 0x5000
+#endif
+#define _WIN32_WINNT 0x0500
 
 #define NO_BOOLEAN              //So defs.h doesn't screw us over
 
@@ -31,6 +36,7 @@
 #include "xclrs.h"
 #include "cursors.h"
 #include "proto.h"
+#include "resource.h"
 
 #undef WHITE
 #undef BLACK
@@ -102,6 +108,9 @@ struct stringList
     W_Color color;
     struct stringList *next;
 };
+
+// Structure to contain window coordinates before movement
+RECT movingr;
 
 /*
 typedef struct tagWindow
@@ -315,7 +324,6 @@ struct BitmapList
 struct BitmapList *CurrentBitmap = NULL;
 int bmlCount = 0;
 
-
 //Table that we will build use for virtual key code conversion. We can't
 //just let Windows do it as we want to proces  strange things like
 // ^@ or ^# which the standard windows TranslateMessage() / ToAscii()
@@ -328,6 +336,15 @@ int bmlCount = 0;
 //ourselves.
 char VKMap[256];
 char VKShiftMap[256];
+
+//WinKey Kill Library Functions
+const int KILL_WINKEY  = 0x0001;
+const int KILL_CTRLESC = 0x0002;
+const int KILL_COMBOS  = 0x0004;
+const int KILL_CONTEXT = 0x0008;
+HINSTANCE hWinkeyLibrary;
+typedef void (__fastcall *FASTCALL_KILL)(int iFlags);
+FASTCALL_KILL pfnFastCallKill;
 
 /******************************************************************************/
 /***  W_Cleanup()
@@ -424,11 +441,10 @@ W_Cleanup (void)
     free (mplasmatorp);
 #endif /* COLORIZEWEAPON */
 
-    for (i = 0; i < 9; i++)
-    {
+    for (i = 0; i < PLANET_VIEWS; i++)
         free (bplanets[i]);
+    for (i = 0; i < MPLANET_VIEWS; i++)
         free (bmplanets[i]);
-    }
 
     for (i = 0; i < BMP_SHIPEXPL_FRAMES; i++)
         free (expview[i]);
@@ -443,8 +459,27 @@ W_Cleanup (void)
 #endif
 
     free (cloakicon);
-    free (icon);
     free (stipple);
+
+    //Remove default objects
+    while (defaults)
+    {
+        struct stringlist *tmp;
+        tmp = defaults->next;
+        free (defaults->string);
+        free (defaults->value);
+        free (defaults);
+        defaults = tmp;
+    }
+
+    //Remove tractor linked list
+    while (tracthead)
+    {
+        struct tractor *tmp;
+        tmp = tracthead->next;
+        free (tracthead);
+        tracthead = tmp;
+    }
 
     //Remove the bitmap structures we've created, by traversing the linked list
     while (p)
@@ -453,6 +488,26 @@ W_Cleanup (void)
         DeleteObject (p->bm);
         free (p);
         p = tmp;
+    }
+
+    /* DoubleBuffer */
+    SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+    DeleteObject (localSDB->mem_bmp);
+    ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
+    free (localSDB->window);
+    free (localSDB);
+
+    SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+    DeleteObject (mapSDB->mem_bmp);
+    ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+    free (mapSDB->window);
+    free (mapSDB);
+
+    //WinKey Kill Library Stop
+    if (pfnFastCallKill != NULL)
+    {
+        pfnFastCallKill(0);
+        FreeLibrary(hWinkeyLibrary);
     }
 }
 
@@ -480,7 +535,7 @@ W_Initialize (char *display)
     HBITMAP junk;
     LOGFONT lf;
     char FileName[100];
-    WNDCLASS wc;
+    WNDCLASSEX wc;
     static int InitDone = 0;
     HINSTANCE hCursorLibrary;
 
@@ -495,18 +550,20 @@ W_Initialize (char *display)
 #endif
 
     //Register our class
+	wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_NOCLOSE | CS_HREDRAW | CS_VREDRAW;    //Don't allow them to close windows 
     wc.lpfnWndProc = NetrekWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = sizeof (Window *);  //Store Window * in extra space
     wc.hInstance = MyInstance;
-    wc.hIcon = LoadIcon (MyInstance, "main");
+    wc.hIcon = (HICON) LoadImage (MyInstance, MAKEINTRESOURCE(MAIN), IMAGE_ICON, 32, 32, 0);
+    wc.hIconSm = (HICON) LoadImage (MyInstance, MAKEINTRESOURCE(MAIN), IMAGE_ICON, 16, 16, 0);
     wc.hCursor = NULL;          //We're handling our own cursors
     wc.hbrBackground = NULL;
     wc.lpszMenuName = NULL;
     wc.lpszClassName = ClassName;
 
-    RegisterClass (&wc);
+    RegisterClassEx (&wc);
     if ((hCursorLibrary = LoadLibrary ("bitmaps/CURSLIB.DLL")) == NULL)
     {
         fprintf (stderr, "Could not open curslib.dll\n");
@@ -547,7 +604,7 @@ W_Initialize (char *display)
     //Create the fonts that we need. The fonts are actually in our resource file
     strcpy (FileName, GetExeDir ());
     strcat (FileName, FontFileName);
-    i = AddFontResource (FileName);
+    AddFontResource (FileName);
 
     memset (&lf, 0, sizeof (LOGFONT));
     strcpy (lf.lfFaceName, "Netrek");
@@ -641,6 +698,32 @@ W_Initialize (char *display)
     for (i = 0; i < (sizeof (SysColorNames) / sizeof (SysColorNames[0])); i++)
     {
         SysColors[i] = GetSysColor (SysColorNames[i]);
+    }
+
+    // WinKey Kill Library Init
+    if (disableWinkey = booleanDefault ("disableWinkey", disableWinkey))
+    {
+        hWinkeyLibrary = LoadLibrary ("bitmaps/winkey.dll");
+
+        if (hWinkeyLibrary < (HINSTANCE) 32)
+        {
+            //Just continue if there is a problem
+            fprintf (stderr, "Unable to load __fastcall DLL");
+        }
+        else 
+        {
+            pfnFastCallKill = (FASTCALL_KILL) GetProcAddress (hWinkeyLibrary, (LPCSTR)1);
+
+            if (!pfnFastCallKill)
+            {
+                //Just continue if there is a problem
+                fprintf (stderr, "Unable to initialize __fastcall");
+            }
+            else
+            {
+                pfnFastCallKill (KILL_WINKEY | KILL_CONTEXT);
+            }
+        }
     }
 
     atexit (W_Cleanup);
@@ -885,7 +968,12 @@ newWindow (char *name,
 // This fullscreen stuff doesn't work.  It's throwing exceptions now.  No time to fix.
 // SRS 11/29/02
         //        if (booleanDefault("fullscreen",0))
-        SpecialStyle |= WS_MINIMIZEBOX | WS_SYSMENU;
+        // WS_THICKFRAME adds resizing frame to window without adding titlebar
+        mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
+        if (mainResizeable)
+            SpecialStyle |= WS_THICKFRAME | WS_MINIMIZEBOX | WS_SYSMENU;
+        else
+            SpecialStyle |= WS_MINIMIZEBOX | WS_SYSMENU;
 //        else
 //          SpecialStyle |= WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
     }
@@ -943,9 +1031,18 @@ newWindow (char *name,
         }
     }
 
+	/* Here we have name and parent, so let's set them */
+	strcpy (window->name, name);
+	window->parent = parentwin;
+
     //Actually create the window
     //Hacked to allow negative create locations -SAC
-    window->hwnd = CreateWindow (ClassName, s, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | SpecialStyle, x + parentwin->border, y + parentwin->border, width + border * 2, height + border * 2 + ((SpecialStyle & WS_CAPTION) ? GetSystemMetrics (SM_CYCAPTION) : 0), parentwin->hwnd, NULL, MyInstance, (void *) window);      //Pass Window struct * as user param
+    window->hwnd = CreateWindow (ClassName, s, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | SpecialStyle, 
+                                x + parentwin->border, y + parentwin->border, width + border * 2, 
+                                height + border * 2 + 
+                                ((SpecialStyle & WS_CAPTION) ? GetSystemMetrics (SM_CYCAPTION) : 0), 
+                                parentwin->hwnd, NULL, MyInstance, (void *) window);      
+                                //Pass Window struct * as user param
 
 
     if (!window->hwnd)
@@ -980,6 +1077,12 @@ W_MakeWindow (char *name,
               W_Color color)
 {
     Window *newwin;
+	int orig_x, orig_y, orig_width, orig_height;
+
+	orig_x = x;
+	orig_y = y;
+	orig_width = width;
+	orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -992,6 +1095,12 @@ W_MakeWindow (char *name,
          newWindow (name, x, y, width, height, parent, border, color,
                     WIN_GRAPH)))
         return (0);
+
+	/* Set original coordinates, so we will be able to restore to them */
+	newwin->orig_x = orig_x;
+	newwin->orig_y = orig_y;
+	newwin->orig_width = orig_width;
+	newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1016,6 +1125,12 @@ W_MakeTextWindow (char *name,
                   int border)
 {
     Window *newwin;
+	int orig_x, orig_y, orig_width, orig_height;
+
+	orig_x = x;
+	orig_y = y;
+	orig_width = width;
+	orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1032,6 +1147,12 @@ W_MakeTextWindow (char *name,
     //Store the original textheight, width
     newwin->TextHeight = height;
     newwin->TextWidth = width;
+
+	/* Set original coordinates, so we will be able to restore to them */
+	newwin->orig_x = orig_x;
+	newwin->orig_y = orig_y;
+	newwin->orig_width = orig_width;
+	newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1053,6 +1174,12 @@ W_MakeScrollingWindow (char *name,
                        int border)
 {
     Window *newwin;
+	int orig_x, orig_y, orig_width, orig_height;
+
+	orig_x = x;
+	orig_y = y;
+	orig_width = width;
+	orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1071,6 +1198,12 @@ W_MakeScrollingWindow (char *name,
     newwin->TextHeight = height;
     newwin->TextWidth = width;
 
+	/* Set original coordinates, so we will be able to restore to them */
+	newwin->orig_x = orig_x;
+	newwin->orig_y = orig_y;
+	newwin->orig_width = orig_width;
+	newwin->orig_height = orig_height;
+
     //Give it a scroll bar, and set the range (to zero, initially)
     SetWindowLong (newwin->hwnd, GWL_STYLE,
                    GetWindowLong (newwin->hwnd, GWL_STYLE) | WS_VSCROLL);
@@ -1084,7 +1217,7 @@ W_MakeScrollingWindow (char *name,
 }
 
 
-//Make a menu window. This is similar to a text window in that it has a 1x1 mappiing
+//Make a menu window. This is similar to a text window in that it has a 1x1 mapping
 //between coordinates and character cells. Note that the height parameter
 //specified here indicates the number of items
 W_Window
@@ -1100,6 +1233,12 @@ W_MakeMenu (char *name,
     Window *newwin;
 
     int i;
+	int orig_x, orig_y, orig_width, orig_height;
+
+	orig_x = x;
+	orig_y = y;
+	orig_width = width;
+	orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1127,6 +1266,12 @@ W_MakeMenu (char *name,
     newwin->items = items;
     newwin->NumItems = height;
     newwin->TextHeight = height;
+
+	/* Set original coordinates, so we will be able to restore to them */
+	newwin->orig_x = orig_x;
+	newwin->orig_y = orig_y;
+	newwin->orig_width = orig_width;
+	newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1277,13 +1422,6 @@ W_CacheClearArea (W_Window window,
 {
     W_ClearArea (window, x, y, width, height);
 }
-
-void
-W_FlushClearAreaCache (W_Window window)
-{
-    //Hmmm.... Do I really prefer lima beans, or coconuts... I wonder...
-}
-
 
 // Clear multiple areas
 void
@@ -1554,6 +1692,7 @@ NetrekWndProc (HWND hwnd,
     short wheel;
     struct Icon *icon;
     RECT r;
+	WORD lwParam;
 #if defined(MOTION_MOUSE) || defined(XTRA_MESSAGE_UI)
     static POINTS prev_pos;
     static HWND LastPressHwnd;
@@ -1576,6 +1715,31 @@ NetrekWndProc (HWND hwnd,
         win->ClipRect.left = win->ClipRect.top = win->border;
         win->ClipRect.right = LOWORD (lParam) - win->border;
         win->ClipRect.bottom = HIWORD (lParam) - win->border;
+        break;
+
+    case WM_ENTERSIZEMOVE:
+        //Disable possibility to move internal windows
+        GET_STRUCT_PTR;
+
+        if (windowMove || (win->hwnd == ((Window *) baseWin)->hwnd))
+            break;
+
+        //Save window position to RECT
+        GetWindowRect (win->hwnd, &movingr);
+        break;
+
+    case WM_EXITSIZEMOVE:
+        //Disable possibility to move internal windows
+        GET_STRUCT_PTR;
+
+        if (windowMove || (win->hwnd == ((Window *) baseWin)->hwnd))
+            break;
+
+        //Get window position from RECT to restore original location
+        MoveWindow (win->hwnd, movingr.left, movingr.top, 
+                    movingr.right - movingr.left,
+                    movingr.bottom - movingr.top,
+                    TRUE);
         break;
 
     case WM_PAINT:
@@ -1627,14 +1791,20 @@ NetrekWndProc (HWND hwnd,
         LastPressHwnd = hwnd;
 
 #ifdef SHIFTED_MOUSE
-        if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
-            EventQueue[EventTail].key = W_LBUTTON4;
-        else if (wParam & MK_SHIFT)
-            EventQueue[EventTail].key = W_LBUTTON2;
-        else if (wParam & MK_CONTROL)
-            EventQueue[EventTail].key = W_LBUTTON3;
+        if (shiftedMouse)
+        {
+            if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
+                EventQueue[EventTail].key = W_LBUTTON4;
+            else if (wParam & MK_SHIFT)
+                EventQueue[EventTail].key = W_LBUTTON2;
+            else if (wParam & MK_CONTROL)
+                EventQueue[EventTail].key = W_LBUTTON3;
+            else
+                EventQueue[EventTail].key = W_LBUTTON;
+        }
         else
             EventQueue[EventTail].key = W_LBUTTON;
+
 #else
         EventQueue[EventTail].key = W_LBUTTON;
 #endif /* SHIFTED_MOUSE */
@@ -1647,19 +1817,24 @@ NetrekWndProc (HWND hwnd,
 
 
     case WM_MBUTTONDOWN:
-        BringWindowToTop (hwnd);
+        //BringWindowToTop (hwnd);
         GET_STRUCT_PTR;
 
         STORE_EVENT_MOUSE;
         LastPressHwnd = hwnd;
 
 #ifdef SHIFTED_MOUSE
-        if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
-            EventQueue[EventTail].key = W_MBUTTON4;
-        else if (wParam & MK_SHIFT)
-            EventQueue[EventTail].key = W_MBUTTON2;
-        else if (wParam & MK_CONTROL)
-            EventQueue[EventTail].key = W_MBUTTON3;
+        if (shiftedMouse)
+        {
+            if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
+                EventQueue[EventTail].key = W_MBUTTON4;
+            else if (wParam & MK_SHIFT)
+                EventQueue[EventTail].key = W_MBUTTON2;
+            else if (wParam & MK_CONTROL)
+                EventQueue[EventTail].key = W_MBUTTON3;
+            else
+                EventQueue[EventTail].key = W_MBUTTON;
+        }
         else
             EventQueue[EventTail].key = W_MBUTTON;
 #else
@@ -1673,19 +1848,24 @@ NetrekWndProc (HWND hwnd,
         return (0);
 
     case WM_RBUTTONDOWN:
-        BringWindowToTop (hwnd);
+        //BringWindowToTop (hwnd);
         GET_STRUCT_PTR;
 
         STORE_EVENT_MOUSE;
         LastPressHwnd = hwnd;
 
 #ifdef SHIFTED_MOUSE
-        if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
-            EventQueue[EventTail].key = W_RBUTTON4;
-        else if (wParam & MK_SHIFT)
-            EventQueue[EventTail].key = W_RBUTTON2;
-        else if (wParam & MK_CONTROL)
-            EventQueue[EventTail].key = W_RBUTTON3;
+        if (shiftedMouse)
+        {
+            if ((wParam & MK_SHIFT) && (wParam & MK_CONTROL))
+                EventQueue[EventTail].key = W_RBUTTON4;
+            else if (wParam & MK_SHIFT)
+                EventQueue[EventTail].key = W_RBUTTON2;
+            else if (wParam & MK_CONTROL)
+                EventQueue[EventTail].key = W_RBUTTON3;
+            else
+                EventQueue[EventTail].key = W_RBUTTON;
+        }
         else
             EventQueue[EventTail].key = W_RBUTTON;
 #else
@@ -1697,6 +1877,65 @@ NetrekWndProc (HWND hwnd,
 #endif
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (0);
+
+    case WM_XBUTTONDOWN:
+        //BringWindowToTop (hwnd);
+        GET_STRUCT_PTR;
+
+        STORE_EVENT_MOUSE;
+        LastPressHwnd = hwnd;
+
+		lwParam = LOWORD (wParam);
+
+#ifdef SHIFTED_MOUSE
+        if (shiftedMouse)
+        {
+            if ((lwParam & MK_SHIFT) && (lwParam & MK_CONTROL))
+    		{
+	    		if (lwParam & MK_XBUTTON1)
+		    		EventQueue[EventTail].key = W_XBUTTON1_4;
+			    else if (lwParam & MK_XBUTTON2)
+				    EventQueue[EventTail].key = W_XBUTTON2_4;
+		    }
+            else if (lwParam & MK_SHIFT)
+	    	{
+		    	if (lwParam & MK_XBUTTON1)
+			    	EventQueue[EventTail].key = W_XBUTTON1_2;
+    			else if (lwParam & MK_XBUTTON2)
+	    			EventQueue[EventTail].key = W_XBUTTON2_2;
+		    }
+            else if (lwParam & MK_CONTROL)
+	    	{
+		    	if (lwParam & MK_XBUTTON1)
+			    	EventQueue[EventTail].key = W_XBUTTON1_3;
+    			else if (lwParam & MK_XBUTTON2)
+	    			EventQueue[EventTail].key = W_XBUTTON2_3;
+		    }
+            else
+    		{
+	    		if (lwParam & MK_XBUTTON1)
+		    		EventQueue[EventTail].key = W_XBUTTON1;
+			    else if (lwParam & MK_XBUTTON2)
+				    EventQueue[EventTail].key = W_XBUTTON2;
+    		}
+        }
+        else
+       		if (lwParam & MK_XBUTTON1)
+	    		EventQueue[EventTail].key = W_XBUTTON1;
+		    else if (lwParam & MK_XBUTTON2)
+			    EventQueue[EventTail].key = W_XBUTTON2;
+#else
+        if (lwParam & MK_XBUTTON1)
+            EventQueue[EventTail].key = W_XBUTTON1;
+		else if (lwParam & MK_XBUTTON2)
+			EventQueue[EventTail].key = W_XBUTTON2;
+#endif /* SHIFTED_MOUSE */
+
+#ifdef MOTION_MOUSE
+        prev_pos = MAKEPOINTS (lParam);
+#endif
+        EventQueue[EventTail].type = W_EV_BUTTON;
+        return (TRUE);	/* MSDN says you SHOULD return TRUE if processing WM_XBUTTONDOWN */
 
         // Watch for stuff like ALT-ENTER
     case WM_SYSKEYDOWN:
@@ -1744,6 +1983,14 @@ NetrekWndProc (HWND hwnd,
 
         //Keyboard event - also catch the mousebuttons, #ifdef
     case WM_KEYDOWN:
+        //Ugly, but I don't want to rebuild the whole keyboard processing
+        if (wParam == VK_F1)
+        {
+            char found[256];
+            if (findfile ("netrek.chm", found))
+                ShellExecute (NULL, "open", found, NULL, NULL, SW_SHOWNORMAL);
+            return (0);
+        }
         //Manually map key to ASCII based on shift state
         j = ((GetKeyState (VK_SHIFT) & ~0x1) ? VKShiftMap : VKMap)[wParam];
 
@@ -1779,7 +2026,7 @@ NetrekWndProc (HWND hwnd,
         if (GetWindowLong (hwnd, GWL_WNDPROC) != (LONG) NetrekWndProc)
             return 0;           //Mouse is not in one of our windows
 
-        if (!hwnd || hwnd == ((Window *) baseWin))
+        if (!hwnd || hwnd == ((Window *) baseWin)->hwnd)
             hwnd = ((Window *) w)->hwnd;
 
         LastPressHwnd = hwnd;
@@ -1849,12 +2096,12 @@ NetrekWndProc (HWND hwnd,
                 prev_pos = MAKEPOINTS (lParam);
             }
             if ((messMouseDelta >= messageHoldThresh) ||
-                (wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)))
+                (wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON | MK_XBUTTON1 | MK_XBUTTON2)))
                 message_hold ();
             return (0);
         }
 
-        if (!(wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)))
+        if (!(wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON | MK_XBUTTON1 | MK_XBUTTON2)))
             return (0);         //We don't want to know about it if no mouse buttons are down
 
         //Check to see if the mouse has moved >= motionThresh
@@ -1870,84 +2117,255 @@ NetrekWndProc (HWND hwnd,
         //Turn shift+button into a differnt code, and that sort of thing...
         if (shiftedMouse)
         {
-            if (wParam & MK_CONTROL && wParam & MK_SHIFT)
+            if (continuousMouseFix)
             {
-                if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                if (wParam & MK_CONTROL && wParam & MK_SHIFT)
                 {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_LBUTTON4;
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON4;
+                    }
+                    if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON4;
+                    }
+                    if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON4;
+                    }
+                    if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_4;
+                    }
+                    if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_4;
+                    }
+    
+                    return (0);
                 }
-                else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+    
+                if (wParam & MK_SHIFT)
                 {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_MBUTTON4;
-                }
-                else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
-                {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_RBUTTON4;
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON2;
+                    }
+                    if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON2;
+                    }
+                    if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON2;
+                    }
+                    if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_2;
+                    }
+                    if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_2;
+                    }
+    
+                    return (0);
                 }
 
-                return (0);
+                if (wParam & MK_CONTROL)
+                {
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON3;
+                    }
+                    if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON3;
+                    }
+                    if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON3;
+                    }
+                    if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_3;
+                    }
+                    if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_3;
+                    }
+    
+                    return (0);
+                }
             }
-
-            if (wParam & MK_SHIFT)
+            else
             {
-                if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                if (wParam & MK_CONTROL && wParam & MK_SHIFT)
                 {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_LBUTTON2;
-                }
-                else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
-                {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_MBUTTON2;
-                }
-                else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
-                {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_RBUTTON2;
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON4;
+                    }
+                    else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON4;
+                    }
+                    else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON4;
+                    }
+                    else if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_4;
+                    }
+                    else if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_4;
+                    }
+    
+                    return (0);
                 }
 
-                return (0);
-            }
+                if (wParam & MK_SHIFT)
+                {
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON2;
+                    }
+                    else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON2;
+                    }
+                    else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON2;
+                    }
+                    else if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_2;
+                    }
+                    else if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_2;
+                    }
+    
+                    return (0);
+                }
 
-            if (wParam & MK_CONTROL)
-            {
-                if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                if (wParam & MK_CONTROL)
                 {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_LBUTTON3;
+                    if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_LBUTTON3;
+                    }
+                    else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_MBUTTON3;
+                    }
+                    else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_RBUTTON3;
+                    }
+                    else if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON1_3;
+                    }
+                    else if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+                    {
+                        //Okay, we have an event - store and process further
+                        STORE_EVENT_MOUSE;
+                        EventQueue[EventTail].type = W_EV_BUTTON;
+                        EventQueue[EventTail].key = W_XBUTTON2_3;
+                    }
+    
+                    return (0);
                 }
-                else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
-                {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_MBUTTON3;
-                }
-                else if ((wParam & MK_RBUTTON) && motion_mouse_enablable)
-                {
-                    //Okay, we have an event - store and process further
-                    STORE_EVENT_MOUSE;
-                    EventQueue[EventTail].type = W_EV_BUTTON;
-                    EventQueue[EventTail].key = W_RBUTTON3;
-                }
-                return (0);
             }
         }
 
@@ -1955,26 +2373,81 @@ NetrekWndProc (HWND hwnd,
 
         //Whew! If, after checking for all that, there are no shift keys,
         //no controls keys, process this normally
-        if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+        if (continuousMouseFix)
         {
-            //Okay, we have an event - store and process further
-            STORE_EVENT_MOUSE;
-            EventQueue[EventTail].type = W_EV_BUTTON;
-            EventQueue[EventTail].key = W_LBUTTON;
+            if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_LBUTTON;
+            }
+            if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_MBUTTON;
+            }
+            if ((wParam & MK_RBUTTON) && motion_mouse_steering)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_RBUTTON;
+            }
+            if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_XBUTTON1;
+            }
+            if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_XBUTTON2;
+            }
         }
-        else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+        else
         {
-            //Okay, we have an event - store and process further
-            STORE_EVENT_MOUSE;
-            EventQueue[EventTail].type = W_EV_BUTTON;
-            EventQueue[EventTail].key = W_MBUTTON;
-        }
-        else if ((wParam & MK_RBUTTON) && motion_mouse_steering)
-        {
-            //Okay, we have an event - store and process further
-            STORE_EVENT_MOUSE;
-            EventQueue[EventTail].type = W_EV_BUTTON;
-            EventQueue[EventTail].key = W_RBUTTON;
+            if ((wParam & MK_LBUTTON) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_LBUTTON;
+            }
+            else if ((wParam & MK_MBUTTON) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_MBUTTON;
+            }
+            else if ((wParam & MK_RBUTTON) && motion_mouse_steering)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_RBUTTON;
+            }
+            else if ((wParam & MK_XBUTTON1) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_XBUTTON1;
+            }
+            else if ((wParam & MK_XBUTTON2) && motion_mouse_enablable)
+            {
+                //Okay, we have an event - store and process further
+                STORE_EVENT_MOUSE;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+                EventQueue[EventTail].key = W_XBUTTON2;
+            }
         }
         return (0);
 
@@ -2025,9 +2498,28 @@ NetrekWndProc (HWND hwnd,
         hwnd = ChildWindowFromPoint (((Window *) baseWin)->hwnd, pos);
         GET_STRUCT_PTR;
 
-        // Nothing to do if we're not in WIN_SCROLL window
+        // If we're not in message windows then we'll map wheel up and
+		// wheel down events as regular mouse events
         if (win->type != WIN_SCROLL)
+		{
+	        //BringWindowToTop (hwnd);
+			GET_STRUCT_PTR;
+
+			STORE_EVENT_MOUSE;
+			LastPressHwnd = hwnd;
+
+			if (wheel > 0)
+			{
+				EventQueue[EventTail].key = W_WHEELUP;
+				EventQueue[EventTail].type = W_EV_BUTTON;
+			}
+			else if (wheel < 0)
+			{
+				EventQueue[EventTail].key = W_WHEELDOWN;
+				EventQueue[EventTail].type = W_EV_BUTTON;
+			}
             return (0);
+		}
 
         i = GetScrollPos (hwnd, SB_VERT);
         
@@ -2042,6 +2534,7 @@ NetrekWndProc (HWND hwnd,
         default:
             return (0);
         }
+
         SetScrollPos (hwnd, SB_VERT, i, TRUE);  //Move scroll
         InvalidateRect (hwnd, &win->ClipRect, TRUE);    //Redraw text in window
         UpdateWindow (hwnd);
@@ -2217,8 +2710,35 @@ W_CacheLine (W_Window window,
 }
 
 void
-W_FlushLineCaches (W_Window window)
+W_MakePoint (W_Window window,
+            int x0,
+            int y0,
+            W_Color color)
 {
+    register HDC hdc;
+    register int border;
+    FNHEADER_VOID;
+    border = win->border;
+
+    hdc = GetDC (win->hwnd);
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+    SelectObject (hdc, colortable[color].pen);
+    SetPixel (hdc, x0 + border, y0 + border, colortable[color].rgb);
+    ReleaseDC (win->hwnd, hdc);
+
+}
+
+void
+W_CachePoint (W_Window window,
+              int x0,
+              int y0,
+              W_Color color)
+{
+    W_MakePoint (window, x0, y0, color);
 }
 
 // Make *many* lines :)
@@ -2283,7 +2803,6 @@ W_MakeTractLine (W_Window window,
 
     FNHEADER_VOID;
 
-    tpDotDist = intDefault ("tpDotDist", tpDotDist);
     dashdesc[0] = tpDotDist;
 
     md = x0;
@@ -2312,7 +2831,7 @@ W_MakeTractLine (W_Window window,
         /* Major axis is x */
 
         if (d3)
-            d1 = (((__int64) d3) << 32) / d2;
+            d1 = (unsigned __int32) ((((__int64) d3) << 32) / d2);
         else
             d1 = 1;
         d2 = CINIT;
@@ -2351,7 +2870,7 @@ W_MakeTractLine (W_Window window,
         /* Major axis is y */
 
         if (d2)
-            d1 = (((__int64) d2) << 32) / d3;
+            d1 = (unsigned __int32) ((((__int64) d2) << 32) / d3);
         else
             d1 = 1;
         d2 = CINIT;
@@ -3199,17 +3718,6 @@ W_Beep ()
     MessageBeep (MB_ICONEXCLAMATION);
 }
 
-void
-W_SetIconWindow (W_Window main,
-                 W_Window icon)
-{
-    /*
-     * MS-Windows requires an icon, i.e. a pixmap, not a window, as the iconized image.
-     * So, ignore this. We use our own special blend of 11 herbs and spices, stored
-     * in the resource file, and coated in crispy batter, as the icon for all of our windows.
-     */
-}
-
 //Easy enough... except for the fact that only the thread which created the window
 // can destroy it. So if we are not the main thread we post a message
 void
@@ -3512,12 +4020,12 @@ W_FlushScrollingWindow (W_Window window)
     //Advance to the first visible line
     p = win->strings;
     HiddenLines = max (0, win->NumItems - win->AddedStrings);
-    for (; HiddenLines; HiddenLines--)
+    for (; HiddenLines && p; HiddenLines--)
         p = p->next;
 
     //Draw each line of text
     y = y * W_Textheight + MENU_PAD;
-    while (win->AddedStrings)
+    while (win->AddedStrings && p)
     {
         SetTextColor (hdc, colortable[p->color].rgb);
         TextOut (hdc, WIN_EDGE, y, p->string, win->TextWidth);
@@ -3525,6 +4033,8 @@ W_FlushScrollingWindow (W_Window window)
         y += W_Textheight;
         win->AddedStrings--;
     }
+
+    win->AddedStrings = 0;
 
     DrawBorder (win, hdc);
     ReleaseDC (win->hwnd, hdc);
@@ -3894,13 +4404,6 @@ X11toDIBAndMirror (unsigned char *bits,
     return base;
 }
 
-
-void
-W_Flush ()
-{
-    /* Supposed to flush input caches... whatever */
-}
-
 #define MAKE_WINDOW_GETTER(name, part) \
  W_Callback name(W_Window w) \
   { \
@@ -3999,10 +4502,10 @@ W_SetSensitive (Window * window,
     b;                          /* Makes compiler happy -SAC */
     if (win->type == WIN_SCROLL)
     {
-        hdc = GetDC (win);
+        hdc = GetDC (((Window *)win)->hwnd);
         if (hdc)
             RedrawScrolling (win, hdc);
-        ReleaseDC (win, hdc);
+        ReleaseDC (((Window *)win)->hwnd, hdc);
     }
 }
 #endif
@@ -4071,6 +4574,99 @@ W_SetWindowName (W_Window window,
     return;
 }
 
+void
+W_ResizeMenuToNumItems (W_Window window, int numitems)
+{
+    WINDOWPLACEMENT loc;
+
+    FNHEADER_VOID;
+
+    if (win->type != WIN_MENU)
+        return;
+
+    if (!GetWindowPlacement (win->hwnd, &loc))
+        return;
+
+    loc.rcNormalPosition.bottom = numitems * (W_Textheight + MENU_PAD * 2) + (numitems - 1) *
+                                    MENU_BAR + win->parent->border +
+                                    loc.rcNormalPosition.top;
+
+    SetWindowPlacement (win->hwnd, &loc);
+}
+
+void
+W_SetWAM (W_Window window)
+{
+    char str[64], *tmp;
+    unsigned int i;
+
+    FNHEADER_VOID;
+
+    /* First of all let's set defaults for all windows */
+    if (strcmpi (win->name, "review") == 0)
+        win->wam = WAM_ALL | WAM_INDIV | WAM_TEAM | WAM_KILL | WAM_PHASER;
+    else if (strcmpi (win->name, "review_all") == 0)
+        win->wam = WAM_ALL;
+    else if (strcmpi (win->name, "review_your") == 0)
+        win->wam = WAM_INDIV;
+    else if (strcmpi (win->name, "review_team") == 0)
+        win->wam = WAM_TEAM;
+    else if (strcmpi (win->name, "review_kill") == 0)
+        win->wam = WAM_KILL;
+    else if (strcmpi (win->name, "review_phaser") == 0)
+        win->wam = WAM_PHASER;
+
+    sprintf (str, "%s.allow", win->name);
+    if ((tmp = stringDefault (str)) != NULL)
+    {
+        /* We got something in window.allow, so let's clear default WAM flags */
+        win->wam = WAM_NONE;
+        for (i = 0; i < strlen (tmp); i++)
+        {
+            switch (tmp[i])
+            {
+            case 'I':
+            case 'i':
+                win->wam |= WAM_INDIV;
+                break;
+            case 'T':
+            case 't':
+                win->wam |= WAM_TEAM;
+                break;
+            case 'K':
+            case 'k':
+                win->wam |= WAM_KILL;
+                break;
+            case 'A':
+            case 'a':
+                win->wam |= WAM_ALL;
+                break;
+            case 'P':
+            case 'p':
+                win->wam |= WAM_PHASER;
+                break;
+            }
+        }
+    }
+}
+
+
+void
+W_MessageAllowedWindows (int messtype, int x, int y, W_Color color, char *str, int len, 
+                         W_Font font)
+{
+    int i;
+    Window * win;
+
+    
+    for (i = 0; i < 6; i++)
+    {
+        win = (Window *)wam_windows[i];
+        if (win->wam & messtype)
+            W_WriteText (wam_windows[i], x, y, color, str, len, font);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 // Reset the system colors. inlines >> macros! -SAC
 
@@ -4088,4 +4684,875 @@ SetTrekSysColors (void)
     if (mungScrollbarColors = booleanDefault ("mungScrollbarColors", 0))
         SetSysColors (sizeof (SysColorNames), SysColorNames, TrekSysColors);
     return;
+}
+
+/* Reread rc for geometry changes and update window if geometry was changed */
+void
+updateWindowsGeometry (W_Window window)
+{
+	WINDOWPLACEMENT loc;
+	int x, y, width, height;
+	int result, scrollpos;
+
+    FNHEADER_VOID;
+
+	loc.length = sizeof (WINDOWPLACEMENT); /* Have to set this */
+
+	if (!W_IsMapped (window))
+		return;
+
+	if (GetWindowPlacement (win->hwnd, &loc))
+	{
+		/* WIN_SCROLL processing */
+		if (win->type == WIN_SCROLL)
+		{
+			x = loc.rcNormalPosition.left;
+			y = loc.rcNormalPosition.top;
+			width = loc.rcNormalPosition.right - loc.rcNormalPosition.left;
+			height = loc.rcNormalPosition.bottom - loc.rcNormalPosition.top;
+
+			if (result = checkGeometry (win->name, &x, &y, &width, &height))
+			{
+				if (result & G_SET_X)
+				{
+					loc.rcNormalPosition.left = x + win->parent->border;
+				}
+				if (result & G_SET_Y)
+				{
+					loc.rcNormalPosition.top = y + win->parent->border;
+				}
+				if (result & G_SET_WIDTH)
+				{
+					win->TextWidth = width;		// Set new text width for window
+					width = (width * W_Textwidth) + (WIN_EDGE * 2) +
+							GetSystemMetrics (SM_CXVSCROLL);
+
+					loc.rcNormalPosition.right = x + width + (win->border * 2) + 1;
+				}
+				if (result & G_SET_HEIGHT)
+				{
+					win->TextHeight = height;	// Set new text height for window
+					height = (height * W_Textheight) + (MENU_PAD * 2);
+
+					loc.rcNormalPosition.bottom = y + height + (win->border * 2) + 1;
+				}
+				SetWindowPlacement (win->hwnd, &loc);
+				scrollpos = win->NumItems - win->TextHeight;
+				scrollpos = max (0, scrollpos);
+				if (scrollpos > GetScrollPos (win->hwnd, SB_VERT))
+				{
+					SetScrollRange (win->hwnd, SB_VERT, 0, scrollpos, TRUE);
+					SetScrollPos (win->hwnd, SB_VERT, scrollpos, TRUE);
+				}
+				else
+					SetScrollRange (win->hwnd, SB_VERT, 0, 0, TRUE);
+				W_FlushScrollingWindow (window);
+			}
+			else
+			{
+				/* Let's restore to original position */
+				loc.rcNormalPosition.left = win->orig_x + win->parent->border;
+				loc.rcNormalPosition.top = win->orig_y + win->parent->border;
+				loc.rcNormalPosition.right = win->orig_x + (win->orig_width *  W_Textwidth) + 
+											(WIN_EDGE * 2) +
+											GetSystemMetrics (SM_CXVSCROLL) +
+											(win->border * 2) + 1;
+				loc.rcNormalPosition.bottom = win->orig_y + (win->orig_height * W_Textheight) +
+											(MENU_PAD * 2) + (win->border * 2) + 1;
+				SetWindowPlacement (win->hwnd, &loc);
+			
+				win->TextWidth = win->orig_width;
+				win->TextHeight = win->orig_height;
+
+				scrollpos = win->NumItems - win->TextHeight;
+				scrollpos = max (0, scrollpos);
+				if (scrollpos > GetScrollPos (win->hwnd, SB_VERT))
+				{
+					SetScrollRange (win->hwnd, SB_VERT, 0, scrollpos, TRUE);
+					SetScrollPos (win->hwnd, SB_VERT, scrollpos, TRUE);
+				}
+				else
+					SetScrollRange (win->hwnd, SB_VERT, 0, 0, TRUE);
+				W_FlushScrollingWindow (window);
+			}
+		}
+		/* WIN_TEXT processing */
+		if (win->type == WIN_TEXT)
+		{
+			x = loc.rcNormalPosition.left;
+			y = loc.rcNormalPosition.top;
+			width = loc.rcNormalPosition.right - loc.rcNormalPosition.left;
+			height = loc.rcNormalPosition.bottom - loc.rcNormalPosition.top;
+
+			if (result = checkGeometry (win->name, &x, &y, &width, &height))
+			{
+				if (result & G_SET_X)
+				{
+					loc.rcNormalPosition.left = x + win->parent->border;
+				}
+				if (result & G_SET_Y)
+				{
+					loc.rcNormalPosition.top = y + win->parent->border;
+				}
+				if (result & G_SET_WIDTH)
+				{
+					win->TextWidth = width;		// Set new text width for window
+					width = (width * W_Textwidth) + (WIN_EDGE * 2);
+
+					loc.rcNormalPosition.right = x + width + (win->border * 2) + 1;
+				}
+				if (result & G_SET_HEIGHT)
+				{
+					win->TextHeight = height;	// Set new text height for window
+					height = (height * W_Textheight) + (MENU_PAD * 2);
+
+					loc.rcNormalPosition.bottom = y + height + (win->border * 2) + 1;
+				}
+				SetWindowPlacement (win->hwnd, &loc);
+			}
+			else
+			{
+				/* Let's restore to original position */
+				loc.rcNormalPosition.left = win->orig_x + win->parent->border;
+				loc.rcNormalPosition.top = win->orig_y + win->parent->border;
+				loc.rcNormalPosition.right = win->orig_x + (win->orig_width *  W_Textwidth) + 
+											(WIN_EDGE * 2) +
+											GetSystemMetrics (SM_CXVSCROLL) +
+											(win->border * 2) + 1;
+				loc.rcNormalPosition.bottom = win->orig_y + (win->orig_height * W_Textheight) +
+											(MENU_PAD * 2) + (win->border * 2) + 1;
+				SetWindowPlacement (win->hwnd, &loc);
+			
+				win->TextWidth = win->orig_width;
+				win->TextHeight = win->orig_height;
+
+			}
+		}
+	}
+}
+
+
+/* DoubleBuffering */
+#define DBHEADER\
+   register Window *win;\
+   if (!sdb->window)\
+      return(0);\
+   win = ((Window *)sdb->window)
+
+#define DBHEADER_VOID\
+   register Window *win;\
+   if (!sdb->window)\
+      return;\
+   win = ((Window *)sdb->window)
+
+SDBUFFER *
+W_InitSDB (W_Window window)
+{
+    Window * win;
+    SDBUFFER * sdb;
+
+    win = ((Window *)window);
+
+    if (win->hwnd == NULL)
+        return NULL;
+
+    sdb = (SDBUFFER *) malloc (sizeof (SDBUFFER));
+    sdb->window = (W_Window) malloc (sizeof (Window));
+
+    sdb->window = window;
+
+    GetClientRect (win->hwnd, &(sdb->wr));
+
+    sdb->win_dc = GetWindowDC (win->hwnd);
+    if (sdb->win_dc == NULL)
+        return NULL;
+
+    sdb->mem_dc = CreateCompatibleDC (sdb->win_dc);
+    if (sdb->mem_dc == NULL)
+        return NULL;
+
+    sdb->mem_bmp = CreateCompatibleBitmap (sdb->win_dc, sdb->wr.right, sdb->wr.bottom);
+    if (sdb->mem_bmp == NULL)
+        return NULL;
+
+    sdb->old_bmp = (HBITMAP) SelectObject (sdb->mem_dc, sdb->mem_bmp);
+
+    FillRect (sdb->mem_dc, &sdb->wr, colortable[W_Black].brush);
+
+    return sdb;
+}
+
+void
+W_Win2Mem (SDBUFFER * sdb)
+{
+    BitBlt (sdb->mem_dc, 0, 0, sdb->wr.right, sdb->wr.bottom, sdb->mem_dc, 0, 0, SRCCOPY);
+}
+
+void
+W_Mem2Win (SDBUFFER * sdb)
+{
+    BitBlt (sdb->win_dc, 0, 0, sdb->wr.right, sdb->wr.bottom, sdb->mem_dc, 0, 0, SRCCOPY);
+}
+
+void
+W_ChangeBorderDB (SDBUFFER * sdb, W_Color color)
+{
+    DBHEADER_VOID;
+
+    win->BorderColor = color;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    DrawBorder (win, sdb->mem_dc);
+}
+
+void
+W_FillAreaDB (SDBUFFER * sdb, int x, int y, int width, int height, int color)
+{
+    RECT r;
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    //do a rectangle intersection with the clipping rect, inlined for speed
+    x += border;
+    y += border;
+    r.left = max (x, border);
+    r.right = min (x + width, win->ClipRect.right);
+    if (r.right < r.left)
+        return;                 //Horizantal extents do not overlap
+    r.top = max (y, border);
+    r.bottom = min (y + height, win->ClipRect.bottom);
+    if (r.bottom < r.top)
+        return;                 //Vertical extents do not overlap
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    FillRect (sdb->mem_dc, &r, colortable[color].brush);
+}
+
+void
+W_ClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height)
+{
+    RECT r;
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (win->type == WIN_TEXT)
+    {
+        x = x * W_Textwidth + WIN_EDGE;
+        y = y * W_Textheight + MENU_PAD;
+        width *= W_Textwidth;
+        height *= W_Textheight;
+    }
+
+    //do a rectangle intersection with the clipping rect, inlined for speed
+    x += border;
+    y += border;
+    r.left = max (x, border);
+    r.right = min (x + width, win->ClipRect.right);
+    if (r.right < r.left)
+        return;                 //Horizantal extents do not overlap
+    r.top = max (y, border);
+    r.bottom = min (y + height, win->ClipRect.bottom);
+    if (r.bottom < r.top)
+        return;                 //Vertical extents do not overlap
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    // FillRect doesn't do the edges (right and bottom) -SAC 
+    r.right++;
+    r.bottom++;
+    FillRect (sdb->mem_dc, &r, colortable[W_Black].brush);
+}
+
+//We don't need to cache...
+void
+W_CacheClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height)
+{
+    W_ClearAreaDB (sdb, x, y, width, height);
+}
+
+// Clear multiple areas
+void
+W_ClearAreasDB (SDBUFFER * sdb, int *xs, int *ys, int *widths, int *heights, int num)
+{
+    RECT r;
+    register int border, x, y, width, height;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
+    while (num)
+    {
+        num--;
+
+        x = xs[num];
+        y = ys[num];
+        width = widths[num];
+        height = heights[num];
+
+        if (win->type == WIN_TEXT)
+        {
+            x = x * W_Textwidth + WIN_EDGE;
+            y = y * W_Textheight + MENU_PAD;
+            width *= W_Textwidth;
+            height *= W_Textheight;
+        }
+
+        //do a rectangle intersection with the clipping rect, inlined for speed
+        x += border;
+        y += border;
+        r.left = max (x, border);
+        r.right = min (x + width, win->ClipRect.right);
+        if (r.right < r.left)
+            continue;           //Horizantal extents do not overlap
+        r.top = max (y, border);
+        r.bottom = min (y + height, win->ClipRect.bottom);
+        if (r.bottom < r.top)
+            continue;           //Vertical extents do not overlap
+
+        FillRect (sdb->mem_dc, &r, colortable[W_Black].brush);
+    }
+}
+
+void
+W_ClearWindowDB (SDBUFFER * sdb)
+{
+    DBHEADER_VOID;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
+    if (!win->tiled)
+        FillRect (sdb->mem_dc, &win->ClipRect, colortable[BLACK].brush);
+    else
+    {
+        struct Icon *icon = win->TileIcon;
+        RECT r;
+        int i, j;
+
+        GetClientRect (win->hwnd, &r);
+
+        //Bitmap should be white on window bk color
+        SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
+        SetBkColor (sdb->mem_dc, colortable[WHITE].rgb);
+
+        //Select the bitmap
+        SelectObject (GlobalMemDC, icon->bm);
+
+        //Paste the bitmap into the window
+        for (i = 0; i < r.bottom; i += icon->height)
+            for (j = 0; j < r.right; j += icon->width)
+                BitBlt (sdb->mem_dc, j, i,
+                        icon->width, icon->height, GlobalMemDC, 0, 0,
+                        SRCCOPY);
+        DrawBorder (win, sdb->mem_dc);
+    }
+}
+
+void
+W_MakeLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color)
+{
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (sdb->mem_dc, colortable[color].pen);
+    MoveTo (sdb->mem_dc, x0 + border, y0 + border);
+    LineTo (sdb->mem_dc, x1 + border, y1 + border);
+    /* Get that last point in there ... -SAC */
+    SetPixel (sdb->mem_dc, x1 + border, y1 + border, colortable[color].rgb);
+}
+
+void
+W_CacheLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color)
+{
+    W_MakeLineDB (sdb, x0, y0, x1, y1, color);
+}
+
+void
+W_MakePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color)
+{
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (sdb->mem_dc, colortable[color].pen);
+    SetPixel (sdb->mem_dc, x0 + border, y0 + border, colortable[color].rgb);
+}
+
+void
+W_CachePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color)
+{
+    W_MakePointDB (sdb, x0, y0, color);
+}
+
+void
+W_MakeLinesDB (SDBUFFER * sdb, int *x0, int *y0, int *x1, int *y1, int num, W_Color color)
+{
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (sdb->mem_dc, colortable[color].pen);
+
+    while (num)
+    {
+        num--;
+        MoveTo (sdb->mem_dc, x0[num] + border, y0[num] + border);
+        LineTo (sdb->mem_dc, x1[num] + border, y1[num] + border);
+        SetPixel (sdb->mem_dc, x1[num] + border, y1[num] + border,
+                  colortable[color].rgb);
+    }
+}
+
+void
+W_MakeTractLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color)
+{
+    int border;
+    unsigned __int32 d1, d2, d3;
+    int dp /* Dash pointer */ , dc /* Dash counter */ ;
+    register int Md /* Major direction */ , md; /* minor direction */
+    /* 3 blank, 1 solid... etc. -SAC */
+    int dashdesc[] = { 10, 1 };
+
+    DBHEADER_VOID;
+
+    dashdesc[0] = tpDotDist;
+
+    md = x0;
+    x0 = x1;
+    x1 = md;
+    md = y0;
+    y0 = y1;
+    y1 = md;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
+    border = win->border;
+    x0 += border;
+    y0 += border;
+    x1 += border;
+    y1 += border;
+    d2 = abs (x0 - x1);
+    d3 = abs (y0 - y1);
+    if (d2 > d3)
+    {
+        /* Major axis is x */
+
+        if (d3)
+            d1 = (unsigned __int32) ((((__int64) d3) << 32) / d2);
+        else
+            d1 = 1;
+        d2 = CINIT;
+        Md = x0 < x1 ? 1 : -1;
+        md = y0 < y1 ? 1 : -1;
+        dp = 0;
+        dc = dashdesc[dp];
+
+        while ((Md == 1 ? x0 <= x1 : x0 >= x1))
+        {
+            if (dp & 1)         // An odd number
+                SetPixel (sdb->mem_dc, x0, y0, colortable[color].rgb);
+            dc--;
+            if (dc < 1)
+            {
+                if (++dp >= 2)
+                {
+                    dp = 0;
+                    dashdesc[dp] += 2;
+                }
+                dc = dashdesc[dp];
+            }
+
+            x0 += Md;
+            d3 = d2;
+            d2 += d1;
+            if (!d1 || (d3 > d2))
+            {
+                y0 += md;
+                dc--;
+            }
+        }
+    }
+    else
+    {
+        /* Major axis is y */
+
+        if (d2)
+            d1 = (unsigned __int32) ((((__int64) d2) << 32) / d3);
+        else
+            d1 = 1;
+        d2 = CINIT;
+
+        Md = y0 < y1 ? 1 : -1;
+        md = x0 < x1 ? 1 : -1;
+        dp = 0;
+        dc = dashdesc[dp];
+
+        while ((Md == 1 ? y0 <= y1 : y0 >= y1))
+        {
+            if (dp & 1)         // An odd number
+                SetPixel (sdb->mem_dc, x0, y0, colortable[color].rgb);
+            dc--;
+            if (dc < 1)
+            {
+                if (++dp >= 2)
+                {
+                    dp = 0;
+                    dashdesc[dp] += 2;
+                }
+                dc = dashdesc[dp];
+            }
+
+            y0 += Md;
+            d3 = d2;
+            d2 += d1;
+            if (!d1 || (d3 > d2))
+            {
+                x0 += md;
+                dc--;
+            }
+        }
+    }
+}
+
+void
+W_MakePhaserLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color)
+{
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (sdb->mem_dc, colortable[color].pen);
+    MoveTo (sdb->mem_dc, x0 + border, y0 + border);
+    LineTo (sdb->mem_dc, x1 + border, y1 + border);
+    SetPixel (sdb->mem_dc, x1 + border, y1 + border, colortable[color].rgb);
+}
+
+void
+W_WriteTriangleDB (SDBUFFER * sdb, int x, int y, int s, int t, W_Color color)
+{
+    POINT points[3];
+
+    DBHEADER_VOID;
+
+    x += win->border;
+    y += win->border;
+
+    if (t == 0)
+    {
+        points[0].x = x;
+        points[0].y = y;
+        points[1].x = x + s;
+        points[1].y = y - s;
+        points[2].x = x - s;
+        points[2].y = y - s;
+    }
+    else
+    {
+        points[0].x = x;
+        points[0].y = y;
+        points[1].x = x + s;
+        points[1].y = y + s;
+        points[2].x = x - s;
+        points[2].y = y + s;
+    }
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (sdb->mem_dc, colortable[color].pen);
+    SelectObject (sdb->mem_dc, GetStockObject (NULL_BRUSH));
+
+    Polygon (sdb->mem_dc, points, 3);
+}
+
+void
+W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font)
+{
+    RECT r;
+    SIZE ext;
+    register int border;
+
+    DBHEADER_VOID;
+    border = win->border;
+
+    switch (win->type)
+    {
+    case WIN_TEXT:
+        x = x * W_Textwidth + WIN_EDGE;
+        y = y * W_Textheight + MENU_PAD;
+        /* fall through */
+
+    case WIN_GRAPH:
+        if (NetrekPalette)
+        {
+            SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+            RealizePalette (sdb->mem_dc);
+        }
+
+        SelectObject (sdb->mem_dc, (HFONT) font);
+        SetTextColor (sdb->mem_dc, colortable[color].rgb);
+        SetBkColor (sdb->mem_dc, colortable[BLACK].rgb);
+
+        GetTextExtentPoint (sdb->mem_dc, str, len, &ext);
+
+        //do a rectangle intersection with the clipping rect, inlined for speed
+        x += border;
+        y += border;
+        r.left = max (x, border);
+        r.right = min (x + ext.cx, win->ClipRect.right);
+        if (r.right < r.left)
+            return;             //Horizantal extents do not overlap
+        r.top = max (y, border);
+        r.bottom = min (y + ext.cy, win->ClipRect.bottom);
+        if (r.bottom < r.top)
+            return;             //Vertical extents do not overlap
+
+        ExtTextOut (sdb->mem_dc, x, y, ETO_CLIPPED | ETO_OPAQUE, &r, str, len, NULL);
+        break;
+
+    default:
+        printf ("Unknown window type in W_WriteText");
+    }
+}
+
+
+void
+W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font)
+{
+    DBHEADER_VOID;
+
+    switch (win->type)
+    {
+    case WIN_TEXT:
+        x = x * W_Textwidth + WIN_EDGE;
+        y = y * W_Textheight + MENU_PAD;
+        /* fall through */
+
+    case WIN_GRAPH:
+        if (NetrekPalette)
+        {
+            SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+            RealizePalette (sdb->mem_dc);
+        }
+        SelectObject (sdb->mem_dc, (HFONT) font);
+        SetTextColor (sdb->mem_dc, colortable[color].rgb);
+        SetBkMode (sdb->mem_dc, TRANSPARENT);
+
+        ExtTextOut (sdb->mem_dc, x + win->border, y + win->border, ETO_CLIPPED,
+                    &(win->ClipRect), str, len, NULL);
+        break;
+
+    default:
+        printf ("Unknown window type in W_WriteText");
+    }
+}
+
+void
+W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border, width, height;
+    register int srcx, srcy;
+
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    border = bitmap->ClipRectAddr->top;
+    x += border;
+    y += border;
+    if (x < border)
+    {
+        width = bitmap->width - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((width = bitmap->ClipRectAddr->right - x) > bitmap->width)
+        width = bitmap->width;
+    if (y < border)
+    {
+        height = bitmap->height - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((height = bitmap->ClipRectAddr->bottom - y) > bitmap->height)
+        height = bitmap->height;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (GlobalMemDC, bitmap->bm);
+
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (sdb->mem_dc, colortable[color].rgb);
+    SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
+
+    BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
+            width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
+}
+
+void
+W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border, width, height;
+    register int srcx, srcy;
+    HBITMAP newcopy;
+    int i, colorsum;
+    RGBQUAD rgbq[257];
+
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    border = bitmap->ClipRectAddr->top;
+    x += border;
+    y += border;
+    if (x < border)
+    {
+        width = bitmap->width - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((width = bitmap->ClipRectAddr->right - x) > bitmap->width)
+        width = bitmap->width;
+    if (y < border)
+    {
+        height = bitmap->height - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((height = bitmap->ClipRectAddr->bottom - y) > bitmap->height)
+        height = bitmap->height;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
+    newcopy = CopyImage (bitmap->bm, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+
+    SelectObject (GreyBitmapDC, newcopy);
+
+    GetDIBColorTable (GreyBitmapDC, 0, 256, (LPRGBQUAD) rgbq);
+    for (i = 0; i < 256; i++)
+    {
+        colorsum = rgbq[i].rgbBlue + rgbq[i].rgbRed + rgbq[i].rgbGreen;
+        if (colorsum != 0)
+            colorsum = (colorsum / 3 + 96);
+        if (colorsum > 255)
+            colorsum = 255;
+        rgbq[i].rgbRed = colorsum;
+        rgbq[i].rgbBlue = colorsum;
+        rgbq[i].rgbGreen = colorsum;
+    }
+
+    SetDIBColorTable (GreyBitmapDC, 0, 256, (LPRGBQUAD) rgbq);
+
+    BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
+            width, height, GreyBitmapDC, srcx, srcy, SRCPAINT); // <-- using OR mode
+    DeleteObject (newcopy);
+}
+
+void
+W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border, width, height;
+    register int srcx, srcy;
+
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    border = bitmap->ClipRectAddr->top;
+    x += border;
+    y += border;
+    if (x < border)
+    {
+        width = bitmap->width - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((width = bitmap->ClipRectAddr->right - x) > bitmap->width)
+        width = bitmap->width;
+    if (y < border)
+    {
+        height = bitmap->height - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((height = bitmap->ClipRectAddr->bottom - y) > bitmap->height)
+        height = bitmap->height;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (GlobalMemDC, bitmap->bm);
+
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (sdb->mem_dc, colortable[color].rgb);
+    SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
+
+    BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
+            width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
 }

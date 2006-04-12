@@ -386,6 +386,9 @@ db_redraw_lab2 (int fr)
 
     db_flags (fr);
 
+    /* TIMER */
+    db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
+
     if (fr || (me->p_speed != old_spd) || (old_cur_max != cur_max))
     {
         db_bar ("Spd", 2, 2, 75, 25,

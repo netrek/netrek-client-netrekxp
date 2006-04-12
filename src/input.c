@@ -28,6 +28,9 @@
 #include "spopt.h"
 #include "map.h"
 #include "proto.h"
+#ifdef SOUND
+#include "audio.h"
+#endif
 
 #ifdef __BORLANDC__
 //   #pragma warn -rvl    //Turon off "parameter never used..." warning
@@ -384,6 +387,7 @@ getctrlkey (unsigned char **s)
     if (*str == '^')
     {
         str++;
+
         /* check for '^' key being specified with "^^" */
         if (*str != '^')
             c = *str + 96;
@@ -426,10 +430,9 @@ initkeymap (void)
     /* in the future let me strongly recommed we move keymap * completely
      * outside of the stats structure. - jn */
 
-
     if ((str = myshipdef->keymap) != NULL)
     {
-        while (*str != '\0')
+        while (*str != '\0' && *(str + 1) != '\0')
         {
             if (*str >= 32 && *str < 128)
             {
@@ -483,7 +486,7 @@ initkeymap (void)
     if ((str = (unsigned char *) stringDefault ("b1keymap")) != NULL)
     {
         b1_as_shift = 1;
-        while (*str != '\0')
+        while (*str != '\0' && *(str + 1) != '\0')
         {
             if (*str >= 32 && *str < 176)
             {
@@ -496,7 +499,7 @@ initkeymap (void)
     if ((str = (unsigned char *) stringDefault ("b2keymap")) != NULL)
     {
         b2_as_shift = 1;
-        while (*str != '\0')
+        while (*str != '\0' && *(str + 1) != '\0')
         {
             if (*str >= 32 && *str < 176)
             {
@@ -509,7 +512,7 @@ initkeymap (void)
     if ((str = (unsigned char *) stringDefault ("b3keymap")) != NULL)
     {
         b3_as_shift = 1;
-        while (*str != '\0')
+        while (*str != '\0' && *(str + 1) != '\0')
         {
             if (*str >= 32 && *str < 176)
             {
@@ -518,12 +521,39 @@ initkeymap (void)
             str += 2;
         }
     }
+
+    if ((str = (unsigned char *) stringDefault ("b4keymap")) != NULL)
+    {
+        b4_as_shift = 1;
+        while (*str != '\0' && *(str + 1) != '\0')
+        {
+            if (*str >= 32 && *str < 176)
+            {
+                mystats->st_keymap[*str - 32 + 480] = *(str + 1);
+            }
+            str += 2;
+        }
+    }
+
+    if ((str = (unsigned char *) stringDefault ("b5keymap")) != NULL)
+    {
+        b5_as_shift = 1;
+        while (*str != '\0' && *(str + 1) != '\0')
+        {
+            if (*str >= 32 && *str < 176)
+            {
+                mystats->st_keymap[*str - 32 + 576] = *(str + 1);
+            }
+            str += 2;
+        }
+    }
+
 #endif
 
     /* note: not stored on server */
     if ((str = myshipdef->buttonmap) != NULL)
     {
-        while (*str != '\0')
+        while (*str != '\0' && *(str + 1) != '\0')
         {
             switch (*str++)
             {
@@ -536,20 +566,24 @@ initkeymap (void)
             case '3':
                 buttonmap[3] = getctrlkey (&str);
                 break;
-
-#ifdef SHIFTED_MOUSE
+            /* XButton 1 */
             case '4':
                 buttonmap[4] = getctrlkey (&str);
                 break;
+            /* XButton 2 */
             case '5':
                 buttonmap[5] = getctrlkey (&str);
                 break;
+            /* Wheel Up */
             case '6':
                 buttonmap[6] = getctrlkey (&str);
                 break;
+            /* Wheel Down */
             case '7':
                 buttonmap[7] = getctrlkey (&str);
                 break;
+
+#ifdef SHIFTED_MOUSE
             case '8':
                 buttonmap[8] = getctrlkey (&str);
                 break;
@@ -565,8 +599,38 @@ initkeymap (void)
             case 'c':
                 buttonmap[12] = getctrlkey (&str);
                 break;
-#endif
-
+			case 'd':
+				buttonmap[13] = getctrlkey (&str);
+				break;
+			case 'e':
+				buttonmap[14] = getctrlkey (&str);
+				break;
+			case 'f':
+				buttonmap[15] = getctrlkey (&str);
+				break;
+			case 'g':
+				buttonmap[16] = getctrlkey (&str);
+				break;
+			case 'h':
+				buttonmap[17] = getctrlkey (&str);
+				break;
+			case 'i':
+				buttonmap[18] = getctrlkey (&str);
+				break;
+			case 'j':
+				buttonmap[19] = getctrlkey (&str);
+				break;
+			case 'k':
+				buttonmap[20] = getctrlkey (&str);
+				break;
+			case 'l':
+				buttonmap[21] = getctrlkey (&str);
+				break;
+			case 'm':
+				buttonmap[22] = getctrlkey (&str);
+				break;
+#endif /* SHIFTED_MOUSE */
+                
             default:
                 fprintf (stderr, "%c ignored in buttonmap\n", *(str - 1));
                 break;
@@ -620,8 +684,6 @@ input ()
         process_event ();
     }
 
-//  printf("Resetting game\n");  SRS 4/11/98 I hate this line, serves no point.
-
     while (W_EventsPending ())
         W_NextEvent (&event);
 
@@ -641,7 +703,6 @@ input ()
 #endif
 {
     fd_set readfds;
-    register int doflush = 0;
 
     while (1)
     {
@@ -674,8 +735,6 @@ input ()
             if (W_EventsPending ())
             {
                 process_event ();
-                /* NOTE: we're no longer calling XPending(), need this */
-                doflush = 1;
             }
 #endif /* !THREADED */
 
@@ -683,8 +742,7 @@ input ()
                 (udpSock >= 0 && FD_ISSET (udpSock, &readfds)))
             {
                 intrupt (&readfds);
-                /* NOTE: we're no longer calling XPending(), need this */
-                doflush = 1;
+
                 if (isServerDead ())
                 {
                     printf ("Whoops!  We've been ghostbusted!\n");
@@ -704,13 +762,6 @@ input ()
                 }
             }
 
-        }
-
-        /* NOTE: we're no longer calling XPending(), need this */
-        if (doflush)
-        {
-            W_Flush ();
-            doflush = 0;
         }
     }
 }
@@ -1220,21 +1271,6 @@ keyaction (W_Event * data)
         return;
     }
 
-    /* If the mouse is in player list window - enable info and lock */
-    if (data->Window == playerw)
-    {
-        switch (key)
-        {
-            case 'i':
-            case 'I':
-            case 'l':
-                break;
-            default:
-                return;
-        }
-    }
-
-
 #ifdef RECORDGAME
     /* If playing a recorded game, do not use regular keys. */
     /* What follows is a hardcoded list of commands */
@@ -1273,6 +1309,8 @@ keyaction (W_Event * data)
                 break;
             case 'l':
                 target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+				if (target->o_num == -1)
+					return;
                 pblockplayer (target->o_num);
                 return;
                 break;
@@ -1286,6 +1324,7 @@ keyaction (W_Event * data)
             case 'h':
             case 'I':
             case 'i':
+            case 'L':
             case 'S':
             case '?':
                 /* Do the normal function */
@@ -1313,6 +1352,31 @@ keyaction (W_Event * data)
     {
         doMacro (data);
         return;
+    }
+
+    /* If the mouse is in player list window - enable info and lock */
+    /* This part has to be after macros, so point macros will work on */
+    /* the players from playerlist */
+    if (data->Window == playerw)
+    {
+        switch (key)
+        {
+            case 'i':
+            case 'I':
+            case 'l':
+            case 146:   /* ^2 */
+            case 149:   /* ^5 */
+            case 153:   /* ^9 */
+            case 197:   /* ^e */
+            case 198:   /* ^f */
+            case 200:   /* ^h */
+            case 206:   /* ^n */
+            case 207:   /* ^o */
+            case 208:   /* ^p */
+                break;
+            default:
+                return;
+        }
     }
 
 #ifdef MOTION_MOUSE
@@ -1357,6 +1421,14 @@ mkeyaction (W_Event * data)
             case W_RBUTTON:
                 offset = 384;
                 break;
+
+            case W_XBUTTON1:
+                offset = 480;
+                break;
+
+            case W_XBUTTON2:
+                offset = 576;
+                break;
             }
 
             key = mystats->st_keymap[key - 32 + offset];
@@ -1379,10 +1451,8 @@ buttonaction (W_Event * data)
     struct obtype *gettarget (W_Window ww,
                               int x,
                               int y,
-                              int targtype);
-
-    if (messageon)
-        message_off ();         /* ATM */
+                              int targtype),
+	*target;
 
     fastQuit = 0;               /* any event, cancel
                                  * fastquit! */
@@ -1411,13 +1481,74 @@ buttonaction (W_Event * data)
 
 
     if (data->Window != w && data->Window != mapw
-        && data->Window != infow && data->Window != scanwin)
+        && data->Window != infow && data->Window != scanwin
+		&& data->Window != playerw)
         return;
 
+	if (data->Window == playerw)
+	{
+		int x, y;
+
+        if (findMouseInWin (&x, &y, playerw))
+	    {
+		    data->Window = playerw;
+			data->x = x;
+			data->y = y;
+		}
+		if (data->key == W_LBUTTON)
+		{
+			target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+			if (target->o_num == -1 || messageon || !playerListMessaging)
+				return;
+
+			/* Here we will have to enter message_on () followed by
+			   smessage to player */
+#ifdef SOUND
+			Play_Sound (MESSAGE_SOUND);
+#endif
+			message_on ();
+			data->key = players[target->o_num].p_mapchars[1];
+			smessage (data->key);
+			return;
+		}
+		else if (data->key == W_RBUTTON)
+		{
+			if (messageon || !playerListMessaging)
+				return;
+			/* Here we will have to enter message_on () followed by
+			   smessage to player */
+#ifdef SOUND
+			Play_Sound (MESSAGE_SOUND);
+#endif
+			message_on ();
+			data->key = 'T';
+			smessage (data->key);
+			return;
+		}
+		else if (data->key == W_MBUTTON)
+		{
+			if (messageon || !playerListMessaging)
+				return;
+			/* Here we will have to enter message_on () followed by
+			   smessage to player */
+#ifdef SOUND
+			Play_Sound (MESSAGE_SOUND);
+#endif
+			message_on ();
+			data->key = 'A';
+			smessage (data->key);
+			return;
+		}
+		return;
+	}
+
+    if (messageon)
+        message_off ();         /* ATM */
+
 #ifdef SHIFTED_MOUSE
-    if (data->key >= W_LBUTTON && data->key <= W_RBUTTON4)
+    if (data->key >= W_LBUTTON && data->key <= W_XBUTTON2_4)
 #else
-    if (data->key > 0 && data->key <= 3)
+    if (data->key >= W_LBUTTON && data->key <= W_WHEELDOWN)
 #endif
     {
         if (buttonmap[data->key] != '\0')
@@ -1433,7 +1564,6 @@ buttonaction (W_Event * data)
         (!motion_mouse_enablable) &&    /* Hack for            */
         (data->key != W_RBUTTON))       /* continuous_steer    */
         return;
-
 #endif
 
     if (data->Window == infow)
@@ -1469,6 +1599,36 @@ buttonaction (W_Event * data)
         course = getcourse (data->Window, data->x, data->y);
         sendPhaserReq (course);
     }
+    else if (data->key == W_XBUTTON1)
+    {
+        unsigned char course;
+
+        /* f = launch plasma torpedos */
+
+#ifdef AUTOKEY
+        if (autoKey)
+            autoKeyPlasmaReqOn ();
+        else
+        {
+            course = getcourse (data->Window, data->x, data->y);
+            sendPlasmaReq (course);
+        }
+#else
+        course = getcourse (data->Window, data->x, data->y);
+        sendPlasmaReq (course);
+#endif /* AUTOKEY */
+    }
+    else if (data->key == W_XBUTTON2)
+    {
+#ifdef AUTOKEY
+        if (autoKey && !(localflags & PFREFIT))
+            autoKeyBombReqOn ();
+        else
+            bomb_planet ();
+#else
+        bomb_planet ();
+#endif /* AUTOKEY */
+    }
 
 #ifdef SHIFTED_MOUSE
     else if (data->key == W_RBUTTON2)
@@ -1484,6 +1644,30 @@ buttonaction (W_Event * data)
     else if (data->key == W_MBUTTON2)
     {
         detmine ();
+    }
+    else if (data->key == W_XBUTTON1_2)
+    {
+        set_speed (0);
+    }
+    else if (data->key == W_XBUTTON2_2)
+    {
+        static unsigned long lastdet = 0;
+        unsigned long curtime;
+
+#ifdef AUTOKEY
+        if (autoKey)
+            autoKeyDetReqOn ();
+        else
+            sendDetonateReq ();
+#else
+        /* want to limit these to one per update */
+        curtime = mstime ();
+        if (curtime >= lastdet + 100)       /* Allow one per 100 ms */
+        {
+            sendDetonateReq ();
+            lastdet = curtime;
+        }
+#endif /* AUTOKEY */
     }
     else if (data->key == W_RBUTTON3)
     {
@@ -1506,6 +1690,26 @@ buttonaction (W_Event * data)
     {
         cloak ();
     }
+    else if (data->key == W_XBUTTON1_3)
+    {
+#ifdef AUTOKEY
+        if (autoKey)
+            autoKeyBeamUpReqOn ();
+        else
+#endif
+
+            beam_up ();
+    }
+    else if (data->key == W_XBUTTON2_3)
+    {
+#ifdef AUTOKEY
+        if (autoKey)
+            autoKeyBeamDownReqOn ();
+        else
+#endif
+
+            beam_down ();
+    }
     else if (data->key == W_RBUTTON4)
     {
         lockPlanetOrBase (data->Window, data->x, data->y);
@@ -1519,10 +1723,15 @@ buttonaction (W_Event * data)
          *target;
 
         if (me->p_flags & (PFTRACT | PFPRESS))
-            sendTractorReq (0, me->p_no);
-        target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
-        me->p_tractor = target->o_num;
-        sendTractorReq (1, target->o_num);
+            sendTractorReq (0, (char) (me->p_no));
+        else
+        {
+            target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+		    if (target->o_num == -1)
+			    return;
+            me->p_tractor = target->o_num;
+            sendTractorReq (1, (char) (target->o_num));
+        }
     }
     else if (data->key == W_MBUTTON4)
     {
@@ -1533,12 +1742,56 @@ buttonaction (W_Event * data)
          *target;
 
         if (me->p_flags & (PFTRACT | PFPRESS))
-            sendRepressReq (0, me->p_no);
-        target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
-        me->p_tractor = target->o_num;
-        sendRepressReq (1, target->o_num);
+            sendRepressReq (0, (char) (me->p_no));
+        else
+        {
+            target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+		    if (target->o_num == -1)
+			    return;
+            me->p_tractor = target->o_num;
+            sendRepressReq (1, (char) (target->o_num));
+        }
     }
-#endif
+    else if (data->key == W_XBUTTON1_4)
+    {
+        target =
+            gettarget (data->Window, data->x, data->y, TARG_PLAYER | TARG_PLANET);
+
+    	if (target->o_num == -1)
+		    return;
+
+        if (target->o_type == PLAYERTYPE)
+        {
+            if (players[target->o_num].p_team != me->p_team)
+            {
+                /* PFSEEN is not sent to client, so we have to check
+                 * if player's coordinates are (-10000,-10000) to know
+                 * wether we can see him or not
+                 */
+                if (players[target->o_num].p_x != -10000 &&
+                    players[target->o_num].p_y != -10000)
+                {
+                    sendPlaylockReq (target->o_num);
+                    me->p_playerl = target->o_num;
+                }
+            }
+            else
+            {
+                sendPlaylockReq (target->o_num);
+                me->p_playerl = target->o_num;
+            }
+        }
+        else
+        {                           /* It's a planet */
+            sendPlanlockReq (target->o_num);
+            me->p_planet = target->o_num;
+        }
+    }
+    else if (data->key == W_XBUTTON2_4)
+    {
+        sendPractrReq ();
+    }
+#endif /* SHIFTED_MOUSE */
 }
 
 /******************************************************************************/
@@ -1589,7 +1842,7 @@ detmine (void)
         if (torps[i + (me->p_no * MAXTORP)].t_status == TMOVE ||
             torps[i + (me->p_no * MAXTORP)].t_status == TSTRAIGHT)
         {
-            sendDetMineReq (i + (me->p_no * MAXTORP));
+            sendDetMineReq ((short) (i + (me->p_no * MAXTORP)));
 
 #ifdef SHORT_PACKETS
             if (recv_short)
@@ -1727,6 +1980,8 @@ doMacro (W_Event * data)
 
                         target = gettarget (data->Window, data->x, data->y,
                                             TARG_PLAYER | TARG_CLOAK);
+						if (target->o_num == -1)
+							return;
                         if (target->o_type == PLAYERTYPE)
                         {
                             j = &players[target->o_num];
@@ -1744,6 +1999,8 @@ doMacro (W_Event * data)
                     case MACRO_TEAM:
                         target = gettarget (data->Window, data->x, data->y,
                                             TARG_PLAYER | TARG_PLANET);
+						if (target->o_num == -1)
+							return;
                         if (target->o_type == PLANETTYPE)
                         {
                             l = &planets[target->o_num];
@@ -1859,6 +2116,11 @@ Key32 (void)
     if (udpWin)
         udpdone ();
 
+    if (showHints)
+    {
+        W_UnmapWindow (hintWin);
+        showHints = 0;
+    }
 }
 
 /******************************************************************************/
@@ -1894,7 +2156,7 @@ Key35 (void)
 void
 Key36 (void)
 {
-    sendTractorReq (0, me->p_no);
+    sendTractorReq (0, (char) (me->p_no));
 }
 
 /******************************************************************************/
@@ -2494,18 +2756,20 @@ Key84 (W_Event * data)
 {
     if (me->p_flags & (PFTRACT | PFPRESS))
     {
-        sendTractorReq (0, me->p_no);
+        sendTractorReq (0, (char) (me->p_no));
         return;
     }
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+	if (target->o_num == -1)
+		return;
     me->p_tractor = target->o_num;
     if (key == 'T')
     {
-        sendTractorReq (1, target->o_num);
+        sendTractorReq (1, (char) (target->o_num));
     }
     else
     {
-        sendRepressReq (1, target->o_num);
+        sendRepressReq (1, (char) (target->o_num));
     }
 }
 
@@ -2532,7 +2796,11 @@ Key85 (void)
 void
 Key86 (void)
 {
-    emptyKey ();
+#ifdef SOUND
+    ChangeVolume (1);
+#else
+    emptykey ();
+#endif
 }
 
 /******************************************************************************/
@@ -2586,7 +2854,8 @@ Key91 (void)
 void
 Key92 (void)
 {
-    emptyKey ();
+    timeBank[T_USER] = time (NULL);
+    timerType = T_USER;
 }
 
 /******************************************************************************/
@@ -2605,10 +2874,12 @@ void
 Key94 (W_Event * data)
 {
     if (me->p_flags & (PFTRACT | PFPRESS))
-        sendRepressReq (0, me->p_no);
+        sendRepressReq (0, (char) (me->p_no));
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+	if (target->o_num == -1)
+		return;
     me->p_tractor = target->o_num;
-    sendRepressReq (1, target->o_num);
+    sendRepressReq (1, (char) (target->o_num));
 }
 
 /******************************************************************************/
@@ -2618,10 +2889,12 @@ void
 Key95 (W_Event * data)
 {
     if (me->p_flags & (PFTRACT | PFPRESS))
-        sendTractorReq (0, me->p_no);
+        sendTractorReq (0, (char) (me->p_no));
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+	if (target->o_num == -1)
+		return;
     me->p_tractor = target->o_num;
-    sendTractorReq (1, target->o_num);
+    sendTractorReq (1, (char) (target->o_num));
 }
 
 /******************************************************************************/
@@ -2832,6 +3105,10 @@ Key108 (W_Event * data)
 {
     target =
         gettarget (data->Window, data->x, data->y, TARG_PLAYER | TARG_PLANET);
+
+	if (target->o_num == -1)
+		return;
+
     if (target->o_type == PLAYERTYPE)
     {
         if (players[target->o_num].p_team != me->p_team)
@@ -2996,7 +3273,11 @@ Key117 (void)
 void
 Key118 (W_Event * data)
 {
+#ifdef SOUND
+    ChangeVolume (-1);
+#else
     emptyKey ();
+#endif
 }
 
 /******************************************************************************/
@@ -3038,18 +3319,20 @@ Key121 (W_Event * data)
 {
     if (me->p_flags & (PFTRACT | PFPRESS))
     {
-        sendTractorReq (0, me->p_no);
+        sendTractorReq (0, (char) (me->p_no));
         return;
     }
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+	if (target->o_num == -1)
+		return;
     me->p_tractor = target->o_num;
     if (key == 'T')
     {
-        sendTractorReq (1, target->o_num);
+        sendTractorReq (1, (char) (target->o_num));
     }
     else
     {
-        sendRepressReq (1, target->o_num);
+        sendRepressReq (1, (char) (target->o_num));
     }
 
 }

@@ -89,12 +89,18 @@ loaddistress (enum dist_type i,
     dist->preappend[0] = '\0';
     dist->macroflag = 0;
 
+	/* If any of gettarget calls returned -1 -> meaning we are in playerlist
+	   window trying to send distress to not available person */
+	if (dist->tclose_pl == 255 || dist->tclose_en == 255 ||
+		dist->tclose_fr == 255 || dist->tclose_j == 255)
+		dist->sender = 255;
+
     return (dist);
 }
 
 /* Coordinating function for _SENDING_ a RCD */
 /* Send an emergency signal out to everyone. */
-
+void
 emergency (enum dist_type i, W_Event * data)
 {
     char ebuf[200];
@@ -110,12 +116,14 @@ emergency (enum dist_type i, W_Event * data)
     recip = me->p_team;
 
     dist = loaddistress (i, data);
+	if (dist->sender == 255)
+		return;
 
     if (gen_distress)
     {
         /* send a generic distress message */
         Dist2Mesg (dist, ebuf);
-        pmessage (ebuf, recip, group | MDISTR);
+        pmessage (ebuf, (short) recip, (short) (group | MDISTR));
     }
     else
     {
@@ -134,7 +142,7 @@ emergency (enum dist_type i, W_Event * data)
                 info = cry + 9;
             }
 
-            pmessage (info, recip, group);
+            pmessage (info, (short) recip, (short) group);
         }
     }
 
@@ -191,12 +199,12 @@ pmacro (int mnum,
 
 #ifdef MULTILINE_MACROS
         if (multiline_enabled && (macro[mnum].type == NEWMULTIM))
-            pmessage (cry, recip, group | MMACRO);
+            pmessage (cry, (short) recip, (short) (group | MMACRO));
 
         else
 #endif /* MULTILINE_MACROS */
 
-            pmessage (cry, recip, group);
+            pmessage (cry, (short) recip, (short) group);
     }
 
     free (dist);

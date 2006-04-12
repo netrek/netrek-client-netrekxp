@@ -62,7 +62,7 @@ conlflags = $(lflags) /NODEFAULTLIB /SUBSYSTEM:CONSOLE /MACHINE:IX86
 lout      = "/OUT:"
 
 #LIBS =  libcmt.lib user32.lib gdi32.lib\
-#        wsock32.lib kernel32.lib winmm.lib mpr.lib
+#        wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib
 
 # Borland Libs
 LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk /Tpe
@@ -72,7 +72,7 @@ GMPLIB = ..\Win32\lib\libgmpbcc.lib
 #..\Win32\lib\libmpbcc.lib
 !ENDIF
 
-LIBS = CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib winmm.lib mpr.lib $(GMPLIB)
+LIBS = CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 
 # ---------------------------------------------------------------------------
 # - Start of makefile proper
@@ -89,7 +89,7 @@ DEBUGDEFS = -DDEBUG
 !endif
 
 ROBJ            = check.obj colors.obj data.obj death.obj defaults.obj dmessage.obj\
-                  enter.obj findslot.obj getname.obj getship.obj helpwin.obj inform.obj\
+                  enter.obj findslot.obj getname.obj getship.obj helpwin.obj hintwin.obj inform.obj\
                   interface.obj newwin.obj option.obj planetlist.obj macrowin.obj\
                   map.obj playerlist.obj ranklist.obj reserved.obj sintab.obj\
                   smessage.obj socket.obj stats.obj util.obj war.obj warning.obj\
@@ -100,7 +100,7 @@ ROBJ            = check.obj colors.obj data.obj death.obj defaults.obj dmessage.
                   string_util.obj local.obj cowmain.obj playback.obj
 
 RSRC            = check.c colors.c data.c death.c defaults.c dmessage.c\
-                  enter.c findslot.c getname.c getship.c helpwin.c inform.c\
+                  enter.c findslot.c getname.c getship.c helpwin.c hintwin.c inform.c\
                   input.c interface.c newwin.c option.c planetlist.c\
                   macrowin.c map.c playerlist.c ranklist.c redraw.c\
                   smessage.c parsemeta.c socket.c stats.c util.c war.c\
@@ -129,7 +129,7 @@ RANDOMOBJ = random.obj
 INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
                   oldbitmaps.h tngbitmaps.h hullbitmaps.h rabbitbitmaps.h\
                   sound.h audio.h litebitmaps.h copyright2.h Wlib.h\
-		  playerlist.h version.h patchlevel.h moobitmaps.h\
+		  playerlist.h version.h moobitmaps.h\
 		  parsemeta.h spopt.h map.h string_util.h wtext.h local.h
 
 all: netrek.exe

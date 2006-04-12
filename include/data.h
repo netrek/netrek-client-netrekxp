@@ -19,8 +19,6 @@
 #define shield_height           20
 #define cloak_width             20
 #define cloak_height            20
-#define icon_width              112
-#define icon_height             80
 
 #ifndef COLORIZE
 #define etorp_width             3
@@ -69,6 +67,7 @@ extern int rdelay;
 extern int showPlanetNames;
 extern int warnShields;
 extern int showStats;
+extern int showHints;
 #ifdef RECORDGAME
 extern FILE *recordFile;        /* recorder */
 extern int playback;
@@ -108,8 +107,13 @@ extern char client_key_date[];
 
 #ifdef META
 extern char *metaServer;
+extern char *metaServer1;
+extern char *metaServer2;
+extern char *metaServer3;
 extern int metaPort;
-
+#ifdef METAPING
+extern int metaPing;
+#endif
 #endif
 
 #define NUM_DIST 27        /* Number of distress macros */
@@ -177,6 +181,7 @@ extern unsigned localflags;
 extern int tournMask;
 extern int nextSocket;
 extern char *serverName;
+extern char *serverNick;
 extern char defaultsFile[80];
 extern int loggedIn;
 extern int reinitPlanets;
@@ -189,6 +194,7 @@ extern int phaserWindow;
 extern int phaserStats;
 extern int phaserStatTry;
 extern int phaserStatHit;
+extern unsigned long phaserStatDamage;
 #endif
 
 extern int scanplayer;
@@ -217,7 +223,6 @@ extern int baseUdpLocalPort;    /* UDP */
 extern int showTractorPressor;
 extern int showAllTractorPressor;
 extern int showLock;
-extern int phaserMsg;
 extern int planetBitmap;
 extern int logging;
 extern int continueTractor;
@@ -232,7 +237,7 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
-extern W_Icon stipple, clockpic, icon;
+extern W_Icon stipple, clockpic;
 
 extern W_Icon base_expview;
 extern W_Icon expview[BMP_SHIPEXPL_FRAMES];
@@ -293,10 +298,10 @@ extern char login[PSEUDOSIZE];
 
 extern struct rank ranks[NUMRANKS];
 
-extern W_Window messagew, w, mapw, statwin, baseWin, infow, iconWin, tstatw,
+extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
     war, warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi,
     messwk, planetw, rankw, playerw, optionWin, reviewWin;
-extern W_Window scanw, scanwin, udpWin, phaserwin;
+extern W_Window scanw, scanwin, udpWin, phaserwin, hintWin;
 
 #ifdef SHORT_PACKETS
 extern W_Window spWin;
@@ -337,6 +342,7 @@ extern char cloakChars[3];
 
 extern int showIND;
 extern int newPlist;
+extern int playerListHack;
 
 
 extern struct dmacro_list *distmacro;
@@ -359,6 +365,7 @@ extern int ignore_signals;
 
 #ifdef MOTION_MOUSE
 extern int continuousMouse;
+extern int continuousMouseFix;
 extern int motionThresh;
 extern int motion_mouse_enablable;
 extern int motion_mouse_steering;
@@ -377,6 +384,8 @@ extern int mouseAsShift;
 extern int b1_as_shift;
 extern int b2_as_shift;
 extern int b3_as_shift;
+extern int b4_as_shift;
+extern int b5_as_shift;
 
 #endif
 
@@ -496,16 +505,55 @@ extern int metaStatusLevel;
 extern int mungScrollbarColors;
 extern int showMotd;
 
-extern char *saveFile;
-extern int saveBig;
-extern int saveMacro;
-extern int saveRCD;
-extern int saveRCM;
+extern char *saveFile;  /* file name to save options to */
+extern int saveBig;     /* save options with comments */
+extern int saveMacro;   /* save options with macros */
+extern int saveRCD;     /* save options with RCD */
+extern int saveRCM;     /* save options with RCM */
 
-extern int tpDotDist;
+extern int tpDotDist;   /* distance between tractor/pressor dots */
 
 extern struct tractor *tractcurrent;
 extern struct tractor *tractrunner;
 extern struct tractor *tracthead;
+
+extern int agriCAPS;    /* show agri names in caps on map */
+extern int agriColor;   /* agri planets font color on map */
+
+extern int windowMove;          /* allow moving of internal windows */
+extern int mainResizeable;      /* allow resize of netrek window */
+extern int playerListMessaging; /* allow message zoom when clicking on player list */
+extern int observerMode;        /* set observer mode variable */
+extern int observerPorts[];     /* predefined list of observer ports */
+extern int showHockeyScore;     /* show hockey score on map */
+
+extern char pigcall[];  /* pigcall string */
+extern char cowid[];    /* cowid string */
+
+extern int serverType;              /* server type variable */
+extern int beepOnPrivateMessage;    /* beep if private message was received */
+extern W_Window wam_windows[];      /* window allowed messages types */
+
+extern int showStars;   /* show background stars on local */
+extern int warpStreaks; /* show warp streaks */
+
+/* time client connected to server */
+extern time_t timeStart;    /* time when client connected to server */
+
+/* timer data */                   
+extern int timerType;       /* type of dashboard timer */
+extern time_t timeBank[];   /* different kind of times to store for different timer types */
+
+extern int omitTeamLetter;  /* don't show team letter on map */
+
+extern int viewBox;     /* show local window box on map */
+
+extern struct stringlist *defaults; /* pointer to defaults list */
+
+/* DoubleBufering */
+extern SDBUFFER *localSDB;    /* double buffer for local window */
+extern SDBUFFER *mapSDB;      /* double buffer for map window */
+
+extern int disableWinkey;   /* disable WinKey + ContextKey during the game */
 
 #endif /* _h_data */

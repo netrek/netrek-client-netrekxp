@@ -3,25 +3,57 @@
 
 # Options added since NetrekXP final release
 
+agriCAPS:                 (on/off) show AGRI planet name in caps on the map
+
+agriColor:                (0-2) select color to display agri planet names on the map
+# 0 - owner race color
+# 1 - white
+# 2 - gray
+
+b4keymap:                 (string) keymap for mouse button 4 (mouseAsShift=on)
+b5keymap:                 (string) keymap for mouse button 5 (mouseAsShift=on)
+continuousMouseFix:       (on/off) fix continuous mouse behavior
+disableWinkey             (on/off) disable Windows and Context keys
+mainResizeable:           (on/off) make main window (netrek) resizeable
+metaPing:                 (on/off) show ping stats to all servers in metaserver window
+omitTeamLetter:           (on/off) omit team letter on galaxy
+playerListHack:           (on/off) if player's letter is greater than 'f' suppose that
+                                   the player is observer.
+playerListMessaging:      (on/off) allow messages to be sent to players by clicking player
+                                   on the player list window
 phaserShrinkStyle:        (0-1) shrink own phasers using specific style
 # 0 - COW style (fixed length phaser)
-# 1 - BRMH style (phaser shrinks during rechange time
+# 1 - BRMH style (phaser shrinks during rechange time)
 
 saveFile:                 (path) path to saved options file
 saveBig:                  (on/off) save options with remarks
 saveMacro:                (on/off) save macros to saveFile
 saveRCD:                  (on/off) save receiver configurable distresses to saveFile
 saveRCM:                  (on/off) save receiver configurable messages to saveFile
+showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
+showHints:                (on/off) show hints window
 showHockeyLinesLocal:     (on/off) show hockey lines on tactical
 showHockeyLinesMap:       (on/off) show hockey lines on galactic
-showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
+showHockeyScore:          (on/off) show hockey score on galactic
+showStars:                (on/off) show background stars
+
+timerType:                (0-4) type of timer on dashboard window
+# 0 - don't show
+# 1 - current time
+# 2 - server time
+# 3 - time in ship
+# 4 - user-set time
+
+viewBox:                  (on/off) show tactical window boundaries on map
+warpStreaks:              (on/off) show streaks while warping to starbase
+windowMove:               (on/off) enable internal windows to be moved with mouse
 
 # Options of the NetrekXP final release
 
 autoQuit:                 (int) autoquit time after death
 b1keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
-b2keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
-b3keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
+b2keymap:                 (string) keymap for mouse button 2 (mouseAsShift=on)
+b3keymap:                 (string) keymap for mouse button 3 (mouseAsShift=on)
 baseUdpLocalPort:         (port) use this port as base for UDP
 buttonmap:                (string) change mouse button map
 buttonmap-<ship>:         (string) use this buttonmap for ship (sc,dd,ca,bb,as,sb,ga,att)
@@ -87,6 +119,7 @@ motionThresh:             (int) mouse motion threshold
 mouseAsShift:             (on/off) use mouse buttons to switch keymaps
 mungScrollbarColors:      (on/off) set scrollbar colors to match background colors
 name:                     (string) character nick name
+netrek.w32caption:        (on/off) when off - shows titlebar in netrek window
 
 newDashboard:             (0-3) dashboard style
 # 0 - Text
@@ -106,14 +139,6 @@ orishipTbmpfile:          (path) - own tainted color bitmap
 orishipMbmpfile:          (path) - monospace bitmap if colorclient=0
 partitionList:            (on/off) add blank line between teams in player list
 password:                 (string) password for autologin
-
-phaserMsg:                (0-5) where to write phaser messages
-# 0 - none
-# 1 - review all
-# 2 - review team
-# 3 - review indiv
-# 4 - review kill
-# 5 - total
 
 phaserShrink:             (0-16) shrink own phaser by x/16 of its length
 # 0-16 for COW style phaser shrink
@@ -137,7 +162,7 @@ playerList:               (string) custom style of player list
 # 'r' - Ratio
 # 's' - Speed
 # 'v' - Deaths per hour
-# 'w' - War staus
+# 'w' - War status
 # 'B' - Bombing
 # 'C' - Curt (short) rank
 # 'D' - Defense
@@ -196,6 +221,7 @@ showPlanetOwner:          (on/off) show planet owner on galaxy
 showStats:                (on/off) show ship statistics
 showTractorPressor:       (on/off) show tractors and pressors
 shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
+singleMacro:              (string) macro keys that will trigger macro without macro mode
 sortMyTeamFirst:          (on/off) show my team first in the player list
 sortPlayers:              (on/off) sort players by teams
 sound:                    (on/off) enable sound
@@ -253,7 +279,6 @@ warnShields:              (on/off) change shields color on enemy approach
 # help            Help Window
 # UDP             UDP Options Window
 # pingStats       Ping Statistics Window
-# buttonkeymap    Keymap Window
 # xtrekrc_help    The xtrekrc help Window
 # macro           Active Macros Window
 

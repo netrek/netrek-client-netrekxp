@@ -46,11 +46,251 @@ static int sound_plasma = 0;
 static int sound_other_plasma = 0;
 static int sound_other_explode = 0;
 static unsigned int sound_flags = 0;
-
 #endif
 
+/* Background Stars Definitions */
+struct _star {
+    int s_x, s_y;
+    int s_color;
+};
+
+static void redrawStarSector(int sectorx, int sectory);
+
+#define scaleLocal(pt)           ((pt) / SCALE + (WINSIDE/2))
+
+int fullview = WINSIDE * SCALE;
+int view = WINSIDE * SCALE / 2;
+
+static struct _star stars[10][10][16];
 
 /* Function Defininitions */
+
+int
+randcolor()
+{
+    switch (RANDOM() % 10) {
+    case 0:
+        return W_Yellow;
+    case 1:
+        return W_Red;
+    case 2:
+        return W_Green;
+    case 3:
+        return W_Cyan;
+    default:
+        return W_White;
+    }
+}
+
+void
+initStars()
+{
+    register int i, j, k;
+
+    for (i = 0; i < 10; i++) {
+       for (j = 0; j < 10; j++) {
+            for (k = 0; k < 16; k++) {
+                stars[i][j][k].s_x = RANDOM() % 20000;
+                stars[i][j][k].s_y = RANDOM() % 20000;
+                stars[i][j][k].s_color = randcolor();
+            }
+        }
+    }
+}
+
+
+void
+DrawStars()
+{
+    /*
+       note: cpp symbols in expressions (WINSIDE*SCALE) will be precalculated
+       by any C optimizer
+    */ 
+    int sectorx = me->p_x / (fullview);
+    int sectory = me->p_y / (fullview);
+    int sector_offx = me->p_x - sectorx * (fullview);
+    int sector_offy = me->p_y - sectory * (fullview);
+    int l = 0, r = 0, t = 0, b = 0;
+
+    if (sector_offx < 0)
+    {  /* goddamn rounding towards 0 */
+        sectorx--;
+        sector_offx += fullview; 
+    }
+    if (sector_offy < 0) 
+    {  /* goddamn rounding towards 0 */
+        sectory--;
+        sector_offy += fullview; 
+    }   
+
+#define MAXSECTOR   (GWIDTH/(fullview))
+  
+    /* at worst we have to redraw 4 star sectors */
+
+    /* draw the one we're in */
+    /*
+       check first to make sure it's valid.  This is mainly important for if
+       it tries to redraw and we're already dead
+    */
+    if (sectorx < 0 || sectory < 0)
+        return;
+
+    l = sector_offx < view && sectorx > 0;
+    r = sector_offx > view && sectorx + 1 < MAXSECTOR;
+    t = sector_offy < view && sectory > 0;
+    b = sector_offy > view && sectory + 1 < MAXSECTOR;
+
+    if (t) 
+    {
+        if (l)
+            /* redraw upper-left sector */
+            redrawStarSector (sectorx-1, sectory-1);
+
+        /* redraw upper sector */
+        redrawStarSector (sectorx, sectory-1);
+        /* redraw upper sector */
+        redrawStarSector (sectorx, sectory-1);
+
+        if (r)          
+            /* redraw upper-right sector */
+            redrawStarSector (sectorx+1, sectory-1);
+    }
+    if (l)          
+        /* redraw left sector */
+        redrawStarSector (sectorx - 1, sectory);
+
+    /* redraw center sector */
+    redrawStarSector (sectorx, sectory);
+
+    if (r)          
+        /* redraw right sector */
+        redrawStarSector (sectorx + 1, sectory);
+
+    if (b) 
+    {
+        if (l)          
+            /* redraw bottom-left sector */
+            redrawStarSector (sectorx - 1, sectory + 1);
+
+        /* redraw bottom sector */
+        redrawStarSector (sectorx, sectory + 1);
+
+        if (r)          
+            /* redraw bottom-right sector */
+            redrawStarSector (sectorx + 1, sectory + 1);
+    }
+}
+
+
+static void
+redrawStarSector (sectorx, sectory)
+{
+    register int i, dx, dy, dxx, dyy;
+    register int xbase = sectorx * fullview;
+    register int ybase = sectory * fullview;
+    register struct _star *s;
+    static unsigned int warpflag = 0;    /* assume starting out not in warp */
+    static int streaksOn = 0, lastspeed = 0, lastsubspeed = 0, updates = 0;
+    static int streaklength = 1;
+    static int mydir = -1;
+    struct _star *star_sector = stars[sectorx][sectory];
+
+    if (warpStreaks)
+    {
+        if (warpflag != (me->p_flags & PFTWARP))
+        {   /* change in warp state */
+            streaksOn = 1;
+            warpflag = (me->p_flags & PFTWARP);
+        }
+
+        if (warpflag)
+            mydir = me->p_dir;
+
+        if (streaksOn)
+        {
+            if (warpflag && (me->p_speed < lastspeed ||
+                (me->p_speed == lastspeed && me->p_subspeed <= lastsubspeed)))
+            {
+                /* finished accelerating */
+                updates++;
+                if (updates > 5)
+                {
+                    lastspeed = me->p_speed;
+                    lastsubspeed = me->p_subspeed;
+                    updates = 0;
+                    streaksOn = 0;
+                    redrawStarSector (sectorx, sectory);
+                    return;
+                }
+            }
+            else if (streaklength == 1 || (!warpflag && ((me->p_speed > lastspeed) ||
+                    (me->p_speed == lastspeed && me->p_subspeed >= lastsubspeed))))
+            {
+                /* finished decelerating */
+                updates++;
+                if (updates > 5)
+                {
+                    lastspeed = me->p_speed;
+                    lastsubspeed = me->p_subspeed;
+                    updates = 0;
+                    streaksOn = 0;
+                    streaklength = 1;
+                    redrawStarSector (sectorx, sectory);
+                    return;
+                }
+            }
+            else
+                updates = 0;
+            lastspeed = me->p_speed;
+            lastsubspeed = me->p_subspeed;
+            /* draw the streaks */
+            if (warpflag)
+                streaklength += 3;
+            else
+                streaklength--;
+            dxx = (int) (Cos[mydir] * streaklength);
+            dyy = (int) (Sin[mydir] * streaklength);
+            for (i = 0, s = star_sector; i < 16; i++, s++)
+            {
+                dx = (s->s_x + xbase) - me->p_x;
+                dy = (s->s_y + ybase) - me->p_y;
+                if (ABS(dx) > (view) || ABS(dy) > (view))
+                    continue;
+
+                dx = scaleLocal (dx);
+                dy = scaleLocal (dy);
+                W_CacheLine (w, dx, dy, dx - dxx, dy - dyy, s->s_color);
+                //W_CacheLineDB (localSDB, dx, dy, dx - dxx, dy - dyy, s->s_color);
+
+                clearline[0][clearlcount] = dx;
+                clearline[1][clearlcount] = dy;
+                clearline[2][clearlcount] = dx - dxx;
+                clearline[3][clearlcount] = dy - dyy;
+                clearlcount++;
+            }
+            return;
+        }
+    }
+    for (i = 0, s = star_sector; i < 16; i++, s++)
+    {
+        dx = (s->s_x + xbase) - me->p_x;
+        dy = (s->s_y + ybase) - me->p_y;
+        if (ABS(dx) > (view) || ABS(dy) > (view))
+            continue;
+
+        dx = scaleLocal (dx);
+        dy = scaleLocal (dy);
+        W_CachePoint (w, dx, dy, s->s_color);
+        //W_CachePointDB (localSDB, dx, dy, s->s_color);
+
+        clearline[0][clearlcount] = dx;
+        clearline[1][clearlcount] = dy;
+        clearline[2][clearlcount] = dx;
+        clearline[3][clearlcount] = dy;
+        clearlcount++;
+    }
+}
+
 
 #define NORMALIZE(d) (((d) + 256) % 256)
 
@@ -90,7 +330,7 @@ DrawPlanets (void)
 {
     register int dx, dy;
     register struct planet *l;
-    const int view = SCALE * WINSIDE / 2;
+    const int view = SCALE * WINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
@@ -106,6 +346,9 @@ DrawPlanets (void)
         W_WriteBitmap (dx - (BMP_PLANET_WIDTH / 2),
                        dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
                        planetColor (l));
+        /*W_WriteBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                         dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
+                         planetColor (l));*/
 
         if (showIND && ((l->pl_info & me->p_team)
 #ifdef RECORDGAME
@@ -117,10 +360,18 @@ DrawPlanets (void)
                          dy - (BMP_PLANET_HEIGHT / 2),
                          dx + (BMP_PLANET_WIDTH / 2 - 1),
                          dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
+            /*W_CacheLineDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                           dy - (BMP_PLANET_HEIGHT / 2),
+                           dx + (BMP_PLANET_WIDTH / 2 - 1),
+                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);*/
             W_CacheLine (w, dx + (BMP_PLANET_WIDTH / 2 - 1),
                          dy - (BMP_PLANET_HEIGHT / 2),
                          dx - (BMP_PLANET_WIDTH / 2),
                          dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
+            /*W_CacheLineDB (localSDB, dx + (BMP_PLANET_WIDTH / 2 - 1),
+                           dy - (BMP_PLANET_HEIGHT / 2),
+                           dx - (BMP_PLANET_WIDTH / 2),
+                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);*/
         }
 
         if (showPlanetNames)
@@ -128,6 +379,9 @@ DrawPlanets (void)
             W_MaskText (w, dx - (BMP_PLANET_WIDTH / 2),
                         dy + (BMP_PLANET_HEIGHT / 2), planetColor (l),
                         l->pl_name, l->pl_namelen, planetFont (l));
+            /*W_MaskTextDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                          dy + (BMP_PLANET_HEIGHT / 2), planetColor (l),
+                          l->pl_name, l->pl_namelen, planetFont (l));*/
             clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2);
             clearzone[1][clearcount] = dy + (BMP_PLANET_HEIGHT / 2);
             clearzone[2][clearcount] = W_Textwidth * l->pl_namelen;
@@ -187,7 +441,7 @@ DrawShips (void)
     char idbuf[10];
     int buflen = 1;
     static W_Color ph_col;
-    const int view = SCALE * WINSIDE / 2;
+    const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
 
@@ -271,6 +525,8 @@ DrawShips (void)
             {
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon, myColor);
+                /*W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
+                                 dy - (cloak_height / 2), cloakicon, myColor);*/
 
                 clearzone[0][clearcount] = dx - (shield_width / 2);
                 clearzone[1][clearcount] = dy - (shield_height / 2);
@@ -335,6 +591,8 @@ DrawShips (void)
                 }
                 W_WriteBitmap (dx - (j->p_ship.s_width / 2),
                                dy - (j->p_ship.s_height / 2),
+                /*W_WriteBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
+                                 dy - (j->p_ship.s_height / 2),*/
 #ifndef DYNAMIC_BITMAPS
                                ship_bits[j->p_ship.
                                          s_type][rosette (j->p_dir)],
@@ -366,6 +624,8 @@ DrawShips (void)
                 }
                 W_WriteBitmap (dx - (j->p_ship.s_width / 2),
                                dy - (j->p_ship.s_height / 2),
+                /*W_WriteBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
+                                 dy - (j->p_ship.s_height / 2),*/
 #ifndef DYNAMIC_BITMAPS
                                ship_bits[j->p_ship.
                                          s_type][rosette (j->p_dir)],
@@ -382,6 +642,9 @@ DrawShips (void)
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon,
                                playerColor (j));
+                /*W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
+                                 dy - (cloak_height / 2), cloakicon,
+                                 playerColor (j));*/
                 if (!myPlayer (j))      /* if myplayer draw the
                                          * shield */
                     continue;
@@ -454,10 +717,14 @@ DrawShips (void)
                 W_WriteBitmap (dx - (shield_width / 2),
                                dy - (shield_height / 2), shield[shieldnum],
                                color);
+                /*W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
+                                 dy - (shield_height / 2), shield[shieldnum],
+                                 color);*/
 #else
-
                 W_WriteBitmap (dx - (shield_width / 2),
                                dy - (shield_height / 2), shield, color);
+                /*W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
+                                 dy - (shield_height / 2), shield, color);*/
 #endif
             }
             if (j->p_flags & PFCLOAK)   /* when cloaked stop here */
@@ -521,6 +788,9 @@ DrawShips (void)
                 W_MaskText (w, dx + (j->p_ship.s_width / 2),
                             dy - (j->p_ship.s_height / 2), color,
                             idbuf, buflen, shipFont (j));
+                /*W_MaskTextDB (localSDB, dx + (j->p_ship.s_width / 2),
+                              dy - (j->p_ship.s_height / 2), color,
+                              idbuf, buflen, shipFont (j));*/
 
                 clearzone[0][clearcount] = dx + (j->p_ship.s_width / 2);
                 clearzone[1][clearcount] = dy - (j->p_ship.s_height / 2);
@@ -551,6 +821,9 @@ DrawShips (void)
                     W_WriteBitmap (dx - (BMP_SBEXPL_WIDTH / 2),
                                    dy - (BMP_SBEXPL_HEIGHT / 2), sbexpview[i],
                                    playerColor (j));
+                    /*W_WriteBitmapDB (localSDB, dx - (BMP_SBEXPL_WIDTH / 2),
+                                     dy - (BMP_SBEXPL_HEIGHT / 2), sbexpview[i],
+                                     playerColor (j));*/
                     clearzone[0][clearcount] = dx - (BMP_SBEXPL_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_SBEXPL_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_SBEXPL_WIDTH;
@@ -561,6 +834,9 @@ DrawShips (void)
                     W_WriteBitmap (dx - (BMP_SHIPEXPL_WIDTH / 2),
                                    dy - (BMP_SHIPEXPL_HEIGHT / 2), expview[i],
                                    playerColor (j));
+                    /*W_WriteBitmapDB (localSDB, dx - (BMP_SHIPEXPL_WIDTH / 2),
+                                     dy - (BMP_SHIPEXPL_HEIGHT / 2), expview[i],
+                                     playerColor (j));*/
                     clearzone[0][clearcount] = dx - (BMP_SHIPEXPL_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_SHIPEXPL_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_SHIPEXPL_WIDTH;
@@ -696,9 +972,11 @@ DrawShips (void)
                             px = new_dx;
                             py = new_dy;
                             W_CacheLine (w, px, py, tx, ty, col);
+                            //W_CacheLineDB (localSDB, px, py, tx, ty, col);
                         }
                         else
                             W_CacheLine (w, px, py, tx, ty, col);
+                            //W_CacheLineDB (localSDB, px, py, tx, ty, col);
 
                     }
                     else
@@ -716,24 +994,32 @@ DrawShips (void)
                                 px = new_dx;
                                 py = new_dy;
                                 W_CacheLine (w, px, py, tx, ty, foreColor);
+                                //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
                             }
                             else
                                 W_CacheLine (w, px, py, tx, ty, foreColor);
+                                //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
                         }
                         else
                             W_CacheLine (w, px, py, tx, ty,
                                          shipCol[remap[j->p_team]]);
+                            /*W_CacheLineDB (localSDB, px, py, tx, ty,
+                                           shipCol[remap[j->p_team]]);*/
                     }
 #else
                     if (highlightFriendlyPhasers && (php->ph_status == PHHIT))
                         W_CacheLine (w, px, py, tx, ty, foreColor);
+                        //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
                     else
                     {
                         if ((php->ph_fuse % 2) == 1)
                             W_CacheLine (w, px, py, tx, ty, foreColor);
+                            //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
                         else
                             W_CacheLine (w, px, py, tx, ty,
                                          shipCol[remap[j->p_team]]);
+                            /*W_CacheLineDB (localSDB, px, py, tx, ty,
+                                           shipCol[remap[j->p_team]]);*/
                     }
 #endif
                     php->ph_fuse++;
@@ -772,10 +1058,10 @@ DrawShips (void)
                         lx = (int) (px - enemyPhasers * Cos[dir]);
                         ly = (int) (py - enemyPhasers * Sin[dir]);
 
-                        W_MakePhaserLine (w, wx, wy, tx, ty,
-                                          shipCol[remap[j->p_team]]);
-                        W_MakePhaserLine (w, lx, ly, tx, ty,
-                                          shipCol[remap[j->p_team]]);
+                        W_MakePhaserLine (w, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
+                        //W_MakePhaserLineDB (localSDB, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
+                        W_MakePhaserLine (w, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
+                        //W_MakePhaserLineDB (localSDB, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
 
                         php->ph_fuse++;
 
@@ -793,8 +1079,8 @@ DrawShips (void)
                     }
                     else
                     {
-                        W_MakePhaserLine (w, px, py, tx, ty,
-                                          shipCol[remap[j->p_team]]);
+                        W_MakePhaserLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                        //W_MakePhaserLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
 
                         php->ph_fuse++;
 
@@ -872,12 +1158,16 @@ DrawShips (void)
                     if (j->p_flags & PFPRESS)
                     {
                         W_MakeTractLine (w, dx, dy, lx[0], ly[0], W_Yellow);
+                        //W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Yellow);
                         W_MakeTractLine (w, dx, dy, lx[1], ly[1], W_Yellow);
+                        //W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Yellow);
                     }
                     else
                     {
                         W_MakeTractLine (w, dx, dy, lx[0], ly[0], W_Green);
+                        //W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Green);
                         W_MakeTractLine (w, dx, dy, lx[1], ly[1], W_Green);
+                        //W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Green);
                     }
 
                     /*
@@ -1033,10 +1323,16 @@ DrawTorps (void)
                 W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
                                dy - (BMP_TORPDET_HEIGHT / 2),
                                cloud[torpTeam][k->t_fuse], torpColor (k));
+                /*W_WriteBitmapDB (localSDB, dx - (BMP_TORPDET_WIDTH / 2),
+                                 dy - (BMP_TORPDET_HEIGHT / 2),
+                                 cloud[torpTeam][k->t_fuse], torpColor (k));*/
 #else /* COLORIZEWEAPON */
                 W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
                                dy - (BMP_TORPDET_HEIGHT / 2),
                                cloud[k->t_fuse], torpColor (k));
+                /*W_WriteBitmapDB (localSDB, dx - (BMP_TORPDET_WIDTH / 2),
+                                 dy - (BMP_TORPDET_HEIGHT / 2),
+                                 cloud[k->t_fuse], torpColor (k));*/
                 clearzone[0][clearcount] = dx - (BMP_TORPDET_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_TORPDET_HEIGHT / 2);
                 clearzone[2][clearcount] = BMP_TORPDET_WIDTH;
@@ -1054,14 +1350,10 @@ DrawTorps (void)
                  * torpColor(k)); */
 
                 /* XFIX */
-
-//                  W_CacheLine(w, dx - (etorp_width / 2), dy - (etorp_height / 2),
-//                                 dx + (etorp_width / 2), dy + (etorp_height / 2), torpColor(k));
-//                  W_CacheLine(w, dx + (etorp_width / 2), dy - (etorp_height / 2),
-//                                 dx - (etorp_width / 2), dy + (etorp_height / 2), torpColor(k));
-
                 W_WriteBitmap (dx - (etorp_width / 2),
                                dy - (etorp_height / 2), etorp, torpColor (k));
+                /*W_WriteBitmapDB (localSDB, dx - (etorp_width / 2),
+                                 dy - (etorp_height / 2), etorp, torpColor (k));*/
                 clearzone[0][clearcount] = dx - (etorp_width / 2);
                 clearzone[1][clearcount] = dy - (etorp_height / 2);
                 clearzone[2][clearcount] = etorp_width;
@@ -1070,15 +1362,10 @@ DrawTorps (void)
             }
             else
             {
-//                  W_CacheLine(w, dx - (mtorp_width / 2), dy,
-//                                 dx + (mtorp_width / 2), dy,
-//                                 torpColor(k));
-//                  W_CacheLine(w, dx, dy - (mtorp_width / 2), dx,
-//                                 dy + (mtorp_width / 2),
-//                                 torpColor(k));
-
                 W_WriteBitmap (dx - (mtorp_width / 2),
                                dy - (mtorp_height / 2), mtorp, torpColor (k));
+                /*W_WriteBitmapDB (localSDB, dx - (mtorp_width / 2),
+                                 dy - (mtorp_height / 2), mtorp, torpColor (k));*/
 
                 clearzone[0][clearcount] = dx - (mtorp_width / 2);
                 clearzone[1][clearcount] = dy - (mtorp_height / 2);
@@ -1111,6 +1398,9 @@ DrawTorps (void)
             W_WriteBitmap (dx - (BMP_TORP_WIDTH / 2),
                            dy - (BMP_TORP_HEIGHT / 2),
                            torpIcon[torpTeam][k->t_fuse], torpColor (k));
+            /*W_WriteBitmapDB (localSDB, dx - (BMP_TORP_WIDTH / 2),
+                             dy - (BMP_TORP_HEIGHT / 2),
+                             torpIcon[torpTeam][k->t_fuse], torpColor (k));*/
 
             clearzone[0][clearcount] = dx - (BMP_TORP_WIDTH / 2);
             clearzone[1][clearcount] = dy - (BMP_TORP_HEIGHT / 2);
@@ -1211,6 +1501,10 @@ DrawPlasmaTorps (void)
                            dy - (BMP_PLASMATORPDET_HEIGHT / 2),
                            plasmacloud[ptorpTeam][pt->pt_fuse],
                            plasmatorpColor (pt));
+            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORPDET_WIDTH / 2),
+                             dy - (BMP_PLASMATORPDET_HEIGHT / 2),
+                             plasmacloud[ptorpTeam][pt->pt_fuse],
+                             plasmatorpColor (pt));*/
             clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
             clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
             clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
@@ -1220,6 +1514,9 @@ DrawPlasmaTorps (void)
             W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
                            dy - (BMP_PLASMATORPDET_HEIGHT / 2),
                            plasmacloud[pt->pt_fuse], plasmatorpColor (pt));
+            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORPDET_WIDTH / 2),
+                             dy - (BMP_PLASMATORPDET_HEIGHT / 2),
+                             plasmacloud[pt->pt_fuse], plasmatorpColor (pt));*/
             clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
             clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
             clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
@@ -1238,6 +1535,9 @@ DrawPlasmaTorps (void)
             W_WriteBitmap (dx - (eplasmatorp_width / 2),
                            dy - (eplasmatorp_height / 2),
                            eplasmatorp, plasmatorpColor (pt));
+            /*W_WriteBitmapDB (localSDB, dx - (eplasmatorp_width / 2),
+                             dy - (eplasmatorp_height / 2),
+                             eplasmatorp, plasmatorpColor (pt));*/
             clearzone[0][clearcount] = dx - (eplasmatorp_width / 2);
             clearzone[1][clearcount] = dy - (eplasmatorp_height / 2);
             clearzone[2][clearcount] = eplasmatorp_width;
@@ -1249,6 +1549,9 @@ DrawPlasmaTorps (void)
             W_WriteBitmap (dx - (mplasmatorp_width / 2),
                            dy - (mplasmatorp_height / 2),
                            mplasmatorp, plasmatorpColor (pt));
+            /*W_WriteBitmapDB (localSDB, dx - (mplasmatorp_width / 2),
+                             dy - (mplasmatorp_height / 2),
+                             mplasmatorp, plasmatorpColor (pt));*/
             clearzone[0][clearcount] = dx - (mplasmatorp_width / 2);
             clearzone[1][clearcount] = dy - (mplasmatorp_height / 2);
             clearzone[2][clearcount] = mplasmatorp_width;
@@ -1282,6 +1585,10 @@ DrawPlasmaTorps (void)
                            dy - (BMP_PLASMATORP_HEIGHT / 2),
                            plasmatorpIcon[ptorpTeam][pt->pt_fuse],
                            plasmatorpColor (pt));
+            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORP_WIDTH / 2),
+                             dy - (BMP_PLASMATORP_HEIGHT / 2),
+                             plasmatorpIcon[ptorpTeam][pt->pt_fuse],
+                             plasmatorpColor (pt));*/
 
             clearzone[0][clearcount] = dx - (BMP_PLASMATORP_WIDTH / 2);
             clearzone[1][clearcount] = dy - (BMP_PLASMATORP_HEIGHT / 2);
@@ -1365,6 +1672,7 @@ DrawMisc (void)
                 continue;
 
             W_CacheLine (w, sx, sy, ex, ey, sl->color);
+            //W_CacheLineDB (localSDB, sx, sy, ex, ey, sl->color);
             clearline[0][clearlcount] = sx;
             clearline[1][clearlcount] = sy;
             clearline[2][clearlcount] = ex;
@@ -1386,7 +1694,7 @@ DrawMisc (void)
             ey = WINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
-        /* W_MakeLine(w, dx, sy, dx, ey, warningColor); */
+        //W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
         clearline[0][clearlcount] = dx;
         clearline[1][clearlcount] = sy;
         clearline[2][clearlcount] = dx;
@@ -1405,7 +1713,7 @@ DrawMisc (void)
             ey = WINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
-        /* W_MakeLine(w, dx, sy, dx, ey, warningColor); */
+        //W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
         clearline[0][clearlcount] = dx;
         clearline[1][clearlcount] = sy;
         clearline[2][clearlcount] = dx;
@@ -1424,7 +1732,7 @@ DrawMisc (void)
             ex = WINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
-        /* W_MakeLine(w, sx, dy, ex, dy, warningColor); */
+        //W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
         clearline[0][clearlcount] = sx;
         clearline[1][clearlcount] = dy;
         clearline[2][clearlcount] = ex;
@@ -1443,7 +1751,7 @@ DrawMisc (void)
             ex = WINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
-        /* W_MakeLine(w, sx, dy, ex, dy, warningColor); */
+        //W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
         clearline[0][clearlcount] = sx;
         clearline[1][clearlcount] = dy;
         clearline[2][clearlcount] = ex;
@@ -1463,10 +1771,11 @@ DrawMisc (void)
             if (extraAlertBorder)
             {
                 W_ChangeBorder (w, gColor);
+                //W_ChangeBorderDB (localSDB, gColor);
                 W_ChangeBorder (mapw, gColor);
+                //W_ChangeBorderDB (mapSDB, gColor);
             }
             W_ChangeBorder (baseWin, gColor);
-            W_ChangeBorder (iconWin, gColor);
 
 #ifdef SOUND
             Abort_Sound (WARNING_SOUND);
@@ -1477,10 +1786,11 @@ DrawMisc (void)
             if (extraAlertBorder)
             {
                 W_ChangeBorder (w, yColor);
+                //W_ChangeBorderDB (localSDB, yColor);
                 W_ChangeBorder (mapw, yColor);
+                //W_ChangeBorderDB (mapSDB, yColor);
             }
             W_ChangeBorder (baseWin, yColor);
-            W_ChangeBorder (iconWin, yColor);
 
 #ifdef SOUND
             Abort_Sound (WARNING_SOUND);
@@ -1491,10 +1801,11 @@ DrawMisc (void)
             if (extraAlertBorder)
             {
                 W_ChangeBorder (w, rColor);
+                //W_ChangeBorderDB (localSDB, rColor);
                 W_ChangeBorder (mapw, rColor);
+                //W_ChangeBorderDB (localSDB, rColor);
             }
             W_ChangeBorder (baseWin, rColor);
-            W_ChangeBorder (iconWin, rColor);
 
 #ifdef SOUND
             Play_Sound (WARNING_SOUND);
@@ -1564,6 +1875,7 @@ DrawMisc (void)
         if (tri_x != -1)
         {
             W_WriteTriangle (w, tri_x, tri_y, 4, facing, foreColor);
+            //W_WriteTriangleDB (localSDB, tri_x, tri_y, 4, facing, foreColor);
             clearzone[0][clearcount] = tri_x - tri_size - 1;
             clearzone[1][clearcount] = tri_y - 1 + (facing ? 0 : -tri_size);
             clearzone[2][clearcount] = tri_size * 2 + 2;
@@ -1580,20 +1892,26 @@ local (void)
    Draw out the 'tactical' map
 */
 {
-//  HDC hdcBuffer;
+    //W_Win2Mem (localSDB);
+
+    clearLocal ();
 
     if (me->p_x < 0)
         return;
 
-//  hdcBuffer = CreateCompatibleDC(0);
-
     DrawPlanets ();
+
+    if (showStars)
+        DrawStars();
+
     DrawShips ();
     DrawTorps ();
     DrawPlasmaTorps ();
 
     weaponUpdate = 0;
     DrawMisc ();
+
+    //W_Mem2Win (localSDB);
 }
 
 
@@ -1608,6 +1926,7 @@ clearLocal (void)
     if (W_FastClear)
     {
         W_ClearWindow (w);
+        //W_ClearWindowDB (localSDB);
         clearcount = 0;
         clearlcount = 0;
         tractcurrent = tracthead;
@@ -1617,23 +1936,33 @@ clearLocal (void)
         // Much more efficient way of clearing -- X programmers take note!
         W_ClearAreas (w, clearzone[0], clearzone[1], clearzone[2],
                       clearzone[3], clearcount);
+        /*W_ClearAreasDB (localSDB, clearzone[0], clearzone[1], clearzone[2],
+                      clearzone[3], clearcount);*/
         clearcount = 0;
 
       /* erase the tractor lines [BDyess] */
         for (tractrunner = tracthead; tractrunner != tractcurrent;
              tractrunner = tractrunner->next)
         {
-            W_MakeTractLine(w, tractrunner->sx, tractrunner->sy,
-                            tractrunner->d1x, tractrunner->d1y,
-                            backColor);
-            W_MakeTractLine(w, tractrunner->sx, tractrunner->sy,
-                            tractrunner->d2x, tractrunner->d2y,
-                            backColor);
+            W_MakeTractLine (w, tractrunner->sx, tractrunner->sy,
+                             tractrunner->d1x, tractrunner->d1y,
+                             backColor);
+            /*W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
+                               tractrunner->d1x, tractrunner->d1y,
+                               backColor);*/
+            W_MakeTractLine (w, tractrunner->sx, tractrunner->sy,
+                             tractrunner->d2x, tractrunner->d2y,
+                             backColor);
+            /*W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
+                               tractrunner->d2x, tractrunner->d2y,
+                               backColor);*/
         }
         tractcurrent = tracthead;
 
         W_MakeLines (w, clearline[0], clearline[1], clearline[2],
                      clearline[3], clearlcount, backColor);
+        /*W_MakeLinesDB (localSDB, clearline[0], clearline[1], clearline[2],
+                       clearline[3], clearlcount, backColor);*/
         clearlcount = 0;
     }
 }

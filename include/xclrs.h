@@ -6,7 +6,7 @@ struct
 }
 xclrs[] =
 {
-"snow", 255, 250, 250,
+        "snow", 255, 250, 250,
         "GhostWhite", 248, 248, 255,
         "WhiteSmoke", 245, 245, 245,
         "gainsboro", 220, 220, 220,
@@ -654,7 +654,9 @@ xclrs[] =
         "gray99", 252, 252, 252,
         "grey99", 252, 252, 252,
         "gray100", 255, 255, 255,
-        "grey100", 255, 255, 255, "grey100", 255, 255, 255};
+        "grey100", 255, 255, 255, 
+        "grey100", 255, 255, 255
+};
 
 
 #define XCLRS (sizeof(xclrs) / sizeof(xclrs[0]))

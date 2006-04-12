@@ -22,39 +22,55 @@
 
 static int lcount;
 static int HUDoffset;
-static char buf[80];
+static char buf[1024];
 static char cursor = '_';
 static char mbuf[80];
-
-/* XFIX */
-#define BLANKCHAR(col, n) W_ClearArea(messagew, 5+W_Textwidth*(col), 5, \
-    W_Textwidth * (n), W_Textheight);
-#define DRAWCURSOR(col) W_WriteText(messagew, 5+W_Textwidth*(col), 5, \
-    textColor, &cursor, 1, W_RegularFont);
-#define TESTCAP(c,s)    (c ? strcap(s) : s)
 
 /* Routines to handle multi-window messaging */
 void
 DisplayMessage ()
 {
+    int length;
+    int offset = 0;
+
+    length = strlen (outmessage);
+
+    W_ClearWindow (messagew);
+
+	if (length == 0)
+		return;
+
+    if (length > 80)
+    {
+        offset = length - 80;
+        length = 80;
+    }
+
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
         W_WriteText (w, 5, HUDoffset, textColor,
-                     outmessage, strlen (outmessage), W_RegularFont);
+                     outmessage + offset, length, W_RegularFont);
 #endif
     W_WriteText (messagew, 5, 5, textColor,
-                 outmessage, strlen (outmessage), W_RegularFont);
+                 outmessage + offset, length, W_RegularFont);
+
+    printf ("length: %d, offset %d\n", length, offset);
 }
 
 void
 AddChar (char *twochar)
 {
+    int offset = lcount;
+
+    if (lcount > 79)
+        offset = 79;
+
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
-        W_WriteText (w, 5 + W_Textwidth * lcount, HUDoffset, textColor,
+        W_WriteText (w, 5 + W_Textwidth * offset, HUDoffset, textColor,
                      twochar, 2, W_RegularFont);
 #endif
-    W_WriteText (messagew, 5 + W_Textwidth * lcount, 5, textColor,
+    W_WriteText (messagew, 5 + W_Textwidth * offset, 5, textColor,
                  twochar, 2, W_RegularFont);
 }
 
@@ -62,6 +78,9 @@ void
 BlankChar (int HUDoffsetcol,
            int len)
 {
+    if (HUDoffsetcol + len > 80)
+        len = 80 - HUDoffsetcol;
+
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
         W_ClearArea (w, 5 + W_Textwidth * (HUDoffsetcol), HUDoffset,
@@ -74,12 +93,17 @@ BlankChar (int HUDoffsetcol,
 void
 DrawCursor (int col)
 {
+    int offset = col;
+
+    if (col > 79)
+        offset = 79;
+
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
-        W_WriteText (w, 5 + W_Textwidth * (col), HUDoffset,
+        W_WriteText (w, 5 + W_Textwidth * offset, HUDoffset,
                      textColor, &cursor, 1, W_RegularFont);
 #endif
-    W_WriteText (messagew, 5 + W_Textwidth * (col), 5,
+    W_WriteText (messagew, 5 + W_Textwidth * offset, 5,
                  textColor, &cursor, 1, W_RegularFont);
 }
 
@@ -91,6 +115,8 @@ smessage (char ichar)
     char *getaddr (char who);
     char twochar[2];
     static char addr, *addr_str, *pm;
+    HGLOBAL clipHandle;
+    LPTSTR clipString;
 
     if (messpend == 0)
     {
@@ -132,7 +158,6 @@ smessage (char ichar)
         }
         strcat (outmessage, addr_str);
         lcount = ADDRLEN;
-        DrawCursor (ADDRLEN);
         while (strlen (outmessage) < ADDRLEN)
         {
             strcat (outmessage, " ");
@@ -155,6 +180,8 @@ smessage (char ichar)
         ichar = '\r';
     else if (ichar == ((char) ('u' + 96)) || ichar == ((char) ('U' + 96)))
         ichar = 23;
+    else if (ichar == ((char) ('v' + 96)) || ichar == ((char) ('V' + 96)))
+        ichar = '\026';
 
     switch ((unsigned char) ichar & ~(0x80))
     {
@@ -165,10 +192,9 @@ smessage (char ichar)
             lcount = ADDRLEN;
             break;
         }
-        BlankChar (lcount + 1, 1);
-        DrawCursor (lcount);
         outmessage[lcount + 1] = '\0';
         outmessage[lcount] = cursor;
+        DisplayMessage ();
         break;
 
     case '\033':               /* abort message */
@@ -176,26 +202,59 @@ smessage (char ichar)
         mdisplayed = 0;
         messpend = 0;
         message_off ();
-        for (i = 0; i < 80; i++)
+        for (i = 0; i < 1024; i++)
         {
             outmessage[i] = '\0';
         }
         break;
 
+    case '\026':                /* copy data from clipboard */
+        if (!OpenClipboard (NULL))
+            break;
+        clipHandle = GetClipboardData (CF_TEXT);
+        if (clipHandle != NULL)
+        {
+            clipString = GlobalLock (clipHandle);
+            if (clipString != NULL)
+            {
+                GlobalUnlock (clipHandle);
+            }
+        }
+        CloseClipboard ();
+        if (strlen (clipString) == 0)
+            break;
+
+        if (lcount + strlen (clipString) >= 1024)
+        {
+            W_Beep ();
+            warning ("Clipboard text is too long to fit");
+            break;
+        }
+
+        for (i = 0; i < (int) strlen (clipString); i++)
+        {
+            twochar[0] = clipString[i];
+            twochar[1] = cursor;
+            outmessage[lcount] = clipString[i];
+            outmessage[lcount + 1] = cursor;
+            buf[(lcount++) - ADDRLEN] = clipString[i];
+            DisplayMessage ();
+        }
+        return;
+
     case 23:
         while (--lcount >= ADDRLEN)
         {
-            BlankChar (lcount + 1, 1);
-            DrawCursor (lcount);
             outmessage[lcount + 1] = '\0';
             outmessage[lcount] = cursor;
         }
+        DisplayMessage ();
         lcount = ADDRLEN;
         break;
     case '\r':                 /* send message */
         buf[lcount - ADDRLEN] = '\0';
         messpend = 0;
-        for (i = 0; i < 80; i++)
+        for (i = 0; i < 1024; i++)
         {
             outmessage[i] = '\0';
         }
@@ -244,7 +303,7 @@ smessage (char ichar)
                 warning ("That player left the game. message not sent.");
                 return;
             }
-            pmessage (buf, addr - '0', MINDIV);
+            pmessage (buf, (short) (addr - '0'), MINDIV);
             break;
         case 'a':
         case 'b':
@@ -277,7 +336,7 @@ smessage (char ichar)
                 warning ("That player left the game. message not sent.");
                 return;
             }
-            pmessage (buf, addr - 'a' + 10, MINDIV);
+            pmessage (buf, (short) (addr - 'a' + 10), MINDIV);
             break;
         default:
             warning ("Not legal recipient");
@@ -288,7 +347,7 @@ smessage (char ichar)
         break;
 
     default:                   /* add character */
-        if (lcount >= 79)
+        if (lcount >= 1024)
         {
             W_Beep ();
             break;
@@ -297,9 +356,9 @@ smessage (char ichar)
             break;
         twochar[0] = ichar;
         twochar[1] = cursor;
-        AddChar (twochar);
         outmessage[lcount] = ichar;
         outmessage[lcount + 1] = cursor;
+        DisplayMessage ();
         buf[(lcount++) - ADDRLEN] = ichar;
         break;
     }
@@ -311,38 +370,50 @@ pmessage (char *str,
           short group)
 {
     char newbuf[100];
+    char * cstr;
+    int length;
+    int i = 0;
 
-    /* message length failsafe and last message saving - jn 6/17/93 */
-    lastMessage[0] = '\0';
-    strncat (lastMessage, str, 79);
-    str = lastMessage;
+    length = strlen (str);
 
-    switch (group)
+    do
     {
+        /* message length failsafe and last message saving - jn 6/17/93 */
+        lastMessage[0] = '\0';
+        strncat (lastMessage, str + i, 69);
+        cstr = lastMessage;
+
+        switch (group)
+        {
 
 #ifdef TOOLS
-    case MTOOLS:
-        sendTools (str);
-        break;
+        case MTOOLS:
+            sendTools (cstr);
+            break;
 #endif
 
-    case MMOO:
-        strcpy (defaultsFile, str);
-        sprintf (mbuf, "changing defaultsFile to %s", str);
-        warning (mbuf);
-        break;
-    default:
-        sendMessage (str, group, recip);
-    }
+        case MMOO:
+            strcpy (defaultsFile, cstr);
+            sprintf (mbuf, "changing defaultsFile to %s", cstr);
+            warning (mbuf);
+            break;
+        default:
+            sendMessage (cstr, group, recip);
+        }
 
-    if ((group == MTEAM && recip != me->p_team) ||
-        (group == MINDIV && recip != me->p_no))
-    {
-        sprintf (newbuf, "%s  %s", getaddr2 (group, recip), str);
-        newbuf[79] = 0;
-        dmessage (newbuf, (unsigned char) group, me->p_no,
-                  (unsigned char) recip);
-    }
+        if ((group == MTEAM && recip != me->p_team) ||
+            (group == MINDIV && recip != me->p_no))
+        {
+            sprintf (newbuf, "%s  %s", getaddr2 (group, recip), cstr);
+            newbuf[79] = 0;
+            dmessage (newbuf, (unsigned char) group, (unsigned char) me->p_no,
+                     (unsigned char) recip);
+        }
+
+        i += 69;
+
+    } while (i < length);
+
     message_off ();
 }
 
@@ -504,8 +575,8 @@ message_off (void)
 #ifdef XTRA_MESSAGE_UI
 message_hold (void)
 {
-    char twochar[2] = { '#', ' ' };
-    AddChar (twochar);
+    //char twochar[2] = { '#', ' ' };
+    //AddChar (twochar);
     message_off ();
 }
 #endif

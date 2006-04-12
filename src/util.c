@@ -162,3 +162,20 @@ troop_capacity (void)
     else
         return me->p_ship.s_maxarmies;
 }
+
+void
+setObserverMode (int port)
+{
+	int i = 0;
+
+	/* Let's find whether we are observing or not */
+	while (observerPorts[i] != 0)
+	{
+		if (port == observerPorts[i])
+		{
+			observerMode = 1;
+			break;
+		}
+		i++;
+	}
+}

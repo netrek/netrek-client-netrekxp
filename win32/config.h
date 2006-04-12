@@ -20,12 +20,7 @@
 ################################################################################
 */
 
-#define ARCH "Intel/Win32"
-#define CBUGS "Send bugs/suggestion to:"
-#define COWID "Netrek XP Mod, Intel/Win32"
-#define CWHO "keyos@keyos.org"
-// This is the pig call returned when someone sends five spaces
-#define PIGCALL  "Netrek XP Mod - the smarter netrek eXPerience!"
+#define CBUGS "Send bugs/suggestion to: keyos@keyos.org"
 
 /* 
 ################################################################################
@@ -97,6 +92,9 @@
 
 /*      META                    - show active servers via metaserver - NBT      */
 #define META
+
+/*      METAPING                - improvements to metaserver window             */
+#define METAPING
 
 /*      PACKET_LOG              - log packets to stdout (for bandwith measurement) */
 #define PACKET_LOG

@@ -50,7 +50,6 @@ death (void)
 
     W_ClearWindow (w);
     W_ClearWindow (mapw);
-    W_ClearWindow (iconWin);
     if (oldalert != PFGREEN)
     {
         if (extraAlertBorder)
@@ -179,7 +178,7 @@ death (void)
         break;
     }
 
-    W_WriteText (w, 50, 80, textColor, deathmessage, strlen (deathmessage),
+    W_WriteText (w, 50, 80, W_Cyan, deathmessage, strlen (deathmessage),
                  deathFont);
 
     w = oldw;
@@ -202,7 +201,8 @@ death (void)
     if (!playback)
     {                           /* If we are not playing back a recorded game, do this */
         W_TerminateWait ();
-    ENDTHREAD}
+        ENDTHREAD;
+    }
     else
     {                           /* Otherwise we aren't within a thread, so... */
         while (W_EventsPending ())
@@ -222,6 +222,6 @@ updatedeath (void)
     if (deathFont != W_BoldFont)        /* Initialise deathFont */
         deathFont = W_RegularFont;
 
-    W_WriteText (w, 50, 80, textColor, deathmessage, strlen (deathmessage),
+    W_WriteText (w, 50, 80, W_Cyan, deathmessage, strlen (deathmessage),
                  deathFont);
 }

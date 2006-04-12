@@ -74,6 +74,13 @@ inform (W_Window ww,
         target = gettarget (ww, x, y, TARG_PLAYER | TARG_SELF);
     }
 
+	// Here we got into situation where player number is -1
+	if (target->o_num == -1)
+	{
+		infomapped = 0;
+		return;
+	}
+
     /* This is pretty lame.  We make a graphics window for the info window so
      * we can accurately space the thing to barely fit into the galactic map or
      * whatever. */
@@ -159,10 +166,10 @@ inform (W_Window ww,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
             if ((j->p_ship.s_type == STARBASE) && (SBhours))
             {
-                KillsPerHour = (float) (j->p_stats.st_sbticks == 0) ?
+                KillsPerHour = (float) ((float) (j->p_stats.st_sbticks == 0) ?
                     0.0 :
                     (float) j->p_stats.st_sbkills * 36000.0 /
-                    (float) j->p_stats.st_sbticks;
+                    (float) j->p_stats.st_sbticks);
                 sprintf (buf, "KPH:     %5.2f  %5d",
                          KillsPerHour, j->p_stats.st_sbkills);
             }
@@ -176,10 +183,10 @@ inform (W_Window ww,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
             if ((j->p_ship.s_type == STARBASE) && (SBhours))
             {
-                LossesPerHour = (float) (j->p_stats.st_sbticks == 0) ?
+                LossesPerHour = (float) ((float) (j->p_stats.st_sbticks == 0) ?
                     0.0 :
                     (float) j->p_stats.st_sblosses * 36000.0 /
-                    (float) j->p_stats.st_sbticks;
+                    (float) j->p_stats.st_sbticks);
                 sprintf (buf, "DPH:     %5.2f  %5d",
                          LossesPerHour, j->p_stats.st_sblosses);
             }

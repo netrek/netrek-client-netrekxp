@@ -74,23 +74,20 @@ openmem (void)
         torps[i].t_owner = (i / MAXTORP);
     }
     for (i = 0; i < MAXPLAYER; i++)
-    {
         phasers[i].ph_status = PHFREE;
-    }
+
     for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
     {
         plasmatorps[i].pt_status = PTFREE;
         plasmatorps[i].pt_owner = (i / MAXPLASMA);
     }
+
     for (i = 0; i < MAXPLANETS; i++)
-    {
         planets[i].pl_no = i;
-    }
+
     /* initialize planet redraw for moving planets */
     for (i = 0; i < MAXPLANETS; i++)
-    {
         pl_update[i].plu_update = -1;
-    }
 
     /* initialize pointers if ghost start */
     if (ghoststart)
@@ -130,16 +127,23 @@ drawTstats (void)
 int hockey_mode (void)
 {
     int i;
+    static int playing_hockey = 0;
+    static int first_run = 1;
 
-    for (i = 0; i < MAXPLAYER; i++)
-    {
-        if (strcmp(players[i].p_name, "Puck") == 0 &&
-            strcmp(players[i].p_login, "Robot") == 0 &&
-            players[i].p_team == NOBODY &&
-            players[i].p_ship.s_type == SCOUT)
-            return 1;
-    }
-    return 0;
+    if (first_run)
+        for (i = 0; i < MAXPLAYER; i++)
+        {
+            if (strcmp(players[i].p_name, "Puck") == 0 &&
+                strcmp(players[i].p_login, "Robot") == 0 &&
+                players[i].p_team == NOBODY &&
+                players[i].p_ship.s_type == SCOUT)
+            {
+                playing_hockey = 1;
+                first_run = 0;
+            }
+        }
+
+    return playing_hockey;
 }
 
 /******************************************************************************/

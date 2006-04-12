@@ -37,6 +37,130 @@
 
 #define BAR_LENGTH 56
 
+#define SPACING 4
+/******************************************************************************/
+/***  timerString()                                                         ***/
+/******************************************************************************/
+char * 
+timeString(time_t t)
+{
+    static char *s = NULL;
+    struct tm *tm;
+
+    if (!s)
+        s = (char *) malloc(9);
+    if (t > 24 * 60 * 60)
+    {
+        tm = localtime(&t);
+        sprintf(s, "%02d:%02d:%02d", tm->tm_hour, tm->tm_min, tm->tm_sec);
+    } 
+    else
+        sprintf(s, "%02d:%02d:%02d", (int) (t / (60 * 60)), 
+                (int) ((t % (60 * 60)) / 60), (int) (t % 60));
+    return s;
+}
+
+/******************************************************************************/
+/***  db_timer()                                                            ***/
+/******************************************************************************/
+void
+db_timer (int fr, int xloc, int yloc)
+{
+    static time_t oldtime = -1;
+    static int lastTimerType = -1;
+    time_t  now = 0;
+    static char lasttimer[9], *timer;
+    int left, right, x, pos;
+
+#ifdef RECORDGAME
+    if(playback)
+    {
+        run_clock (time (0));
+        //pb_framectr (xloc, yloc);   /* show frame counter for playback */
+        return;
+    }
+#endif
+
+    if (timerType != lastTimerType || fr)
+    {
+        char *s = NULL;
+
+        fr = 1;
+        lastTimerType = timerType;
+        switch (timerType)
+        {
+        case T_NONE:
+            W_ClearArea(tstatw, xloc, yloc, 12 * W_Textwidth, W_Textheight);
+            strcpy(lasttimer, "        ");
+            oldtime = now;
+            break;
+        case T_DAY:
+            s = "NOW";
+            break;
+        case T_SERVER:
+            s = "SRV";
+            break;
+        case T_SHIP:
+            s = "SHP";
+            break;
+        case T_USER:
+            s = "TMR";
+            break;
+        }
+        if(s) 
+        {
+            W_WriteText(tstatw, xloc, yloc, textColor, s, 3, W_RegularFont);
+        }
+    }
+    if (!timerType)
+        return;
+    now = time(NULL);
+    if (now != oldtime || fr) 
+    {
+        /*
+            get the timer string and start comparing it with the old one. Only
+            print the differences
+        */
+        timer = timeString(now - timeBank[timerType]);
+        x = xloc + 4 * W_Textwidth;
+        left = 0;
+        right = -1;
+        pos = 0;
+
+        /*
+            run through the string to find any differences.  Print any
+            continuous differences with one W_WriteText call.
+        */
+        if (fr) 
+        {
+            W_WriteText(tstatw, x, yloc, textColor, timer, 8, W_RegularFont);
+        } 
+        else 
+        {
+            while (pos < 8) 
+            {
+                if (timer[pos] == lasttimer[pos]) 
+                {
+                    if (left <= right)
+                        W_WriteText(tstatw, x + left * W_Textwidth, yloc, textColor,
+                                    timer + left, right - left + 1, W_RegularFont);
+                    left = pos + 1;
+                    right = pos;
+                } 
+                else
+                    right++;
+                pos++;
+            }
+            if (left <= right)
+                W_WriteText(tstatw, x + left * W_Textwidth, yloc, textColor,
+                            timer + left, right - left + 1, W_RegularFont);
+        }
+        oldtime = now;
+        strcpy(lasttimer, timer);
+    }
+    return;
+}
+
 /******************************************************************************/
 /***  db_box()                                                              ***/
 /******************************************************************************/
@@ -266,6 +390,9 @@ db_redraw_krp (int fr)
 
     db_flags (fr);
 
+    /* TIMER */
+    db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
+
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -
                      ((me->p_ship.s_maxspeed + 1) *
@@ -421,6 +548,8 @@ db_redraw_COW (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
+
+    db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
 
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -

@@ -41,7 +41,7 @@ int keepInfo = 15;              /* how many updates to keep
 int showPlanetOwner = 0;
 
 int phaserShrink = 0;
-int phaserShrinkStyle = 0;
+int phaserShrinkStyle = 1;
 int theirPhaserShrink = 0;
 int shrinkPhaserOnMiss = 0;
 
@@ -69,7 +69,6 @@ int udcounter = 0;
 int showTractorPressor = 1;
 int showAllTractorPressor = 1;  /* Enable SHOW_ALL_TRACTORS feature */
 int showLock = 3;
-int phaserMsg = 5;
 int autoKey = 0;
 int extraAlertBorder = 1;
 
@@ -77,13 +76,14 @@ int extraAlertBorder = 1;
 int tryUdp = 1;
 int tryUdp1 = 1;
 struct plupdate pl_update[MAXPLANETS];
-char buttonmap[12] = { '\0', '\0', '\0' };
+char buttonmap[23] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
 int lastm = 0;
 int delay = 0;                  /* delay for decaring war */
 int rdelay = 0;                 /* delay for refitting */
 int showPlanetNames = 1;
 time_t autoQuit = 60;
 int showStats = 0;
+int showHints = 1;
 int warnShields = 0;
 int warncount = 0;
 int warntimer = -1;
@@ -127,6 +127,7 @@ int tournMask = 15;
 int nextSocket = 0;             /* socket to use when we get
                                  * ghostbusted... */
 char *serverName = NULL;
+char *serverNick = NULL;
 char defaultsFile[80] = ".xtrekrc";
 char *myname = NULL;
 int loggedIn = 0;
@@ -142,6 +143,7 @@ int phaserWindow = 0;           /* What window to show phaser msgs in */
 int phaserStats = 0;        /* How to show phaser stats */
 int phaserStatTry = 0;          /* Try/attemps to phaser */
 int phaserStatHit = 0;          /* Number of hits */
+unsigned long phaserStatDamage = 0;       /* Overall damage inflicted */
 #endif
 
 #ifdef RECORDGAME
@@ -214,9 +216,15 @@ int recv_warn = 1;
 int updatesPerSec = 10;
 
 #ifdef META
-char *metaServer = "metaserver.netrek.org";     /*  metaserver. */
+char *metaServer = "metaserver.netrek.org";      /* Default Metaserver */
+char *metaServer1 = "metaserver.us.netrek.org";  /* First Metaserver */
+char *metaServer2 = "metaserver2.us.netrek.org"; /* Second Metaserver */
+char *metaServer3 = "metaserver.eu.netrek.org";  /* Third Metaserver */
 int metaPort = 3521;            /* HAVE to use nicely
                                  * formated version */
+#ifdef METAPING
+int metaPing = 1;				/*  ICMP ping the metaserverlist */
+#endif
 #endif
 
 
@@ -311,10 +319,10 @@ struct rank ranks[NUMRANKS] = {
     {40.0, 8.0, 0.0, "Admiral", "Admr"}
 };
 
-W_Window messagew, w, mapw, statwin, baseWin = 0, infow, iconWin, tstatw, war,
+W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
     warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi, messwk,
     playerw, planetw, rankw, optionWin = 0, reviewWin;
-W_Window scanw, scanwin, udpWin, phaserwin;
+W_Window scanw, scanwin, udpWin, phaserwin, hintWin;
 
 #ifdef SHORT_PACKETS
 W_Window spWin = NULL;
@@ -338,10 +346,8 @@ LONG packets_received = 0;      /* # all packets received */
 W_Window pStats = NULL;
 
 char deathmessage[80];
-char outmessage[85];            /* 80 chars made sun4's core
-                                 * dump and I'm too lazy to
-                                 * calculate the exact
-                                 * number required here */
+char outmessage[1024];          /* maximum message length */
+
 char *xdisplay_name = NULL;
 
 int newDistress = 0;
@@ -358,6 +364,8 @@ char cloakChars[3] = "??";
 
 int showIND = 0;
 int newPlist = 0;
+int playerListHack = 0;
+int playerListMessaging = 1;
 
 int showMySpeed = 0;
 
@@ -441,7 +449,7 @@ int sizedist = sizeof (dist_defaults);
                                  * Server messages */
 struct dmacro_list rcm_msg[] = {
     {'0', "none", "Unknown RCM message"},
-    {'1', "kill", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) was kill %?%d>0%{%k%!NO CREDIT)%} for %u (%r%p) %?%w>0%{%W%!%}"},
+    {'1', "kill", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) was kill %?%d>0%{%k%!(NO CREDIT)%} for %u (%r%p) %?%w>0%{%W%!%}"},
     {'2', "planet", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%} killed by %l (%z) %?%w>0%{%W%!%}"},
     {'3', "bomb", "%N->%Z We are being attacked by %i (%T%c) who is %d%% damaged."},
     {'4', "destroy", "%N->%Z %N destroyed by %i (%T%c)"},
@@ -457,6 +465,7 @@ int highlightFriendlyPhasers = 0;
 #ifdef MOTION_MOUSE
 /* KRP */
 int continuousMouse = 0;
+int continuousMouseFix = 0;
 int motionThresh = 16;
 int motion_mouse_enablable = 1;
 int motion_mouse_steering = 0;
@@ -465,7 +474,7 @@ int motion_mouse_steering = 0;
 
 #ifdef SHIFTED_MOUSE
 /* KRP */
-int shiftedMouse = 0;
+int shiftedMouse = 1;
 
 #endif
 
@@ -478,6 +487,8 @@ int mouseAsShift = 0;
 int b1_as_shift = 0;
 int b2_as_shift = 0;
 int b3_as_shift = 0;
+int b4_as_shift = 0;
+int b5_as_shift = 0;
 
 #endif
 
@@ -516,7 +527,7 @@ unsigned char keys[MAX_KEY] = "";
 #endif
 
 #ifdef SOUND
-int sound_init = 0;
+int sound_init = 1;
 int sound_toggle = 0;
 char *sounddir = NULL;
 W_Window soundWin = NULL;
@@ -601,3 +612,42 @@ int tpDotDist = 10;
 struct tractor *tractcurrent = NULL;
 struct tractor *tracthead = NULL;
 struct tractor *tractrunner;
+
+int agriCAPS = 1;
+int agriColor = 2;
+
+int windowMove = 0;
+int mainResizeable = 0;
+int observerMode = 0;
+int showHockeyScore = 1;
+
+int observerPorts[] = { 2593, 2595, 4000, 5000, 0 };
+
+char pigcall[256] = "";
+char cowid[256] = "";
+
+int serverType = 0;
+int beepOnPrivateMessage = 0;
+
+W_Window wam_windows[6];
+
+int showStars = 1;
+int warpStreaks = 1;
+
+/* time client connected to server */
+time_t  timeStart = 0;
+
+/* dashboard timer data */
+int timerType = T_DAY;          /* timer defaults to day time */
+time_t  timeBank[T_TOTAL];      /* array of times    */
+
+int omitTeamLetter = 0;
+int viewBox = 1;
+
+struct stringlist *defaults = NULL;
+
+/* DoubleBuffering */
+SDBUFFER * localSDB = NULL;
+SDBUFFER * mapSDB = NULL;
+
+int disableWinkey = 1;  /* disable WinKey + ContextKey by default */

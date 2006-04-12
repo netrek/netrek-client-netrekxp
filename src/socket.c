@@ -465,7 +465,7 @@ connectToServer (int port)
 
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons (port);
+    addr.sin_port = htons ((u_short) port);
 
     if (bind (s, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
@@ -558,7 +558,7 @@ callServer (int port,
         terminate (0);
     }
     addr.sin_family = AF_INET;
-    addr.sin_port = htons (port);
+    addr.sin_port = htons ((u_short) port);
 
     if ((addr.sin_addr.s_addr = inet_addr (server)) == -1)
     {
@@ -887,7 +887,7 @@ doRead (int asock)
                 UDPDIAG (("count=%d\n", count));
                 UDPDIAG (("Hiccup(%d)!  Reconnecting\n", errno));
                 addr.sin_addr.s_addr = serveraddr;
-                addr.sin_port = htons (udpServerPort);
+                addr.sin_port = htons ((u_short) udpServerPort);
                 addr.sin_family = AF_INET;
                 if (connect
                     (udpSock, (struct sockaddr *) &addr, sizeof (addr)) < 0)
@@ -1449,7 +1449,7 @@ sendServerPacket (struct player_spacket *packet)
             packets_sent++;
 
             V_UDPDIAG (("Sent %d on UDP port\n", packet->type));
-            if (gwrite (udpSock, packet, size) != size)
+            if (gwrite (udpSock, (char *) packet, size) != size)
             {
                 UDPDIAG (("gwrite on UDP failed.  Closing UDP connection\n"));
                 warning ("UDP link severed");
@@ -1510,7 +1510,7 @@ handlePlanet (struct planet_spacket *packet)
         redraw = 1;
     plan->pl_flags = (int) ntohs (packet->flags);
 
-    if (plan->pl_armies != ntohl (packet->armies))
+    if (plan->pl_armies != (signed int) ntohl (packet->armies))
     {
         /* don't redraw when armies change unless it crosses the '4' * army
          * limit. Keeps people from watching for planet 'flicker' * when
@@ -1561,7 +1561,7 @@ handlePhaser (struct phaser_spacket *packet)
     phas->ph_dir = packet->dir;
     phas->ph_x = ntohl (packet->x);
     phas->ph_y = ntohl (packet->y);
-    phas->ph_target = ntohl (packet->target);
+    phas->ph_target = (short) (ntohl (packet->target));
     phas->ph_fuse = 0;          /* NEW */
     phas->ph_updateFuse = PHASER_UPDATE_FUSE;
     /* normalized maxfuse */
@@ -1809,7 +1809,7 @@ handleKills (struct kills_spacket *packet)
 
     if (players[packet->pnum].p_kills != ntohl (packet->kills) / 100.0)
     {
-        players[packet->pnum].p_kills = ntohl (packet->kills) / 100.0;
+        players[packet->pnum].p_kills = (float) (ntohl (packet->kills) / 100.0);
         /* FAT: prevent redundant player update */
         PlistNoteUpdate (packet->pnum);
 
@@ -2600,7 +2600,7 @@ handleUdpReply (struct udp_reply_spacket *packet)
         }
         break;
     case SWITCH_DENIED:
-        if (ntohs (packet->port))
+        if (ntohs ((u_short) (packet->port)))
         {
             UDPDIAG (("Switch to UDP failed (different version)\n"));
             warning ("UDP protocol request failed (bad version)");
@@ -2679,7 +2679,7 @@ openUdpConn (void)
         }
 #endif
 
-        addr.sin_port = htons (udpLocalPort);
+        addr.sin_port = htons ((u_short) udpLocalPort);
         if (bind (udpSock, (struct sockaddr *) &addr, sizeof (addr)) >= 0)
             break;
 
@@ -2729,11 +2729,11 @@ connUdpConn ()
 
     addr.sin_addr.s_addr = serveraddr;
     addr.sin_family = AF_INET;
-    addr.sin_port = htons (udpServerPort);
+    addr.sin_port = htons ((u_short) udpServerPort);
 
     UDPDIAG (("Connecting to host 0x%x on port %d\n", serveraddr,
               udpServerPort));
-    if (connect (udpSock, &addr, sizeof (addr)) < 0)
+    if (connect (udpSock, (const struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
         fprintf (stderr, "Error %d: ");
         perror ("netrek: unable to connect UDP socket");
@@ -2761,7 +2761,8 @@ recvUdpConn (void)
     UDPDIAG (("Issuing recvfrom() call\n"));
     printUdpInfo ();
     fromlen = sizeof (from);
-  tryagain:
+
+	//  tryagain:
     FD_ZERO (&readfds);
     FD_SET (udpSock, &readfds);
     to.tv_sec = 6;              /* wait 3 seconds, then
@@ -2788,7 +2789,7 @@ recvUdpConn (void)
         UDPDIAG (("recvfrom failed, aborting UDP attempt\n"));
         return (-1);
     }
-    if (from.sin_addr.s_addr != serveraddr)
+    if (from.sin_addr.s_addr != (unsigned long) serveraddr)
     {
         /* safe? */
         serveraddr = from.sin_addr.s_addr;

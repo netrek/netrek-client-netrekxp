@@ -139,6 +139,7 @@ char *help_message[] = {
 #endif                          /* SHORT_PACKETS */
 
     "      (space) Unmap special windows",
+    "\\     Reset user timer",
 
 #ifdef NBT
     "X     Enter Macro Mode",
@@ -151,6 +152,8 @@ char *help_message[] = {
 
 #ifdef SOUND
     "~     Sound control window",
+    "v     Decrease sound volume",
+    "V     Increase sound volume",
 #endif
 
     "&     Reread xtrekrc",
@@ -161,7 +164,7 @@ char *help_message[] = {
 #define MAXHELP 40
 /* maximum length in characters of key explanation */
 
-#define PBHELPMESSAGES    (sizeof(help_message)/ sizeof(char *))
+#define PBHELPMESSAGES    (sizeof(pbhelp_message)/ sizeof(char *))
 
 char *pbhelp_message[] = {
     "0     Stop playback",
@@ -194,6 +197,13 @@ char *pbhelp_message[] = {
     0
 };
 
+struct help_message_location {
+	int column;
+	int row;
+} hm_loc[HELPMESSAGES];
+
+
+
 /******************************************************************************/
 /***  fillhelp()                                                            ***/
 /******************************************************************************/
@@ -218,6 +228,8 @@ fillhelp (void)
                 W_WriteText (helpWin, MAXHELP * column, row - 1, textColor,
                              helpmessage, strlen (helpmessage),
                              W_RegularFont);
+				hm_loc[i].column = column;
+				hm_loc[i].row = row - 1;
                 i++;
             }
         }
@@ -226,6 +238,47 @@ fillhelp (void)
     }
 }
 
+
+/******************************************************************************/
+/***  helpaction()                                                          ***/
+/******************************************************************************/
+void
+helpaction (W_Event * data)
+{
+	int i, message_number = -1;
+	int row, column;
+
+	/* Let's find row and column from mouse coordinates */
+	row = (data->y - 4)/ W_Textheight;
+	for (i = 0; i < 4; i++)
+	{
+		if (((MAXHELP * (i + 1)) - ((data->x - 3) / W_Textwidth)) > 0)
+		{
+			column = i;
+			break;
+		}
+	}
+
+	/* Now we want to know what message sits there */
+	for (i = 0; i < HELPMESSAGES; i++)
+	{
+		if (hm_loc[i].column == column &&
+			hm_loc[i].row == row)
+		{
+			message_number = i;
+			break;
+		}
+	}
+
+	if (message_number != -1)
+	{
+		/* And now we will remap the key in that message */
+		mystats->st_keymap[(data->key) - 32] = help_message[message_number][0];
+
+		/* Finally we want to update window */
+		fillhelp ();
+	}
+}
 
 /******************************************************************************/
 /***  pbfillhelp()                                                          ***/
@@ -238,9 +291,9 @@ pbfillhelp (void)
 
 
     /* 4 column help window. THis may be changed depending on font size */
-    for (column = 0; column < 4; column++)
+    for (column = 0; column < 2; column++)
     {
-        for (row = 1; row < PBHELPMESSAGES / 4 + 2; row++)
+        for (row = 1; row < PBHELPMESSAGES / 2 + 1; row++)
         {
             if (pbhelp_message[i] == 0)
                 break;
@@ -272,6 +325,7 @@ void
 update_Help_to_Keymap (char *helpmessage)
 {
     int i, num_mapped = 0;
+	int default_set = 0;
     char key;
 
 
@@ -293,7 +347,10 @@ update_Help_to_Keymap (char *helpmessage)
         if (mystats->st_keymap[i] != key)
             continue;
         if (i + 32 == key)
-            continue;           /* it's already there! don't
+		{
+			default_set = 1;
+            continue;
+		}						/* it's already there! don't
                                  * add it! */
 
         /* we've found a key mapped to key! */
@@ -303,7 +360,10 @@ update_Help_to_Keymap (char *helpmessage)
             continue;           /* we've found too many! */
 
         /* put the key in the string */
-        helpmessage[1 + num_mapped] = i + 32;
+        if (i == 0)
+            helpmessage[1 + num_mapped] = 2;    /* Let's draw space-like character */
+        else
+            helpmessage[1 + num_mapped] = i + 32;
     }
 
 
@@ -311,7 +371,15 @@ update_Help_to_Keymap (char *helpmessage)
     switch (num_mapped)
     {
     case 0:
-        helpmessage[2] = ' ';
+		if (!default_set)
+		{
+			helpmessage[2] = 'O';
+			helpmessage[3] = 'f';
+			helpmessage[4] = 'f';
+			break;
+		}
+		else
+			helpmessage[2] = ' ';
     case 1:
         helpmessage[3] = ' ';
     case 2:

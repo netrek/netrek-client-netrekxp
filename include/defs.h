@@ -13,7 +13,7 @@
 #define ADDRLEN 10
 
 #ifdef NBT
-#define MAX_MACRO       75
+#define MAX_MACRO       500
 #endif
 
 #ifndef MAXPLAYER
@@ -235,37 +235,37 @@
 #endif
 
 #ifndef ROTATERACE
-#define sendTorpReq(dir) sendShortPacket(CP_TORP, dir)
-#define sendPhaserReq(dir) sendShortPacket(CP_PHASER, dir)
-#define sendDirReq(dir) sendShortPacket(CP_DIRECTION, dir)
-#define sendPlasmaReq(dir) sendShortPacket(CP_PLASMA, dir)
+#define sendTorpReq(dir) sendShortPacket(CP_TORP, (char) dir)
+#define sendPhaserReq(dir) sendShortPacket(CP_PHASER, (char) dir)
+#define sendDirReq(dir) sendShortPacket(CP_DIRECTION, (char) dir)
+#define sendPlasmaReq(dir) sendShortPacket(CP_PLASMA, (char) dir)
 #else
-#define sendTorpReq(dir) sendShortPacket(CP_TORP, RotateDirSend(dir))
-#define sendPhaserReq(dir) sendShortPacket(CP_PHASER, RotateDirSend(dir))
-#define sendDirReq(dir) sendShortPacket(CP_DIRECTION, RotateDirSend(dir))
-#define sendPlasmaReq(dir) sendShortPacket(CP_PLASMA, RotateDirSend(dir))
+#define sendTorpReq(dir) sendShortPacket(CP_TORP, (char) RotateDirSend(dir))
+#define sendPhaserReq(dir) sendShortPacket(CP_PHASER, (char) RotateDirSend(dir))
+#define sendDirReq(dir) sendShortPacket(CP_DIRECTION, (char) RotateDirSend(dir))
+#define sendPlasmaReq(dir) sendShortPacket(CP_PLASMA, (char) RotateDirSend(dir))
 #endif /* ROTATERACE */
 
-#define sendSpeedReq(speed) sendShortPacket(CP_SPEED, speed)
-#define sendShieldReq(state) sendShortPacket(CP_SHIELD, state)
-#define sendOrbitReq(state) sendShortPacket(CP_ORBIT, state)
-#define sendRepairReq(state) sendShortPacket(CP_REPAIR, state)
-#define sendBeamReq(state) sendShortPacket(CP_BEAM, state)
-#define sendCopilotReq(state) sendShortPacket(CP_COPILOT, state)
+#define sendSpeedReq(speed) sendShortPacket(CP_SPEED, (char) speed)
+#define sendShieldReq(state) sendShortPacket(CP_SHIELD, (char) state)
+#define sendOrbitReq(state) sendShortPacket(CP_ORBIT, (char) state)
+#define sendRepairReq(state) sendShortPacket(CP_REPAIR, (char) state)
+#define sendBeamReq(state) sendShortPacket(CP_BEAM, (char) state)
+#define sendCopilotReq(state) sendShortPacket(CP_COPILOT, (char) state)
 #define sendDetonateReq() sendShortPacket(CP_DET_TORPS, 0)
-#define sendCloakReq(state) sendShortPacket(CP_CLOAK, state)
-#define sendBombReq(state) sendShortPacket(CP_BOMB, state)
+#define sendCloakReq(state) sendShortPacket(CP_CLOAK, (char) state)
+#define sendBombReq(state) sendShortPacket(CP_BOMB, (char) state)
 #define sendPractrReq() sendShortPacket(CP_PRACTR, 0)
-#define sendWarReq(mask) sendShortPacket(CP_WAR, mask)
-#define sendRefitReq(ship) {sendShortPacket(CP_REFIT, ship); shipchange(ship);}
-#define sendPlaylockReq(pnum) sendShortPacket(CP_PLAYLOCK, pnum)
-#define sendPlanlockReq(pnum) sendShortPacket(CP_PLANLOCK, pnum)
+#define sendWarReq(mask) sendShortPacket(CP_WAR, (char) mask)
+#define sendRefitReq(ship) {sendShortPacket(CP_REFIT, (char) ship); shipchange(ship);}
+#define sendPlaylockReq(pnum) sendShortPacket(CP_PLAYLOCK, (char) pnum)
+#define sendPlanlockReq(pnum) sendShortPacket(CP_PLANLOCK, (char) pnum)
 #define sendCoupReq() sendShortPacket(CP_COUP, 0)
 #define sendQuitReq() sendShortPacket(CP_QUIT, 0)
 #define sendByeReq() sendShortPacket(CP_BYE, 0)
-#define sendDockingReq(state) sendShortPacket(CP_DOCKPERM, state)
-#define sendResetStatsReq(verify) sendShortPacket(CP_RESETSTATS, verify)
-#define sendScanReq(who) sendShortPacket(CP_SCAN, who)  /* ATM */
+#define sendDockingReq(state) sendShortPacket(CP_DOCKPERM, (char) state)
+#define sendResetStatsReq(verify) sendShortPacket(CP_RESETSTATS, (char) verify)
+#define sendScanReq(who) sendShortPacket(CP_SCAN, (char) who)  /* ATM */
 
 #ifdef SHORT_PACKETS
 /* #define sendShortReq(state)   sendShortPacket(CP_S_REQ, state) */
@@ -424,5 +424,22 @@
 #ifdef WARP_DEAD
 #define DEADPACKETS	3
 #endif
+
+/* Server type definitions */
+#define ST_UNKNOWN	0
+#define ST_PARADISE	1
+#define ST_BRONCO	2
+#define ST_CHAOS	3
+#define ST_INL		4
+#define ST_STURGEON	5
+#define ST_HOCKEY	6
+#define ST_DOGFIGHT	7
+
+#define T_NONE      0   /* no timer */
+#define T_DAY       1   /* time of day */
+#define T_SERVER    2   /* time on server */
+#define T_SHIP      3   /* time in ship */
+#define T_USER      4   /* user reset timer */
+#define T_TOTAL     5   /* number of T_ defs */
 
 #endif /* _h_defs */

@@ -117,16 +117,17 @@ enum dist_type
                                  * for war */
 #define PFPRACTR	0x40000 /* practice type robot (no
                                  * kills) */
-#define PFDOCK          0x80000 /* true if docked to a
+#define PFDOCK      0x80000 /* true if docked to a
                                  * starbase */
-#define PFREFIT         0x100000        /* true if about to refit */
+#define PFREFIT     0x100000        /* true if about to refit */
 #define PFREFITTING	0x200000        /* true if currently
                                          * refitting */
 #define PFTRACT  	0x400000        /* tractor beam activated */
 #define PFPRESS  	0x800000        /* pressor beam activated */
 #define PFDOCKOK	0x1000000       /* docking permission */
-#define PFSEEN          0x2000000       /* seen by enemy on galactic map? */
+#define PFSEEN      0x2000000       /* seen by enemy on galactic map? */
 #define PFOBSERV	0x8000000       /* for observers */
+#define PFTWARP     0x40000000      /* transwarping to base */
 
 #define KQUIT		0x01    /* Player quit */
 #define KTORP		0x02    /* killed by torp */
@@ -196,7 +197,7 @@ struct stats
     int st_flags;               /* Misc option flags */
 
 #ifdef MOUSE_AS_SHIFT
-    unsigned char st_keymap[480];       /* keymap for this player */
+    unsigned char st_keymap[672];       /* keymap for this player */
 #else
     unsigned char st_keymap[96];        /* keymap for this player */
 #endif
@@ -596,6 +597,14 @@ struct key_list
 };
 #endif
 
+/* Window Allowed Messages types */
+#define WAM_NONE    0x00
+#define WAM_INDIV   0x01
+#define WAM_TEAM    0x02
+#define WAM_KILL    0x04
+#define WAM_ALL     0x08
+#define WAM_PHASER  0x10
+
 typedef struct tagWindow
 {
     HWND hwnd;
@@ -617,6 +626,13 @@ typedef struct tagWindow
     W_Callback HandleKeyup;
     W_Callback HandleButton;
     W_Callback HandleExpose;
+	struct tagWindow *parent;
+	char name[32];
+	int orig_x;
+	int orig_y;
+	int orig_width;
+	int orig_height;
+    int wam;                    /* Window Allowed Messages */
 }
 Window;
 
@@ -633,10 +649,28 @@ struct save_options
     char *desc[100];
 };
 
-#endif /* _h_struct */
-
 struct tractor
 {
     int sx, sy, dx, dy, d1x, d1y, d2x, d2y;   /* source (x,y) dest (x1,y1) (x2,y2) */
     struct tractor *next;
 };
+
+struct stringlist
+{
+    char *string;
+    char *value;
+    struct stringlist *next;
+};
+
+/* DoubleBuffering */
+typedef struct _sdbuffer
+{
+    W_Window window;    /* window for current buffer */
+    HDC win_dc;         /* window device context */
+    HDC mem_dc;         /* memory device context */
+    RECT wr;            /* window rectangle */
+    HBITMAP mem_bmp;    /* memory to handle bitmap */
+    HBITMAP old_bmp;    /* saved bitmap */
+}SDBUFFER;
+
+#endif /* _h_struct */

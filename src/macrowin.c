@@ -31,7 +31,7 @@
 
 /* Fills in macro window with the macros defined in the .xtrekrc. */
 
-#define NUMLINES 80
+#define NUMLINES 75
 
 #define MAXMACRO 65
 /* maximum length in characters of key explanation */
@@ -43,6 +43,62 @@
 int lineno = 0;
 char maclines[10][MAXMACRO];
 int maclevel = 0;
+
+/* Current line of macro */
+int curLine = 0;
+int prevLine = 0;
+
+/******************************************************************************/
+/***  keyhandler()
+/******************************************************************************/
+void
+keyhandler (W_Event * event)
+{
+    if (maclevel == 0)
+        return;
+
+    prevLine = curLine;
+
+    switch (event->key)
+    {
+    case 'f':
+        curLine += 1;
+        break;
+    case 'b':
+        curLine -= 1;
+        break;
+    case 'F':
+        curLine += NUMLINES - 5;
+        break;
+    case 'B':
+        curLine -= NUMLINES - 5;
+        break;
+    default:
+        return;
+    }
+
+    if (curLine <= -1 && prevLine > 0)
+        curLine = 0;
+    else if (curLine <= -1 && prevLine <= 0)
+    {
+        /* Just not to repaint when at the first line and going up */
+        curLine = 0;
+        return;
+    }
+
+    if (curLine >= macrocnt + 6 - NUMLINES && 
+        prevLine < macrocnt + 5 - NUMLINES)
+        curLine = macrocnt + 5 - NUMLINES;
+    else if (curLine >= macrocnt + 6 - NUMLINES && 
+             prevLine >= macrocnt + 5 - NUMLINES)
+    {
+        /* Same as above for going down */
+        curLine = macrocnt + 5 - NUMLINES;
+        return;
+    }
+
+    fillmacro();
+}
 
 /******************************************************************************/
 /***  formatline()
@@ -123,7 +179,6 @@ filldist (int fill)
     }
 }
 
-
 /******************************************************************************/
 /***  fillmacro()
 /******************************************************************************/
@@ -157,7 +212,7 @@ fillmacro (void)
     }
 
     /* 4 column macro window. This may be changed depending on font size */
-    for (row = 4, i = 0; i < macrocnt; row++, i++)
+    for (row = 4, i = curLine; i < macrocnt; row++, i++)
     {
         if (macro[i].key <= 128)
             sprintf (macromessage, "%c \0", macro[i].key);
@@ -233,22 +288,25 @@ switchmacros (void)
 {
     int num = macrocnt + 5;
 
-
     if (!macroWin)
         return;                 /* paranoia? */
 
+    curLine = 0;
     maclevel = abs (maclevel - 1);
 
     if (maclevel == 0)
     {
         lineno = 0;
         filldist (0);
-        num = lineno + 5;
+        num = lineno + 6;
     }
 
+    if (num >= NUMLINES)
+        num = NUMLINES;
     W_ResizeTextWindow (macroWin, 80, num);
     W_SetWindowExposeHandler (macroWin, fillmacro);
     W_SetWindowButtonHandler (macroWin, switchmacros);
+    W_SetWindowKeyDownHandler (macroWin, keyhandler);
     W_MapWindow (macroWin);
 }
 
@@ -267,16 +325,19 @@ showMacroWin (void)
         {
             lineno = 0;
             filldist (0);
-            num = lineno + 5;
+            num = lineno + 6;
         }
 
-        macroWin = W_MakeTextWindow ("macrow", WINSIDE + BORDER, BORDER,
+        if (num >= NUMLINES)
+            num = NUMLINES;
+        macroWin = W_MakeTextWindow ("macrow", WINSIDE + BORDER + 25, BORDER + 5,
                                      80, num, NULL, BORDER);
 
         W_ResizeTextWindow (macroWin, 80, num);
         W_DefineTrekCursor (macroWin);
         W_SetWindowExposeHandler (macroWin, fillmacro);
         W_SetWindowButtonHandler (macroWin, switchmacros);
+        W_SetWindowKeyDownHandler (macroWin, keyhandler);
         W_MapWindow (macroWin);
     }
     else if (W_IsMapped (macroWin))

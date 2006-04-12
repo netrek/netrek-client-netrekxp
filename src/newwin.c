@@ -77,34 +77,29 @@ newwin (char *hostmon,
 
     baseWin = W_MakeWindow ("netrek", 0, 0, 1024, 768, NULL, BORDER, gColor);
 
-    iconWin =
-        W_MakeWindow ("netrek_icon", 0, 0, icon_width, icon_height, NULL,
-                      BORDER, gColor);
-    W_SetWindowExposeHandler (iconWin, drawIcon);
-
-    W_SetIconWindow (baseWin, iconWin);
-    w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin,
-                      THICKBORDER, foreColor);
+    w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin, THICKBORDER, foreColor);
+    localSDB = W_InitSDB (w);
 
     mapw = W_MakeWindow ("map", WINSIDE + 6, 0, WINSIDE, WINSIDE, baseWin,
                          THICKBORDER, foreColor);
+    mapSDB = W_InitSDB (mapw);
 
-    tstatw =
-        W_MakeWindow ("tstat", WINSIDE + 6, WINSIDE + 6, WINSIDE + 3,
-                      STATSIZE + 6, baseWin, BORDER, foreColor);
+    tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 3,
+                            STATSIZE + 2, baseWin, BORDER, foreColor);
 
     W_SetWindowExposeHandler (tstatw, redrawTstats);
 
-    warnw =
-        W_MakeWindow ("warn", 0, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
-                      baseWin, BORDER, foreColor);
+	warnw = W_MakeWindow ("warn", WINSIDE + 6, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
+                           baseWin, BORDER, foreColor);
+
     W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
 
-    messagew = W_MakeWindow ("message", 0, WINSIDE + 6,
+	messagew = W_MakeWindow ("message", WINSIDE + 6, WINSIDE + 6,
                              WINSIDE + 4, MESSAGESIZE - 4, baseWin, BORDER,
                              foreColor);
     W_SetWindowKeyDownHandler (messagew, handleMessageWindowKeyDown);
     W_SetWindowButtonHandler (messagew, handleMessageWindowButton);
+	W_SetWindowExposeHandler (messagew, DisplayMessage);
 
     planetw = W_MakeTextWindow ("planet", 10, 10, 53, MAXPLANETS + 3, w, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
@@ -112,20 +107,20 @@ newwin (char *hostmon,
     rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
-    playerw = W_MakeTextWindow ("player", WINSIDE + 6, WINSIDE + 50,
+    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50,
                                 PlistMaxWidth (), 21, baseWin, 2);
     W_SetWindowExposeHandler (playerw, RedrawPlayerList);
 
 #ifdef RECORDGAME
     if (playback)
         helpWin = W_MakeTextWindow ("help", 286,
-                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
-                          72, 18, NULL, BORDER);
+                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 50,
+                          72, 12, NULL, BORDER);
     else
 #endif
         helpWin = W_MakeTextWindow ("help", 20,
                           YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
-                          160, 18, NULL, BORDER);
+                          160, 19, NULL, BORDER);
 
 #ifdef RECORDGAME
     if (playback)
@@ -133,54 +128,56 @@ newwin (char *hostmon,
     else
 #endif
         W_SetWindowExposeHandler (helpWin, fillhelp);
+		W_SetWindowKeyDownHandler (helpWin, helpaction);
 
 #ifdef META
-    metaWin = W_MakeMenu ("MetaServer List", 0, 0, 72, num_servers + 1,
+    metaWin = W_MakeMenu ("MetaServer List", 0, 0, 72, num_servers + 2,
                           NULL, 2);
     W_SetWindowKeyDownHandler (metaWin, metaaction);
     W_SetWindowButtonHandler (metaWin, metaaction);
 #endif
 
-    messwa = W_MakeScrollingWindow ("review_all", 0,
-                                    668, 81, 5, baseWin, BORDER);
+    /* Message windows */
+    messwa = W_MakeScrollingWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
+    wam_windows[0] = messwa;
     W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
-    messwt =
-        W_MakeScrollingWindow ("review_team", 0, 579, 81, 8, baseWin, BORDER);
-    W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
-    messwi =
-        W_MakeScrollingWindow ("review_your", 0, 540, 81, 3, baseWin, BORDER);
-    W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
-    messwk =
-        W_MakeScrollingWindow ("review_kill", 0, 727, 81, 3, baseWin, BORDER);
-    phaserwin =
-        W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER,
-                               YOFF + WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                               15 * W_Textheight + 16, 80, 4, baseWin,
-                               BORDER);
-    reviewWin =
-        W_MakeScrollingWindow ("review", 0, 540, 81, 22, baseWin, BORDER);
-    W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
 
-    pStats =
-        W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
-                      NULL, 1, foreColor);
+    messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
+    wam_windows[1] = messwt;
+    W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
+   
+    messwi = W_MakeScrollingWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
+    wam_windows[2] = messwi;
+    W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
+    
+    messwk = W_MakeScrollingWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
+    wam_windows[3] = messwk;
+
+    phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
+                                        WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
+                                        15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
+    wam_windows[4] = phaserwin;
+
+    reviewWin = W_MakeScrollingWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
+    wam_windows[5] = reviewWin;
+    W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
+    /* End of Message windows */
+
+    pStats = W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
+                            baseWin, 1, foreColor);
     W_SetWindowExposeHandler (pStats, redrawPStats);
 
-    udpWin = W_MakeMenu ("UDP", WINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS,
-                         NULL, 2);
+    udpWin = W_MakeMenu ("UDP", WINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS, NULL, 2);
     W_SetWindowButtonHandler (udpWin, udpaction);
 
 #ifdef SHORT_PACKETS
-    spWin =
-        W_MakeMenu ("network", WINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS,
-                    NULL, 2);
+    spWin = W_MakeMenu ("network", WINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS, NULL, 2);
     W_SetWindowKeyDownHandler (spWin, spaction);
     W_SetWindowButtonHandler (spWin, spaction);
 #endif
 
 #ifdef SOUND
-    soundWin = W_MakeMenu ("sound", WINSIDE + 20, -BORDER + 10, 30,
-                           MESSAGE_SOUND + 4, NULL, 2);
+    soundWin = W_MakeMenu ("sound", WINSIDE + 20, -BORDER + 10, 30, MESSAGE_SOUND + 4, NULL, 2);
     W_SetWindowKeyDownHandler (soundWin, soundaction);
     W_SetWindowButtonHandler (soundWin, soundaction);
     W_DefineArrowCursor (soundWin);
@@ -188,7 +185,7 @@ newwin (char *hostmon,
 
 #ifdef TOOLS
     toolsWin = W_MakeScrollingWindow ("tools", WINSIDE + BORDER, BORDER,
-                                      80, TOOLSWINLEN, NULL, BORDER);
+                                        80, TOOLSWINLEN, NULL, BORDER);
     W_DefineTrekCursor (toolsWin);
 #endif
 
@@ -198,27 +195,22 @@ newwin (char *hostmon,
 
 #ifdef DOC_WIN
     docwin = W_MakeWindow ("DocWin", 0, 181, 500, 500, 0, 2, foreColor);
-    xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, 500, 500, 0, 2,
-                               foreColor);
+    xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, 500, 500, 0, 2, foreColor);
 #endif
 
     for (i = 0; i < 4; i++)
     {
-        teamWin[i] =
-            W_MakeWindow (teamshort[1 << i], i * BOXSIDE, WINSIDE - BOXSIDE,
-                          BOXSIDE, BOXSIDE, w, 1, foreColor);
+        teamWin[i] = W_MakeWindow (teamshort[1 << i], i * BOXSIDE, WINSIDE - BOXSIDE,
+                                    BOXSIDE, BOXSIDE, w, 1, foreColor);
     }
-    qwin =
-        W_MakeWindow ("quit", 4 * BOXSIDE, WINSIDE - BOXSIDE, BOXSIDE,
-                      BOXSIDE, w, 1, foreColor);
+    qwin = W_MakeWindow ("quit", 4 * BOXSIDE, WINSIDE - BOXSIDE, BOXSIDE,
+                         BOXSIDE, w, 1, foreColor);
 
-    statwin =
-        W_MakeWindow ("stats", 405, 506, 100, 80, baseWin, BORDER, foreColor);
-
+    statwin = W_MakeWindow ("stats", 405, 506, 100, 80, baseWin, BORDER, foreColor);
     W_SetWindowExposeHandler (statwin, redrawStats);
 
-    scanwin =
-        W_MakeWindow ("scanner", 422, 13, 160, 120, baseWin, 5, foreColor);
+    scanwin = W_MakeWindow ("scanner", 422, 13, 160, 120, baseWin, 5, foreColor);
+
     W_DefineTrekCursor (baseWin);
     W_DefineLocalcursor (w);
     W_DefineMapcursor (mapw);
@@ -238,7 +230,6 @@ newwin (char *hostmon,
     W_DefineTrekCursor (playerw);
     W_DefineTrekCursor (rankw);
     W_DefineTrekCursor (statwin);
-    W_DefineTrekCursor (iconWin);
     W_DefineTextCursor (messagew);
     W_DefineTrekCursor (tstatw);
     W_DefineWarningCursor (qwin);
@@ -259,11 +250,12 @@ newwin (char *hostmon,
 #define WARWIDTH 20
 #define WARBORDER 2
 
-    war = W_MakeMenu ("war", WINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin,
-                      WARBORDER);
+    war = W_MakeMenu ("war", WINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin, WARBORDER);
     W_SetWindowButtonHandler (war, waraction);
 
     W_DefineArrowCursor (war);
+
+    fillhint ();
 
     getResources (progname);
     savebitmaps ();
@@ -310,8 +302,6 @@ mapAll (void)
         W_MapWindow (messwi);
     if (checkMapped ("review_kill"))
         W_MapWindow (messwk);
-    if (checkMapped ("pingStats"))
-        W_MapWindow (pStats);
     if (checkMapped ("review_phaser"))
     {
         W_MapWindow (phaserwin);
@@ -679,9 +669,6 @@ savebitmaps (void)
     cloakicon =
         W_StoreBitmap3 ("bitmaps/misclib/cloak.bmp", BMP_CLOAK_WIDTH,
                         BMP_CLOAK_HEIGHT, BMP_CLOAK, w, LR_MONOCHROME);
-    icon =
-        W_StoreBitmap3 ("bitmaps/misclib/icon.bmp", BMP_ICON_WIDTH,
-                        BMP_ICON_HEIGHT, BMP_ICON, iconWin, LR_MONOCHROME);
     stipple =
         W_StoreBitmap3 ("bitmaps/misclib/stipple.bmp", BMP_STIPPLE_WIDTH,
                         BMP_STIPPLE_HEIGHT, BMP_STIPPLE, w, LR_MONOCHROME);
@@ -753,7 +740,6 @@ entrywindow (int *team,
     if (me->p_whydead != KWINNER && me->p_whydead != KGENOCIDE)
         showMotdWin (w, line);
 
-    run_clock (startTime);
     updatedeath ();
 
     if (remap[me->p_team] == NOBODY)
@@ -801,7 +787,6 @@ entrywindow (int *team,
             }
             if (lasttime != time (0))
             {
-                run_clock (lasttime);
                 updatedeath ();
                 if (W_IsMapped (playerw))
                     UpdatePlayerList ();
@@ -993,16 +978,12 @@ entrywindow (int *team,
                 }
             if (event.Window == qwin)
             {
-                run_clock (lasttime);
                 redrawQuit ();
             }
             else if (event.Window == tstatw)
                 redrawTstats ();
-            else if (event.Window == iconWin)
-                drawIcon ();
             else if (event.Window == w)
             {
-                run_clock (lasttime);
                 showMotdWin (w, line);
             }
             else if (event.Window == helpWin)
@@ -1405,14 +1386,6 @@ redrawQuit (void)
     W_WriteText (qwin, 5, 5, textColor, "Quit COW  ", 10, W_RegularFont);
 }
 
-/******************************************************************************/
-/***  drawIcon()
-/******************************************************************************/
-void
-drawIcon (void)
-{
-    W_WriteBitmap (0, 0, icon, W_White);
-}
 
 #define CLOCK_WID       (BOXSIDE * 9 / 10)
 #define CLOCK_HEI       (BOXSIDE * 2 / 3)

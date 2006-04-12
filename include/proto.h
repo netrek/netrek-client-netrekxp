@@ -47,6 +47,7 @@ void terminate (int error);
 //static void    db_box(int x, int y, int w, int h, int f, int color);
 //static void    db_bar(char *lab, int x, int y, int value, int tmpmax, int max, int digits, int color);
 //static void    db_flags(int fr);
+void db_timer (int fr, int xloc, int yloc);
 void db_redraw_krp (int fr);
 void db_redraw_COW (int fr);
 void db_redraw (int fr);
@@ -72,6 +73,8 @@ void updatedeath (void);
 void initDefaults (char *deffile);
 void saveOptions (void);
 char *getdefault (char *str);
+char *getServerNick (char *srvName);
+int getServerType (char *srvName);
 #ifndef __BORLANDC__
 strncmpi (char *str1, char *str2, int max);
 #endif
@@ -196,6 +199,16 @@ void getship (struct ship *shipp,
 void fillhelp (void);
 void update_Help_to_Keymap (char *helpmessage);
 void pbfillhelp (void);    /* Help window for playback */
+void helpaction (W_Event * data);
+
+/******************************************************************************/
+/***  hintwin.c
+/******************************************************************************/
+void fillhint (void);
+void inithints (void);
+void showhint (int);
+void hintaction (W_Event * data);
+void hintshow (W_Event * data);
 
 /******************************************************************************/
 /***  inform.c
@@ -385,13 +398,14 @@ void run_clock (time_t curtime);
 /******************************************************************************/
 /***  local.c
 /******************************************************************************/
+void initStars (void);
 //static void DrawPlanets(void);
 //static void DrawShips(void);
 //static void DrawTorps(void);
 void DrawPlasmaTorps (void);
 //static void DrawMisc(void);
 inline void local (void);
-inline void clearLocal(void);
+inline void clearLocal (void);
 
 /******************************************************************************/
 /***  macrowin.c
@@ -463,6 +477,7 @@ W_Window W_MakeMenu (char *name,
                      int height,
                      W_Window parent,
                      int border);
+void W_ResizeMenuToNumItems (W_Window window, int numitems);
 void W_ChangeBorder (W_Window window,
                      W_Color color);
 void W_MapWindow (W_Window window);
@@ -484,7 +499,6 @@ void W_CacheClearArea (W_Window window,
                        int y,
                        int width,
                        int height);
-void W_FlushClearAreaCache (W_Window window);
 void W_ClearAreas (W_Window window,
                    int *xs,
                    int *ys,
@@ -521,6 +535,14 @@ void W_MakeLines (W_Window window,
                   int *x1,
                   int *y1,
                   int num,
+                  W_Color color);
+void W_MakePoint (W_Window window,
+                 int x0,
+                 int y0,
+                 W_Color color);
+void W_CachePoint(W_Window window, 
+                  int x0,
+                  int y0,
                   W_Color color);
 void W_MakeTractLine (W_Window window,
                       int x0,
@@ -592,8 +614,6 @@ int W_WindowWidth (W_Window window);
 int W_WindowHeight (W_Window window);
 int W_Socket ();
 void W_Beep ();
-void W_SetIconWindow (W_Window main,
-                      W_Window icon);
 void W_DestroyWindow (W_Window window);
 void RedrawMenu (Window * win,
                  HDC hdc);
@@ -640,7 +660,6 @@ unsigned char *X11toDIBAndMirror (unsigned char *bits,
                                   int height,
                                   int outwidth,
                                   int outheight);
-void W_Flush ();
 void W_ResizeWindow (W_Window window,
                      int neww,
                      int newh);
@@ -662,6 +681,38 @@ void W_SetWindowName (W_Window window,
                       char *name);
 inline void ResetSysColors (void);
 inline void SetTrekSysColors (void);
+void updateWindowsGeometry (W_Window win);
+void W_MessageAllowedWindows (int messtype,
+                              int x,
+                              int y,
+                              W_Color color,
+                              char *str,
+                              int len,
+                              W_Font font);
+void W_SetWAM (W_Window win);
+/* DoubleBuffering */
+SDBUFFER * W_InitSDB (W_Window window);
+void W_Win2Mem (SDBUFFER * sdb);
+void W_Mem2Win (SDBUFFER * sdb);
+void W_ChangeBorderDB (SDBUFFER * sdb, W_Color color);
+void W_FillAreaDB (SDBUFFER * sdb, int x, int y, int width, int height, int color);
+void W_ClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height);
+void W_CacheClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height);
+void W_ClearAreasDB (SDBUFFER * sdb, int *xs, int *ys, int *widths, int *heights, int num);
+void W_ClearWindowDB (SDBUFFER * sdb);
+void W_MakeLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
+void W_CacheLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
+void W_MakePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color);
+void W_CachePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color);
+void W_MakeLinesDB (SDBUFFER * sdb, int *x0, int *y0, int *x1, int *y1, int num, W_Color color);
+void W_MakeTractLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
+void W_MakePhaserLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
+void W_WriteTriangleDB (SDBUFFER * sdb, int x, int y, int s, int t, W_Color color);
+void W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
+void W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
+void W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
+void W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
+void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
 
 /******************************************************************************/
 /***  newwin.c
@@ -688,7 +739,6 @@ void redrawTeam (W_Window win,
                  int teamNo,
                  int *lastnum);
 redrawQuit (void);
-void drawIcon (void);
 showTimeLeft (time_t time, time_t max);
 void W_DefineFedCursor (W_Window window);
 void W_DefineRomCursor (W_Window window);
@@ -726,6 +776,9 @@ void metawindow (void);
 //static void metadone(void);
 void metaaction (W_Event * data);
 void metainput (void);
+#ifdef METAPING
+DWORD WINAPI metaPing_thread(void);
+#endif
 
 /******************************************************************************/
 /***  ping.c
@@ -762,6 +815,7 @@ void pblockplanet (int pl);
 inline int ckRecordPacket (char packet);
 int pb_dopacket (char *buf);
 int readFromFile ();
+void pb_framectr(int xloc, int yloc);   /* show frame counter on dashboard */
 #ifdef REVERSE_PLAYBACK
 void rpb_init (void);
 void rpb_insert (int diskpos,
@@ -845,13 +899,9 @@ void rsa_partial_box_4 (MP_INT * m,
 /******************************************************************************/
 /***  senddist.c
 /******************************************************************************/
-struct distress *loaddistress (enum dist_type i,
-                               W_Event * data);
-emergency (enum dist_type i,
-           W_Event * data);
-pmacro (int mnum,
-        char who,
-        W_Event * data);
+struct distress *loaddistress (enum dist_type i, W_Event * data);
+void emergency (enum dist_type i, W_Event * data);
+pmacro (int mnum, char who, W_Event * data);
 
 /******************************************************************************/
 /***  short.c
@@ -880,10 +930,6 @@ void new_flags (unsigned int data,
 /***  smessage.c
 /******************************************************************************/
 void DisplayMessage ();
-void AddChar (char *twochar);
-void BlankChar (int HUDoffsetcol,
-                int len);
-void DrawCursor (int col);
 void smessage (char ichar);
 pmessage (char *str,
           short recip,
@@ -980,18 +1026,16 @@ connUdpConn ();
 #endif
 recvUdpConn (void);
 closeUdpConn (void);
-     void printUdpInfo (void);
-     void handleSequence (struct sequence_spacket *packet);
-     void Log_Packet (char type,
-                      int act_size);
-     void Log_OPacket (int tpe,
-                       int size);
+void printUdpInfo (void);
+void handleSequence (struct sequence_spacket *packet);
+void Log_Packet (char type, int act_size);
+void Log_OPacket (int tpe, int size);
 Dump_Packet_Log_Info (void);
-     char *strcpyp_return (register char *s1,
-                           register char *s2,
-                           register int length);
-     char *strcpy_return (register char *s1,
-                          register char *s2);
+char *strcpyp_return (register char *s1,
+                      register char *s2,
+                      register int length);
+char *strcpy_return (register char *s1,
+                     register char *s2);
 
 /******************************************************************************/
 /***  sound.c
@@ -1068,6 +1112,7 @@ struct obtype *gettarget2 (int x,
                            int y,
                            int targtype);
 troop_capacity (void);
+void setObserverMode (int);
 
 /******************************************************************************/
 /***  war.c
@@ -1105,6 +1150,8 @@ warning (char *text);
                         struct timeval *timeout);
 #endif
      char *GetExeDir ();
+	 void HideConsoleWindow (void);
+	 BOOL CALLBACK EnumWindowsProc (HWND hwnd, LPARAM lparam);
 
 /******************************************************************************/
 /***  winsndlib.c

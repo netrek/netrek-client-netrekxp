@@ -938,12 +938,12 @@ handleShortReply (struct shortreply_spacket *packet)
     case SPK_MOFF:
         recv_mesg = 0;
         sprefresh (SPK_MFIELD);
-        W_SetSensitive (reviewWin, 0);
+        W_SetSensitive ((Window *)reviewWin, 0);
         break;
     case SPK_MON:
         recv_mesg = 1;
         sprefresh (SPK_MFIELD);
-        W_SetSensitive (reviewWin, 1);
+        W_SetSensitive ((Window *)reviewWin, 1);
         break;
     case SPK_M_KILLS:
         recv_kmesg = 1;
@@ -1249,7 +1249,7 @@ sendShortReq (char state)
             warning ("Sent some unknown request...");
     }
 
-    sendServerPacket ((struct shortreq_cpacket *) &shortReq);
+    sendServerPacket ((struct player_spacket *) &shortReq);
 }
 
 char *whydeadmess[] =
@@ -1290,6 +1290,7 @@ handleSWarning (struct warning_s_spacket *packet)
         {
             phaserStatTry++;
             phaserStatHit++;
+            phaserStatDamage += damage;
         }
         if (damage == 37)       /* Miss */
             phaserStatTry++;
@@ -1319,9 +1320,10 @@ handleSWarning (struct warning_s_spacket *packet)
 #ifdef PHASER_STATS
         phaserStatTry++;
         phaserStatHit++;
+        phaserStatDamage += damage;
 #endif
-        (void) sprintf (buf, "Phaser burst hit %s for %d points",
-                        target->p_name, damage);
+        (void) sprintf (buf, "Phaser burst hit %s (%c%c) for %d points",
+                        target->p_name, teamlet[target->p_team], shipnos[target->p_no], damage);
         warning (buf);
         break;
     case BOMB_INEFFECTIVE:
@@ -1504,7 +1506,7 @@ handleSWarning (struct warning_s_spacket *packet)
             }
             if (why_dead)
             {
-                dist->wtmp = karg5 add_whydead (msg.mesg, karg5);
+				add_whydead (msg.mesg, karg5);
                 karg5 = 0;
             }
 #endif

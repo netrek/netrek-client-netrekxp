@@ -87,7 +87,8 @@ ftoa (float fval,
         else
             result[i + 1] = result[i];
 
-    result[iprec] = '.';
+    if (dprec != 0)
+        result[iprec] = '.';
 
     if (fval < 1.0)
         result[iprec - 1] = '0';

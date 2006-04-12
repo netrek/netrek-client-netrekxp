@@ -99,16 +99,7 @@ redraw (void)
         warncount = 0;
     }
 
-    run_clock (lastread);       /* for hosers who don't know
-                                 * what a Xclock is */
-
-    // Going to merge clearing local into the local() function, but not now. [SRS]
-    clearLocal ();
-
     local ();                   /* redraw local window */
-
-    /* XFIX */
-    W_FlushLineCaches (w);
 
     if (newDashboard)           /* 6/2/93 LAB */
         if (newDashboard == old_db)

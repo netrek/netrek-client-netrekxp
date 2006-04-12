@@ -126,6 +126,41 @@ static char *shrinkphasermess[] = { "COW style for phasers shrink",
                                     ""
 };
 
+static char *agricolormess[] = { "Race color for AGRI name",
+                                 "White color for AGRI name",
+                                 "Gray color for AGRI name",
+                                 ""
+};
+
+static char *windowmovemess[] = { "Disable moving of internal windows",
+                                  "Enable moving of internal windows",
+                                  ""
+};
+
+static char *plistmessagingmess[] = { "Disable player list messaging",
+                                      "Enable player list messaging",
+									  ""
+};
+
+static char *savebigmess[] = { "Save options without comments",
+                               "Save options with comments",
+							   ""
+};
+
+static char *timermess[] = { "Timer shows nothing (off)",
+                            "Timer shows time of day",
+                            "Timer shows time on server",
+                            "Timer shows time in ship",
+                            "Timer shows user-set time",
+                            ""
+};
+
+static char *planetbitmapmess[] = { "Show Bronco bitmaps on local",
+                                    "Show Moo bitmaps on local",
+                                    "Show Rabbitear bitmaps on local",
+                                    ""
+};
+
 /* Only one of op_option, op_targetwin, and op_string should be defined. If
  * op_string is defined, op_size should be too and op_text is used without a
  * "Don't" prefix. if op_range is defined, there should be a %d in op_text
@@ -193,6 +228,10 @@ struct int_range messagehud_range = { 0, 2, 1 };
 
 struct int_range playerlistobserver_range = { 0, 2, 1 };
 
+struct int_range planetbitmaprange = { 0, 2, 1 };
+
+int saveOpts = 1;    /* Temp flag to use for save options action */
+
 /* menus */
 
 struct option Ship_Menu[] = {
@@ -227,9 +266,12 @@ struct option Ship_Menu[] = {
 struct option Planet_Menu[] = {
     {0, "Planet Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+    {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
+    {1, "show AGRI in caps on map", &agriCAPS, 0, 0, 0, NULL, NULL},
+    {1, "", &agriColor, 0, 0, 0, agricolormess, NULL},
     {1, "", &showLock, 0, 0, 0, lockoptions, NULL},
 #ifdef ROTATERACE
     {1, "", &rotate, 0, 0, 0, rotatemess, NULL},
@@ -244,23 +286,19 @@ struct option Control_Menu[] = {
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "stay peaceful when reborn", &keepPeace, 0, 0, 0, NULL, NULL},
     {1, "use new distress", &newDistress, 0, 0, 0, NULL, NULL},
+#ifdef MOTION_MOUSE
+    {1, "use continuous mouse", &continuousMouse, 0, 0, 0, NULL, NULL},
+    {1, "fix continuous mouse", &continuousMouseFix, 0, 0, 0, NULL, NULL},
+#endif
     {1, "new keymap entries: %s", 0, 0, newkeys, 13, NULL, NULL},
     {1, "ignore the capslock key", &ignoreCaps, 0, 0, 0, NULL, NULL},
     {1, "%d updates per second", &updatesPerSec, 0, 0, 0, 0, &updates_range},
     {1, "%d 1/10 sec screen refresh delay", &redrawDelay, 0, 0, 0, 0,
      &redraw_updates_range},
+    {1, "", &windowMove, 0, 0, 0, windowmovemess, NULL},
     {1, "avoid message kludge", &niftyNewMessages, 0, 0, 0, NULL, NULL},
-#ifdef TOOLS
-    {1, "show shell tools window", 0, &toolsWin, 0, 0, NULL, NULL},
-#endif
-#ifdef SOUND
-    {1, "show sound control window", 0, &soundWin, 0, 0, NULL, NULL},
-#endif
-    {1, "show UDP control window", 0, &udpWin, 0, 0, NULL, NULL},
-    {1, "show ping stats window", 0, &pStats, 0, 0, NULL},
-#ifdef SHORT_PACKETS
-    {1, "show Short Packets window", 0, &spWin, 0, 0, NULL, NULL},
-#endif
+	{1, "", &playerListMessaging, 0, 0, 0, plistmessagingmess, NULL},
+	{1, "beep on private message", &beepOnPrivateMessage, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -277,12 +315,24 @@ struct option Window_Menu[] = {
     {1, "show phaser log window", &phaserWindow, &phaserwin, 0, 0, NULL},
     {1, "show statistic window", 0, &statwin, 0, 0, NULL, NULL},
     {1, "show help window", 0, &helpWin, 0, 0, NULL, NULL},
+    {1, "show hints window", &showHints, &hintWin, 0, 0, NULL, NULL},
 #ifdef XTREKRC_HELP
     {1, "show xtrekrc defaults window", 0, &defWin, 0, 0, NULL, NULL},
 #endif
 #ifdef DOC_WIN
     {1, "show xtrekrc", 0, &xtrekrcwin, 0, 0, NULL, NULL},
     {1, "show documentation window", 0, &docwin, 0, 0, NULL, NULL},
+#endif
+#ifdef TOOLS
+    {1, "show shell tools window", 0, &toolsWin, 0, 0, NULL, NULL},
+#endif
+#ifdef SOUND
+    {1, "show sound control window", 0, &soundWin, 0, 0, NULL, NULL},
+#endif
+    {1, "show UDP control window", 0, &udpWin, 0, 0, NULL, NULL},
+    {1, "show ping stats window", 0, &pStats, 0, 0, NULL},
+#ifdef SHORT_PACKETS
+    {1, "show Short Packets window", 0, &spWin, 0, 0, NULL, NULL},
 #endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
@@ -297,14 +347,20 @@ struct option Visual_Menu[] = {
     {1, "put my team first in the list", &sortMyTeamFirst, 0, 0, 0, NULL, 0},
     {1, "partition the playerlist", &partitionPlist, 0, 0, 0, NULL, 0},
     {1, "", &playerListObserver, 0, 0, 0, playerlistobservermess, &playerlistobserver_range},
+    {1, "hack player list", &playerListHack, 0, 0, 0, NULL, 0},
     {1, "", &newDashboard, 0, 0, 0, dashboardoptions, NULL},
+    {1, "", &timerType, 0, 0, 0, timermess, NULL},
     {1, "keep info %d upds (0=don't remove)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
+    {1, "omit team letter on map", &omitTeamLetter, 0, 0, 0, NULL, NULL},
+    {1, "draw view box on map", &viewBox, 0, 0, 0, NULL, NULL},
+    {1, "draw stars on local", &showStars, 0, 0, 0, NULL, NULL},
+    {1, "draw warp streaks", &warpStreaks, 0, 0, 0, NULL, NULL},
 #ifdef HOCKEY_LINES
     {1, "show hockey lines on local", &showHockeyLinesLocal, 0, 0, 0, NULL, NULL},
     {1, "show hockey lines on map", &showHockeyLinesMap, 0, 0, 0, NULL, NULL},
+	{1, "show hockey score on map", &showHockeyScore, 0, 0, 0, NULL, NULL},
 #endif
     {1, "alert on extra border(s)", &extraAlertBorder, 0, 0, 0, NULL, NULL},
-    {1, "", &phaserMsg, 0, 0, 0, phaserdispmess, NULL},
 #ifdef PHASER_STATS
     {1, "", &phaserStats, 0, 0, 0, phaserstatmess, NULL},
 #endif
@@ -318,12 +374,13 @@ struct option Visual_Menu[] = {
 struct option Save_Menu[] = {
     {0, "Save Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
-    {1, "save options with comments", &saveBig, 0, 0, 0, NULL, NULL},
+    {1, "", &saveBig, 0, 0, 0, savebigmess, NULL},
     {1, "save macros", &saveMacro, 0, 0, 0, NULL, NULL},
     {1, "save RCD", &saveRCD, 0, 0, 0, NULL, NULL},
 #ifdef RCM
     {1, "save RCM", &saveRCM, 0, 0, 0, NULL, NULL},
 #endif
+    {1, "save options now", &saveOpts, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -359,9 +416,9 @@ optionwindow (void)
     if (optionWin == NULL)
     {
 
-        optionWin =
-            W_MakeMenu ("option", WINSIDE + 10, -BORDER + 10, OPTIONLEN,
-                        MaxOptions, baseWin, OPTIONBORDER);
+        optionWin = W_MakeMenu ("option", WINSIDE + 10, -BORDER + 10, OPTIONLEN,
+                                 MaxOptions, baseWin, OPTIONBORDER);
+        W_ResizeMenuToNumItems (optionWin, CurrentMenu->numopt);
         W_SetWindowKeyDownHandler (optionWin, optionaction);
         W_SetWindowButtonHandler (optionWin, optionaction);
         W_DefineArrowCursor (optionWin);
@@ -484,7 +541,12 @@ optionrefresh (register struct option *op)
     if (islower (buf[0]))
         buf[0] = toupper (buf[0]);
 
-    W_WriteText (optionWin, 0, op->op_num, textColor, buf, strlen (buf), 0);
+    if (op->op_num == 0)
+        W_WriteText (optionWin, 0, op->op_num, W_Yellow, buf, strlen (buf), 0);
+    else if (op->op_num == 1)
+        W_WriteText (optionWin, 0, op->op_num, W_Green, buf, strlen (buf), 0);
+    else
+        W_WriteText (optionWin, 0, op->op_num, textColor, buf, strlen (buf), 0);
 }
 
 /* deal with events sent to the option window */
@@ -610,11 +672,51 @@ optionaction (W_Event * data)
             if (W_IsMapped (playerw))
                 RedrawPlayerList ();
         }
-
-        if (op->op_option == &playerListObserver)
+        else if (op->op_option == &playerListObserver)
         {
             if (W_IsMapped (playerw))
                 RedrawPlayerList ();
+        }
+        /* Let's see if this is our option changed */
+        else if (op->op_option == &planetBitmap)
+        {
+            char *Planlib;
+            char *MPlanlib;
+
+            for (i = 0; i < PLANET_VIEWS; i++)
+                free (bplanets[i]);
+            for (i = 0; i < MPLANET_VIEWS; i++)
+                free (bmplanets[i]);
+
+            switch (planetBitmap)
+            {
+            case 1:
+                Planlib = "bitmaps/planlibm/planM.bmp";
+                MPlanlib = "bitmaps/planlibm/mplanM.bmp";
+                break;
+            case 2:
+                Planlib = "bitmaps/planlibm/planR.bmp";
+                MPlanlib = "bitmaps/planlibm/mplanR.bmp";
+                break;
+            default:
+                Planlib = "bitmaps/planlibm/plan.bmp";
+                MPlanlib = "bitmaps/planlibm/mplan.bmp";
+                break;
+            }
+            base_planets = W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
+                                            BMP_PLANET000, w, LR_MONOCHROME);
+            base_mplanets = W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
+                                            BMP_MPLANET000, mapw, LR_MONOCHROME);
+
+            for (i = 0; i < PLANET_VIEWS; i++)
+            {
+                bplanets[i] = W_PointBitmap2 (base_planets, 0, i, BMP_PLANET_WIDTH,
+                                                BMP_PLANET_HEIGHT);
+                bmplanets[i] = W_PointBitmap2 (base_mplanets, 0, i, BMP_MPLANET_WIDTH,
+                                                BMP_MPLANET_HEIGHT);
+            }
+
+            redrawall = 1;
         }
 
 #ifdef ROTATERACE
@@ -721,7 +823,6 @@ optionaction (W_Event * data)
             // change this option on non hockey server
             if (showHockeyLinesMap && !hockey_mode ())
                 showHockeyLinesMap = 0;
-            redrawall = 1;
         }
         else if (op->op_option == &showHockeyLinesLocal)
         {
@@ -736,6 +837,11 @@ optionaction (W_Event * data)
             RedrawPlayerList ();
         else if (op->op_option == &sortMyTeamFirst)
             RedrawPlayerList ();
+        else if (op->op_option == &saveOpts)
+        {
+            saveOptions ();
+            saveOpts = 1;
+        }
     }
 
     /* Map/unmap window, if it exists */
@@ -802,6 +908,8 @@ SetMenuPage (int pagenum)
         for (CurrentMenu = FirstMenu; CurrentMenu->Next != NULL &&
              CurrentMenu->page_num != pagenum;
              i++, CurrentMenu = CurrentMenu->Next);
+
+    W_ResizeMenuToNumItems (optionWin, CurrentMenu->numopt);
 }
 
 optiondone (void)

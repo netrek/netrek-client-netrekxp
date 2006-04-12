@@ -169,7 +169,7 @@ spaction (W_Event * data)
             else if (recv_threshold != v)
             {
                 recv_threshold = v;
-                sendThreshold (recv_threshold);
+                sendThreshold ((unsigned short) recv_threshold);
             }
 
             spdone ();
