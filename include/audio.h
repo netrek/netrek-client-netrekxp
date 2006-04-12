@@ -32,4 +32,7 @@ extern void StopSound (void);
 /* Is a sound currently playing? */
 extern int SoundPlaying ();
 
+/* Change sound volume */
+extern void ChangeVolume (int vol);
+
 #endif /* __SNDLIB_H */
