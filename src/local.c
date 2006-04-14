@@ -971,19 +971,11 @@ DrawShips (void)
                                                     php->ph_fuse, php->ph_maxfuse);
                             px = new_dx;
                             py = new_dy;
-                            W_CacheLine (w, px, py, tx, ty, col);
-                            //W_CacheLineDB (localSDB, px, py, tx, ty, col);
                         }
-                        else
-                            W_CacheLine (w, px, py, tx, ty, col);
-                            //W_CacheLineDB (localSDB, px, py, tx, ty, col);
-
+                        W_CacheLine (w, px, py, tx, ty, col);
                     }
                     else
                     {
-                        /* I prefer them to just be solid white, I think most others will too
-                           So I take this line out and replace it */
-                        /*    if ((php->ph_fuse % 2) == 1)    */
                         if (php->ph_status != PHMISS)
                         {
                             if (phaserShrinkStyle == 1 && j == me)
@@ -993,18 +985,21 @@ DrawShips (void)
                                                         php->ph_fuse, php->ph_maxfuse);
                                 px = new_dx;
                                 py = new_dy;
-                                W_CacheLine (w, px, py, tx, ty, foreColor);
-                                //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
                             }
+                            if (highlightFriendlyPhasers)
+                            	W_CacheLine (w, px, py, tx, ty, foreColor);
                             else
-                                W_CacheLine (w, px, py, tx, ty, foreColor);
-                                //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+	                    {
+	                        if ((php->ph_fuse % 2) == 1)
+	                            W_CacheLine (w, px, py, tx, ty, foreColor);
+	                        else
+	                            W_CacheLine (w, px, py, tx, ty,
+	                                     shipCol[remap[j->p_team]]);
+                            }
                         }
                         else
                             W_CacheLine (w, px, py, tx, ty,
                                          shipCol[remap[j->p_team]]);
-                            /*W_CacheLineDB (localSDB, px, py, tx, ty,
-                                           shipCol[remap[j->p_team]]);*/
                     }
 #else
                     if (highlightFriendlyPhasers && (php->ph_status == PHHIT))

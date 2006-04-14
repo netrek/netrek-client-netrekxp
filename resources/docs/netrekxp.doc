@@ -128,7 +128,9 @@ portSwap:       (on/off) use UDP portswap code. Can solve connection
 
 showArmiesCount:(on/off) show armies count on galactic map.
 
-showHockeyLines:(on/off) show hockey lines on tactical
+showHockeyLinesLocal:	(on/off) show hockey lines on tactical
+showHockeyLinesMap:	(on/off) show hockey lines on the galactic map
+showHockeyScore:		(on/off) show hockey score in the galaxy top left corner
 
 rank.mapped:    (on/off)
 rank.parent:    (window name) ie root, review_all, netrek, etc
@@ -264,7 +266,9 @@ server.pickled: pickled.psychosis.net
 port.pickled:   2592
                 default port that gets called for the server abbreviation.
 
-showTractorPressor: (on/off) toggle showing tractor/pressor beams
+showTractorPressor: 	(on/off) toggle showing tractor/pressor beams
+showAllTractorPressor:	(on/off) show tractor/pressor for all players. Server
+ 				god decides whether to enable it on server.
 
 continueTractors:(on/off) show tractors after lock
 
@@ -928,3 +932,4 @@ team ends.  If the "partitionPlist" option is "on", white space will
 be added to the player list to separate your teams from the other
 teams and the players entering the game.  In color, this option is not
 usually required because the teams are distinct anyway.
+

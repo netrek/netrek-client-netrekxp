@@ -1,7 +1,7 @@
 SET RSAKey=\netrek_files\rsa\NetrekXP-Mod-RSA-Key-Win32.secret
-Set Compiler=VCC
+Set Compiler=BCC
 Set InstCWD=\netrek_files
-rem Set Compiler=BCC
+rem Set Compiler=VCC
 
 @echo off
 Set MyCWD=%cd%

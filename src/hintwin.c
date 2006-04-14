@@ -173,8 +173,8 @@ hintaction (W_Event * data)
     {
     case W_LBUTTON:
         curhint++;
-        if (curhint >= numhints)
-            curhint = numhints;
+        if (curhint > numhints)
+            curhint = 0;
         showhint (curhint);
         return;
     case W_MBUTTON:
@@ -186,7 +186,7 @@ hintaction (W_Event * data)
     case W_RBUTTON:
         curhint--;
         if (curhint < 0)
-            curhint = 0;
+            curhint = numhints;
         showhint (curhint);
         return;
     }

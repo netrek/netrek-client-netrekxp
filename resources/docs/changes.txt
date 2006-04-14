@@ -1,3 +1,13 @@
+Version TBA:
+- 
+- fixed hightlightFriendlyPhaser option to work again: on for white phasers on hits,
+  off for flicker between team color and white
+- added some more hints to the hint database
+- fixed hint messages so they properly loop
+- added Maximize button to title bar
+- added buildexe script for compiling solely the source code and not the bitmaps
+- made BCC default compiler and disabled RSA mkkey check (-nt) until it can be fixed
+
 Version 4.4.0.3:
 
 - added "viewBox: (on)/off" to show tactical boundaries on galaxy

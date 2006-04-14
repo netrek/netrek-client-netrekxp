@@ -145,7 +145,7 @@ $(RESOURCES): bccnetrek.rc
         $(rc) bccnetrek.rc
 
 rsa_box.c: 
-	..\tools\mkkey -k $(RSAKEY)
+	..\tools\mkkey -nt -k $(RSAKEY)
 
 netrek.exe:  $(OBJS) $(RESOURCES) main.ico
                 $(link) $(ldebug) $(LIBOPTS) $(OBJS) C0x32.OBJ, netrek.exe,, $(LIBS), , $(RESOURCES)
