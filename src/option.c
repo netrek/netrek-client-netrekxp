@@ -310,7 +310,7 @@ struct option Window_Menu[] = {
     {1, "show \"your\" message window", 0, &messwi, 0, 0, NULL, NULL},
     {1, "show \"kill\" message window", 0, &messwk, 0, 0, NULL, NULL},
     {1, "show \"total\" message window", 0, &reviewWin, 0, 0, NULL, NULL},
-    {1, "show phaser log window", &phaserWindow, &phaserwin, 0, 0, NULL},
+    {1, "show phaser log window", 0, &phaserwin, 0, 0, NULL},
     {1, "show statistic window", 0, &statwin, 0, 0, NULL, NULL},
     {1, "show help window", 0, &helpWin, 0, 0, NULL, NULL},
     {1, "show hints window", &showHints, &hintWin, 0, 0, NULL, NULL},

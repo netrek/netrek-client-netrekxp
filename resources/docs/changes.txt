@@ -1,4 +1,9 @@
 Version TBA:
+- fixed a bug in the options menu that incorrectly reported whether the phaser window
+  was mapped or not
+- phasering plasma now has less of an effect on phaser average damage statistics, it
+  is counted as your average damage hit, rather than the previous way of counting it
+  as a 38 point phaser hit.
 - fixed bug with phaser messages going blank due to improper buffering (not sure where
   this bug came from, in the downloadable version off playnetrek this bug does not exist)
 - removed defunct netrek forum link from metaserver window

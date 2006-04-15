@@ -1290,7 +1290,8 @@ handleSWarning (struct warning_s_spacket *packet)
         {
             phaserStatTry++;
             phaserStatHit++;
-            phaserStatDamage += damage;
+            /* Record as an average damage hit so as not to skew overall average */
+            phaserStatDamage += phaserStatDamage / phaserStatTry;
         }
         if (damage == 37)       /* Miss */
             phaserStatTry++;
