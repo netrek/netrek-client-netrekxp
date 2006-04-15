@@ -1,4 +1,7 @@
 Version TBA:
+- fixed bug with phaser messages going blank due to improper buffering (not sure where
+  this bug came from, in the downloadable version off playnetrek this bug does not exist)
+- removed defunct netrek forum link from metaserver window
 - all ship bitmap libraries now load into memory.  Can be modified at a later date
   if this proves to be a bad idea.
 - added "dynamicBitmap: (on)/off".  Enables dynamic bitmap switching from the options menu

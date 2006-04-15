@@ -701,7 +701,7 @@ metawindow (void)
 
 	/* Additional Help Options */
 	W_WriteText (metaWin, 0, num_servers + 1, W_Yellow, 
-		        "    Netrek Homepage | Newbie Manual | Forum | FAQ | Dogfight Manual", 67, 0);
+		        "        Netrek Homepage | Newbie Manual | FAQ | Dogfight Manual", 63, 0);
 
     /* Map window */
     W_MapWindow (metaWin);
@@ -784,15 +784,13 @@ metaaction (W_Event * data)
 	else if (data->y == num_servers + 1) /* Help Line */
 	{
 		x = data->x / W_Textwidth;
-		if (x >= 0 && x <= 19)			/* Netrek Home Page */
+		if (x >= 0 && x <= 23)			/* Netrek Home Page */
 			ShellExecute (NULL, "open", "http://www.netrek.org", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 21 && x <= 35)	/* Newbie Manual */
+		else if (x >= 25 && x <= 39)	/* Newbie Manual */
 			ShellExecute (NULL, "open", "http://www.netrek.org/cow/current/newbie.html", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 37 && x <= 43)	/* Forums */
-			ShellExecute (NULL, "open", "http://netrek.game-host.org", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 45 && x <= 49)	/* FAQ */
+		else if (x >= 41 && x <= 45)	/* FAQ */
 			ShellExecute (NULL, "open", "http://www.inl.org/netrek/netrekFAQ.html", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 51 && x <= 67)	/* Dogfight Manual */
+		else if (x >= 47 && x <= 63)	/* Dogfight Manual */
 			ShellExecute (NULL, "open", "http://cha.rlie.nl/dfmanual/", NULL, NULL, SW_SHOWNORMAL);
 	}
 }

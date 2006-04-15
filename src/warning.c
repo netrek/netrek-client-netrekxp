@@ -30,7 +30,7 @@ warning (char *text)
     LONG curtime;
     struct tm *tm;
     char newtext[128];
-
+    char newtext2[128];
     if (warncount > 0)
     {
         /* XFIX */
@@ -62,10 +62,10 @@ warning (char *text)
         time (&curtime);
         tm = localtime (&curtime);
 #ifdef PHASER_STATS
-        sprintf (newtext, "%.100s %02d:%02d:%02d",
+        sprintf (newtext2, "%.100s %02d:%02d:%02d",
                  (doPhaser && phaserStats) ? newtext : text, tm->tm_hour,
 #else
-        sprintf (newtext, "%.100s %02d:%02d:%02d", text, tm->tm_hour,
+        sprintf (newtext2, "%.100s %02d:%02d:%02d", text, tm->tm_hour,
 #endif
                  tm->tm_min, tm->tm_sec);
         warncount = (warncount > 100) ? 109 : warncount + 9;
@@ -74,14 +74,14 @@ warning (char *text)
         {
             if (logFile != NULL)
             {
-                fprintf (logFile, "%s\n", newtext);
+                fprintf (logFile, "%s\n", newtext2);
                 fflush (logFile);
             }
             else
-                puts (newtext);
+                puts (newtext2);
         }
 
         if (doPhaser)
-            W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext, warncount, 0);
+            W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext2, warncount, 0);
     }
 }

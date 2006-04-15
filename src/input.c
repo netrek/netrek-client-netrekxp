@@ -1489,9 +1489,9 @@ buttonaction (W_Event * data)
 	{
 		int x, y;
 
-        if (findMouseInWin (&x, &y, playerw))
-	    {
-		    data->Window = playerw;
+        	if (findMouseInWin (&x, &y, playerw))
+	   	{
+		    	data->Window = playerw;
 			data->x = x;
 			data->y = y;
 		}
