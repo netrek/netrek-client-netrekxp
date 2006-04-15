@@ -654,23 +654,15 @@ cowmain (char *server,
     if (usemeta)
         parsemeta (usemeta);
 #endif
-
-/* Check to see if we should load color bitmaps  SRS 1/11/99 */
-/* 0 = mono
- * 1 = color with tinted bitmaps in center representing your ship
- * 2 = color with greyscale bitmaps in center representing your ship
- */
-
-    /* This is here for backwards compatibility with old bool default */
-    colorClient = booleanDefault ("colorClient", 0);
-    /* If it's already 0, it can't hurt to check for int default */
-    if (colorClient == 0)
-        colorClient = intDefault ("colorClient", 1);
-
+  
     fed_ship_bmp = "bitmaps/shiplib/fedship.bmp";
     if ((stringDefault ("fedshipbmpfile")) != NULL)
         fed_ship_bmp = stringDefault ("fedshipbmpfile");
 
+    fed_ship_bmp_1 = "bitmaps/shiplib/fedship1.bmp";
+    if ((stringDefault ("fedshipbmp1file")) != NULL)
+        fed_ship_bmp_1 = stringDefault ("fedshipbmp1file");
+        
     fed_ship_bmp_G = "bitmaps/shiplib/fedshipG.bmp";
     if ((stringDefault ("fedshipGbmpfile")) != NULL)
         fed_ship_bmp_G = stringDefault ("fedshipGbmpfile");
@@ -687,6 +679,10 @@ cowmain (char *server,
     if ((stringDefault ("romshipbmpfile")) != NULL)
         rom_ship_bmp = stringDefault ("romshipbmpfile");
 
+    rom_ship_bmp_1 = "bitmaps/shiplib/romship1.bmp";
+    if ((stringDefault ("romshipbmp1file")) != NULL)
+        rom_ship_bmp_1 = stringDefault ("romshipbmp1file");
+        
     rom_ship_bmp_G = "bitmaps/shiplib/romshipG.bmp";
     if ((stringDefault ("romshipGbmpfile")) != NULL)
         rom_ship_bmp_G = stringDefault ("romshipGbmpfile");
@@ -702,7 +698,11 @@ cowmain (char *server,
     kli_ship_bmp = "bitmaps/shiplib/kliship.bmp";
     if ((stringDefault ("klishipbmpfile")) != NULL)
         kli_ship_bmp = stringDefault ("klishipbmpfile");
-
+        
+    kli_ship_bmp_1 = "bitmaps/shiplib/kliship1.bmp";
+    if ((stringDefault ("klishipbmp1file")) != NULL)
+        kli_ship_bmp_1 = stringDefault ("klishipbmp1file");
+        
     kli_ship_bmp_G = "bitmaps/shiplib/klishipG.bmp";
     if ((stringDefault ("klishipGbmpfile")) != NULL)
         kli_ship_bmp_G = stringDefault ("klishipGbmpfile");
@@ -719,6 +719,10 @@ cowmain (char *server,
     if ((stringDefault ("orishipbmpfile")) != NULL)
         ori_ship_bmp = stringDefault ("orishipbmpfile");
 
+    ori_ship_bmp_1 = "bitmaps/shiplib/oriship1.bmp";
+    if ((stringDefault ("orishipbmp1file")) != NULL)
+        ori_ship_bmp_1 = stringDefault ("orishipbmp1file");
+        
     ori_ship_bmp_G = "bitmaps/shiplib/orishipG.bmp";
     if ((stringDefault ("orishipGbmpfile")) != NULL)
         ori_ship_bmp_G = stringDefault ("orishipGbmpfile");
@@ -734,6 +738,10 @@ cowmain (char *server,
     ind_ship_bmp = "bitmaps/shiplib/indship.bmp";
     if ((stringDefault ("indshipbmpfile")) != NULL)
         ind_ship_bmp = stringDefault ("indshipbmpfile");
+        
+    ind_ship_bmp_1 = "bitmaps/shiplib/indship1.bmp";
+    if ((stringDefault ("indshipbmp1file")) != NULL)
+        ind_ship_bmp_1 = stringDefault ("indshipbmp1file");
 
     ind_ship_bmp_G = "bitmaps/shiplib/indshipG.bmp";
     if ((stringDefault ("indshipGbmpfile")) != NULL)

@@ -165,6 +165,7 @@ extern int phaserShrinkStyle;
 extern int theirPhaserShrink;
 extern int shrinkPhaserOnMiss;
 extern int colorClient;
+extern int dynamicBitmaps;
 extern int newDashboard, old_db;
 extern int niftyNewMessages;
 extern int fastQuit;
@@ -274,10 +275,25 @@ extern W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS],
     kli_bitmaps[NUM_TYPES][SHIP_VIEWS], rom_bitmaps[NUM_TYPES][SHIP_VIEWS],
     ori_bitmaps[NUM_TYPES][SHIP_VIEWS], ind_bitmaps[NUM_TYPES][SHIP_VIEWS];
 
+extern W_Icon ship_bitmaps1[5];
+extern W_Icon fed_bitmaps1[NUM_TYPES][SHIP_VIEWS],
+    kli_bitmaps1[NUM_TYPES][SHIP_VIEWS], rom_bitmaps1[NUM_TYPES][SHIP_VIEWS],
+    ori_bitmaps1[NUM_TYPES][SHIP_VIEWS], ind_bitmaps1[NUM_TYPES][SHIP_VIEWS];
+
 extern W_Icon ship_bitmapsG[5];
 extern W_Icon fed_bitmapsG[NUM_TYPES][SHIP_VIEWS],
     kli_bitmapsG[NUM_TYPES][SHIP_VIEWS], rom_bitmapsG[NUM_TYPES][SHIP_VIEWS],
     ori_bitmapsG[NUM_TYPES][SHIP_VIEWS], ind_bitmapsG[NUM_TYPES][SHIP_VIEWS];
+
+extern W_Icon ship_bitmapsM[5];
+extern W_Icon fed_bitmapsM[NUM_TYPES][SHIP_VIEWS],
+    kli_bitmapsM[NUM_TYPES][SHIP_VIEWS], rom_bitmapsM[NUM_TYPES][SHIP_VIEWS],
+    ori_bitmapsM[NUM_TYPES][SHIP_VIEWS], ind_bitmapsM[NUM_TYPES][SHIP_VIEWS];
+    
+extern W_Icon ship_bitmapsT[5];
+extern W_Icon fed_bitmapsT[NUM_TYPES][SHIP_VIEWS],
+    kli_bitmapsT[NUM_TYPES][SHIP_VIEWS], rom_bitmapsT[NUM_TYPES][SHIP_VIEWS],
+    ori_bitmapsT[NUM_TYPES][SHIP_VIEWS], ind_bitmapsT[NUM_TYPES][SHIP_VIEWS];
 
 extern W_Icon base_planets;
 extern W_Icon base_mplanets;
@@ -475,6 +491,11 @@ extern char *rom_ship_bmp;
 extern char *kli_ship_bmp;
 extern char *ori_ship_bmp;
 extern char *ind_ship_bmp;
+extern char *fed_ship_bmp_1;
+extern char *rom_ship_bmp_1;
+extern char *kli_ship_bmp_1;
+extern char *ori_ship_bmp_1;
+extern char *ind_ship_bmp_1;
 extern char *fed_ship_bmp_G;
 extern char *rom_ship_bmp_G;
 extern char *kli_ship_bmp_G;

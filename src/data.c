@@ -46,7 +46,7 @@ int theirPhaserShrink = 0;
 int shrinkPhaserOnMiss = 0;
 
 int colorClient = 1;            /* Use new colorized bitmaps SRS 11/12/99 */
-
+int dynamicBitmaps = 1;		/* in game switching of ship bitmaps, default to on */
 int newDashboard = 2;           /* use new graphic
                                  * dashboard, 6/2/93 LAB */
 int old_db = 0;                 /* should be same as
@@ -274,11 +274,25 @@ W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS], kli_bitmaps[NUM_TYPES][SHIP_VIEWS],
     rom_bitmaps[NUM_TYPES][SHIP_VIEWS], ori_bitmaps[NUM_TYPES][SHIP_VIEWS],
     ind_bitmaps[NUM_TYPES][SHIP_VIEWS];
 
+W_Icon ship_bitmaps1[5];
+W_Icon fed_bitmaps1[NUM_TYPES][SHIP_VIEWS], kli_bitmaps1[NUM_TYPES][SHIP_VIEWS],
+    rom_bitmaps1[NUM_TYPES][SHIP_VIEWS], ori_bitmaps1[NUM_TYPES][SHIP_VIEWS],
+    ind_bitmaps1[NUM_TYPES][SHIP_VIEWS];
+
 W_Icon ship_bitmapsG[5];
 W_Icon fed_bitmapsG[NUM_TYPES][SHIP_VIEWS],
     kli_bitmapsG[NUM_TYPES][SHIP_VIEWS], rom_bitmapsG[NUM_TYPES][SHIP_VIEWS],
     ori_bitmapsG[NUM_TYPES][SHIP_VIEWS], ind_bitmapsG[NUM_TYPES][SHIP_VIEWS];
 
+W_Icon ship_bitmapsM[5];
+W_Icon fed_bitmapsM[NUM_TYPES][SHIP_VIEWS],
+    kli_bitmapsM[NUM_TYPES][SHIP_VIEWS], rom_bitmapsM[NUM_TYPES][SHIP_VIEWS],
+    ori_bitmapsM[NUM_TYPES][SHIP_VIEWS], ind_bitmapsM[NUM_TYPES][SHIP_VIEWS];
+    
+W_Icon ship_bitmapsT[5];
+W_Icon fed_bitmapsT[NUM_TYPES][SHIP_VIEWS],
+    kli_bitmapsT[NUM_TYPES][SHIP_VIEWS], rom_bitmapsT[NUM_TYPES][SHIP_VIEWS],
+    ori_bitmapsT[NUM_TYPES][SHIP_VIEWS], ind_bitmapsT[NUM_TYPES][SHIP_VIEWS];
 
 // Planets
 W_Icon base_planets;
@@ -577,6 +591,11 @@ char *rom_ship_bmp;
 char *kli_ship_bmp;
 char *ori_ship_bmp;
 char *ind_ship_bmp;
+char *fed_ship_bmp_1;
+char *rom_ship_bmp_1;
+char *kli_ship_bmp_1;
+char *ori_ship_bmp_1;
+char *ind_ship_bmp_1;
 char *fed_ship_bmp_G;
 char *rom_ship_bmp_G;
 char *kli_ship_bmp_G;

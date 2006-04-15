@@ -445,11 +445,7 @@ DrawShips (void)
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
 
-#ifndef DYNAMIC_BITMAPS
     W_Icon (*ship_bits)[SHIP_VIEWS];
-#endif
-
-
 
     /* Kludge to try to fix missing ID chars on tactical (short range)
        display. */
@@ -541,35 +537,63 @@ DrawShips (void)
         }
         if (j->p_status == PALIVE)
         {
-
-#ifndef DYNAMIC_BITMAPS
-            switch (j->p_team)
-            {
-            case FED:
-                ship_bits = fed_bitmaps;
-                break;
-            case ROM:
-                ship_bits = rom_bitmaps;
-                break;
-            case KLI:
-                ship_bits = kli_bitmaps;
-                break;
-            case ORI:
-                ship_bits = ori_bitmaps;
-                break;
-            default:
-                ship_bits = ind_bitmaps;
-                break;
-            }
-#endif
-
             clearzone[0][clearcount] = dx - (shield_width / 2);
             clearzone[1][clearcount] = dy - (shield_height / 2);
             clearzone[2][clearcount] = shield_width;
             clearzone[3][clearcount] = shield_height;
             clearcount++;
 
-            if (!myPlayer (j) || (!(colorClient > 0)))
+	/* Logic of color scheme is as follows:
+	   1) Mono bitmaps (colorClient 0) and new bitmaps (colorClient 1)
+	      are the same for both player and everyone else.
+	   2) Single color bitmaps (colorClient 2) and shaded single color
+	      bitmaps (colorClient 3) have a monochrome version (bitmap set
+	      G) that will be used for the player's ship, to set it apart in
+	      color from the rest of the team
+	 */
+	    if (colorClient <= 0 || colorClient > 3)
+            {
+            	switch (j->p_team)
+            	{
+                case FED:
+                    ship_bits = fed_bitmapsM;
+                    break;
+                case ROM:
+                    ship_bits = rom_bitmapsM;
+                    break;
+                case KLI:
+                    ship_bits = kli_bitmapsM;
+                    break;
+                case ORI:
+                    ship_bits = ori_bitmapsM;
+                    break;
+                default:
+                    ship_bits = ind_bitmapsM;
+                    break;
+           	}
+            }
+            else if (colorClient == 1)
+            {
+                switch (j->p_team)
+                {
+                case FED:
+                    ship_bits = fed_bitmaps1;
+                    break;
+                case ROM:
+                    ship_bits = rom_bitmaps1;
+                    break;
+                case KLI:
+                    ship_bits = kli_bitmaps1;
+                    break;
+                case ORI:
+                    ship_bits = ori_bitmaps1;
+                    break;
+                default:
+                    ship_bits = ind_bitmaps1;
+                    break;
+                }
+            }
+            else if (colorClient == 2 && !myPlayer(j))
             {
                 switch (j->p_team)
                 {
@@ -589,22 +613,31 @@ DrawShips (void)
                     ship_bits = ind_bitmaps;
                     break;
                 }
-                W_WriteBitmap (dx - (j->p_ship.s_width / 2),
-                               dy - (j->p_ship.s_height / 2),
-                /*W_WriteBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
-                                 dy - (j->p_ship.s_height / 2),*/
-#ifndef DYNAMIC_BITMAPS
-                               ship_bits[j->p_ship.
-                                         s_type][rosette (j->p_dir)],
-#else
-                               ship_bitmaps[PlayerBitmap (j)][rosette
-                                                              (j->p_dir)],
-#endif
-                               playerColor (j));
             }
-            else
+            else if (colorClient == 3 && !myPlayer(j))
             {
                 switch (j->p_team)
+                {
+                case FED:
+                    ship_bits = fed_bitmapsT;
+                    break;
+                case ROM:
+                    ship_bits = rom_bitmapsT;
+                    break;
+                case KLI:
+                    ship_bits = kli_bitmapsT;
+                    break;
+                case ORI:
+                    ship_bits = ori_bitmapsT;
+                    break;
+                default:
+                    ship_bits = ind_bitmapsT;
+                    break;
+                }
+            }
+            else /* Default to bitmap set G (greyscale) for player's ship */
+            {
+            	switch (j->p_team)
                 {
                 case FED:
                     ship_bits = fed_bitmapsG;
@@ -622,21 +655,15 @@ DrawShips (void)
                     ship_bits = ind_bitmapsG;
                     break;
                 }
-                W_WriteBitmap (dx - (j->p_ship.s_width / 2),
-                               dy - (j->p_ship.s_height / 2),
-                /*W_WriteBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
-                                 dy - (j->p_ship.s_height / 2),*/
-#ifndef DYNAMIC_BITMAPS
-                               ship_bits[j->p_ship.
-                                         s_type][rosette (j->p_dir)],
-#else
-                               ship_bitmaps[PlayerBitmap (j)][rosette
-                                                              (j->p_dir)],
-#endif
-                               playerColor (j));
             }
 
+            W_WriteBitmap (dx - (j->p_ship.s_width / 2),
+                           dy - (j->p_ship.s_height / 2),
+                           ship_bits[j->p_ship.
+                                     s_type][rosette (j->p_dir)],
 
+                           playerColor (j));
+                           
             if (j->p_cloakphase > 0)
             {
                 W_WriteBitmap (dx - (cloak_width / 2),

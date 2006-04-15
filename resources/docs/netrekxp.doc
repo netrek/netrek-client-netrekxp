@@ -112,7 +112,13 @@ various other documentation such as MOO documentation.
 
 For other options, see MACROs and Receiver Configurable Distress Calls.
 
-colorClient:    (on/off) use color or monochrome bitmaps
+colorClient:    (0-3) ship bitmaps that are used
+                0 – Monochrome
+                1 – New color bitmaps (default)
+                2 – Old color bitmaps
+                3 – Shaded old color bitmaps
+
+dynamicBitmaps: (on/off) allow switching of ship bitmaps in game.
 
 fullScreen:     (on/off) draw borders for main window (default is off)
 
@@ -160,6 +166,12 @@ password:       (string of chars) default password; if both name and
 continuousMouse:(on/off) change direction while holding right mouse button
                 and moving the mouse
 
+continuousMouseFix: (on/off) If enabled the continuous mouse will follow any 
+                buttons that are pressed at the same time. For example if you 
+                are steering and firing at the same time this fix will allow 
+                both events to occur. Without the fix the behavior is to only 
+                allow one button action.
+
 newDistress:    (on/off) right justified distress call or not, default 
                 value is to right justify (on)
 
@@ -170,8 +182,34 @@ varyShields:    (on/off) Shield color and bitmap depends on shield status.
 varyHull:       (on/off) graphical indication of your hull condition. 
                 kinda like varyShields
 
+windowMove:     (on/off) option to disable in-game movement of client windows.
+
+mainResizeable: (on/off) make the main netrek window resizeable
+
+metaPing:	    (on/off) show ping statistics in the metaserver window
+
 cloakChars:     (string of one or two chars) what to use for cloakers on
                 galactic instead of '??'.
+
+omitTeamLetter: (on/off) to stop drawing the team letter on the galactic
+
+showStars:	    (on/off) to have paradise-like background stars
+
+warpStreaks:    (on/off) to draw streaks while warping to the starbase if
+                 background stars are on
+
+viewBox:	    (on/off) to show your tactical boundaries on the galactic
+
+disableWinkey:  (on/off) to allow Windows and Context keyboard keys to be
+                 disabled
+
+timerType:       Range of 0-4.  Use to be able to switch the dashboard clock
+                 into a timer.
+                 0 - don't show
+                 (1) - show current time
+                 2 - show time on server
+                 3 - show time in ship
+                 4 - show user-set time
 
 enemyPhasers:   (integer 0-10) enemy phasers thickness at starting point.
 
@@ -182,7 +220,18 @@ theirPhaserShrink: (integer 0-16) "phaserShrink" for other player's ships.
 
 shrinkPhaserOnMiss: (on/off) Use "phaserShrink" and "theirPhaserShrink" even 
                     if a phaser misses.
-		
+
+highlightFriendlyPhasers: (on/off) When on, friendly phaser hits appear white.
+                          When off, phasers rotate between white and team color.
+
+colorfulPhasers: (on/off) Makes your phaser hits become multicolored.
+
+playerListMessaging: (on/off) option to enable/disable clickable player list 
+
+beepOnPrivateMessage: (on/off) if enabled, the client will beep when you receive
+                      a private message from somebody that is not yourself or
+                      god.
+
 showStats:      (on/off) show stats window
 
 reportKills:    (on/off) display kill messages or ignore these
@@ -284,7 +333,14 @@ udpSequenceChk:
 
 extraAlertBorder:  (on/off) Draws border over tactical window
 
-forcemono:      (on/off) client windows are set to be monochrome
+forceDisplay:  (0-3) Number of colors the client will display
+               0 - find best available color option
+               1 - 16 colors
+               2 - 256 colors
+               3 - true color (default)
+
+forcemono:     Outdated option.  Will force display to 16 colors,
+               (but only works if forceDisplay = 0)
 
 redrawDelay:    (0-10) synchron screen refresh every n/10 sec
 
@@ -296,6 +352,34 @@ showLock:       (0-3) show lock triangle
                 2 = tactical
                 3 = both
 
+Extra NetrekXP features:
+
+Most options in the rc file can have four appearances:
+     1. option.observer: string (i.e. "keymap.observer: aabbcc")
+     2. option.servernick: string (i.e. "keymap.continuum: aabbcc")
+        This one will work only if you have "server.servernick: servername" in
+the rc (i.e. "server.continuum: continuum.us.netrek.org")
+     3. option.servertype: string (i.e. "keymap.bronco: aabbcc")
+        This will work if you either connect from the metaserver window (then servertypes are taken from metaserver report) or if you use option the "server.nickname" to map the server to a nickname and then define "serverType.nickname" to be one of "paradise, bronco, chaos, inl, sturgeon, hockey, dogfight" (so you will have two lines is the rc):
+        "server.pickled: pickled.psychosis.net" and 
+        "serverType.pickled: bronco"
+     4. option: string (i.e. "keymap: aabbccdd")
+The options are validated in the same order (from 1 to 4 where 1 is best match and 4 is worst match).
+
+The "window.allow" option lets you set the type of messages logged into each message window (review, review_all, review_team, review_your, review_kill, review_phaser)
+  Message types:
+	  I - individual messages
+        T - team messages
+        A - all messages
+        K - kill messages
+        P - phaser messages
+  Default settings:
+        review.allow: ITAKP
+        review_all.allow: A
+        review_team.allow: T
+        review_your.allow: I
+        review_kill.allow: K
+        review_phaser.allow: P
 
 iConnection Types: UDP and TCP explained
 
@@ -919,6 +1003,13 @@ For backward compatability, the option "newPlist" will still select
 between the old style playerlist (off) and the COW style playerlist
 (on) if the "playerListStyle" option does not appear in your xtrekrc.
 
+It is also possible to select the amount of decimal places in playerlist float numbers.   
+  Example:
+  "playerlist: nTK1  RNr1 S1d0" in order to see:
+  "R0 CA 0.5  Ensign guest 0.8 2.4 95"
+  or giving old "playerlist: nTK RNr Sd" will give you:
+  "R0 CA 0.50 Ensign guest 0.82 2.43 95.07"
+Current options that can be followed by numbers 0-2 are: KODSrdBPHkVv
 
 i3) The "partitionPlist" option:
 

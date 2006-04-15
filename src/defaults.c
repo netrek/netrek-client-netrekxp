@@ -76,9 +76,17 @@ struct save_options save_options[] = {
         {
             "What type of ship bitmaps to load",
             "0 - mono",
-            "1 - color (default)",
+            "1 - new color bitmaps (default)",
+            "2 - old color bitmaps",
+            "3 - shaded old color bitmaps",
             NULL
         }
+    },
+    {"dynamicBitmaps", &dynamicBitmaps, RC_BOOL,
+    	{
+    	    "Allow switching of ship bitmaps in game",
+    	    NULL
+    	}
     },
 #ifdef JUBILEE_PHASERS
     {"colorfulPhasers", &colorfulPhasers, RC_BOOL,
@@ -131,7 +139,7 @@ struct save_options save_options[] = {
     {"forceDisplay", &forceDisplay, RC_INT,
         {
             "Number of colors the client will display",
-            "0 - mono",
+            "0 - find best available color option",
             "1 - 16 colors",
             "2 - 256 colors",
             "3 - true color (default)",
@@ -140,7 +148,8 @@ struct save_options save_options[] = {
     },
     {"forceMono", &forceMono, RC_BOOL,
         {
-            "Force old bitmaps",
+            "Outdated option.  Will force display to 16 colors",
+            "(but only works if forceDisplay = 0).",
             NULL
         }
     },
@@ -1383,6 +1392,8 @@ resetdefaults (void)
     showStats = booleanDefault ("showStats", showStats);
     showHints = booleanDefault ("showHints", showHints);
     keepPeace = booleanDefault ("keepPeace", keepPeace);
+    colorClient = intDefault ("colorClient", colorClient);
+    dynamicBitmaps = booleanDefault ("dynamicBitmaps", dynamicBitmaps);
     continueTractor = booleanDefault ("continueTractor", continueTractor);
     showTractorPressor = booleanDefault ("showTractorPressor", showTractorPressor);
     showAllTractorPressor = booleanDefault ("showAllTractorPressor", showAllTractorPressor);

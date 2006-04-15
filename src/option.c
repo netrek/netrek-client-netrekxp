@@ -32,11 +32,6 @@ static int old_rotate, old_rotate_deg;
 static int lastUpdateSpeed = 5;
 static char newkeys[14];
 
-#if (defined( DEBUG) || defined (BITMAP_DEBUG)) && defined(DYNAMIC_BITMAPS)
-extern int OwnBitmapNum;
-
-#endif
-
 char *localmes[] = { "Show owner on local planets",
                      "Show resources on local planets",
                      "Show nothing on local planets",
@@ -132,6 +127,13 @@ static char *agricolormess[] = { "Race color for AGRI name",
                                  ""
 };
 
+static char *bitmaptypemess[] = { "Mono bitmaps",
+                                  "New color bitmaps",
+                                  "Old color bitmaps",
+                                  "Shaded old color bitmaps",
+                                  ""
+};
+
 static char *windowmovemess[] = { "Disable moving of internal windows",
                                   "Enable moving of internal windows",
                                   ""
@@ -214,9 +216,7 @@ struct int_range phaserShrinkRng = { 0, 16, 1 };
 /* range of menus. Will be updated when menu list is assembled */
 struct int_range Menus_Range = { 0, 1, 1 };
 
-#if (defined( DEBUG) || defined (BITMAP_DEBUG)) && defined(DYNAMIC_BITMAPS)
-struct int_range bitmap_range = { 0, 50, 1 };
-#endif
+struct int_range bitmap_range = { 0, 3, 1 };
 
 struct int_range keepInfo_range = { 0, 100, 1 };
 
@@ -237,9 +237,7 @@ int saveOpts = 1;    /* Temp flag to use for save options action */
 struct option Ship_Menu[] = {
     {0, "Ship Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
-#if (defined( DEBUG) || defined (BITMAP_DEBUG)) && defined(DYNAMIC_BITMAPS)
-    {1, "Own bitmap number: %d", &OwnBitmapNum, 0, 0, 0, NULL, &bitmap_range},
-#endif
+    {1, "", &colorClient, 0, 0, 0, bitmaptypemess, &bitmap_range},
 #ifdef VSHIELD_BITMAPS
     {1, "vary shields bitmap", &varyShields, 0, 0, 0, NULL, NULL},
 #endif
@@ -631,6 +629,13 @@ optionaction (W_Event * data)
     /* Toggle int, if it exists */
     if (op->op_array)
     {
+         /* Actions to be taken when certain options are selected. (Yes, this is
+         * a hack). */
+        if (op->op_option == &colorClient)
+        {
+        	if (!dynamicBitmaps)
+        		return;
+        }
         if (data->key == W_RBUTTON)
         {
             (*op->op_option)++;

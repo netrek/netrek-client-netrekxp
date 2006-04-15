@@ -407,15 +407,30 @@ W_Cleanup (void)
     for (j = 0; j < NUM_TYPES; j++)
         for (k = 0; k < SHIP_VIEWS; k++)
         {
+            free (fed_bitmapsT[j][k]);
+            free (fed_bitmapsM[j][k]);
             free (fed_bitmapsG[j][k]);
+            free (fed_bitmaps1[j][k]);
             free (fed_bitmaps[j][k]);
+            free (ind_bitmapsT[j][k]);
+            free (ind_bitmapsM[j][k]);
             free (ind_bitmapsG[j][k]);
+            free (ind_bitmaps1[j][k]);
             free (ind_bitmaps[j][k]);
+            free (kli_bitmapsT[j][k]);
+            free (kli_bitmapsM[j][k]);
             free (kli_bitmapsG[j][k]);
+            free (kli_bitmaps1[j][k]);
             free (kli_bitmaps[j][k]);
+            free (ori_bitmapsT[j][k]);
+            free (ori_bitmapsM[j][k]);
             free (ori_bitmapsG[j][k]);
+            free (ori_bitmaps1[j][k]);
             free (ori_bitmaps[j][k]);
+            free (rom_bitmapsT[j][k]);
+            free (rom_bitmapsM[j][k]);
             free (rom_bitmapsG[j][k]);
+            free (rom_bitmaps1[j][k]);
             free (rom_bitmaps[j][k]);
         }
 

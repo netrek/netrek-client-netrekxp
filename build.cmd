@@ -264,11 +264,11 @@ copy resources\ships\color\kli\kliship.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\color\ori\oriship.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\color\rom\romship.bmp %InstCWD%\netrek\bitmaps\shiplib
 
-rem copy resources\ships\color1\fed\fedship1.bmp %InstCWD%\netrek\bitmaps\shiplib
-rem copy resources\ships\color1\ind\indship1.bmp %InstCWD%\netrek\bitmaps\shiplib
-rem copy resources\ships\color1\kli\kliship1.bmp %InstCWD%\netrek\bitmaps\shiplib
-rem copy resources\ships\color1\ori\oriship1.bmp %InstCWD%\netrek\bitmaps\shiplib
-rem copy resources\ships\color1\rom\romship1.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\color1\fed\fedship1.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\color1\ind\indship1.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\color1\kli\kliship1.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\color1\ori\oriship1.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\color1\rom\romship1.bmp %InstCWD%\netrek\bitmaps\shiplib
 
 copy resources\ships\mono\fed\fedshipM.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\mono\ind\indshipM.bmp %InstCWD%\netrek\bitmaps\shiplib
