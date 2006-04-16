@@ -13,7 +13,7 @@
 #include <math.h>
 #include <signal.h>
 #include <sys/types.h>
-
+#include <sys/stat.h>
 #include <time.h>
 #include <winsock.h>
 
@@ -47,6 +47,25 @@ int MaxMotdLine = 0;
 #define STATSIZE        (MESSAGESIZE * 2 + BORDER)
 #define YOFF            -25
 
+/******************************************************************************/
+/***   bitmapExists()
+/***   Called by savebitmaps() to verify bitmap files exist. */
+/******************************************************************************/
+int bitmapExists (char * fileName)
+{
+   struct stat buf;
+   char * dir;
+   int i;
+   
+   sprintf(dir, "bitmaps/shiplib/");
+   strcat(dir, fileName);
+   i = stat ( dir, &buf );
+   
+   if ( i == 0 )
+	return 1;
+   else
+	return 0;
+}
 
 /******************************************************************************/
 /***  handleMessageWindowKeyDown()
@@ -349,72 +368,223 @@ savebitmaps (void)
         break;
     }
 
-/*  Load all the bitmaps in.  Let the user be able to toggle between
-    any type if dynamicBitmaps is set. */
+/*
+    Load all the bitmaps in, so the user can toggle between any type if
+    dynamicBitmaps is set. 
+    If any bitmap files in a set are missing, default to the monoscale bitmaps
+    for that set.
+    If the monoscale bitmaps are missing, it's the users fault for deleting his/her
+    bitmap files.
+    This purpose of this code is preventative, as older versions of the client had
+    different bitmap directories names and different bitmap sets.  If someone were
+    to use a newer netrek executable without updating the bitmap libraries, this
+    should keep the client working.
+*/
    
-    ship_bitmaps[0] =
-        W_StoreBitmap3 (fed_ship_bmp, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps[1] =
-        W_StoreBitmap3 (ind_ship_bmp, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps[2] =
-        W_StoreBitmap3 (kli_ship_bmp, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps[3] =
-        W_StoreBitmap3 (ori_ship_bmp, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps[4] =
-        W_StoreBitmap3 (rom_ship_bmp, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
-                        LR_DEFAULTCOLOR);
-
-    ship_bitmaps1[0] =
-        W_StoreBitmap3 (fed_ship_bmp_1, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps1[1] =
-        W_StoreBitmap3 (ind_ship_bmp_1, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps1[2] =
-        W_StoreBitmap3 (kli_ship_bmp_1, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps1[3] =
-        W_StoreBitmap3 (ori_ship_bmp_1, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmaps1[4] =
-        W_StoreBitmap3 (rom_ship_bmp_1, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
-                        LR_DEFAULTCOLOR);
-                            
-    ship_bitmapsT[0] =
-        W_StoreBitmap3 (fed_ship_bmp_T, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsT[1] =
-        W_StoreBitmap3 (ind_ship_bmp_T, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsT[2] =
-        W_StoreBitmap3 (kli_ship_bmp_T, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsT[3] =
-        W_StoreBitmap3 (ori_ship_bmp_T, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsT[4] =
-        W_StoreBitmap3 (rom_ship_bmp_T, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
-                        LR_DEFAULTCOLOR);
-
+    if (bitmapExists("fedship.bmp")
+     && bitmapExists("indship.bmp")
+     && bitmapExists("kliship.bmp")
+     && bitmapExists("oriship.bmp")
+     && bitmapExists("romship.bmp"))
+    {
+	    ship_bitmaps[0] =
+	        W_StoreBitmap3 (fed_ship_bmp, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps[1] =
+	        W_StoreBitmap3 (ind_ship_bmp, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps[2] =
+	        W_StoreBitmap3 (kli_ship_bmp, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps[3] =
+	        W_StoreBitmap3 (ori_ship_bmp, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps[4] =
+	        W_StoreBitmap3 (rom_ship_bmp, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+    }
+    else /* default to mono */
+    {
+	    ship_bitmaps[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_MONOCHROME);
+    }
+    
+    if (bitmapExists("fedship1.bmp")
+     && bitmapExists("indship1.bmp")
+     && bitmapExists("kliship1.bmp")
+     && bitmapExists("oriship1.bmp")
+     && bitmapExists("romship1.bmp"))
+    {
+	    ship_bitmaps1[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_1, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps1[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_1, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps1[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_1, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps1[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_1, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmaps1[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_1, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+    }
+    else /* default to mono */
+    {
+	    ship_bitmaps1[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps1[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps1[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps1[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmaps1[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_MONOCHROME);
+    }
+    
+    if (bitmapExists("fedshipT.bmp")
+     && bitmapExists("indshipT.bmp")
+     && bitmapExists("klishipT.bmp")
+     && bitmapExists("orishipT.bmp")
+     && bitmapExists("romshipT.bmp"))
+    {             
+	    ship_bitmapsT[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsT[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsT[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsT[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsT[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_T, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+    }
+    else /* default to mono */
+    {
+	    ship_bitmapsT[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsT[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsT[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsT[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsT[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_MONOCHROME);
+    }
+    
+    if (bitmapExists("fedshipG.bmp")
+     && bitmapExists("indshipG.bmp")
+     && bitmapExists("klishipG.bmp")
+     && bitmapExists("orishipG.bmp")
+     && bitmapExists("romshipG.bmp"))
+    {
+	    ship_bitmapsG[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsG[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsG[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsG[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsG[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_G, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+    }
+    else /* default to mono */
+    {
+	    ship_bitmapsG[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsG[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsG[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsG[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
+	                        LR_MONOCHROME);
+	    ship_bitmapsG[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
+	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
+	                        LR_MONOCHROME);
+    }
+             
     ship_bitmapsM[0] =
         W_StoreBitmap3 (fed_ship_bmp_M, BMP_SHIP_WIDTH * 8,
                         BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
@@ -435,27 +605,6 @@ savebitmaps (void)
         W_StoreBitmap3 (rom_ship_bmp_M, BMP_SHIP_WIDTH * 8,
                         BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
                         LR_MONOCHROME);
-                            
-    ship_bitmapsG[0] =
-        W_StoreBitmap3 (fed_ship_bmp_G, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_FED_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsG[1] =
-        W_StoreBitmap3 (ind_ship_bmp_G, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_IND_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsG[2] =
-        W_StoreBitmap3 (kli_ship_bmp_G, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_KLI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsG[3] =
-        W_StoreBitmap3 (ori_ship_bmp_G, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ORI_SHIP, w,
-                        LR_DEFAULTCOLOR);
-    ship_bitmapsG[4] =
-        W_StoreBitmap3 (rom_ship_bmp_G, BMP_SHIP_WIDTH * 8,
-                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
-                        LR_DEFAULTCOLOR);
 
     for (j = 0; j < NUM_TYPES; j++)
     {

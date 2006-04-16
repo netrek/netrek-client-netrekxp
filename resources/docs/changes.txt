@@ -1,4 +1,8 @@
 Version TBA:
+- added preventative measures against loading bitmap files that might not exist - if
+  bitmaps are missing, it defaults to the mono bitmaps
+- cleaned up a lot of dead space sound at the end of sound files, most noticeably, the
+  phaser sound
 - fixed a bug in the options menu that incorrectly reported whether the phaser window
   was mapped or not
 - phasering plasma now has less of an effect on phaser average damage statistics, it
