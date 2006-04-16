@@ -175,9 +175,8 @@ pbmain (char *name)
     if ((stringDefault ("indshipMbmpfile")) != NULL)
         ind_ship_bmp_M = stringDefault ("indshipMbmpfile");
 
-    newwin (display_host, name);
-
     resetdefaults ();
+    newwin (display_host, name);
 
     /* open memory...? */
     openmem ();

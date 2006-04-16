@@ -719,6 +719,11 @@ void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color
 /******************************************************************************/
 //static void handleMessageWindowKeyDown(W_Event * event);
 //static void handleMessageWindowButton(W_Event * event);
+void loadbitmaps (void);
+void loadbitmaps1 (void);
+void loadbitmapsT (void);
+void loadbitmapsM (void);
+void loadbitmapsG (void);
 newwin (char *hostmon,
         char *progname);
 mapAll (void);
