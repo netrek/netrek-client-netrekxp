@@ -3,16 +3,16 @@ This source tree was tested with MS Visual C++ 6.0 and Borland C Builder 5.5
 - Edit build.cmd to set following variables:
 
 RSAKey = path to your RSA-KEY.secret file
-Compiler = VCC or BCC (default VCC)
+Compiler = VCC or BCC (default BCC)
 InstCWD = path to folder to copy files to (default \netrek_files)
 
-- Edit clientr.dsp and change \netrek_files to be same as InstCWD
+- Edit clientr.dsp and change \netrek_files to be same as InstCWD (only if using VCC)
 - Edit src\cursors\curslib.dsp and change \netrek_files to be same as InstCWD
+  (again only necessary if using VCC)
 
-After compilation there will be two folders under InstCWD - netrek and tmp
-netrek contains ready to distribution netrek client tree
-tmp contains temporary compiler files and can be removed
-
-That's pretty all.
+After compilation there will be one folder under InstCWD - netrek.
+Netrek contains the ready to distribute netrek client tree.
 
 Stas Pirogov (keyos@keyos.org)
+
+Instructions modified by Bill Balcerski 

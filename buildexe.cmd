@@ -51,6 +51,7 @@ goto :dist
 
 :dist
 
+if /I "%Compiler%" == "BCC" copy src\netrek.exe %InstCWD%\netrek
 if /I "%Compiler%" == "BCC" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmaps
 
 goto end
