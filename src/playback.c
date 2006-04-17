@@ -178,7 +178,8 @@ pbmain (char *name)
     newwin (display_host, name);
 
     resetdefaults ();
-
+    savebitmaps ();
+    
     /* open memory...? */
     openmem ();
 
