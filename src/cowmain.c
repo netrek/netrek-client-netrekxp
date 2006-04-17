@@ -754,8 +754,6 @@ cowmain (char *server,
     if ((stringDefault ("indshipMbmpfile")) != NULL)
         ind_ship_bmp_M = stringDefault ("indshipMbmpfile");
 
-
-    resetdefaults ();
     newwin (display_host, name);
 
 #ifdef META
@@ -776,6 +774,9 @@ cowmain (char *server,
 
 	/* Set observer flag as soon as we know port number */
 	setObserverMode (xtrekPort);
+
+    resetdefaults ();
+    savebitmaps ();
 
     /* open memory...? */
     openmem ();

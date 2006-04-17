@@ -648,7 +648,6 @@ newwin (char *hostmon,
     fillhint ();
 
     getResources (progname);
-    savebitmaps ();
 }
 
 
