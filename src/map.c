@@ -331,12 +331,38 @@ DrawPlanets ()
 
 
         /* Draw the new planet */
+        
+#ifdef BEEPLITE
+        if (useLite && emph_planet_seq_n[l->pl_no] > 0)
+	{
+	    int     seq_n = emph_planet_seq_n[l->pl_no] % emph_planet_seq_frames;
+
+	    W_OverlayBitmap(dx - (emph_planet_seq_width / 2 + 1),
+			    dy - (emph_planet_seq_height / 2),
+			    emph_planet_seq[seq_n],
+			    W_White);
+
+	    W_WriteBitmap(dx - (BMP_MPLANET_WIDTH / 2), dy - (BMP_MPLANET_HEIGHT / 2),
+			    planetmBitmap(l), planetColor(l));
+
+	    emph_planet_seq_n[l->pl_no] -= 1;
+	    l->pl_flags |= PLREDRAW;		 /* Leave redraw on until * * 
+						  * done highlighting */
+	    l->pl_flags |= PLCLEAR;		 /* Leave redraw on until * * 
+						  * done highlighting */
+	}
+        else
+	{
+#endif
         W_OverlayBitmap (dx - (BMP_MPLANET_WIDTH / 2),
                          dy - (BMP_MPLANET_HEIGHT / 2), planetmBitmap (l),
                          planetColor (l));
         /*W_OverlayBitmapDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                            dy - (BMP_MPLANET_HEIGHT / 2), planetmBitmap (l),
                            planetColor (l));*/
+#ifdef BEEPLITE
+	}
+#endif
 
         if (l->pl_flags & PLAGRI)
         {
@@ -743,17 +769,43 @@ map (void)
                                j->p_mapchars, 2, shipFont (j));*/
         }
 
+#ifdef BEEPLITE
+        if ((useLite && emph_player_seq_n[i] > 0)
+	  && (liteflag & LITE_PLAYERS_MAP))
+	{
+	    int     seq_n = emph_player_seq_n[i] % emph_player_seq_frames;
 
-        mclearzone[0][i] = dx - W_Textwidth;
-        mclearzone[1][i] = dy - W_Textheight / 2;
-        mclearzone[2][i] = W_Textwidth * 2;
-        mclearzone[3][i] = W_Textheight;
+	    W_WriteBitmap(dx - (emph_player_seq_width / 2 - 1),
+			  dy - (emph_player_seq_height / 2 + 1),
+			  emph_player_seq[seq_n],
+			  W_White);
+	    emph_player_seq_n[i] -= 1;
+	    mclearzone[0][i] = dx - (emph_player_seq_width / 2 - 1);
+	    mclearzone[1][i] = dy - (emph_player_seq_height / 2 + 1);
+	    mclearzone[2][i] = emph_player_seq_width;
+	    mclearzone[3][i] = emph_player_seq_height;
+	    mclearzone[4][i] = j->p_x;
+	    mclearzone[5][i] = j->p_y;
 
-        /* Set these so we can checkRedraw() next time */
-        mclearzone[4][i] = j->p_x;
-        mclearzone[5][i] = j->p_y;
-        redrawPlayer[i] = 0;
+	    /* Leave redraw on until done highlighting */
+	    redrawPlayer[i] = 1;
+	}
+        else
+	{
+#endif
+	    mclearzone[0][i] = dx - W_Textwidth;
+	    mclearzone[1][i] = dy - W_Textheight / 2;
+	    mclearzone[2][i] = W_Textwidth * 2;
+	    mclearzone[3][i] = W_Textheight;
 
+	    /* Set these so we can checkRedraw() next time */
+	    mclearzone[4][i] = j->p_x;
+	    mclearzone[5][i] = j->p_y;
+	    redrawPlayer[i] = 0;
+
+#ifdef BEEPLITE
+	}
+#endif
     }
 
     /* Draw the lock symbol (if needed) */

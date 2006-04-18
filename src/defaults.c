@@ -82,12 +82,6 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"dynamicBitmaps", &dynamicBitmaps, RC_BOOL,
-    	{
-    	    "Allow switching of ship bitmaps in game",
-    	    NULL
-    	}
-    },
 #ifdef JUBILEE_PHASERS
     {"colorfulPhasers", &colorfulPhasers, RC_BOOL,
         {
@@ -122,6 +116,12 @@ struct save_options save_options[] = {
             "Disable Windows and Context Keys",
             NULL
         }
+    },
+    {"dynamicBitmaps", &dynamicBitmaps, RC_BOOL,
+    	{
+    	    "Allow switching of ship bitmaps in game",
+    	    NULL
+    	}
     },
     {"enemyPhasers", &enemyPhasers, RC_INT,
         {
@@ -624,6 +624,20 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef BEEPLITE
+    {"useLite", &useLite, RC_BOOL,
+        {
+            "Use beeplite",
+            NULL
+        }
+    },
+    {"defLite", &defLite, RC_BOOL,
+        {
+            "Use default beeplite settings",
+            NULL
+        }
+    },
+#endif 
 #ifdef RSA
     {"useRsa", &useRsa, RC_BOOL,
         {
@@ -927,6 +941,29 @@ initDefaults (char *deffile)
             }
         }
 
+#ifdef BEEPLITE
+        else if (strncasecmp(file, "lite.", 5) == 0)
+	{
+	    int     offset = 5;
+	    char  **lt;
+
+	    if (file[6] == '.')
+	        offset = 7;
+
+	    notdone = 1;
+
+	    for (lt = &distlite[take], dm = &dist_prefered[take],
+	       dm_def = &dist_defaults[take];
+	       dm->name && notdone; dm++, dm_def++, lt++)
+	    {
+	        if (strcmpi(file + offset, dm->name) == 0)
+		{
+		    *lt = strdup(v);
+		    notdone = 0;
+		}
+	    }
+        }
+#endif /* BEEPLITE */
 
 #ifdef RCM
         else if (strncmpi (file, "msg.", 4) == 0)
@@ -1467,6 +1504,23 @@ resetdefaults (void)
 #ifdef UDP_PORTSWAP
     portSwap = booleanDefault ("portSwap", TRUE);
 #endif
+
+#ifdef BEEPLITE
+    defLite = booleanDefault("defLite", defLite);
+    useLite = booleanDefault("useLite", useLite);
+	
+    if (defLite)
+	litedefaults();
+	
+    beep_lite_cycle_time_planet =
+	intDefault("planetCycleTime", beep_lite_cycle_time_planet);
+    beep_lite_cycle_time_player =
+	intDefault("playerCycleTime", beep_lite_cycle_time_player);
+	
+    tts_time = intDefault("tts_time", tts_time);
+    tts_max_len = intDefault("tts_max_len", tts_max_len);
+    tts_pos = intDefault("tts_pos", tts_pos);
+#endif /* BEEPLITE */
 
     shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
     shipdefaults[DEFAULTSHIP].buttonmap = (unsigned char *) stringDefault ("buttonmap");

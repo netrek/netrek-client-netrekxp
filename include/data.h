@@ -366,6 +366,40 @@ extern struct dmacro_list dist_defaults[];
 extern struct dmacro_list dist_prefered[];
 extern int sizedist;
 
+#ifdef BEEPLITE
+extern char *distlite[];
+extern int useLite;
+extern int defLite;
+extern int emph_planet_seq_n[];
+extern int emph_player_seq_n[];
+extern W_Icon emph_planet_seq[];
+extern W_Icon emph_player_seq[];
+extern W_Icon emph_player_seql[];
+
+#define emph_planet_seq_frames 5
+#define emph_planet_seq_width 24
+#define emph_planet_seq_height 24
+#define emph_player_seq_frames 3
+#define emph_player_seq_width 24
+#define emph_player_seq_height 24
+#define emph_player_seql_frames 3
+#define emph_player_seql_width 30
+#define emph_player_seql_height 30
+extern int beep_lite_cycle_time_player;
+extern int beep_lite_cycle_time_planet;
+extern int liteflag;
+extern char F_beeplite_flags;
+
+extern int tts_len;
+extern int tts_max_len;
+extern int tts_width;
+extern int tts_timer;
+extern int tts_time;
+extern int tts_pos;
+extern char lastIn[100];
+
+#endif /* BEEPLITE */
+
 #ifdef RCM
 extern struct dmacro_list rcm_msg[];
 

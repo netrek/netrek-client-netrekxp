@@ -458,6 +458,46 @@ struct dmacro_list *distmacro = dist_defaults;
 
 int sizedist = sizeof (dist_defaults);
 
+#ifdef BEEPLITE
+char   *distlite[NUM_DIST] =
+{
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL
+};
+
+int     defLite = 0;
+int     useLite = 0;
+
+int     emph_planet_seq_n[MAXPLANETS] =
+{0,};
+int     emph_player_seq_n[MAXPLAYER] =
+{0,};
+W_Icon  emph_planet_seq[10];
+W_Icon  emph_player_seq[10];
+W_Icon  emph_player_seql[10];
+int     beep_lite_cycle_time_player = 10;
+int     beep_lite_cycle_time_planet = 10;
+int     liteflag = 0;
+char    F_beeplite_flags = LITE_PLAYERS_MAP |
+LITE_PLAYERS_LOCAL |
+LITE_SELF |
+LITE_PLANETS |
+LITE_SOUNDS |
+LITE_TTS;
+
+int     tts_len = 0;
+int     tts_max_len = 40;
+int     tts_width = 0;
+int     tts_timer = 0;
+int     tts_time = 25;
+int     tts_pos = WINSIDE / 2 - 16;		 /* as found in redraw.c *
+
+						  * 
+						  * * originally */
+char    lastIn[100];
+
+#endif /* BEEPLITE */
 
 #ifdef RCM                      /* Receiver configurable
                                  * Server messages */

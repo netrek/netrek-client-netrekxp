@@ -4579,6 +4579,49 @@ W_OverlayBitmap (int x,
     ReleaseDC (bitmap->hwnd, hdc);
 }
 
+#ifdef BEEPLITE
+void W_EraseTTSText(W_Window window, int max_width, int y, int width)
+{
+    register int x = (max_width - width) / 2;
+
+    if (x < 0)
+        x = 4;
+    y -= W_Textheight;
+
+    W_ClearArea(window, x, y, width, W_Textheight);
+}
+
+void W_WriteTTSText(W_Window window, int max_width, int y, int width, char *str, int len)
+{
+    register int x = (max_width - width) / 2;
+    HDC hdc;
+    FNHEADER_VOID;
+
+    if (x < 0)
+        x = 4;
+
+    y -= W_Textheight;
+
+    hdc = GetDC(win->hwnd);
+    
+    if (NetrekPalette)
+    {
+        SelectPalette(hdc, NetrekPalette, FALSE);
+        RealizePalette(hdc);
+    }
+  
+    SetTextColor(hdc, colortable[GREY].rgb);
+    SetBkMode(hdc, TRANSPARENT);
+    TextOut(hdc, x, y, str, len);
+    ReleaseDC(win->hwnd, hdc);
+}
+
+int W_TTSTextWidth(char *s, int len)
+{
+    return len*W_Textwidth;
+}
+#endif
+
 void
 W_SetWindowName (W_Window window,
                  char *name)

@@ -537,11 +537,19 @@ DrawShips (void)
         }
         if (j->p_status == PALIVE)
         {
-            clearzone[0][clearcount] = dx - (shield_width / 2);
-            clearzone[1][clearcount] = dy - (shield_height / 2);
-            clearzone[2][clearcount] = shield_width;
-            clearzone[3][clearcount] = shield_height;
-            clearcount++;
+#if defined (BEEPLITE)
+	    clearzone[0][clearcount] = dx - (shield_width / 2 + 6);
+	    clearzone[1][clearcount] = dy - (shield_height / 2 + 6);
+	    clearzone[2][clearcount] = shield_width + 12;
+	    clearzone[3][clearcount] = shield_height + 12;
+	    clearcount++;
+#else
+	    clearzone[0][clearcount] = dx - (shield_width / 2);
+	    clearzone[1][clearcount] = dy - (shield_height / 2);
+	    clearzone[2][clearcount] = shield_width;
+	    clearzone[3][clearcount] = shield_height;
+	    clearcount++;
+#endif
 
 	/* Logic of color scheme is as follows:
 	   1) Mono bitmaps (colorClient 0) and new bitmaps (colorClient 1)
@@ -678,6 +686,19 @@ DrawShips (void)
             }
 
           shieldlabel:
+
+#ifdef BEEPLITE
+	    if ((useLite && emph_player_seq_n[j->p_no] > 0)
+	      && (liteflag & LITE_PLAYERS_LOCAL))
+	    {
+	        int     seq_n = emph_player_seq_n[j->p_no] % emph_player_seql_frames;
+
+	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
+			       dy - (emph_player_seql_height / 2),
+			       emph_player_seql[seq_n],
+			       W_White);
+	    }
+#endif
 
 #ifdef SOUND
             if (j->p_no == me->p_no)

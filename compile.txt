@@ -10,7 +10,7 @@ InstCWD = path to folder to copy files to (default \netrek_files)
 - Edit src\cursors\curslib.dsp and change \netrek_files to be same as InstCWD
   (again only necessary if using VCC)
 
-After compilation there will be one folder under InstCWD - netrek.
+After compilation under BCC, there will be one folder under InstCWD - netrek.
 Netrek contains the ready to distribute netrek client tree.
 
 Stas Pirogov (keyos@keyos.org)

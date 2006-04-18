@@ -21,6 +21,15 @@
 #include <sys/types.h>
 
 /******************************************************************************/
+/***  beeplite.c                                                            ***/
+/******************************************************************************/
+rcdlite (struct distress *dist);
+litedefaults (void);
+liteplanet (struct planet *l);
+liteplayer (struct player *j);
+makelite (struct distress * dist, char *pm);
+
+/******************************************************************************/
 /***  check.c                                                               ***/
 /******************************************************************************/
 void check (void);
@@ -677,6 +686,18 @@ void W_OverlayBitmap (int x,
                       int y,
                       W_Icon icon,
                       W_Color color);
+void W_EraseTTSText  (W_Window window,
+		      int max_width,
+		      int y,
+		      int width);
+void W_WriteTTSText  (W_Window window,
+		     int max_width,
+		     int y,
+		     int width,
+		     char *str,
+		     int len);
+int W_TTSTextWidth   (char *s,
+		      int len);
 void W_SetWindowName (W_Window window,
                       char *name);
 inline void ResetSysColors (void);

@@ -157,6 +157,10 @@ dmessage (char *message,
         HandleGenDistr (message, from, to, &dist);
         len = makedistress (&dist, message, distmacro[dist.distype].macro);
 
+#ifdef BEEPLITE
+        if (useLite)
+	    rcdlite(&dist);
+#endif
         if (len <= 0)
             return;
         flags ^= MDISTR;

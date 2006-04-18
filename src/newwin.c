@@ -25,6 +25,7 @@
 #include "data.h"
 #include "playerlist.h"
 #include "bitmaps.h"
+#include "litebitmaps.h"
 #include "parsemeta.h"
 #include "packets.h"
 #include "spopt.h"
@@ -766,6 +767,29 @@ savebitmaps (void)
     	loadbitmapsT();
     	loadbitmapsM();
     }
+    
+#ifdef BEEPLITE
+    for (i = 0; i < emph_player_seq_frames; i++)
+    {
+        emph_player_seq[emph_player_seq_frames - (i + 1)] =
+	    W_StoreBitmap(emph_player_seq_width, emph_player_seq_height,
+	  		emph_player_seq_bits[i], mapw);
+    }
+
+    for (i = 0; i < emph_player_seql_frames; i++)
+    {
+        emph_player_seql[emph_player_seql_frames - (i + 1)] =
+	    W_StoreBitmap(emph_player_seql_width, emph_player_seql_height,
+			emph_player_seql_bits[i], w);
+    }
+
+    for (i = 0; i < emph_planet_seq_frames; i++)
+    {
+        emph_planet_seq[emph_planet_seq_frames - (i + 1)] =
+	    W_StoreBitmap(emph_planet_seq_width, emph_planet_seq_height,
+			emph_planet_seq_bits[i], mapw);
+    }
+#endif
 
 /* Experimental weapons */
 #ifdef COLORIZEWEAPON

@@ -87,6 +87,10 @@ LINK32=link.exe
 # PROP Default_Filter "c"
 # Begin Source File
 
+SOURCE=.\src\beeplite.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\check.c
 # End Source File
 # Begin Source File

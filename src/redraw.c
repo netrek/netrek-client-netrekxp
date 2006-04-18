@@ -98,6 +98,36 @@ redraw (void)
         W_ClearArea (warnw, 5, 5, W_Textwidth * warncount, W_Textheight);
         warncount = 0;
     }
+    
+#ifdef BEEPLITE
+    if (tts_timer)
+    {
+        static int last_width;
+
+        tts_timer--;
+        if (!tts_timer)
+	{
+	    /* timed out */
+	    W_EraseTTSText(w, WINSIDE, tts_pos, last_width);
+	    last_width = 0;
+	}
+        else if (tts_timer == tts_time - 1 && last_width)
+	{
+	    /* first draw -- erase previous */
+	    W_EraseTTSText(w, WINSIDE, tts_pos, last_width);
+	    /* draw new */
+	    W_WriteTTSText(w, WINSIDE, tts_pos, tts_width, lastIn,
+			 tts_len);
+	    last_width = tts_width;
+	}
+        else
+	{
+	    /* regular draw */
+	    W_WriteTTSText(w, WINSIDE, tts_pos, tts_width, lastIn, tts_len);
+	    last_width = tts_width;
+	}
+    }
+#endif
 
     local ();                   /* redraw local window */
 

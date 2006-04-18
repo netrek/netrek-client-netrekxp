@@ -81,6 +81,10 @@ struct feature features[] = {
     {"DEAD_WARP", &F_dead_warp, 'S', 1, 0, 0},
 #endif
 
+#ifdef BEEPLITE
+    {"BEEPLITE", &_dummy, 'C', 1, &F_beeplite_flags, 0},
+#endif
+
 #ifdef RECORDGAME
     {"MANY_SELF", &F_many_self, 'S', 0, 0, 0},
 #endif
@@ -166,6 +170,81 @@ checkFeature (struct feature_cpacket *packet)
         reportFeatures ();
     if ((strcmpi (packet->name, "RC_DISTRESS") == 0) && gen_distress)
         distmacro = dist_prefered;
+
+#ifdef BEEPLITE
+    if ((strcmpi(packet->name, "BEEPLITE") == 0))
+    {
+        switch (value)
+	{
+	case -1:				 /* Unknown, we can use all * 
+						  * 
+						  * * of the features! */
+
+#ifdef STABLE
+	    /* Stable release is absolutely non borgish */
+	    F_beeplite_flags =
+	        LITE_SOUNDS |
+	        LITE_TTS;
+#else
+	    F_beeplite_flags = LITE_PLAYERS_MAP |
+	        LITE_PLAYERS_LOCAL |
+	        LITE_SELF |
+	        LITE_PLANETS |
+	        LITE_SOUNDS |
+	        LITE_COLOR |
+	        LITE_TTS;
+#endif
+
+	    break;
+	case 1:
+	    if (F_beeplite_flags == 0)
+	    {					 /* Server says we can have * 
+						  * 
+						  * * beeplite, but no * *
+						  * options??? must be * *
+						  * configured wrong. */
+	        F_beeplite_flags = LITE_PLAYERS_MAP |
+		    LITE_PLAYERS_LOCAL |
+		    LITE_SELF |
+		    LITE_PLANETS |
+		    LITE_SOUNDS |
+		    LITE_COLOR |
+		    LITE_TTS;
+	    }
+	    strcpy(buf, "  disabled:");
+	    if (!(F_beeplite_flags & LITE_PLAYERS_MAP))
+	        strcat(buf, " LITE_PLAYERS_MAP");
+	    if (!(F_beeplite_flags & LITE_PLAYERS_LOCAL))
+	        strcat(buf, " LITE_PLAYERS_LOCAL");
+	    if (!(F_beeplite_flags & LITE_SELF))
+	        strcat(buf, " LITE_SELF");
+	    if (!(F_beeplite_flags & LITE_PLANETS))
+	        strcat(buf, " LITE_PLANETS");
+	    if (!(F_beeplite_flags & LITE_SOUNDS))
+	        strcat(buf, " LITE_SOUNDS\n");
+	    if (!(F_beeplite_flags & LITE_COLOR))
+	        strcat(buf, " LITE_COLOR");
+	    if (!(F_beeplite_flags & LITE_TTS))
+	        strcat(buf, " LITE_TTS");
+
+	    if (strcmp(buf, "  disabled:"))
+	    {
+
+#ifdef TOOLS
+	        W_WriteText(toolsWin, 0, 0, textColor, buf, strlen(buf), W_RegularFont);
+#else
+	        printf("%s\n", buf);
+#endif
+	    }
+	    break;
+	case 0:
+	    F_beeplite_flags = 0;
+	    break;
+	default:
+	    break;
+	}
+    }
+#endif /* BEEPLITE */
 }
 
 /******************************************************************************/

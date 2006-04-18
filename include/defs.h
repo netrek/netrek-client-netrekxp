@@ -421,6 +421,16 @@
 #define S_LINE_VERTICAL 2
 #endif
 
+#ifdef BEEPLITE
+#define LITE_PLAYERS_MAP        0x01
+#define LITE_PLAYERS_LOCAL      0x02
+#define LITE_SELF               0x04
+#define LITE_PLANETS            0x08
+#define LITE_SOUNDS             0x10
+#define LITE_COLOR              0x20
+#define LITE_TTS                0x40
+#endif
+
 #ifdef WARP_DEAD
 #define DEADPACKETS	3
 #endif

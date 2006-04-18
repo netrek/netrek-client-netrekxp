@@ -1,4 +1,8 @@
 Version TBA:
+- readded beeplite functionality.  Configuration options described in cow manual.
+  Basic rc options are useLite: on/off to turn beeplite on and off, and defLite: on/off
+  to use the default settings.  The beeplite option is highly configurable, see manual
+  for details.  Can also be turned on via "Use RCD highlighting" on the Visual Menu.
 - added preventative measures against loading bitmap files that might not exist - if
   bitmaps are missing, it defaults to the mono bitmaps
 - if dynamicBitmap is set to off, only the necessary bitmap files will load into
