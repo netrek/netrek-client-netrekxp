@@ -183,7 +183,7 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"mainResizeable", &logging, RC_BOOL,
+    {"mainResizeable", &mainResizeable, RC_BOOL,
         {
             "Make main window resizeable",
             NULL
@@ -1745,39 +1745,7 @@ saveOptions ()
 
     sprintf (str, "Saving options to: %s", save_file);
     warning (str);
-
-    so = save_options;
-    while (so->name != NULL)
-    {
-        switch (so->type)
-        {
-        case RC_INT:
-            sprintf (str, "%s: %d\n", so->name, *so->int_value);
-            break;
-        case RC_BOOL:
-            if (*so->int_value)
-                sprintf (str, "%s: on\n", so->name);
-            else
-                sprintf (str, "%s: off\n", so->name);
-            break;
-        }
-        if (saveBig)
-        {
-            i = 0;
-            while (so->desc[i] != NULL)
-            {
-                sprintf (str1, "# %s\n", so->desc[i]);
-                fputs (str1, fp);
-                i++;
-            }
-        }
-        fputs (str, fp);
-        if (saveBig)
-            fputs ("\n", fp);
-        so++;
-    }
-
-
+    
     // Let's print buttonmap
     str[0] = '\0';
     str1[0] = '\0';
@@ -1810,15 +1778,7 @@ saveOptions ()
     }
     if (saveBig && strlen (str1) != 0)
         fputs ("\n", fp);
-
-    // cloak chars
-    if (saveBig)
-        fputs ("# Two characters to show cloaked player on map window\n", fp);
-    sprintf (str, "cloakChars: %c%c\n", cloakChars[0], cloakChars[1]);
-    fputs (str, fp);
-    if (saveBig)
-        fputs ("\n", fp);
-
+        
     // keymap part
     // we're going to print only keymap that differs from standard one
     // we have to start from second key, because first one is space
@@ -1867,6 +1827,57 @@ saveOptions ()
         fputs (str, fp);
         if (saveBig)
             fputs ("\n", fp);
+    }
+
+    // Large list of save options
+    so = save_options;
+    while (so->name != NULL)
+    {
+        switch (so->type)
+        {
+        case RC_INT:
+            sprintf (str, "%s: %d\n", so->name, *so->int_value);
+            break;
+        case RC_BOOL:
+            if (*so->int_value)
+                sprintf (str, "%s: on\n", so->name);
+            else
+                sprintf (str, "%s: off\n", so->name);
+            break;
+        }
+        if (saveBig)
+        {
+            i = 0;
+            while (so->desc[i] != NULL)
+            {
+                sprintf (str1, "# %s\n", so->desc[i]);
+                fputs (str1, fp);
+                i++;
+            }
+        }
+        fputs (str, fp);
+        if (saveBig)
+            fputs ("\n", fp);
+        so++;
+    }
+
+    // cloak chars
+    if (saveBig)
+        fputs ("# Two characters to show cloaked player on map window\n", fp);
+    sprintf (str, "cloakChars: %c%c\n", cloakChars[0], cloakChars[1]);
+    fputs (str, fp);
+    if (saveBig)
+        fputs ("\n", fp);
+        
+    // sound directory
+    if (sounddir != NULL)
+    {
+	    if (saveBig)
+	        fputs ("# Sound directory\n", fp);
+	    sprintf (str, "sounddir: %s\n", sounddir);
+	    fputs (str, fp);
+	    if (saveBig)
+	        fputs ("\n", fp);
     }
 
     // player list
@@ -2085,12 +2096,12 @@ saveOptions ()
                 if (macro[i].key != 0)
                 {
                     if (macro[i].key > 127)
-                        sprintf (str, "macro.^%c.%c:%s\n",
+                        sprintf (str, "macro.^%c.%c: %s\n",
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].who,
                                 macro[i].string);
                     else
-                        sprintf (str, "macro.%c.%c:%s\n",
+                        sprintf (str, "macro.%c.%c: %s\n",
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].who,
                                 macro[i].string);
@@ -2105,11 +2116,11 @@ saveOptions ()
                 if (macro[i].key != 0)
                 {
                     if (macro[i].key > 127)
-                        sprintf (str, "mac.^%c:%s\n", 
+                        sprintf (str, "mac.^%c: %s\n", 
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].string);
                     else
-                        sprintf (str, "mac.%c:%s\n", 
+                        sprintf (str, "mac.%c: %s\n", 
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].string);
 
@@ -2123,12 +2134,12 @@ saveOptions ()
                 if (macro[i].key != 0)
                 {
                     if (macro[i].key > 127)
-                        sprintf (str, "mac.^%c.%c:%s\n", 
+                        sprintf (str, "mac.^%c.%c: %s\n", 
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].who,
                                 macro[i].string);
                     else
-                        sprintf (str, "mac.%c.%c:%s\n", 
+                        sprintf (str, "mac.%c.%c: %s\n", 
                                 getkeyfromctrl (macro[i].key),
                                 macro[i].who,
                                 macro[i].string);
@@ -2150,27 +2161,26 @@ saveOptions ()
                     switch (macro[i].who)
                     {
                     case MACRO_PLAYER:
-                        strcat (str, "%p:");
+                        strcat (str, "%p: ");
                         break;
                     case MACRO_TEAM:
-                        strcat (str, "%t:");
+                        strcat (str, "%t: ");
                         break;
                     case MACRO_FRIEND:
-                        strcat (str, "%g:");
+                        strcat (str, "%g: ");
                         break;
                     case MACRO_ENEMY:
-                        strcat (str, "%h:");
+                        strcat (str, "%h: ");
                         break;
                     case MACRO_ME:
-                        strcat (str, "%i:");
+                        strcat (str, "%i: ");
                         break;
                     }
                     strcat (str, macro[i].string);
                     strcat (str, "\n");
+                    fputs (str, fp);
                     if (macro[i+1].type != NEWMMOUSE)
                         fputs ("\n", fp);
-
-                    fputs (str, fp);
                 }
                 break;
 #ifdef NBT
@@ -2220,7 +2230,7 @@ saveOptions ()
                 strcpy (str, "dist.");
 
             strcat (str, dm->name);
-            strcat (str, ":");
+            strcat (str, ": ");
             strcat (str, dm->macro);
             strcat (str, "\n");
 
@@ -2242,14 +2252,9 @@ saveOptions ()
 
         for (dm = &rcm_msg[1]; dm->name; dm++)
         {
-            sprintf (str, "msg.%s:%s\n", dm->name, dm->macro);
+            sprintf (str, "msg.%s: %s\n", dm->name, dm->macro);
             fputs (str, fp);
         }
-
-        fputs ("\n", fp);
-
-        if (saveBig)
-            fputs ("\n", fp);
     }
 #endif
 

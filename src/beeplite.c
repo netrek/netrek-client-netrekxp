@@ -1,6 +1,20 @@
 /* beeplite.c
  *
  * $Log: beeplite.c,v $
+ * Revision 1.3  2006/04/19 15:18:27  modemhero
+ * Tidied up the save_options function, fixing some spacing errors, and puttting the
+ * keymap/buttonmap on the top of the list due to its importance.  Also added the
+ * sounddir option.  The eventual goal is to make save_options generate a file that contains
+ * everything from your netrekrc file, so the options menus act as an in-game netrekrc editor.
+ * Once everything is in place, save_options could write over your current netrekrc (the default
+ * will be to write to a separate file, but there will be a menu option to save over your netrekrc).
+ * Currently it writes to a separate file (netrek.sav) because it still doesn't save everything that is needed.
+ * Default windows placements need to be saved, uselite options need to be saved, review window mapping
+ * needs to be saved, option server/servernick/servertype needs to be saved, and lastly, the save
+ * keymap routine is broken.
+ *
+ * Fixed mainResizeable loading from rc/saving.  Also made default setting = on.
+ *
  * Revision 1.2  2006/04/19 13:02:33  modemhero
  * Rewrote TTS centering/refresh code so that text is properly centered and clears properly when the message expires.
  * The old code used an average text width that was not so good, resulting in poor centering for long messages.  The new code measures the length of the message directly.
@@ -13,7 +27,6 @@
  *
  * Revision 1.1.1.1  1998/11/01 17:24:08  siegl
  * COW 3.0 initial revision
- * Added back to NetrekXP 2006/04/17   balcerski
  *
  */
 

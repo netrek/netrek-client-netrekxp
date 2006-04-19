@@ -1,4 +1,8 @@
 Version TBA:
+- tidied up the save_options function, fixing some spacing errors, and puttting the
+  keymap/buttonmap on the top of the list due to its importance.  Also added the
+  sounddir option.
+- fixed mainResizeable loading from rc/saving.  Also made default setting = on.
 - rewrote TTS centering/refresh code so that text is properly centered and clears
   properly when the message expires.  Updated COW manual to reflect change of tts_pos
   variable to tts_ypos.
