@@ -1519,7 +1519,7 @@ resetdefaults (void)
 	
     tts_time = intDefault("tts_time", tts_time);
     tts_max_len = intDefault("tts_max_len", tts_max_len);
-    tts_pos = intDefault("tts_pos", tts_pos);
+    tts_ypos = intDefault("tts_ypos", tts_ypos);
 #endif /* BEEPLITE */
 
     shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
@@ -1725,7 +1725,7 @@ saveOptions ()
         saveFile = stringDefault ("saveFile");
     if (!saveFile)
     {
-        saveFile = (char *) malloc (sizeof (char) * 12); 
+        saveFile = (char *) malloc (sizeof (char) * 13); 
         sprintf (saveFile, "%s", "netrekrc.sav");
     }
 

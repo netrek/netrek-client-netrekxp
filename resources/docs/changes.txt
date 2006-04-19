@@ -1,4 +1,9 @@
 Version TBA:
+- rewrote TTS centering/refresh code so that text is properly centered and clears
+  properly when the message expires.  Updated COW manual to reflect change of tts_pos
+  variable to tts_ypos.
+- fixed crash bug in save options due to renaming of .sav file from xtrekrc to netrekrc.
+  This bug is not in the downloadable version.
 - readded beeplite functionality.  Configuration options described in cow manual.
   Basic rc options are useLite: on/off to turn beeplite on and off, and defLite: on/off
   to use the default settings.  The beeplite option is highly configurable, see manual

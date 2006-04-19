@@ -687,17 +687,14 @@ void W_OverlayBitmap (int x,
                       W_Icon icon,
                       W_Color color);
 void W_EraseTTSText  (W_Window window,
-		      int max_width,
-		      int y,
-		      int width);
+		      int last_tts_xpos,
+		      int tts_ypos,
+		      int last_tts_width);
 void W_WriteTTSText  (W_Window window,
 		     int max_width,
-		     int y,
-		     int width,
+		     int tts_ypos,
 		     char *str,
 		     int len);
-int W_TTSTextWidth   (char *s,
-		      int len);
 void W_SetWindowName (W_Window window,
                       char *name);
 inline void ResetSysColors (void);

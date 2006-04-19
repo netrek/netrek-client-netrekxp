@@ -13,7 +13,8 @@
 *           Dave Gosselin, Heiko Wengler, Kurt Siegl and many others.          *
 *                                                                              *
 ********************************************************************************
-
+
+
 
 
                                 Table of Contents
@@ -23,7 +24,8 @@
  4.0  Xtrekrc
  8.0  Compiling
  9.0  Guide to Related Valuable information
-
+
+
 
 
 1.0  Overview
@@ -39,7 +41,8 @@ consult section 9.0 for information on the game itself.
 regularly.  This alleviates the client's caretakers from having to support
 ancient clients.  Generally, a client will expire 60 days after its compile
 date.
-
+
+
 2.0  Acknowledgements
 
      Many people have contributed to COW and many many others contributed
@@ -70,7 +73,8 @@ provided in the hope that you will ogg them:
               Kevin Powell			seurat
 	      Alec Habig			Entropy
 
-
+
+
 3.0  Features
 
      The COW client has many features that make it stand out from earlier
@@ -2233,7 +2237,7 @@ playerCycleTime: 	highlighting time for players
 
 tts_color: 		color of TTS message (should be dark)
 tts_font: 		Font (large prefered)
-tts_max_len: 		Max length of a message
+tts_max_len: 	Max length of a message
 tts_time: 		Time a TTS message is displayed
-tts_pos:		y location of the TTS message
+tts_ypos:		y location of the TTS message
 

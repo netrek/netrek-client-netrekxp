@@ -488,10 +488,11 @@ LITE_TTS;
 
 int     tts_len = 0;
 int     tts_max_len = 40;
-int     tts_width = 0;
+int	last_tts_xpos = 0;
+int     last_tts_width = 0;
 int     tts_timer = 0;
 int     tts_time = 25;
-int     tts_pos = WINSIDE / 2 - 16;		 /* as found in redraw.c *
+int     tts_ypos = WINSIDE / 2 - 16;		 /* as found in redraw.c *
 
 						  * 
 						  * * originally */

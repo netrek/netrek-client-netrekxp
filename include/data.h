@@ -392,10 +392,11 @@ extern char F_beeplite_flags;
 
 extern int tts_len;
 extern int tts_max_len;
-extern int tts_width;
+extern int last_tts_xpos;
+extern int last_tts_width;
 extern int tts_timer;
 extern int tts_time;
-extern int tts_pos;
+extern int tts_ypos;
 extern char lastIn[100];
 
 #endif /* BEEPLITE */

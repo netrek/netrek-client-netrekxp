@@ -102,29 +102,24 @@ redraw (void)
 #ifdef BEEPLITE
     if (tts_timer)
     {
-        static int last_width;
-
         tts_timer--;
         if (!tts_timer)
 	{
 	    /* timed out */
-	    W_EraseTTSText(w, WINSIDE, tts_pos, last_width);
-	    last_width = 0;
+	    W_EraseTTSText(w, last_tts_xpos, tts_ypos, last_tts_width);
+	    last_tts_width = 0;
 	}
-        else if (tts_timer == tts_time - 1 && last_width)
+        else if (tts_timer == tts_time - 1 && last_tts_width)
 	{
 	    /* first draw -- erase previous */
-	    W_EraseTTSText(w, WINSIDE, tts_pos, last_width);
+	    W_EraseTTSText(w, last_tts_xpos, tts_ypos, last_tts_width);
 	    /* draw new */
-	    W_WriteTTSText(w, WINSIDE, tts_pos, tts_width, lastIn,
-			 tts_len);
-	    last_width = tts_width;
+	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
 	}
         else
 	{
 	    /* regular draw */
-	    W_WriteTTSText(w, WINSIDE, tts_pos, tts_width, lastIn, tts_len);
-	    last_width = tts_width;
+	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
 	}
     }
 #endif

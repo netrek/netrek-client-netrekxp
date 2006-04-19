@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <string.h>
 
+
 #include "copyright2.h"
 #include "config.h"
 #include "Wlib.h"
@@ -4580,30 +4581,26 @@ W_OverlayBitmap (int x,
 }
 
 #ifdef BEEPLITE
-void W_EraseTTSText(W_Window window, int max_width, int y, int width)
+void W_EraseTTSText(W_Window window, int last_tts_xpos, int tts_ypos, int last_tts_width)
 {
-    register int x = (max_width - width) / 2;
+    tts_ypos -= W_Textheight;
 
-    if (x < 0)
-        x = 4;
-    y -= W_Textheight;
+    last_tts_xpos -= 3;
+    last_tts_width += 3;
 
-    W_ClearArea(window, x, y, width, W_Textheight);
+    W_ClearArea(window, last_tts_xpos, tts_ypos, last_tts_width, W_Textheight);
 }
 
-void W_WriteTTSText(W_Window window, int max_width, int y, int width, char *str, int len)
+void W_WriteTTSText(W_Window window, int max_width, int tts_ypos, char *str, int len)
 {
-    register int x = (max_width - width) / 2;
+    register int x;
     HDC hdc;
+    SIZE ext;
     FNHEADER_VOID;
 
-    if (x < 0)
-        x = 4;
-
-    y -= W_Textheight;
+    tts_ypos -= W_Textheight;
 
     hdc = GetDC(win->hwnd);
-    
     if (NetrekPalette)
     {
         SelectPalette(hdc, NetrekPalette, FALSE);
@@ -4612,13 +4609,14 @@ void W_WriteTTSText(W_Window window, int max_width, int y, int width, char *str,
   
     SetTextColor(hdc, colortable[GREY].rgb);
     SetBkMode(hdc, TRANSPARENT);
-    TextOut(hdc, x, y, str, len);
+    GetTextExtentPoint32 (hdc, str, len, &ext);
+    x = (max_width - ext.cx)/2; 
+    if (x < 0)
+        x = 4;
+    TextOut(hdc, x, tts_ypos, str, len);
     ReleaseDC(win->hwnd, hdc);
-}
-
-int W_TTSTextWidth(char *s, int len)
-{
-    return len*W_Textwidth;
+    last_tts_xpos = x;
+    last_tts_width = ext.cx;
 }
 #endif
 

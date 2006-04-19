@@ -754,12 +754,11 @@ text left over is ignored.  Only the highlite argument matter.
 planetCycleTime:        highlighting time for planets
 playerCycleTime:        highlighting time for players
 
-[ Note: while TTS works, thefollowing are Not Yet Implemented in WinCOW ]
 tts_color:              color of TTS message (should be dark)
 tts_font:               Font (large prefered)
 tts_max_len:            Max length of a message
 tts_time:               Time a TTS message is displayed
-tts_pos:                y location of the TTS message
+tts_ypos:               y location of the TTS message
 
 
 4.2.3. WarnHull

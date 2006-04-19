@@ -1,6 +1,13 @@
 /* beeplite.c
  *
  * $Log: beeplite.c,v $
+ * Revision 1.2  2006/04/19 13:02:33  modemhero
+ * Rewrote TTS centering/refresh code so that text is properly centered and clears properly when the message expires.
+ * The old code used an average text width that was not so good, resulting in poor centering for long messages.  The new code measures the length of the message directly.
+ * Also, the W_ClearArea function was not catching the 3 left-most pixels for whatever reason, so the call to this function slightly extends the area to clear.
+ * Updated COW manual to reflect change of tts_pos variable to tts_ypos.
+ * This patch could be applied to other windows clients as well.
+ *
  * Revision 1.1  2006/04/18 13:47:24  modemhero
  * First attempt at reimport of beeplite into NetrekXP.  Unresolved issue: improper text clearing on TTS beeplite messages.  Still to add: saving of beeplite settings in save_options.
  *
@@ -253,7 +260,6 @@ makelite(struct distress * dist, char *pm)
 		    for (tts_len = 0; (*pm != '|' && tts_len < tts_max_len); tts_len++)
 		      lastIn[tts_len] = *pm++;
 		    lastIn[tts_len] = '\0';
-		    tts_width = W_TTSTextWidth(lastIn, tts_len);
 		    tts_timer = tts_time;
 		}
 	        break;
