@@ -49,26 +49,6 @@ int MaxMotdLine = 0;
 #define YOFF            -25
 
 /******************************************************************************/
-/***   bitmapExists()
-/***   Called by loadbitmaps() to verify bitmap files exist. */
-/******************************************************************************/
-int bitmapExists (char * fileName)
-{
-   struct stat buf;
-   char dir[30];
-   int i;
-   
-   sprintf(dir, "bitmaps/shiplib/");
-   strcat(dir, fileName);
-   i = stat ( dir, &buf );
-
-   if ( i == 0 )
-	return 1;
-   else
-	return 0;
-}
-
-/******************************************************************************/
 /***   loadbitmaps(), loadbitmaps1(), loadbitmapsT(), loadbitmapsG(),
        loadbitmapsM()
 /***   Called by savebitmaps(). */
@@ -87,11 +67,11 @@ void loadbitmaps()
 {    
     int j,k;
     
-    if (bitmapExists("fedship.bmp")
-     && bitmapExists("indship.bmp")
-     && bitmapExists("kliship.bmp")
-     && bitmapExists("oriship.bmp")
-     && bitmapExists("romship.bmp"))
+    if ( access("bitmaps/shiplib/fedship.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/indship.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/kliship.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/oriship.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/romship.bmp", R_OK) == 0 )
     {
 	    ship_bitmaps[0] =
 	        W_StoreBitmap3 (fed_ship_bmp, BMP_SHIP_WIDTH * 8,
@@ -165,11 +145,11 @@ void loadbitmaps1()
 {
     int j,k;
     
-    if (bitmapExists("fedship1.bmp")
-     && bitmapExists("indship1.bmp")
-     && bitmapExists("kliship1.bmp")
-     && bitmapExists("oriship1.bmp")
-     && bitmapExists("romship1.bmp"))
+    if ( access("bitmaps/shiplib/fedship1.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/indship1.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/kliship1.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/oriship1.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/romship1.bmp", R_OK) == 0 )
     {
 	    ship_bitmaps1[0] =
 	        W_StoreBitmap3 (fed_ship_bmp_1, BMP_SHIP_WIDTH * 8,
@@ -242,11 +222,11 @@ void loadbitmapsT()
 {
     int j,k;
     
-    if (bitmapExists("fedshipT.bmp")
-     && bitmapExists("indshipT.bmp")
-     && bitmapExists("klishipT.bmp")
-     && bitmapExists("orishipT.bmp")
-     && bitmapExists("romshipT.bmp"))
+    if ( access("bitmaps/shiplib/fedshipT.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/indshipT.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/klishipT.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/orishipT.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/romshipT.bmp", R_OK) == 0 )
     {             
 	    ship_bitmapsT[0] =
 	        W_StoreBitmap3 (fed_ship_bmp_T, BMP_SHIP_WIDTH * 8,
@@ -319,11 +299,11 @@ void loadbitmapsG()
 {
     int j,k;
     
-    if (bitmapExists("fedshipG.bmp")
-     && bitmapExists("indshipG.bmp")
-     && bitmapExists("klishipG.bmp")
-     && bitmapExists("orishipG.bmp")
-     && bitmapExists("romshipG.bmp"))
+    if ( access("bitmaps/shiplib/fedshipG.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/indshipG.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/klishipG.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/orishipG.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/romshipG.bmp", R_OK) == 0 )
     {
 	    ship_bitmapsG[0] =
 	        W_StoreBitmap3 (fed_ship_bmp_G, BMP_SHIP_WIDTH * 8,

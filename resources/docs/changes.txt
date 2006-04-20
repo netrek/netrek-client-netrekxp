@@ -1,4 +1,5 @@
 Version TBA:
+- rewrote find bitmap routine in a smarter way (thanks Quozl)
 - fixed bccnetrek.rc to have proper header so icon works
 - tidied up the save_options function, fixing some spacing errors, and puttting the
   keymap/buttonmap on the top of the list due to its importance.  Also added the
