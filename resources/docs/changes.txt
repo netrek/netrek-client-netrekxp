@@ -1,5 +1,6 @@
 Version TBA:
 - updated NetrekXP manual (in docs folder), removed old cow manuals.
+- all greyscale and shaded old color starbase bitmaps now rotate.
 - the new color fed starbase bitmaps now rotate.
 - Keeppeace default is now "on".
 - rewrote find bitmap routine in a smarter way (thanks Quozl)
