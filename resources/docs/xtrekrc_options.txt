@@ -1,69 +1,39 @@
 # This document lists all available options that could be changed
 # in xtrekrc file
 
-# Options added since NetrekXP final release
-
 agriCAPS:                 (on/off) show AGRI planet name in caps on the map
-
 agriColor:                (0-2) select color to display agri planet names on the map
 # 0 - owner race color
 # 1 - white
 # 2 - gray
 
-b4keymap:                 (string) keymap for mouse button 4 (mouseAsShift=on)
-b5keymap:                 (string) keymap for mouse button 5 (mouseAsShift=on)
-continuousMouseFix:       (on/off) fix continuous mouse behavior
-disableWinkey             (on/off) disable Windows and Context keys
-mainResizeable:           (on/off) make main window (netrek) resizeable
-metaPing:                 (on/off) show ping stats to all servers in metaserver window
-omitTeamLetter:           (on/off) omit team letter on galaxy
-playerListHack:           (on/off) if player's letter is greater than 'f' suppose that
-                                   the player is observer.
-playerListMessaging:      (on/off) allow messages to be sent to players by clicking player
-                                   on the player list window
-phaserShrinkStyle:        (0-1) shrink own phasers using specific style
-# 0 - COW style (fixed length phaser)
-# 1 - BRMH style (phaser shrinks during rechange time)
-
-saveFile:                 (path) path to saved options file
-saveBig:                  (on/off) save options with remarks
-saveMacro:                (on/off) save macros to saveFile
-saveRCD:                  (on/off) save receiver configurable distresses to saveFile
-saveRCM:                  (on/off) save receiver configurable messages to saveFile
-showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
-showHints:                (on/off) show hints window
-showHockeyLinesLocal:     (on/off) show hockey lines on tactical
-showHockeyLinesMap:       (on/off) show hockey lines on galactic
-showHockeyScore:          (on/off) show hockey score on galactic
-showStars:                (on/off) show background stars
-
-timerType:                (0-4) type of timer on dashboard window
-# 0 - don't show
-# 1 - current time
-# 2 - server time
-# 3 - time in ship
-# 4 - user-set time
-
-viewBox:                  (on/off) show tactical window boundaries on map
-warpStreaks:              (on/off) show streaks while warping to starbase
-windowMove:               (on/off) enable internal windows to be moved with mouse
-
-# Options of the NetrekXP final release
-
+allowWheelActions:        (on/off) allow mouse wheel to work in non-scrolling windows
 autoQuit:                 (int) autoquit time after death
 b1keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
 b2keymap:                 (string) keymap for mouse button 2 (mouseAsShift=on)
 b3keymap:                 (string) keymap for mouse button 3 (mouseAsShift=on)
+b4keymap:                 (string) keymap for mouse button 4 (mouseAsShift=on)
+b5keymap:                 (string) keymap for mouse button 5 (mouseAsShift=on)
 baseUdpLocalPort:         (port) use this port as base for UDP
+beepOnPrivateMessage:	  (on/off) beep if received private message
 buttonmap:                (string) change mouse button map
 buttonmap-<ship>:         (string) use this buttonmap for ship (sc,dd,ca,bb,as,sb,ga,att)
 ckeymap:                  (string) change control keymap
 ckeymap-<ship>:           (string) use this ckeymap for ship (sc,dd,ca,bb,as,sb,ga,att)
 cloakChars:               (two chars) how to display cloaker on galactic
 color.<color>:            (color) replace first <color> with (color)
-colorfulPhasers:          (on/off) use team color for phasers
+color.<race>:             (color) replace that race color with (color)
+colorClient:              (0-3) what type of ship bitmaps to use
+# 0 - mono
+# 1 - new color bitmaps
+# 2 - old color bitmaps
+# 3 - shaded old color bitmaps
+
+colorfulPhasers:          (on/off) make your phasers multicolored
 continueTractor:          (on/off) show tractors after lock
 continuousMouse:          (on/off) use continuous mouse mode
+continuousMouseFix:       (on/off) fix continuous mouse behavior
+disableWinkey             (on/off) disable Windows and Context keys
 documentation:            (path) path to documentation file
 enemyPhasers:             (1-10) enemy phaser line width
 extraAlertBorder:         (on/off) change window border on enemy approach
@@ -97,6 +67,7 @@ logfile:                  (path) path to logfile
 logging:                  (on/off) enable logging
 login:                    (string) character login
 macroKey:                 (char, ESC, TAB) key to toggle macro mode
+mainResizeable:           (on/off) make main window (netrek) resizeable
 messageHoldThresh:        (integer) put message on hold after mouse move (Adds # to the end of message)
 
 messageHUD:               (0-2) where to duplicate message that is written in message window
@@ -105,6 +76,7 @@ messageHUD:               (0-2) where to duplicate message that is written in me
 # 2 - tactical bottom
 
 metaCache:                (path) path to metacache file
+metaPing:                 (on/off) show ping stats to all servers in metaserver window
 metaPort:                 (port) metaserver port
 metaServer:               (address) metaserver address
 
@@ -133,6 +105,7 @@ newPlist:                 (on/off) compatibility variable for player list
 # on - COW style
 # off - old style
 
+omitTeamLetter:           (on/off) omit team letter on galaxy
 orishipbmpfile:           (path) - players bitmaps
 orishipGbmpfile:          (path) - own grayscale bitmap
 orishipTbmpfile:          (path) - own tainted color bitmap
@@ -143,6 +116,10 @@ password:                 (string) password for autologin
 phaserShrink:             (0-16) shrink own phaser by x/16 of its length
 # 0-16 for COW style phaser shrink
 # 0-11 for BRMH style phaser shrink
+
+phaserShrinkStyle:        (0-1) shrink own phasers using specific style
+# 0 - COW style (fixed length phaser)
+# 1 - BRMH style (phaser shrinks during rechange time)
 
 phaserStats:              (on/off) show phaser statistics
 
@@ -179,6 +156,12 @@ playerList:               (string) custom style of player list
 # 'V' - Kills per hour
 # 'W' - Wins
 
+playerList2:              (string) custom layout for alternate player list window (same as playerlist)
+playerListHack:           (on/off) if player's letter is greater than 'f' suppose that
+                                   the player is observer.
+playerListMessaging:      (on/off) allow messages to be sent to players by clicking player
+                                   on the player list window
+
 playerlistObserver:       (0-2) what kind of players to show
 # 0 - all (default)
 # 1 - players
@@ -202,10 +185,19 @@ romshipbmpfile:           (path) - players bitmaps
 romshipGbmpfile:          (path) - own grayscale bitmap
 romshipTbmpfile:          (path) - own tainted color bitmap
 romshipMbmpfile:          (path) - monospace bitmap if colorclient=0
+saveFile:                 (path) path to saved options file
+saveBig:                  (on/off) save options with remarks
+saveMacro:                (on/off) save macros to saveFile
+saveRCD:                  (on/off) save receiver configurable distresses to saveFile
+saveRCM:                  (on/off) save receiver configurable messages to saveFile
 server:                   (address) default server
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands
-shellTools:               (on/off) enable shell tools
+showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
+showHints:                (on/off) show hints window
+showHockeyLinesLocal:     (on/off) show hockey lines on tactical
+showHockeyLinesMap:       (on/off) show hockey lines on galactic
+showHockeyScore:          (on/off) show hockey score on galactic
 showIND:                  (on/off) show neutral planets with X over them
 
 showLock:                 (0-3) where to show lock triangle
@@ -218,6 +210,7 @@ showMySpeed:              (on/off) show my speed on tactical
 showMotd:                 (on/off) show Motd on login
 showPlanetNames:          (on/off) show planet names on tactical
 showPlanetOwner:          (on/off) show planet owner on galaxy
+showStars:                (on/off) show background stars
 showStats:                (on/off) show ship statistics
 showTractorPressor:       (on/off) show tractors and pressors
 shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
@@ -227,6 +220,14 @@ sortPlayers:              (on/off) sort players by teams
 sound:                    (on/off) enable sound
 soundDir:                 (path) path to directory containing sound files
 theirPhaserShrink:        (0-16) shrink enemy phaser by x/16 of its length
+
+timerType:                (0-4) type of timer on dashboard window
+# 0 - don't show
+# 1 - current time
+# 2 - server time
+# 3 - time in ship
+# 4 - user-set time
+
 tpDotDist:                (int) distance between tractor/pressor dots (default 10)
 tryShort:                 (on/off) enable short packets
 tryUdp:                   (on/off) try using UDP
@@ -248,7 +249,19 @@ updatesPerSec:            (0-10) how much data updates per second to request fro
 useRSA:                   (on/off) use RSA client verification
 useRSA.<server>           (on/off) user RSA for <server>
 varyShields:              (on/off) change shields color on shields damage
+viewBox:                  (on/off) show tactical window boundaries on map
 warnShields:              (on/off) change shields color on enemy approach
+warpStreaks:              (on/off) show streaks while warping to starbase
+windowMove:               (on/off) enable internal windows to be moved with mouse
+
+<window>.allow:           [A][T][I][P][K]
+# Allow specific messages to be shown in window
+# Only valid for message windows (i.e. review_* and review)
+# A - show messages sent to all
+# T - show messages sent to the team
+# I - show messages sent to yourself
+# P - show phaser messages
+# K - show kill messages
 
 <window>.mapped:          (on/off) show window <window>
 # List of possible window names
@@ -266,6 +279,7 @@ warnShields:              (on/off) change shields color on enemy approach
 # review_phaser   Phaser hits Window
 # planet          Planet List Window
 # player          Player List Window
+# player2         Alternate Player List Window
 # war             War Declarations Window
 # fed             Federation Selection Window
 # ori             Orion Selection Window
@@ -295,3 +309,4 @@ warnShields:              (on/off) change shields color on enemy approach
 # <window>.geometry:<width>x<height>
 
 <window>.parent:          (window) <window> is a child of (window)
+

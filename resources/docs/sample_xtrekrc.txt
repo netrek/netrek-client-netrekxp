@@ -464,8 +464,8 @@ dist.^7.doing1: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %b. %d%% d
 dist.^8.doing2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %b. %d%% dam, %s%% shd, %f%% fuel
 dist.^9.pickup: %T%c->%O %p++ @ %l
 dist.^0.pop: %T%c->%O %l%?%n>-1%{ @ %n%}!
-dist.^@.other1: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at  lal. (%d%%D, %s%%S, %f%%F)
-dist.^#.other2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at  lal. (%d%%D, %s%%S, %f%%F)
+dist.^@.other1: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at  %l. (%d%%D, %s%%S, %f%%F)
+dist.^#.other2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at  %l. (%d%%D, %s%%S, %f%%F)
 dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel, %?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!
 dist.^e.escorting: %T%c->%O ESCORTING %g (%d%%D %s%%S %f%%F)
 dist.^t.taking: %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}

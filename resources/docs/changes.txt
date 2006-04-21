@@ -1,4 +1,7 @@
 Version TBA:
+- updated NetrekXP manual (in docs folder), removed old cow manuals.
+- the new color fed starbase bitmaps now rotate.
+- Keeppeace default is now "on".
 - rewrote find bitmap routine in a smarter way (thanks Quozl)
 - fixed bccnetrek.rc to have proper header so icon works
 - tidied up the save_options function, fixing some spacing errors, and puttting the
@@ -6,10 +9,9 @@ Version TBA:
   sounddir option.
 - fixed mainResizeable loading from rc/saving.  Also made default setting = on.
 - rewrote TTS centering/refresh code so that text is properly centered and clears
-  properly when the message expires.  Updated COW manual to reflect change of tts_pos
+  properly when the message expires.  Updated manual to reflect change of tts_pos
   variable to tts_ypos.
 - fixed crash bug in save options due to renaming of .sav file from xtrekrc to netrekrc.
-  This bug is not in the downloadable version.
 - readded beeplite functionality.  Configuration options described in cow manual.
   Basic rc options are useLite: on/off to turn beeplite on and off, and defLite: on/off
   to use the default settings.  The beeplite option is highly configurable, see manual
@@ -25,25 +27,39 @@ Version TBA:
 - phasering plasma now has less of an effect on phaser average damage statistics, it
   is counted as your average damage hit, rather than the previous way of counting it
   as a 38 point phaser hit.
-- fixed bug with phaser messages going blank due to improper buffering (not sure where
-  this bug came from, in the downloadable version off playnetrek this bug does not exist)
-- removed defunct netrek forum link from metaserver window
-- added "dynamicBitmap: (on)/off".  Enables dynamic bitmap switching from the options menu
+- fixed bug with phaser messages going blank due to improper buffering
+- added "dynamicBitmap: (on)/off".  Enables dynamic bitmap switching from the options
+  menu
 - renumbered the ship bitmap sets for the colorClient option.  Choices are 0=mono,
   1=new color graphics, 2=single color graphics, and 3=shaded single color graphics.
   Default setting is still 1.  Settings 2 and 3 have the bonus effect of turning your
   ship color to white (similar to COW) due to there being a greyscale bitmap library
   with matching ship designs.
-- updated NetrekXP manual (in docs folder)
 - fixed hightlightFriendlyPhaser option to work again: on for white phasers on hits,
   off for flicker between team color and white
 - added some more hints to the hint database
 - fixed hint messages so they properly loop
 - added Maximize button to title bar
 - added buildexe script for compiling solely the source code and not the bitmaps
-- made BCC default compiler and disabled RSA mkkey check (-nt) until it can be fixed
+- made BCC default compiler and disabled RSA mkkey check (-nt) until I get a valid one
 
-Version 4.4.0.3:
+Version 4.4.0.4: (changes by stas, added 18-Apr-2006 )
+- added "allowWheelActions: (on)/off" to be able to disable wheel in non-scrolling windows
+- added new window "player2" that behaves exactly as player list window, but allows to
+  select alternate custom layout and could be toggled with 'A' key
+- added "playerList2: (string)" option that allows to select different player list layout
+  for alternate player list window, by default it will be "n T R N l M K W L r O D d "
+- fixed bug that caused main thread to continue in case player died while scrolling
+  message window using scrollbar (which forced him close client window and reconnect)
+- fixed incorrect behavior of 'windowMove: off' feature. Previously window would snap
+  back to wrong place if the main window top-left corner was not (0,0) coordinates
+- long lines are now wrapped by words instead of by chars. Maximum message length was
+  reduced to 4 full message lines (4 * 69 characters)
+- message input window will now show Sender->Recipient even when the input line is longer
+  than 69 characters
+- changed 'Forum' URL on metaserver window to open Google's r.g.n location
+
+Version 4.4.0.3: (Released on 11-Jul-2004)
 
 - added "viewBox: (on)/off" to show tactical boundaries on galaxy
 - added "omitTeamLetter: on/(off)" to stop drawing team letter on galaxy
@@ -76,7 +92,7 @@ Version 4.4.0.3:
 - planets and players will appear as soon as they enter tactical window bounds. earlier
   the bitmaps were painted only when their center was entering tactical window
 
-Version 4.4.0.2:
+Version 4.4.0.2: (Released on 04-Mar-2004)
 
 - repack of 4.4.0.1 with some bug fixes
 

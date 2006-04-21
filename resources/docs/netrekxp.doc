@@ -1,358 +1,350 @@
-************************************************************
-*                                                          *
-*      General Documentation for the NetrekXP Client       *
-*                                                          *
-*  Comments, sugestion and bug reports to keyos@keyos.org  *
-*                                                          *
-*  This is modified version of COW.DOC distributed with    *
-*  2.02pl2 release of Client Of Win (COW) netrek client.   *
-*  The point of this version was to change the original    *
-*  document to match current configuration options of      *
-*  NetrekXP                                                *
-*                                                          *
-*  NOTE: The original document is included in distribution *
-*        as COW.DOC                                        *
-*                                                          *
-************************************************************
+*****************************************************
+*                                                                                                     *
+*      General Documentation for the NetrekXP Client                 *
+*                                                                                                     *
+*  Comments, suggestion and bug reports to keyos@keyos.org   *
+*                                                                                                     *
+*  This is a modified version of COW.DOC which was               *
+*  originally distributed with the Client Of Win (COW)              *
+*  netrek client.                                                                              *
+*  The point of this version is to change the original                    *
+*  document to match the current configuration options of          *
+*  NetrekXP.                                                                                  *
+*                                                                                                     *
+*    Document revised by Bill Balcerski in 2006                          *
+*                                                                                                     *
+*                                                                                                     *
+*****************************************************
 
 
-b0.0 Table of Contents
+Table of Contents
 
  1.0  Overview
- 2.0  Features
- 3.0  Xtrekrc
- 4.0  MACROs, RCD, RCM
- 5.0  MetaServer Options
- 6.0  Player List Options
-
-b1.0  Overview
-
-     This document describes the NetrekXP client. 
-     The client was originally built from COW source.
-
-
-b2.0  Features
-
-i3.1  Command Line Options
-
-     This section will describe COW features that are 
-selected from the command line when the client is invoked.  
-Selecting "-u" for usage or any invalid option will provide 
-a brief summary of this section ( -help will work too ).
+ 2.0  Acknowledgements
+ 3.0  Features
+ 4.0  Complete Command Reference
+ 5.0  Netrekrc
+ 6.0  UDP/TCP
+ 7.0  MACROs, RCD, RCM
+ 8.0  MetaServer Options
+ 9.0  Player List Options
+ 10.0 Other Stuff (Beeplite, etc)
 
 
-i3.1.1  SERVER SELECTION
+1.0  Overview
 
-     The "-h server_address" option will allow the user to 
-select a specific server.  The client will look to the 
-xtrekrc file for a default server should this option be 
-absent.  
-Examples of server addresses would be 136.165.1.12 or
-continuum.us.netrek.org
+	This document describes the NetrekXP client.   The client was originally built from COW source.  This document is an attempt to combine 3 separate documents that once existed (COW.doc, cow.txt, and netrekxp.doc) made by different authors over different times for different clients.  Mistakes may have been made, the author is only human.
 
-i3.1.2  PORT SPECIFICATION
 
-     The "-p port_number" option will allow the user to 
-select a specific port address.  An example of a 
-port_number would be 2592 for game port or 2593 for observer port.
+2.0 Acknowledgements
 
-i3.1.3  DEFAULTS FILE SPECIFICATION
+	Many people contributed to the making of NetrekXP, and many many others contributed to its ancestor clients such as COW.  Here is an undoubtedly incomplete list of credits presented in no particular order:
 
-     The "-r defaultsfile" option will allow the user to select 
-a defaults file other than xtrekrc.  The defaults file contains 
-all of the user selectable defaults ( please see Section 4.0 
-for more information on xtrekrc ).  Using this option, two users 
-can run netrek from the same userid / account and still
-have unique defaults files.
+              Scott Silvey
+              Kevin Smith
+              Rick Weinstein
+              J. Mark Noworolski
+              Tedd Hadley
+              Heiko Wengler
+              Andy McFadden
+              Chris Guthrie
+              Ed James
+              Eric Mehlhaff
+              Nick Trown
+              Lars Bernhardsson
+              Sam Shen
+              Rick
+              Jeff Nelson
+              Jeff Waller
+              Robert Kenney
+              Dave Gosselin
+              Kurt Siegl
+              Kevin Powell 
+              Alec Habig           
+              Jonathan Shekter
+              Steve Sheldon
+              Stas Pirogov
 
-i3.1.4  VERIFICATION OPTIONS
 
-     The "-o" option instructs the client to use the old 
-reserved.c verification to identify itself to the server.  
-Upgraded RSA servers will require that the client use RSA 
-verification.  This is selected using the "-R" option.
+3.0  Features
 
-i3.1.5  RECORD GAME OPTION
+  3.1  Command Line Options
 
-     The "-f record_file"  will record the game into record_file.
+     This section will describe NetrekXP features that are selected from the command line when the client is invoked.  Selecting "-u" for usage or any invalid option will provide a brief summary of this section ( -help will work too ).
+Most of the time you will not use the command line to start the client. However it is handy to the remember -h and -p options, so you will be able to connect to a server even when something is wrong with the metaserver (which happens from time to time). Or, for instance, if the server you want to connect to doesn't report itself to metaserver (so it won't appear in the metaserver window). 
+It is good to remember that default ports for most of servers are 2592 for players and 2593 for observers. So if you want to observe game on continuum.us.netrek.org you will use "netrek -h continuum.us.netrek.org -p 2593". 
+Here is the list of command options for NetrekXP:
+  -h <server>		: specify server name to connect to
+  -p <port>		: specify port number to connect to
+  -r <configuration file>       : specify configuration file to read.  Using this option, two users can
+run netrek from the same userid / account and still have unique defaults files.
+  -s <socket port>		: specify socket port
+  -u			: show usage information
+  -A <password>		: specify character password
+  -C <name>		: specify character name
+  -U <udp port>		: specify UDP port
+  -o			: use old style binary verification
+  -R			: use RSA binary verification
+  -P			: log server packets
+  -c			: check players on server and return list
+  -f <file name>		: record game to file (can be viewed later with -F)
+  -F <file name>		: view recorded game
+  -l <file name>		: record all messages to log file
+  -m			: connect to metaserver (default)
+  -k			: display known servers The client generates a list of known servers
+			 after each call to the metaserver but only if the "metaCache" option is
+			 set in your .netrekrc.
+  -n			: show console window
+  -v			: display client version info
+
+
+4.0 Complete Command Reference
+
+     The following is the complete list of commands you can use while in play. Note that all commands are case sensitive, and a ^ denotes a control key, e.g. ^a means control+a, which is different from ^A, which is control+A (control+shift+a, in other words). 
+
+IMPORTANT NOTE: The keys listed are the defaults – most clients (including this one) come with a better keymap which is defined in the .netrekrc file.  So this section is useful more for a description of the commands, rather than what keys do what.
+
+
+     Combat Functions:
+
+c    Toggle cloak. 
+{    Turn cloak on
+}    Turn cloak off
+
+d    Detonate enemy torps. All enemy torps within a certain range will explode. They do as little as a quarter of their normal damage at maximum det range. Detting is useful for protecting another ship, causing damage to other ships (if you can manage to det enemy torpedos fired by one enemy 
+over another) or preventing torps from hitting you. Use it carefully, though: if there are many torps nearby and only one or two will actually hit you, it is better to let them hit than det, as one direct hit will do less damge than say, 5 detted torps, each at minimally 1/4 normal damage, probably more.
+
+D    Detonate your torps. If you can do this near an enemy it will cause damage. It will also enable you to fire again if you have 8 torps active (the maximum.) This is not a very good idea however as you will be wasting gobs of fuel firing and then detting useless torps.
+
+f    Fire plasma torpedo. You need at least 2 kills, and must be flying a BB/DD/CA to do this. Plasma torpedos are tracking, but they can be shot down fairly easily by phaser. They do a lot of damage but use a lot of fuel. Note also that when they are shot down they explode and ships that 
+are too close can take damage.
+
+p    Fire phaser. The mouse cursor specifies direction. 
+
+s    Toggle shields
+[    Shields down
+]    Shields up
+
+t    Fire photon torpedo. The mouse cursor specifies direction. 
+
+u    Toggle shields
+
+T    Toggle tractor beam. The mouse indicates the target. This pulls the target towards you but uses a lot of fuel and raises your engine temp. Since tractors are very useful and hitting shift-T is inconvenient, many players map lowercase t to this function.
+
+y    Toggle pressor beam. Same as tractor (see 'T') but pushes.
+
+_    (underscore) Turn tractor beam on. Mouse indicates target.
+^    Turn pressor beam on. Mouse indicates target.
+
+$    Turn tractor or pressor beam off.
+
+
+     Movement And Navigation Functions:
+
+0-9     Set speed to 0..9
+( or )  Set speed to 10
+!       Set speed to 11
+@       Set speed to 12
+#       Set speed to half of your maxwarp
+%       Set speed to max
+>       Increase speed by one
+<       Decrease speed by one
+
+k    Set course. The mouse cursor specifies direction. 
+
+l    Lock onto object. The mouse cursor specifies what; it can be either a ship or a planet. A small triangle indicates the lock, and you will fly towards that object. If it is a planet or SB you will orbit / dock when you arrive.
+
+;    Like l but only locks onto planets and starbases (things you can orbit or dock at)
+
+
+*    Send in practice robot, if there's no one else playing. On many servers, this is also the key for starbase transwarp. This is Really Cool. Lock onto your SB, go no faster than warp 2, hit transwarp, and you will go warp reallyreallyfast until you reach the SB (at which point you will dock), run out of fuel, or die. This is handy for reaching the front lines fast. Not all servers support this.
+
+
+     Planet Functions:
+
+b    Bomb planet. You must be orbiting an enemy planet and in T-mode to do this. You only need to press it once and you will continue bombing until the planet reaches 4 or less armies.
+
+C    Try to coup your home planet. This is a way to get back your home planet if you have no other planets.  Only possible after a genocide without a server reset, then everyone leaves, losing T, and people join the team that lost again.  You must have kills and be orbiting it.
+
+o    Enter orbit or dock. You must be going no faster than warp 2 and be on top of a planet or starbase.
+
+x    Beam armies down to planet (yours or enemy) or a starbase. You must be orbiting or docked to the planet or starbase in question.
+
+z    Beam armies up from friendly planet or starbase. Again, you must orbit or dock. 
+
+
+     Message Functions
+
+E    Send generic distress call.
+
+F    Send armies carried report
+
+m    Start sending message. After hitting this key type the destination (0..9 and a..j = specific player, F/R/K/O = specific team, T = your team, A = all) and then the body of the message. Hit enter to send or escape to abort.
+
+X     Enter macro mode. After pressing the macro key, you can send the macros you have assigned to those keys. See the section on macros. You also have available all the standard distress calls. Both the distress format and key can be changed (see: RCD). See the sections on Macros and RCD for specifics, including what the default macros are.
+
+X?   Show macros window
+
+^0..^9 
+^@ 
+^#
+etc...
+     The distress calls are all mapped to similar control keys. For example, instead of pressing <macro>0 to send an armies carried report, you can use ^0. See the section on RCDs for available distress calls / reports.
  
-i3.1.6  METASERVER OPTION
 
-     The "-m" option will instruct the client to search the 
-Meta Server at metaserver.us.netrek.org, port 3521 and present the 
-user with a list of available servers.  The user may then select 
-the most desirable server directly from the client.
-     Alternatively, the "-k" option may be used to show the 
-"known servers", using the same format as the Meta Server list.  
-The client generates a list of "known servers" after each call to 
-the meta server but only if the "metaCache" option is set in your 
-xtrekrc.
-    To find out about customising the meta-server, set the Chapter
-"MetaServer Options", later in this document.
+     Misc. Functions
+
+e    Toggle docking permission (when playing a starbase). This allows or disallows other players to dock on you and repair, refuel, beam up/down armies, etc. If you turn off docking while players are docked, they will be undocked, hence the assigned key.
+
+i or I    Get information on object near mouse. Uppercase shows different info than lowercase. You can use this to, for example, find out how many armies are on a planet, where a player is logged in from, how many kills they have, or whether a planet is agricultural.
+
+N    Toggle planet names display on tactical window.
+
+r    Refit. Use this to change your ship type. You must be orbiting your home planet (Earth for Fed, Romulus for Rom, Klingus for Kli, Orion for Ori) or your team's SB. After pressing r, press the key corresponding to the ship type you want (s=scout, d=destroyer, c=cruiser, b=battleship, 
+a=assault, o=starbase/outpost)
+
+R    Enter repair mode. This sets you at warp 0, and turns off shields and cloaking. Damage is repaired faster than normal in this state, but you cannot fire. To exit repair mode, raise shields or start moving. The fastest way to repair yourself is to do this while orbiting a repair planet or docked on an SB. When you are in repair mode a little R will appear in your flags and you will not be able to fire or cloak.
+
+w    Change war declarations. This is important. Your weapons will not lock or explode on ships belonging to races which you are not at war with, and you will take damage if you orbit planets of hostile races. So, declare war with your enemy and peace with everyone else (so you can use their fuel and repair planets.) Note that if you change your war settings while an enemy is on the screen you will be unable to do anything for about ten seconds while "the computers get reprogrammed." The moral of this is: declare war before you go into battle. Note that you start out hostile to everyone, so if you forget before your first engagement it's not too critical.
+
+q    Quit, don't re-read MOTD ("fastquit").
+
+Q    Quit, exiting to MOTD screen. If you hit either of these in red alert, a self destruct timer will start. This is so you can blow up over your enemy. While the countdown is in progress, any input cancels it.
+
+:    Toggle message logging. Saves all messages to a file so you can laugh at them later.
+
+-    Request partial update (see the section on UDP and Short Packets)
+
+=   Request full update (see the section on UDP and Short Packets)
+
+|    Request medium update (everything except player statistics)
+
+&    Re-read netrekrc file
 
 
-i3.1.7  AUTOLOGIN OPTION
+     Window And Display Functions:
 
-     The "-A password" allows the client to automatically enter the 
-specified character password without having to prompt the user.  
-This option is normally used with the "-C character_name" option, 
-which automatically enters the character name.  The "-C" option must 
-be followed by a character name string.
+B    Cycle through galactic map planet display options. Possible options are show nothing, show owner, or show resources (the most useful, as on a color display you can tell owner by color.)
+
+h    Toggle help window. Display a brief summary of these commands, as well as what key each command is currently assigned to.
+
+H   Toggle hockey lines on tactical (local). Only for hockey servers
+G   Toggle hockey lines on galaxy (map). Only for hockey servers
+L    Toggle player window. This lets you see the names of the players, their stats, and, most importantly for defending planets, their kills.
+
+/    Toggle between new and old playerlist format
+
+A    Toggle alternate player list window
+M    Toggle tools window
+O    Toggle options window. There are many neat things here, most of which are configurable via the netrekrc file. Experiment! This is a really useful command.
+P    Bring up the Planet window. Lists all planets, owner, who has info on them, number of     armies, and facilities at each.
+
+S    Toggle stats window. This is a larger version of your dashboard, sort of. Kind of big and annoying and I don't like it but you might.
+
+U    Toggle rank window. Shows you what ratings you need for promotion.
+
+V    Cycle through tactical planet display options. Possible options are show nothing, show owner, or show resources (the most useful, as on a color display you can tell owner by color.)
+
+~    Toggle sound control window
+
+.    Toggle network stats window
+
+,    Toggle ping stats window
+
+`    Toggle short packets control window
+
++    Toggle UDP control window.
+
+?    Cycle through show nothing / show one big message window / show three
+message windows.
+
+"    Save current configuration to netrekrc.sav
+
+\    Reset dashboard timer to 00:00:00
+
+v   Decrease sound volume by one notch
+
+V   Increase sound volume by one notch
+
+<space> Turn off all special windows (planet, rank, help, udp, etc.)
 
 
+5.0 Netrekrc
 
-b3.0 Xtrekrc
+NetrekXP looks for a netrekrc or xtrekrc file in your netrek install directory.  There are many, many options, and for a complete list, see the xtrekrc_options.txt file in the docs directory.
 
-COW looks for a xtrekrc file in your netrek install directory.  
 
-A file called "xtrekrc_sample.txt" should have been included with this
-client.  Below is an attempt to explain the many,many options you
-can include in a xtrekrc file.  Some of this was borrowed from
-various other documentation such as MOO documentation.
 
 For other options, see MACROs and Receiver Configurable Distress Calls.
 
-colorClient:    (0-3) ship bitmaps that are used
-                0 – Monochrome
-                1 – New color bitmaps (default)
-                2 – Old color bitmaps
-                3 – Shaded old color bitmaps
 
-dynamicBitmaps: (on/off) allow switching of ship bitmaps in game.
+  5.1 Keymaps
 
-fullScreen:     (on/off) draw borders for main window (default is off)
+     The original key assignments were created more out of ease of memorization than speed of access in combat. For example, enabling the tractor beam is awkward, requiring the use of the shift key. Also, people will always have their particular preferences. For this reason, almost all
+netrek players use a keymap to change the key assignments. Its use it quite simple. Simply add a line of the form "keymap: <key><function><key><function><key><function>...." to your netrekrc file. Each pair of characters assigns the key specified by <key> to perform the function originally assigned to the key specified by <function>. For example, to map toggle tractor (T) to 't', and set max warp (%) to 's', you would use
 
-planetBitmap:   (0-2) how the planet bitmaps look
-                0 - Bronco
-                1 - Moo
-                2 - Rabbitear
+     keymap: tTs%
 
-showMySpeed:    (on/off) show my speed on tactical
+     The space bar can be remapped, but it cannot be the first key to be remapped in a sequence (obviously).  It is often mapped to det: 
 
-portSwap:       (on/off) use UDP portswap code. Can solve connection
-                problems when computer is behind firewall
+     keymap: tTs% d
 
-showArmiesCount:(on/off) show armies count on galactic map.
 
-showHockeyLinesLocal:	(on/off) show hockey lines on tactical
-showHockeyLinesMap:	(on/off) show hockey lines on the galactic map
-showHockeyScore:		(on/off) show hockey score in the galaxy top left corner
+  5.2 Ckeymaps
 
-rank.mapped:    (on/off)
-rank.parent:    (window name) ie root, review_all, netrek, etc
-rank.geometry:  (geometry specification) ie 80x26+554+624
-                Every window may have these three defaults set for it.
-                Some windows are resizeable, others are not.
+     Control keymaps (ckeymap) handles the remapping of keys in an analoguous manner to the normal keymap (keymap).  The control keymap also allows the user to map both *upper* and *lower* case letters keys when pressed with the control key.  This means that ^u and ^U are
+*different* keys when it come to mapping them. 
 
-color.white:            white
-color.black:            black
-color.red:              #ffa0ff
-color.green:            green
-color.yellow:           yellow
-color.cyan:             cyan
-color.lightgrey:       light grey
-                Specify what colors should be used by the client.
-                This is generic X color specification (right?).
-                All the possible left hand sides are listed I think.
+     Any combination of normal keys and control keys can be mapped to one another.  In other words, you can map from control key to control key, control key to normal key, normal key to normal key, and normal key to control key.
+ 
+New format for ckeymap is:
+c = any printable ascii character.
+^ = introduce control mapping (the key '^' not control + key.)
+ 
+Each entry is a pair, like:
+cc              # regular format
+c^c             # regular->control
+^cc             # control->regular
+^c^c            # control->control
+ 
+Example ckeymap:
+ckeymap:                 ^a%r^b^m^ca%d5 tfDFf^^E
 
-name:           (string of chars) default name
+Special case:
+     The '^' must be mapped with a double ^ ("^^") in either the bound or binding key position.
+ 
+Notes:
+     If you experience difficulties (you shouldn't) you might wish to use a normal keymap and a new ckeymap in combination.  Both are read in, the keymap first then the ckeymap.  This means that if a key which is defined in both the keymap and ckeymap, the ckeymap's definition will be the one 
+used.
 
-login:          (string of chars) default login
+     Analogously, control keys may be used for buttonmap, singleMacro and
+all macro and RCD definitions.
 
-password:       (string of chars) default password; if both name and 
-                password are included in your xtrekrc, COW will 
-                attempt to do an autologin for you.
 
-continuousMouse:(on/off) change direction while holding right mouse button
-                and moving the mouse
+  5.3 Ship Keymaps
 
-continuousMouseFix: (on/off) If enabled the continuous mouse will follow any 
-                buttons that are pressed at the same time. For example if you 
-                are steering and firing at the same time this fix will allow 
-                both events to occur. Without the fix the behavior is to only 
-                allow one button action.
+You can add one of: sc, dd, ca, bb, as, sb, ga, att, default to the following default options to override them based on ship type:
 
-newDistress:    (on/off) right justified distress call or not, default 
-                value is to right justify (on)
+rcfile-??:  	ship specific .xtrekrc file,
+keymap-??:	ship dependent keymap,
+ckeymap-??:	ship dependent CTRL keymap,
+buttonmap-??:	ship dependent buttonmap.
 
-showIND:        (on/off) mark independent planets with a X drawn over it.
+It will automatically reload the specified defaults if you change the shiptype. If a ship-specific option is not specified, the default option is used for that ship.  For e.g., keymap-sc: will be used
+instead of keymap: whenever you switch to an SC.
 
-varyShields:    (on/off) Shield color and bitmap depends on shield status.
+Used well, this is a very powerful feature.  For instance, you might bind a key to your prefered cruising speed, with a different speed for each ship type.
 
-varyHull:       (on/off) graphical indication of your hull condition. 
-                kinda like varyShields
+Here's part of my keymap as an example.
+# default: q = warp 2, w = 1/2 maxwarp, e = maxwarp
+ckeymap: 	q2w#e%
+# override some of the above, based on ship type
+ckeymap-ca: 	w4
+ckeymap-bb: 	w3
+ckeymap-sb: 	q1w2
 
-windowMove:     (on/off) option to disable in-game movement of client windows.
 
-mainResizeable: (on/off) make the main netrek window resizeable
-
-metaPing:	    (on/off) show ping statistics in the metaserver window
-
-cloakChars:     (string of one or two chars) what to use for cloakers on
-                galactic instead of '??'.
-
-omitTeamLetter: (on/off) to stop drawing the team letter on the galactic
-
-showStars:	    (on/off) to have paradise-like background stars
-
-warpStreaks:    (on/off) to draw streaks while warping to the starbase if
-                 background stars are on
-
-viewBox:	    (on/off) to show your tactical boundaries on the galactic
-
-disableWinkey:  (on/off) to allow Windows and Context keyboard keys to be
-                 disabled
-
-timerType:       Range of 0-4.  Use to be able to switch the dashboard clock
-                 into a timer.
-                 0 - don't show
-                 (1) - show current time
-                 2 - show time on server
-                 3 - show time in ship
-                 4 - show user-set time
-
-enemyPhasers:   (integer 0-10) enemy phasers thickness at starting point.
-
-phaserShrink:   (integer 0-16) Don't draw the first "phaserShrink"/16 th of
-                your phaser.  This makes it easier to see incomming torps.
-
-theirPhaserShrink: (integer 0-16) "phaserShrink" for other player's ships.
-
-shrinkPhaserOnMiss: (on/off) Use "phaserShrink" and "theirPhaserShrink" even 
-                    if a phaser misses.
-
-highlightFriendlyPhasers: (on/off) When on, friendly phaser hits appear white.
-                          When off, phasers rotate between white and team color.
-
-colorfulPhasers: (on/off) Makes your phaser hits become multicolored.
-
-playerListMessaging: (on/off) option to enable/disable clickable player list 
-
-beepOnPrivateMessage: (on/off) if enabled, the client will beep when you receive
-                      a private message from somebody that is not yourself or
-                      god.
-
-showStats:      (on/off) show stats window
-
-reportKills:    (on/off) display kill messages or ignore these
-
-newDashboard:   (integer 0-3) new dashboard 1 and 2, has sliding bars 
-                instead of numbers at the bottom of the screen, 3 uses 
-                triangle sliders, definately worth a look.
-
-ignoreCaps:     (on/off) ignore the Capslock key.
-
-newPlist:       (on/off) new playerlist, instead of total kills, deaths
-                offense and defense it shows login and stats 
-                (off+bomb+planet).
-
-playerlist:     (string) The layout for the player list.  See below.
-
-playerListStyle: (0-4) The style for the player list.  The options are:
-		
-                (0) Custom player list as defined by the
-                    playerlist variable above,
-                (1) Old player list,
-                (2) Traditional COW player list,
-                (3) Kill watch player list,
-                (4) BRMH Player list.
-		
-                If "playerListStyle" is set, newPlist is ignored.
-                Use the options menu (shift-O) to try the different styles.
-		
-sortPlayers:    (on/off) Sort the playerlist with the enemy team players
-                first, then your team and then the neutral players.
-
-sortMyTeamFirst: (on/off) Modifies "sortPlayers" so that your team is sorted
-                 immediately before the enemy teams.
-		
-partitionPlist: Add blank lines to a sorted player list to separate the
-                different teams.  This is useful in mono where the teams
-                can not be distinguished by their color.
-						
-keepInfo:       (integer) number of updates to keep info windows on the
-                screen before automatically removing them
-
-logging:        (on/off) displays messages to stdout if set.
-
-logfile:        (filename) alternatively saves messages to a text file
-
-useRSA:         (on/off) default setting for whether the client should 
-                use RSA	verification.
-
-tryShort:       (on/off) default setting for whether to use short packets.
-
-autoquit:       (integer) length of time to wait on team selection screen
-                before Auto-quit exits for you.
-
-showmotd:       (on/off) display motd if in wait queue
-
-keymap:         (string of chars) remaps the keyboard, syntax is simply the
-                key to map onto, followed by the key to map, repeated.
-                Thus to map the "fire torps" key 't' onto 'f', use
-                keymap: ft
-                (See also the sections on control keymaps and ship
-                dependent keymaps below.)
-
-buttonmap:      map the mouse buttons to something else.
-                i.e. the default mapping is:
-                1t2p3k
-
-server:         continuum.us.netrek.org
-                default server that is called when no -h argument is
-                specified.  The compiled in default server is
-                continuum.us.netrek.org
-
-port:           2592
-                default port that gets called. 
-                The compiled default is 2592
-
-server.pickled: pickled.psychosis.net
-                Allows you to specify a server abbreviation.  
-                Thus instead of	using "-h pickled.psychosis.net" you now 
-                use only "-h pickled"
-
-port.pickled:   2592
-                default port that gets called for the server abbreviation.
-
-showTractorPressor: 	(on/off) toggle showing tractor/pressor beams
-showAllTractorPressor:	(on/off) show tractor/pressor for all players. Server
- 				god decides whether to enable it on server.
-
-continueTractors:(on/off) show tractors after lock
-
-tryUdp:         (on/off) Automaticaly use UDP if on
-
-udpDebug:       (on/off) Show UDP debug information
-
-udpClientSend:
-
-udpClientRecv:
-
-udpSequenceChk:
-
-extraAlertBorder:  (on/off) Draws border over tactical window
-
-forceDisplay:  (0-3) Number of colors the client will display
-               0 - find best available color option
-               1 - 16 colors
-               2 - 256 colors
-               3 - true color (default)
-
-forcemono:     Outdated option.  Will force display to 16 colors,
-               (but only works if forceDisplay = 0)
-
-redrawDelay:    (0-10) synchron screen refresh every n/10 sec
-
-showplanetnames:(on/off) show planet names on tactical
-
-showLock:       (0-3) show lock triangle
-                0 = none
-                1 = galactic
-                2 = tactical
-                3 = both
-
-Extra NetrekXP features:
+  5.4 General configuration:
 
 Most options in the rc file can have four appearances:
      1. option.observer: string (i.e. "keymap.observer: aabbcc")
@@ -366,9 +358,12 @@ the rc (i.e. "server.continuum: continuum.us.netrek.org")
      4. option: string (i.e. "keymap: aabbccdd")
 The options are validated in the same order (from 1 to 4 where 1 is best match and 4 is worst match).
 
+
+  5.5 Window configuration:
+
 The "window.allow" option lets you set the type of messages logged into each message window (review, review_all, review_team, review_your, review_kill, review_phaser)
-  Message types:
-	  I - individual messages
+Message types:
+         I - individual messages
         T - team messages
         A - all messages
         K - kill messages
@@ -381,116 +376,153 @@ The "window.allow" option lets you set the type of messages logged into each mes
         review_kill.allow: K
         review_phaser.allow: P
 
-iConnection Types: UDP and TCP explained
+  5.6 Login options:
 
-UDP provides an unreliable, packet-based protocol for sending data
-across an IP network.  There are a variety of ways that a UDP packet
-can be lost or discarded, including a failure of the underlying
-communication mechanism.  UDP implements a checksum over the data
-portion of the packet.  If the checksum of a received packet is in
-error, the packet will be dropped with no indication given to the
-user.  A queue of received packets is provided for each UDP socket.
-This queue has a limited capacity.  Arriving datagrams which will not
-fit within its high-water capacity are silently discarded.
+defaultShip: CA
+     Default ship to use on button-click entry (SC,DD,CA,BB,AS,SB).
+
+name: <your_name_here>
+     Your default character name.
+
+password: <whatever>
+     Your default password. If both name and password are supplied, 
+many clients will attempt to log you in automatically.
+
+
+  5.7 Window placements:
+
+ These are of the form 
+
+     <window>.geometry: <width>x<height>+<xpos+<ypos>
+
+ Or you can specifiy just the position:
+
+     <window>.geometrey: +<xpos>+<ypos>
+
+ or just the size:
+
+     <window>.geometry: <width>x<height>
+
+
+     Possible windows are:
+
+     netrek         - main window
+     local          - Main fighting window
+     map            - Galactic map
+     warn           - warning window
+     message        - message window
+     review         - all messages window 
+     review_all     - messages to all window
+     review_team    - messages to team window
+     review_your    - messages to individual window
+     review_kill    - kills messages window
+     review_phaser  - phaser hits window
+     planet         - planet list window
+     player         - playerlist window
+     war            - war declarations window
+     fed            - Fed selection window
+     ori            - Orion selection window
+     rom            - Romulan selection window
+     kli            - Klingon selection window
+     quit           - The quit countdown clock
+     option         - options menu window
+     rank           - rank window
+     sound          - sound options window
+     stats          - statistics window
+     tstat          - dasboard window
+     help           - help window
+     UDP            - UDP options window
+     lagMeter       - lag meter window
+     pingStats      - ping statistics window
+     buttonkeymap   - the key map window
+     xtrekrc_help   - the xtrekrc help window (duh)
+     MetaServer List- (including the space) Metaserver window
+     tools          - the shell tools window
+     DocWin         - Documentation window
+     xtrekrcWin     - xtrekrc display window
+     
+
+     You can specify whether windows are initially mapped (displayed), like this:
+
+     <window>.mapped: <on/off>.
+
+     You can also specify parenting of windows. If one window is a child of another, when that window's parent is hidden or displayed, the child window will also be hidden or displayed. Also, a window that is not parented may have a caption on it, depending on your window manager or OS.
+
+
+
+6.0 UDP/TCP
+
+
+Connection Types: UDP and TCP explained
+
+UDP provides an unreliable, packet-based protocol for sending data across an IP network.  There are a variety of ways that a UDP packet can be lost or discarded, including a failure of the underlying communication mechanism.  UDP implements a checksum over the data portion of the packet.  If the checksum of a received packet is in error, the packet will be dropped with no indication given to the user.  A queue of received packets is provided for each UDP socket.  This queue has a limited capacity.  Arriving datagrams which will not fit within its high-water capacity are silently discarded.
 
 Guest              Rd     71       27            2% /  13%
 
-The stats above show a typically UDP connection.  It has loss of
-packets but its round-trip times are fairly low.
+The stats above show a typically UDP connection.  It has loss of packets but its round-trip times are fairly low.
 
 
-TCP provides a reliable, flow-controlled, in order transfer of data
-across an IP network.  There is nothing fundamentally different about
-the way UDP and TCP packets travel over the wire.  The only real
-difference is that TCP will keep sending the same packet over and over
-again until it gets an acknowledgement back.  As a result, TCP
-connects are typically slower than UDP connections and usually require
-more bandwidth.  TCP is slower because it guarantees that packets will
-arrive in order and so a lost packet can hold up later packets.
+TCP provides a reliable, flow-controlled, in order transfer of data across an IP network.  There is nothing fundamentally different about the way UDP and TCP packets travel over the wire.  The only real difference is that TCP will keep sending the same packet over and over
+again until it gets an acknowledgement back.  As a result, TCP connects are typically slower than UDP connections and usually require more bandwidth.  TCP is slower because it guarantees that packets will arrive in order and so a lost packet can hold up later packets.
 
 Example:
 
 Guest          Ff    405      669            0% /   0%
                      ^^^      ^^^            ^^^^^^^^^
 
-The above shows possibly the same connection with UDP turned off.
-There is no loss but the round trip times are much higher.
+The above shows possibly the same connection with UDP turned off.  There is no loss but the round trip times are much higher.
 
 
 NOTES:
 
-*  COW always uses TCP for some things.  For example, the text 
-   messages that you can send to other players are implement in TCP 
-   to guarentee that they always arrive.  However, if a UDP connection 
-   is also available, it is used for the vast majority of communication.
-   
-*  You are recommended to use a TCP connection if you are at the same
-   site (within a few milliseconds lag) of the server you are playing on.
-   The main reason for using UDP is to reduce your round trip times.
+*  The client always uses TCP for some things.  For example, the text messages that you can send to other players are implement in TCP to guarantee that they always arrive.  However, if a UDP connection is also available, it is used for the vast majority of communication.
 
-*  The option "tryUdp" can be used to set a preference for using
-   UDP (tryUdp: on) or TCP only (tryUdp: off).
+
+*  You are recommended to use a TCP connection if you are at the same site (within a few milliseconds lag) of the server you are playing on.  The main reason for using UDP is to reduce your round trip times.
+*  The option "tryUdp" can be used to set a preference for using UDP (tryUdp: on) or TCP only (tryUdp: off).
    
 
+Short Packets:
 
-iShort Packets:
-
-Short packets are supported by COW.  These have been shown
-to substantially reduce the volume of traffic between the client
-and server, and will improve lag in many situations.  Not all
+Short packets are supported by COW.  These have been shown to substantially reduce the volume of traffic between the client and server, and will improve lag in many situations.  Not all
 servers support short packets yet, but that is changing rapidly.
 
-COW has a short packet window which is brought up with 
-the "`" key. In this window you can turn short packets on and 
-off as well as configure it in various ways.
+COW has a short packet window which is brought up with the "`" key. In this window you can turn short packets on and off as well as configure it in various ways.
 
 Also in your netrek defaults file you can add the line
 
 tryShort:	on
 
-in order to have short packets automatically turned on whenever
-you connect to a server which allows it.
+in order to have short packets automatically turned on whenever you connect to a server which allows it.
 
 Don't forget about the - and | keys for requesting updates.
 
 
 
-b4.0 MACROs, RCD, RCM
+7.0 MACROs, RCD, RCM
 
-Three types of macros exist in the COW client:  
-NBT, NEWMACRO, and SMARTMACRO.  NBT is always on, 
-however NEWMACRO and SMARTMACRO can be turned off 
-by a server which does not allow them.
+Three types of macros exist in the client:  NBT, NEWMACRO, and SMARTMACRO.  NBT is always on, however NEWMACRO and SMARTMACRO can be turned off by a server which does not allow them.
 
-You may see a list of what macros are in your client by hitting
-'X' followed by '?'.  At the top of this list it shows which macros
-are enabled in the client right now.
+You may see a list of what macros are in your client by hitting 'X' followed by '?'.  At the top of this list it shows which macros are enabled in the client right now.
 
-NBT macros allow you enter a message in your xtrekrc which you
-send regularly.  
+NBT macros allow you enter a message in your netrekrc which you send regularly.  
 
 macro.x.X:      <text here>
 
-x  is any ascii character; it is the "name" of the macro 
-   (the key you press in macro mode to send the associated macro)
-X  can be A,T,F,R,K,O where A=all, T=team, F=fed, R=rom, K=kli, 
-   O=ori (determines the message board to which the text body of 
-   the macro is sent)
+x  is any ascii character; it is the "name" of the macro (the key you press in macro mode to send the associated macro)
+X  can be A,T,F,R,K,O where A=all, T=team, F=fed, R=rom, K=kli, O=ori (determines the message board to which the text body of the macro is sent)
 
 Example: 
 macro.b.T:              BOMB!!!!
 
-For more information on NEWMACRO and SMARTMACRO see the NEWMACRO 
-section below.
+For more information on NEWMACRO and SMARTMACRO see the NEWMACRO section below.
 
 
-iReceiver Configurable Distress Calls (RCD):
+Receiver Configurable Distress Calls (RCD):
 
-Receiver configurable distress calls have been added to the client
-and use a MACRO-like syntax.
+Receiver configurable distress calls have been added to the client and use a MACRO-like syntax.
 
-In order to change the distress type a line such as the following
-should be in your defaults file.
+In order to change the distress type a line such as the following should be in your defaults file.
 
 dist.T.taking:		(%i) Carrying %a to %l%?%n>-1%{ @ %n%}
 
@@ -501,20 +533,15 @@ dist.taking:		(%i) Carrying %a to %l%?%n>-1%{ @ %n%}
 This has the format 
 dist.[key].[name of distress]:		[macro]
 
-Arguments for the macro and SMARTMACRO syntax are exactly the same
-as before.  Any argument can be used, but usually only those
-in the groups "Standard" and "FULLY CAPITALIZED" apply.
+Arguments for the macro and SMARTMACRO syntax are exactly the same as before.  Any argument can be used, but usually only those in the groups "Standard" and "FULLY CAPITALIZED" apply.
 
-Note that if you don't want to ever see a certain distress, use the
-macro characters : %*.  For example,
+Note that if you don't want to ever see a certain distress, use the macro characters : %*.  For example,
 
       dist.free_beer: %*
 
-will allow your client to simply ignore any "free beer" RCD's that 
-get sent.
+will allow your client to simply ignore any "free beer" RCD's that get sent.
 
-Below is a table giving the name of each distress, the key it
-is assigned to, and the default macro (at the time of this writing).
+Below is a table giving the name of each distress, the key it is assigned to, and the default macro (at the time of this writing).
 Note that except for E and F, these are all control keys.
 
 Key  Name	Default Distress Macro
@@ -545,24 +572,95 @@ F    carrying	%T%c->%O %?%S=SB%{Your Starbase is c%!C%}arrying %?%a>0%{%a%!NO%} 
 E    help	%T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!
 
 
-iNEWMACRO and SMARTMACRO documentation - Jeff Nelson 6/4/1993 
+Examples
+
+     Let's walk through two simple examples.
+
+     1. Map generic distress call (help) to 'h', make it appear as: "I'm
+about to die with %a of your team's armies!"
+
+     2. Map AS bombing (asbomb) to '^A', don't change the message.
+
+     First try to seperate in your mind the two types of configurability
+that are going on here.
+
+     1) you are changing the key that sends the message
+     2) you are changing how the message appears to you
+
+     In order to do (1), just use a keymap.  Nearly everyone who has tried
+to configure their netrek client has generated some form of keymap.
+
+keymap: hE
+
+     This performs the key configuration we wanted for the first example.
+
+     In order to change the message,
+
+dist.help:     %T%c->%O I'm about to die with %a of your team's armies!
+
+     If you configure an RCD, you also must configure the header of that
+message.  This isn't is difficult as it sounds, just add the header to the
+beginning of the RCD.  For example, instead  of
+
+dist.T.taking:      Carrying %a to %l%?%n>-1%{ @ %n%}
+
+     use
+
+dist.T.taking:      % %T%c@%b Carrying %a to %l%?%n>-1%{ @ %n%}
+
+     Two headers that I recommend (the last is the default):
+
+% %T%c@%b 
+% %T%c->%O
+
+     If you want to map the asbomb distress onto control-shift-a that is
+slightly more difficult.  The asbomb distress normally is associated with
+control-6.  Since control keys are involved, we MUST use the control key 
+map feature called ckeymap.  The following line would perform the 
+operation we would like.
+
+ckeymap: ^A^6
+
+     If you *also* want control-a to be asbomb, then use
+
+ckeymap: ^A^6^a^6
+
+     If you have read all the documentation, are sure you are using the
+right syntax, and RCD (or MACRO) still is not working, then check out the
+following.
+
+     1. Did you receive RC_DISTRESS when you logged in?  
+
+     The server must send this to the client to tell the client that it
+understands RCD messages.  Otherwise the client will just send the standard
+formatted RCDs.
+
+     Some clients have a mod which shows you whether RC_DISTRESS is on by
+looking at the first line of the macro window.  If it says, "Packages
+active: NBT, NEWMACRO, SMARTMACRO",  you have no guarantee that RCD was
+turned on by the server. If it says, "Packages active: NBT, NEWMACRO, 
+SMARTMACRO, RC_DISTRESS" then RCD is definitely on.  Don't worry about #1, 
+go to #2.
+
+
+     2. Are any MACROs assigned to the same key as the RCD you are
+configuring?
+
+     If this occurs, you will see the macro and NOT the RCD.
+
+     3. Are any other RCDs assigned to the same key as the RCD you are
+configuring (this includes the DEFAULT RCDS!!) ?
+   
+     If this occurs, you will see whichever RCD happens to be listed first
+when the client examines the RCD list.
+
+NEWMACRO and SMARTMACRO documentation
 
 *WARNING*  *WARNING*  *WARNING*  *WARNING*  *WARNING*
+These features default ON in the client!  A server may turn them off *for you* if they are not allowed at that server.
 
-These features default ON in the COW client!  A server may turn them
-off *for you* if they are not allowed at that server.  The BRM client 
-will inform you by sending you a message line like:
-BRM: Features enabled: NO_NEWMACRO, NO_SMARTMACRO
-
-If you are not at a server that allows NEWMACRO, then all targetted
-macros will be treated as normal NBT macros (no argument substitution,
-%a will broadcast as %a).  If you are not on a server that allows
-SMARTMACRO, then any conditional text or tests will *not* be evaluated,
+If you are not at a server that allows NEWMACRO, then all targeted macros will be treated as normal NBT macros (no argument substitution, %a will broadcast as %a).  If you are not on a server that allows SMARTMACRO, then any conditional text or tests will *not* be evaluated,
 instead they will be sent as the macro appears in your defaults file!
-
-If you don't like this, complain to the server god!!  
-Make a difference!!
-
 
 Compilers:
 In order to use the below features, NBT and NEWMACRO must be defined.
@@ -571,41 +669,29 @@ features.
 
 
 Here is the idea:
-A player should be able to include in his/her macros whatever
-reasonable information is available.  And configuring its display
-in whatever way is desired.  In order to do this, the following
-syntax is used (while remaining completely compatible with old NBT
-macros).
+A player should be able to include in his/her macros whatever reasonable information is available.  And configuring its display in whatever way is desired.  In order to do this, the following
+syntax is used (while remaining completely compatible with old NBT macros).
 
-A key is assigned in the defaults file (ie xtrekrc, etc)
-by a line like:
+A key is assigned in the defaults file (ie netrekrc, etc) by a line like:
 
 mac.F.T		Help!  Carrying %a!!
 
-This defines a macro which will send a distress containing
-the number of armies a player is carrying to his team.
+This defines a macro which will send a distress containing the number of armies a player is carrying to his team.
 
-Note, this is NOT printf syntax!  Any attempt to use formatting will
-fail miserably.  Maybe in the future someone will want to develop
-a means of formatting the variables used in macros, but the only
-means I can think of are both bulky and ugly.
+Note, this is NOT printf syntax!  Any attempt to use formatting will fail miserably.  Maybe in the future someone will want to develop a means of formatting the variables used in macros, but the only means I can think of are both bulky and ugly.
 
 Here is another example:
 
 mac.f		Help!  Carrying %a!!
 
-Unlike the first, this macro will not send directly to the team,
-instead it requires that you give a third keystroke specifying the
-recipient.  For example, it could be invoked by:
+Unlike the first, this macro will not send directly to the team, instead it requires that you give a third keystroke specifying the recipient.  For example, it could be invoked by:
 
 XfT		<- to your team
 Xf1		<- to player 1
 XfG		<- if you are desperate, send to God
 XfA		<- if you are stupid, send to ALL
 
-Old macros will still work in addition to these, thus be sure there are
-no conflicts.  These generally cause suprising results.  For example,
-if this is in your macro file:
+Old macros will still work in addition to these, thus be sure there are no conflicts.  These generally cause suprising results.  For example, if this is in your macro file:
 
 mac.E.T		Help!  I'm carrying!!
 macro.E.A	You all suck!
@@ -613,12 +699,7 @@ mac.E		Help!  I'm a twink!!
 mac.E.T		Help!  I'm carrying again!!
 macro.E.A	You all suck even worse NOW!
 
-The suprising results would be that pressing XE would broadcast the
-first two messages, and then wait for the destination of the third.
-It would be impossible to ever use the last two.  Unfortunately, multiline
-macros also do not work if they require a destination.  There is no
-good reason for this, but since multiline macros annoy the hell out
-of me, I ain't fixing it.  You can still do something like:
+The suprising results would be that pressing XE would broadcast the first two messages, and then wait for the destination of the third.  It would be impossible to ever use the last two.  Unfortunately, multiline macros also do not work if they require a destination.  There is no good reason for this, but since multiline macros annoy the hell out of me, I ain't fixing it.  You can still do something like:
 
 mac.D.A:	D
 mac.D.A:	O
@@ -626,12 +707,9 @@ mac.D.A:	O
 mac.D.A:	S
 mac.D.A:	H
 
-This would properly broadcase 5 messages containing 1 character to all.
-If you tried to specify the destination for these by using "mac.D:",
-only 'D' would be sent.
+This would properly broadcase 5 messages containing 1 character to all.  If you tried to specify the destination for these by using "mac.D:", only 'D' would be sent.
 
-Also '?' can still not be used as a macro key.
-The following definitions will work in a macro:
+Also '?' can still not be used as a macro key.  The following definitions will work in a macro:
 
 Standard:
 
@@ -659,6 +737,7 @@ Standard:
 %l      three character name of target planet
 %N	full name of target planet
 %i	sender full player name (16 character max)
+
 %u	full name of target player (16 character max)
 %z	3 letter team id of target planet
 %b      3 char name of sender nearest planet
@@ -678,15 +757,14 @@ Ping stats: (may differ slightly from server '!' ping stats)
 %V    ping stat round trip standard deviation
 %y    percent total packet loss as calculated by server formula
 
-Miscellanous:
+Miscellaneous:
 %m      the last message you sent
 %M	the last message you sent in all caps
 %w	whydead number for RCM
 %W	whydead text for RCM only
 %>nn	Tab stop at position nn
 
-As a further extension to NEWMACRO, a macro may now be sent
-to any of the following destinations:
+As a further extension to NEWMACRO, a macro may now be sent to any of the following destinations:
 
 %i %I %c	send message to self
 %u %U %p	send message to player nearest mouse
@@ -706,12 +784,7 @@ mac.W.%t:	SHUT UP, TWINKS!!
 mac.I.%u:	%u: det when you escort!
 mac.O.%u:	(%i) ogging
 
-What this does is allows you to send a macro to a player or
-team specified by your mouse location instead of requiring
-a 3rd character to be input.  Also, it allows you to send
-message to yourself without having to actual sit there and
-figure out who you are (they tried and failed back in the '60s).
-
+What this does is allows you to send a macro to a player or team specified by your mouse location instead of requiring a 3rd character to be input.  Also, it allows you to send messages to yourself without having to actual sit there and figure out who you are (they tried and failed back in the '60s).
 
 >>>>The above is available when NEWMACRO is defined;  from here on,
 >>>>SMARTMACRO must be defined *in addition*.
@@ -723,12 +796,9 @@ for these test is as follows.
 >	greater
 <	less
 
-Expressions are evaluated on a character by character basis until the
-test is resolved.  The text of the test is then replaced in the macro
-by 1 or 0.
+Expressions are evaluated on a character by character basis until the test is resolved.  The text of the test is then replaced in the macro by 1 or 0.
 
-Test are then fed to a syntax I call conditional text.  The best way
-to demonstrate how this works is example.
+Test are then fed to a syntax I call conditional text.  The best way to demonstrate how this works is example.
 
 1%{included if true%!included if false%}
 
@@ -738,9 +808,7 @@ included if true
 0%{included if true%!included if false%}
 included if false
 
-Combining the whole package, a very robust macroing system is
-quickly generated.  One can easily design or mimic Distress calls,
-including the variable NBT distress of the COW client and all the
+Combining the whole package, a very robust macroing system is quickly generated.  One can easily design or mimic Distress calls, including the variable NBT distress of the COW client and all the
 hardcoded message macroing built into my own client but never released.
 
 Here are a few more samples to work from:
@@ -748,6 +816,7 @@ Here are a few more samples to work from:
 mac.F.T:	Help!  Carrying %a!!
 mac.f:		Help!  Carrying %a!!
 mac.c.T:	%p++ near %l
+
 mac.b.T:	%?%n>4%{bomb %l at %n%!bomb%}
 mac.d.T:	%E%{%!%W%{%!I'm fine.  How are you?  %}%}%E%{ETEMPED!!!  %}%W%{WTEMPED!!!  %}Carrying %?%a>0%{%a armies!%!NO armies.%}
 mac.a.T:        %E%{ETEMPED!!!  %}%W%{WTEMPED!!!  %}Carrying %?%a>0%{%a armies!%!NO armies.%}
@@ -764,14 +833,13 @@ mac.v.%t:       %T%c PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
 mac.m:		%m
 
 
-iSymbolic names for macro destinations - Kurt Siegl 27/4/95
+Symbolic names for macro destinations
 
-You always wanted to send a macro directly to the captain, base,
-or the second SC bomber?
+You always wanted to send a macro directly to the captain, base, or the second SC bomber?
 
 Symbolic macro keys will solve your problems. Here how it goes:
 
-In the xtrekrc file you assign a key to a symbolic name:
+In the netrekrc file you assign a key to a symbolic name:
 
 	 key.[key].[dest]:	[name of key]
 
@@ -789,8 +857,7 @@ mac.o.C:        Hi Captain let me suggest a base ogg?
 mac.a.B: 	BASE: Free armies for me?
 mac.t.m:        TIME
 
-Finally during runtime you may change the actual destination 
-by sending a message:
+Finally during runtime you may change the actual destination by sending a message:
 
 	set [name of key] [destination id]
 
@@ -803,10 +870,10 @@ mac.^m.!:	set me %c
 You can check the settings on the shell tools window "M".
 
 
-iReceiver Configurable Server Messages (RCM)
 
-Short package kill messages may be freely configured using
-the macro syntax interpreter where
+Receiver Configurable Server Messages (RCM)
+
+Short package kill messages may be freely configured using the macro syntax interpreter where
 
 * the killed person corresponds to the sender,
 * the killer corresponds to the target player,
@@ -830,60 +897,35 @@ msg.destroy:%N->%Z %N destroyed by %i (%T%c)
 msg.take:%N->%O %N taken by %i (%T%c)
 msg.ghostbust:GOD->ALL %i (%S) (%T%c) was kill %k for the GhostBusters
 
-BRMH formated kill windows may be optain by something like:
+BRMH formated kill windows may be obtained by something like:
 
 msg.kill:  %i (%S) (%T%c%?%a>0%{+%a armies%!%}) %>30 kill %?%d>0%{%k%!NO CREDIT)%} for %u (%r%p) %?%w>0%{%>65%W%!%}
 
 
 
-b5.0 MetaServer Options
+8.0 MetaServer Options
 
-The MetaServer and the MetaServerCache are provided to help you find a
-netrek game to join.  Both services provide a list of the popular
-netrek servers.  The MetaServer is neat because provides information
-on the number of players at each site.  The MetaServerCache is neat
-because it is much faster if you can guess where a game will be.
+The MetaServer and the MetaServerCache are provided to help you find a netrek game to join.  Both services provide a list of the popular netrek servers.  The MetaServer is neat because provides information on the number of players at each site.  The MetaServerCache is neat because it is much faster if you can guess where a game will be.
 
-To access the MetaServer, use the command line switch "-m".  For
-example "cow -m".  To access the MetaServerCache, use the "-k" switch
-instead.
+To access the MetaServer, use the command line switch "-m". To access the MetaServerCache, use the "-k" switch instead.
 
-	
-
-i1) Where to find the MetaServer:
-
-You can use the options "metaport" and "metaserver" to point COW
-to a new MetaServer.  The defaults for these options are:
+You can use the options "metaport" and "metaserver" to point the client to a new MetaServer.  The defaults for these options are:
 
 	 metaport: 3521
 	 metaserver: metaserver.us.netrek.org
 
 
-i2) How to create a list of known servers for the MetaServerCache:
+How to create a list of known servers for the MetaServerCache:
 
-Before you can use the MetaServerCache, you must give COW a file in
-which to cache the information from the MetaServer.  Use the xtrekrc
-option "metaCache" to specify this file.  The files path will be
-relative to your client directory.
+Before you can use the MetaServerCache, you must give the client a file in which to cache the information from the MetaServer.  Use the netrekrc option "metaCache" to specify this file.  The files path will be relative to your client directory.
 
 	metaCache: metaCache
 
-Unlike the MetaServer, the MetaServerCache will not show the number of
-people playing at a server.  If a server is contactable, it will be
-shown as "Active".
+Unlike the MetaServer, the MetaServerCache will not show the number of people playing at a server.  If a server is contactable, it will be shown as "Active".
 
-Warning: If "metaCache" is set, COW will also use a second, temporary
-file.  This file with have the name of the metaCache file with the
-last character changed to either a 'T' or an 'R'.  Eg, "metaCache"
-becomes "metaCachT" and "BEAST" becomes "BEASR".  Ensure that this
-temporary file does not overwrite something important.
+How much information will be shown:
 
-
-i3) How much information will be shown:
-
-You can now control the amount of information that the MetaServer
-displays for you by setting the "metaStatusLevel" flag.  The default
-is:
+You can now control the amount of information that the MetaServer displays for you by setting the "metaStatusLevel" flag.  The default is:
 	
 	metaStatusLevel: 3
 	
@@ -896,99 +938,66 @@ The status levels are coded as follows.
 3	+ Servers which have Timed Out for the MetaServer (see NOTE2).
 4	+ Servers which the MetaServer has not been able to connect to.
 
-NOTE1: When using the MetaServerCache, "metaStatusLevel" values of
-less than 3 are treated as the value 3.  This minimum is enforced
-because the cache does not attempt to show the number of people
-playing at a site.
+NOTE1: When using the MetaServerCache, "metaStatusLevel" values of less than 3 are treated as the value 3.  This minimum is enforced because the cache does not attempt to show the number of people playing at a site.
 
-NOTE2: If you are a long way from the MetaServer, you are advised to
-ignore TimeOut errors.  For example, the MetaServer in America may
-have difficulty contacting to a server in Holland while the link from
-England to Holland is very good.
+NOTE2: If you are a long way from the MetaServer, you are advised to ignore TimeOut errors.  For example, the MetaServer in America may have difficulty contacting to a server in Holland while the link from England to Holland is very good.
 
+The Fallback
 
-i4) The Fallback
+If you attempt to contact the MetaServer, and the connection times out, the client will try to show the MetaServerCache instead.
 
-If you attempt to contact the MetaServer, and the connection times
-out, COW will try to show the MetaServerCache instead.
-
-Similarly, if you attempt to use the MetaServerCache, and your
-"metaCache" file does not exist, COW will attempt to call
-theMetaServer.
+Similarly, if you attempt to use the MetaServerCache, and your "metaCache" file does not exist, the client will attempt to call the MetaServer.
 
 
 
-b6.0 Player List Options
+9.0 Player List Options
 
-i1) Configurable Player List:
- 
-    I've added a new xtrekrc option called "playerlist" what it allows
-you to do is specify which columns of the player list you want to show
-and in what order.  The following is a table of the available columns.
- 
 Spc  Let   Name                 Header
 ---  ---   -------------------- -------------------
-  3  'n'   Ship Number          " No "
-  3  'T'   Ship Type            " Ty "
- 11  'R'   Rank                 " Rank "
- 17  'N'   Name                 " Name "
-  6  'K'   Kills                " Kills "
- 17  'l'   Login Name           " Login "
-  6  'O'   Offense              " Offse "
-  6  'W'   Wins                 " Wins "
-  6  'D'   Defense              " Defse "
-  6  'L'   Losses               " Loss "
-  6  'S'   Total Rating (stats) " Stats "
-  6  'r'   Ratio                " Ratio "
-  8  'd'   Damage Inflicted(DI) " DI "
+  3  'n'   Ship Number          " No"
+  3  'T'   Ship Type            " Ty"
+ 11  'R'   Rank                 " Rank      "
+ 17  'N'   Name                 " Name            "
+  6  'K'   Kills                " Kills"
+ 17  'l'   Login Name           " Login           "
+  6  'O'   Offense              " Offse"
+  6  'W'   Wins                 "  Wins"
+  6  'D'   Defense              " Defse"
+  6  'L'   Losses               "  Loss"
+  6  'S'   Total Rating (stats) " Stats"
+  6  'r'   Ratio                " Ratio"
+  8  'd'   Damage Inflicted(DI) "      DI"
   1  ' '   White Space          " "
 PLIST1
-  6  'B'   Bombing              " Bmbng "
-  6  'b'   Armies Bombed        " Bmbed "
-  6  'P'   Planets              " Plnts "
-  6  'p'   Planets Taken        " Plnts "
- 17  'M'   Display/Host Machine " Host Machine "
+  6  'B'   Bombing              " Bmbng"
+  6  'b'   Armies Bombed        " Bmbed"
+  6  'P'   Planets              " Plnts"
+  6  'p'   Planets Taken        " Plnts"
+ 17  'M'   Display/Host Machine " Host Machine    "
   7  'H'   Hours Played         " Hours "
-  6  'k'   Max Kills            " Max K "
-  6  'V'   Kills per Hour       " KPH "
-  6  'v'   Deaths per Hour      " DPH "
+  6  'k'   Max Kills            " Max K"
+  6  'V'   Kills per Hour       "   KPH"
+  6  'v'   Deaths per Hour      "   DPH"
 PLIST2
-  9  'w'   War staus            " War Stat "
-  3  's'   Speed                " Sp "
+  9  'w'   War staus            " War Stat"
+  3  's'   Speed                " Sp"
  
-So for example if you just wanted to see names and rank you'd add this
-line to your xtrekrc:
+So for example if you just wanted to see names and rank you'd add this line to your netrekrc:
  
 playerlist: NR
- 
-     In order for this mod to be in effect you must compile with PLIST
-defined, otherwise you will get either of the two currently available
-defaults.  The things shown after PLIST1 are only available if you
-have PLIST1 defined, the same goes for the things after PLIST2, but
-you must have PLIST defined or neither of these will do anything.
- 
-dave
-gosselin@ll.mit.edu
 
+     In order for this mod to be in effect you must compile with PLIST defined, otherwise you will get either of the two currently available defaults.  The things shown after PLIST1 are only available if you have PLIST1 defined, the same goes for the things after PLIST2, but you must have PLIST defined or neither of these will do anything.
+ 
 NOTE FROM SOURCE KEEPER:
-PLIST2 is not active in BRM currently.  Some players feel that placing
-speed on the playerlist gives a strategic advantage.
+PLIST2 is not active in BRM currently.  Some players feel that placing speed on the playerlist gives a strategic advantage.
 
 NOTE ON SB STATS :
-On servers which support the SBHOURS .feature, you will see slightly 
-different things when you info a SB, or show the SB player on the 
-playerlist.  The usual offense and defense lines are replaced with SB 
-kills/hour and deaths/hour.  The kills, deaths, hours and ratio entries
-are all the player's SB stats as long as he is in the SB, and his normal
-stats otherwise.
+On servers which support the SBHOURS .feature, you will see slightly different things when you info a SB, or show the SB player on the  playerlist.  The usual offense and defense lines are replaced with SB kills/hour and deaths/hour.  The kills, deaths, hours and ratio entries are all the player's SB stats as long as he is in the SB, and his normal stats otherwise.
 
 
-i2) Predefined "playerlist" styles:
+Predefined "playerlist" styles:
 
-For your viewing pleasure we have predefined some playerlist layouts
-that you might like to try.  These predefined styles can be selected
-using the "playerListStyle" option in your xtrekrc or by using the
-options menu (shift-O).
+For your viewing pleasure we have predefined some playerlist layouts that you might like to try.  These predefined styles can be selected using the "playerListStyle" option in your netrekrc or by using the options menu (shift-O).
 
 The "playerListStyle" options are:
 
@@ -996,12 +1005,10 @@ The "playerListStyle" options are:
 	1: Old style 		= "nTRNKWLr O D d "
 	2: COW style 		= "nTR N  K lrSd"
 	3: Kill watch style	= "nTK  RNlr Sd"
-	4):BRMH style		= "nTR N  K l M"
+	4):BRMH style	= "nTR N  K l M"
 
 
-For backward compatability, the option "newPlist" will still select
-between the old style playerlist (off) and the COW style playerlist
-(on) if the "playerListStyle" option does not appear in your xtrekrc.
+For backward compatability, the option "newPlist" will still select between the old style playerlist (off) and the COW style playerlist (on) if the "playerListStyle" option does not appear in your netrekrc.
 
 It is also possible to select the amount of decimal places in playerlist float numbers.   
   Example:
@@ -1011,16 +1018,103 @@ It is also possible to select the amount of decimal places in playerlist float n
   "R0 CA 0.50 Ensign guest 0.82 2.43 95.07"
 Current options that can be followed by numbers 0-2 are: KODSrdBPHkVv
 
-i3) The "partitionPlist" option:
+The "partitionPlist" option:
 
-Lets face it, the main role of the player list is so that you can keep
-track of who has kills.
+Lets face it, the main role of the player list is so that you can keep track of who has kills.
 
-To make life easier, the player list is sorted so that enemy and
-friendly teams are always in the same place in the list.  However, in
-mono it is not immediatly obvious where one team starts and another
-team ends.  If the "partitionPlist" option is "on", white space will
-be added to the player list to separate your teams from the other
-teams and the players entering the game.  In color, this option is not
-usually required because the teams are distinct anyway.
+To make life easier, the player list is sorted so that enemy and friendly teams are always in the same place in the list.  However, in mono it is not immediately obvious where one team starts and another team ends.  If the "partitionPlist" option is "on", white space will be added to the player list to separate your teams from the other teams and the players entering the game.  In color, this option is not usually required because the teams are distinct anyway.
+
+
+10.0 Beeplite
+
+     Local weenies cheat.  They talk to each other.  Those of us who have never met another netrek player are forced to rely heavily on the message window.
+
+     In order to even the playing field, the current feature was proposed. This feature causes certain types of RCD messages to beep or even highlite specific objects on the screen.  This is done via a
+macro-like interface which is highly configurable.  Further, bitmaps used to highlite can be substituted with your preferences.
+
+1) Turning Beeping and Highliting on
+
+     In order to turn message beeping and highliting on, you must include the following in your .netrekrc.
+
+UseLite: on
+
+     The above leaves you with the feature on, but nothing is automatically setup.  If you want to configure it yourself, go to the "CONFIGURING VIA NETREKRC" section.  You can include a set of reasonable defaults, instead of bothering to learn to configure it yourself by including
+the lines.
+
+DefLite: on
+
+2) Configuring via netrekrc
+
+     Message beeps are configured as on and off.  They are turned on if the proper line is in your .xtrekrc.  Otherwise they are left off.
+
+     Message lites are configured in a way very similar to macros.  However, in addition to the original set of macro arguments, a new class of arguments is introduced to handle the highliting.
+
+     To configure message highliting, include something like the line below. Here "name of distress" is the RCD message type.  "macro" is the macro style syntax specifying what is to be highlited.
+
+lite.[name of distress]:  [macro]
+
+     Below are the configurations which are equivalent to the defaults which are setup for you if using DefLite.  These provide good examples for how the system works.
+
+lite.taking:   /c/l
+lite.base_ogg: /g/m
+lite.pickup:   /h
+lite.help:  %?%S=SB%{/c%}
+
+     The above does the following:
+     
+"taking" message highlites the planet and taker
+"base_ogg" message highlites the person to sync and your ship 
+      (to REALLY get your attention)
+"pickup" message highlites the enemy who picked up
+"help" tests to see if the player sending the distress is a base, if so
+      he is highlited
+
+     You might like to change the last one to:
+     
+lite.help:  %?%S=SB%{/c%}%?%a>0%{/c%}
+
+     This will highlite bases who distress AND carriers who distress.
+
+     Using TTS you may change the pickup macro to:
+     
+lite.pickup:   /h/|%p++ @ %l|
+
+     This sends a big ++ message on the tactical map in addition to the light.
+
+     Note that all the MACRO parsing routines are run on these, and plain 
+text left over is ignored.  Only the highlite argument matter.
+
+     The following are the arguments for highliting:
+
+/c /i /I   sender
+/m /M      _your_ ship
+
+/p      target player
+/g      target friendly player
+/h      target enemy player
+/P      player nearest sender
+/G      friendly player nearest sender
+/H      enemy player nearest sender
+/b      planet nearest sender
+/l      target planet
+
+     The following are the arguments for sounds:
+
+/0      Standard window beep (incoming message sound if sound is on) 
+/1 - /9 Play nt_message1 - nt_message9 sound.
+
+     Tactical Text Solution for the Tactical Tunnel Syndrome (TTS):
+
+/| .. | displays Text in between via TTS. 
+ 
+     Additional defaults:
+
+planetCycleTime:        highlighting time for planets
+playerCycleTime:        highlighting time for players
+
+tts_color:              color of TTS message (should be dark)
+tts_font:               Font (large prefered)
+tts_max_len:            Max length of a message
+tts_time:               Time a TTS message is displayed
+tts_ypos:               y location of the TTS message
 
