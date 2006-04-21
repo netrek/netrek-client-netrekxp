@@ -4,7 +4,7 @@ Version TBA:
 - Keeppeace default is now "on".
 - rewrote find bitmap routine in a smarter way (thanks Quozl)
 - fixed bccnetrek.rc to have proper header so icon works
-- tidied up the save_options function, fixing some spacing errors, and puttting the
+- tidied up the save_options function, fixing some spacing errors, and putting the
   keymap/buttonmap on the top of the list due to its importance.  Also added the
   sounddir option.
 - fixed mainResizeable loading from rc/saving.  Also made default setting = on.
@@ -16,6 +16,7 @@ Version TBA:
   Basic rc options are useLite: on/off to turn beeplite on and off, and defLite: on/off
   to use the default settings.  The beeplite option is highly configurable, see manual
   for details.  Can also be turned on via "Use RCD highlighting" on the Visual Menu.
+  Default is "on" for both useLite and defLite;
 - added preventative measures against loading bitmap files that might not exist - if
   bitmaps are missing, it defaults to the mono bitmaps
 - if dynamicBitmap is set to off, only the necessary bitmap files will load into

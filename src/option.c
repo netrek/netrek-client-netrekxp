@@ -352,7 +352,7 @@ struct option Visual_Menu[] = {
     {1, "", &timerType, 0, 0, 0, timermess, NULL},
     {1, "keep info %d upds (0=don't remove)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
 #ifdef BEEPLITE
-    {1, "use RCD highlighting", &useLite, 0, 0, 0, NULL, NULL},
+    {1, "use beeplite", &useLite, 0, 0, 0, NULL, NULL},
 #endif
     {1, "omit team letter on map", &omitTeamLetter, 0, 0, 0, NULL, NULL},
     {1, "draw view box on map", &viewBox, 0, 0, 0, NULL, NULL},

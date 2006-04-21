@@ -464,8 +464,8 @@ char   *distlite[NUM_DIST] =
   NULL, NULL, NULL, NULL, NULL, NULL, NULL
 };
 
-int     defLite = 0;
-int     useLite = 0;
+int     defLite = 1;
+int     useLite = 1;
 
 int     emph_planet_seq_n[MAXPLANETS] =
 {0,};
