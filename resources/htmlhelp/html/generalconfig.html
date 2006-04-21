@@ -7,7 +7,7 @@
 <body>
 <h1>General Configuration Options</h1>
 <p>
-Following table contains all possible general configuration options and their defaults:
+The following table contains all possible general configuration options and their defaults:
 <table border=1 cellspacing=0 cellpadding=3>
 <tr>
 <td><b>Name</b></td>
@@ -32,6 +32,16 @@ Following table contains all possible general configuration options and their de
 	<li><b>0</b> - owner race color</li>
 	<li><b>1</b> - white</li>
 	<li><b>2 (default)</b> - grey</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>allowWheelActions</b></code</td>
+<td>Enable mouse wheel in non-scrolling window</td>
+<td>
+	<ul>
+	<li><b>on (default)</b> - owner race color</li>
+	<li><b>off</b> - white</li>
 	</ul>
 </td>
 </tr>
@@ -112,18 +122,26 @@ Doesn't beep for messages from GOD and yourself</td>
 <td><b>color name</b></td>
 </tr>
 <tr>
+<tr>
+<td><code><b>color.&lt;race&gt;</b></code></td>
+<td>Replace &lt;race&gt; with value</td>
+<td><b>color name</b></td>
+</tr>
+<tr>
 <td><code><b>colorClient</b></code></td>
-<td>type of bitmaps to load on startup</td>
+<td>type of bitmaps to use on startup</td>
 <td>
 	<ul>
 	<li><b>0</b> - monochrome bitmaps</li>
-	<li><b>1 (default)</b> - color bitmaps</li>
+	<li><b>1 (default)</b> - new color bitmaps</li>
+	<li><b>2</b> - old color bitmaps</li>
+	<li><b>3</b> - shaded old color bitmaps</li>
 	</ul>
 </td>
 </tr>
 <tr>
 <td><code><b>colorfulPhasers</b></code></td>
-<td>Display Jubilee phasers</td>
+<td>make your phasers multicolored</td>
 <td>
 	<ul>
 	<li><b>on</b></li>
@@ -570,7 +588,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>playerList</b></code></td>
-<td>Player list manual style</td>
+<td>Player list custom layout</td>
+<td><b>string</b></td>
+</tr>
+<tr>
+<td><code><b>playerList2</b></code></td>
+<td>Alternate Player list custom layout</td>
 <td><b>string</b></td>
 </tr>
 <tr>

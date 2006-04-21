@@ -7,21 +7,21 @@
 <body>
 <h1>Configuration File Syntax</h1>
 <p>
-Configuration file is regular text file that can contain comments, empty lines and
+The configuration file (often refered to as the netrekrc) is a regular text file that can contain comments, empty lines and
 configuration definitions.
 <p>
 <h2>Comments</h2>
 <p>
-Every line that has hashmark (<b>#</b>) as its first character is comment line and
+Every line that has hashmark (<b>#</b>) as its first character is a comment line and
 will be ignored.
 <p>
 <h2>Configuration Options</h2>
 <p>
-The general syntax for any of configuration options is:
+The general syntax for any of the configuration options is:
 <p>
 <code><b>keyword: &lt;value&gt;</b></code>
 <p>
-All configuration option keywords are <b>case incensitive</b>
+All configuration option keywords are <b>case insensitive</b>
 <p>
 Most of option keywords can have three additional suffixes to enable fine tuning
 of options:
@@ -29,36 +29,36 @@ of options:
 <ul>
 <li>
 <code><b>keyword.observer: &lt;value&gt;</b></code> - this suffix will enable
-option only in case you are logged in to server as observer
+the option only when you are logged in as an observer
 <p>
 Example:
 <br>
-<code>buttonmap.observer: 1l2I3i</code> - will set different buttonmap when you
+<code>buttonmap.observer: 1l2I3i</code> - will set a different buttonmap when you
 observe game
 </li>
 <p>
 <li><code><b>keyword.&lt;servernick&gt;: &lt;value&gt;</b></code> - this suffix will
-set option only if you are connected to server &lt;servernick&gt;
+set the option only if you are connected to server &lt;servernick&gt;
 <p>
 Note that in order to define &lt;servernick&gt; you should define
 <b><code>server.&lt;servernick&gt;: &lt;server host name&gt;</code></b>
 <p>
 Example:
 <br>
-<code>server.continuum: continuum.us.netrek.org</code> - this option sets
-servernick for continuum.us.netrek.org to be continuum
+<code>server.continuum: continuum.us.netrek.org</code> - this option sets the servernick
+for continuum.us.netrek.org to be continuum
 <br>
-<code>keymap.continuum: a2d%</code> - this option defines custom keymap for
-server with 'continuum' as its servernick
+<code>keymap.continuum: a2d%</code> - this option defines a custom keymap for
+a server with 'continuum' as its servernick
 </li>
 <p>
 <li><code><b>keyword.&lt;servertype&gt;: &lt;value&gt;</b></code> - this suffix will
-set option only if you are connected to server with &lt;servertype&gt; type.
+set the option only if you are connected to server with &lt;servertype&gt; type.
 <p>
-Note: the client will automatically set &lt;servertype&gt; only if you connect from <a href="metaserver.html">Metaserver Window</a>
+Note: the client will automatically set &lt;servertype&gt; only if you connect from the <a href="metaserver.html">Metaserver Window</a>
 <p>
-If you want to define &lt;servertype&gt; for specific server that is not there or
-you connect to server from command line you can use <b><code>servertype.&lt;servernick&gt;: &lt;type of server&gt;</code></b> where
+If you want to define &lt;servertype&gt; for a specific server that is not there or
+you connect to a server from the command line, you can use <b><code>servertype.&lt;servernick&gt;: &lt;type of server&gt;</code></b> where
 &lt;type of server&gt; can be one of following:
 	<ul>
 	<li><code>paradise</code></li>
@@ -72,13 +72,13 @@ you connect to server from command line you can use <b><code>servertype.&lt;serv
 <p>
 Example:
 <br>
-<code>server.continuum: continuum.us.netrek.org</code> - this will set servernick
+<code>server.continuum: continuum.us.netrek.org</code> - this will set the servernick
 for continuum.us.netrek.org to be continuum
 <br>
-<code>serverType.continuum: bronco</code> - this will set servertype for continuum
+<code>serverType.continuum: bronco</code> - this will set the servertype for continuum
 to be bronco
 <br>
-<code>keymap.bronco: a2d%</code> - this will set keymap for any bronco server
+<code>keymap.bronco: a2d%</code> - this will set the keymap for any bronco server
 </li>
 </ul>
 <p>
@@ -111,9 +111,9 @@ There are three types of values that can appear in the configuration:
 Examples:
 <p>
 <ul>
-<li><code>keepPeace: on</code> - will enable keepPeace option</li>
-<li><code>planetBitmap: 2</code> - will assign value of 2 to planetBitmap option</li>
-<li><code>buttonmap: 1t2p3k</code> - will assign string '1t2p3k' to buttonmap option</li>
+<li><code>keepPeace: on</code> - will enable the keepPeace option</li>
+<li><code>planetBitmap: 2</code> - will assign value of 2 to the planetBitmap option</li>
+<li><code>buttonmap: 1t2p3k</code> - will assign string '1t2p3k' to the buttonmap option</li>
 </ul>
 </body>
 </html>

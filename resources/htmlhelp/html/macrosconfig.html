@@ -12,18 +12,18 @@ Macros can be divided in two main categories:
 <li>Regular Macros</li>
 <li>Receiver Configurable Distress Macros</li>
 </ul>
-The main difference between two is that you send the first type by yourself while second
-type is actually how you want other's macros to be showed on your client.
+The main difference between the two is that you send the first type by yourself while the second
+type is actually how you want other's macros to be shown on your client.
 <p>
 In order to trigger any of these you should enter Macro Mode. Some macros are used
-by players very frequently, so in order to speedup the process you can use
+by players very frequently, so in order to speedup the process you can use the
 following configuration option:
 <p>
 <code><b>singleMacro: &lt;keys list for one-push macros&gt;</b></code>
 <p>
 Example:<br>
 <code>singleMacro: FE^q</code> - will allow triggering macros defined for F, E and Ctrl-q
-by single key push.
+by a single key push.
 <p>
 <h2>Regular Macros</h2>
 Regular macros can be either single or multiline and their general syntax is:
@@ -34,7 +34,7 @@ Regular macros can be either single or multiline and their general syntax is:
 <li>
 <code><b>&lt;key&gt;</b></code> - key to press in macro mode to send macro
 <p>
-The key can be in form of:
+The key can be in the form of:
 	<ul>
 	<li><b>char</b> - press key on keyboard</li>
 	<li><b>^char</b> - press Ctrl+key on keyboard</li>
@@ -51,12 +51,12 @@ Recipient can be one of:
 	<li><code><b>T</b></code> - send to your Team</li>
 	<li><code><b>F</b></code> - send to Federation</li>
 	<li><code><b>K</b></code> - send to Klingons</li>
-	<li><code><b>O</b></code> - send ti Orions</li>
+	<li><code><b>O</b></code> - send to Orions</li>
 	<li><code><b>R</b></code> - send to Romulans</li>
 	<li><code><b>a-z</b></code> - send to player</li>
 	<li><code><b>%I, %i, %c</b></code> - send to yourself</li>
 	<li><code><b>%U, %u, %p</b></code> - send to player nearest your mouse pointer</li>
-	<li><code><b>%Z, %z, %t</b></code> - send to a team whose player nearest your mouse pointer</li>
+	<li><code><b>%Z, %z, %t</b></code> - send to a team whose player is nearest your mouse pointer</li>
 	<li><code><b>%g</b></code> - send to friendly player nearest your mouse pointer</li>
 	<li><code><b>%h</b></code> - send to enemy player nearest your mouse pointer</li>
 	</ul>
@@ -65,7 +65,7 @@ Recipient can be one of:
 <li>
 <code><b>&lt;macro string&gt;</b></code> - text string
 <p>
-In addition to regular text, macro string can contain:
+In addition to regular text, the macro string can contain:
 	<ul>
 	<li><code><b>%a</b></code> - armies carried by sender</li>
 	<li><code><b>%d</b></code> - sender damage percentage</li>
@@ -141,15 +141,14 @@ Examples:
 <p>
 <h2>Receiver Configurable Distresses</h2>
 <p>
-As we already told RCD is opposite to the macro. You decide what do display instead of something that was received
-from another player.
+As we already said, the RCD is the opposite to the macro. You decide what to display instead of something that was received from another player.
 <p>
-There is a limited amount of RCDs because server doesn't actually send any text to you, but instead it tells
+There is a limited amount of RCDs because the server doesn't actually send any text to you, but instead it tells
 your client that player 'x' sent RCD number 'y'. The client then looks what should be displayed when receiving
 RCD 'y' and creates text that is only displayed in your client.
 <p>
-RCD syntax also defines key that will trigger RCD to be sent to others. The distress text will be shown same
-whether you send specific RCD or you receive it from other player:
+RCD syntax also defines the key that will trigger a RCD to be sent to others. The distress text will be shown the same
+whether you send a specific RCD or you receive it from another player:
 <p>
 <code><b>dist.&lt;key&gt;.&lt;distress name&gt;: &lt;distress text&gt;</b></code>
 <ul>
@@ -185,6 +184,6 @@ whether you send specific RCD or you receive it from other player:
 </li>
 </ul>
 <p>
-All RCDs are predefined by client and can be changed if needed.
+All RCDs are predefined by the client and can be changed if needed.
 </body>
 </html>
