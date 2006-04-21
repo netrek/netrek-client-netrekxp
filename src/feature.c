@@ -112,7 +112,7 @@ reportFeatures (void)
                          (char) (f->arg2 ? *f->arg2 : 0));
 
 #ifdef DEBUG
-        printf ("(C->S) %s (%c): %d\n", f->name, f->feature_type, f->value);
+        LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type, f->value);
 #endif
     }
 }
@@ -131,7 +131,7 @@ checkFeature (struct feature_cpacket *packet)
 #ifdef DEBUG
     if (packet->type != SP_FEATURE)
     {
-        printf ("Packet type %d sent to checkFeature!\n", packet->type);
+        LineToConsole ("Packet type %d sent to checkFeature!\n", packet->type);
         return;
     }
 #endif
@@ -142,7 +142,7 @@ checkFeature (struct feature_cpacket *packet)
 #ifdef TOOLS
     W_WriteText (toolsWin, 0, 0, textColor, buf, strlen (buf), W_RegularFont);
 #else
-    printf ("%s\n", buf);
+    LineToConsole ("%s\n", buf);
 #endif
 
     for (i = 0; features[i].name != 0; i++)
@@ -163,7 +163,7 @@ checkFeature (struct feature_cpacket *packet)
     }
     if (features[i].name == 0)
     {
-        printf ("Feature %s from server unknown to client!\n", packet->name);
+        LineToConsole ("Feature %s from server unknown to client!\n", packet->name);
     }
     /* special cases: */
     if (strcmpi (packet->name, "FEATURE_PACKETS") == 0)

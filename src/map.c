@@ -364,7 +364,7 @@ DrawPlanets ()
 	}
 #endif
 
-        if (l->pl_flags & PLAGRI)
+        if ((l->pl_flags & PLAGRI) && (l->pl_info & me->p_team))
         {
             if (agriCAPS)
             {
@@ -466,6 +466,8 @@ DrawGalaxyHockeyScore (void)
 	int ori_light = FED;
 	char kli_score_line[5];
 	char ori_score_line[5];
+    int ori_offset, kli_offset;
+
 	int i;
 
 	/* Let's check KLI scores */
@@ -493,21 +495,33 @@ DrawGalaxyHockeyScore (void)
 			break;
 
 	/* Now we have scores, so let's draw them */
-	sprintf (kli_score_line, "%-2d", kli_score);
 	sprintf (ori_score_line, "%2d", ori_score);
+	sprintf (kli_score_line, "%-2d", kli_score);
 
-	W_WriteText (mapw, 3 * W_Textwidth, 1 * W_Textheight, W_Kli, 
-				kli_score_line, strlen (kli_score_line), W_RegularFont);
-	/*W_WriteTextDB (mapSDB, 3 * W_Textwidth, 1 * W_Textheight, W_Kli, 
-				   kli_score_line, strlen (kli_score_line), W_RegularFont);*/
+    /* If we rotate galaxy 180 degrees the scoreboard flips */
+    if (rotate == 2)
+    {
+        ori_offset = 8;
+        kli_offset = 3;
+    }
+    else
+    {
+        ori_offset = 3;
+        kli_offset = 8;
+    }
+
+	W_WriteText (mapw, ori_offset * W_Textwidth, 1 * W_Textheight, W_Ori, 
+				ori_score_line, strlen (ori_score_line), W_RegularFont);
+	/*W_WriteTextDB (mapSDB, ori_offset * W_Textwidth, 1 * W_Textheight, W_Ori, 
+				   ori_score_line, strlen (ori_score_line), W_RegularFont);*/
 	W_WriteText (mapw, 6 * W_Textwidth, 1 * W_Textheight, W_White, 
 				":", 1, W_RegularFont);
 	/*W_WriteTextDB (mapSDB, 6 * W_Textwidth, 1 * W_Textheight, W_White, 
 				   ":", 1, W_RegularFont);*/
-	W_WriteText (mapw, 8 * W_Textwidth, 1 * W_Textheight, W_Ori, 
-				ori_score_line, strlen (ori_score_line), W_RegularFont);
-	/*W_WriteTextDB (mapSDB, 8 * W_Textwidth, 1 * W_Textheight, W_Ori, 
-				   ori_score_line, strlen (ori_score_line), W_RegularFont);*/
+	W_WriteText (mapw, kli_offset * W_Textwidth, 1 * W_Textheight, W_Kli, 
+				kli_score_line, strlen (kli_score_line), W_RegularFont);
+	/*W_WriteTextDB (mapSDB, kli_offset * W_Textwidth, 1 * W_Textheight, W_Kli, 
+				   kli_score_line, strlen (kli_score_line), W_RegularFont);*/
 
 }
 #endif /* HOCKEY_LINES */
@@ -744,20 +758,28 @@ map (void)
 
         if (j->p_flags & PFCLOAK)
         {
-            W_WriteText (mapw, dx - W_Textwidth,
-                         dy - W_Textheight / 2, unColor, cloakChars,
-                         (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);
-            /*W_WriteTextDB (mapSDB, dx - W_Textwidth,
-                           dy - W_Textheight / 2, unColor, cloakChars,
-                           (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);*/
+            if (omitTeamLetter)
+                W_WriteText (mapw, dx - (W_Textwidth / 2),
+                             dy - W_Textheight / 2, unColor, cloakChars,
+                             1, W_RegularFont);
+                /*W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
+                               dy - W_Textheight / 2, unColor, cloakChars,
+                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);*/
+            else
+                W_WriteText (mapw, dx - W_Textwidth,
+                             dy - W_Textheight / 2, unColor, cloakChars,
+                             (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);
+                /*W_WriteTextDB (mapSDB, dx - W_Textwidth,
+                               dy - W_Textheight / 2, unColor, cloakChars,
+                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);*/
         }
         else
         {
             if (omitTeamLetter)
-                W_WriteText (mapw, dx - W_Textwidth,
+                W_WriteText (mapw, dx - (W_Textwidth / 2),
                              dy - W_Textheight / 2, playerColor (j),
                              (j->p_mapchars)+1, 1, shipFont (j));
-                /*W_WriteTextDB (mapSDB, dx - W_Textwidth,
+                /*W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
                                dy - W_Textheight / 2, playerColor (j),
                                (j->p_mapchars)+1, 1, shipFont (j));*/
             else
@@ -816,10 +838,7 @@ map (void)
 
         if (j->p_status == PALIVE && !(j->p_flags & PFCLOAK))
         {
-            if (omitTeamLetter) /* we want to draw triangle in the middle */
-                dx = j->p_x * WINSIDE / GWIDTH - (W_Textwidth / 2);
-            else
-                dx = j->p_x * WINSIDE / GWIDTH;
+            dx = j->p_x * WINSIDE / GWIDTH;
             dy = j->p_y * WINSIDE / GWIDTH;
             W_WriteTriangle (mapw, dx, dy + 6, 4, 1, foreColor);
             //W_WriteTriangleDB (mapSDB, dx, dy + 6, 4, 1, foreColor);

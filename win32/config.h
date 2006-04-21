@@ -40,29 +40,18 @@
    ------------------------------------------------------------
 */
 
-
-/*      RSA                     - New RSA reserved packets stuff                */
-/* #define RSA                  - Defined in the Makefile                       */
-
-#define RCD                     /* RCD             - Support Reciever variable
-                                                     distresses */
-
-                                /* PING            - Ping statistics */
+/*      RCD             - Support Reciever variable distresses */
+#define RCD                     
+                                                     
+/*      PING            - Ping statistics */
 #define PING
 
-                                /* SHORT_PACKETS   - Reduce Network load */
+/*      SHORT_PACKETS   - Reduce Network load */
 #define SHORT_PACKETS
 
-                                /* SPEEDUP         - Misc improvements to make
-                                                     the code faster */
-#define SPEEDUP
 
-                                /* FEATURE_PACKETS - feature packets */
+/*      FEATURE_PACKETS - feature packets */
 #define FEATURE_PACKETS
-
-                                /* DEBUG           - Various useful debugging 
-                                                     stuff.  No signal trap */
-/*#undef  DEBUG*/
 
 /* 
    ------------------------------------------------------------
@@ -82,10 +71,6 @@
 
 /*      CORRUPTED_PACKETS       - prevents some seg faults but verbose output   */
 #define CORRUPTED_PACKETS
-
-/*      EXPIRE=#                - number of days this version will work for     */
-/*#define EXPIRE 365*/
-#define EXPIRE 30
 
 /*      ARMY_SLIDER             - some sort of funky status window thing        */
 #define ARMY_SLIDER
@@ -109,10 +94,10 @@
 #define MULTILINE_MACROS
 
 /*      XTREKRC_HELP            - Hadley's xtrekrc window (stolden by KP)       */
-#define XTREKRC_HELP
+#undef XTREKRC_HELP
 
 /*      TOOLS                   - Various tools, like shell escape, ...         */
-#define TOOLS
+#undef TOOLS
 
 /*      SOUND                   - support of external sound players             */
 #define SOUND
@@ -121,9 +106,9 @@
 #define HOCKEY_LINES
 
 /*      SMALL_SCREEN            - for 800x600 resolution screens                */
-/* #define SMALL_SCREEN */
+#undef SMALL_SCREEN
 
-/*	BEEPLITE		- player and planets highlighting		*/
+/*	    BEEPLITE		        - player and planets highlighting		*/
 #define BEEPLITE
 
 /*      VSHIELD_BITMAPS         - damage dependent shields (hull)               */
@@ -132,11 +117,10 @@
 /*      JUBILEE_PHASERS         - Cycle phaser color when it's a hit            */
 #define JUBILEE_PHASERS
 
-/*      WARP_DEAD               - Use death detection
-*/
+/*      WARP_DEAD               - Use death detection                           */
 #undef  WARP_DEAD
 
-/*    RCM                       - Receiver configurable Server messages         */
+/*      RCM                     - Receiver configurable Server messages         */
 #define RCM
 
 /*      RACE_COLORS             - additional bitplane for race colors           */
@@ -181,185 +165,150 @@
 */
 #ifdef SERVER
 
-                                /*  AUTOMOTD       - Updates your MOTD every
-                                                     12 hours */
+/*     AUTOMOTD                 - Updates your MOTD every 12 hours */
 #undef AUTOMOTD
 
-                                /*  CHAIN_REACTION - Don't give credit for
-                                                     chain reactions */
+/*      CHAIN_REACTION          - Don't give credit for chain reactions */
 #define CHAIN_REACTION
 
-                                /*  CHECKMESG      - Check for god messages
-                                                     and/or log all messages */
+/*      CHECKMESG               - Check for god messages and/or log all messages */
 #define CHECKMESG
 
-                                /*  ERIKPLAGUE     - Define for Erik's
-                                                     Plagueing */
+/*      ERIKPLAGUE              - Define for Erik's Plagueing */
 #define ERIKPLAGUE
 
-                                /*  FEATURES       - Server/client
-                                                     communication */
+/*      FEATURES                - Server/client communication */
 #define FEATURES
 
-                                /*  FULL_HOSTNAMES - Show entire player
-                                                     location (domain) */
+/*      FULL_HOSTNAMES          - Show entire player location (domain) */
 #define FULL_HOSTNAMES
 
-                                /*  INL_RESOURCES  - Use INL resources */
+/*      INL_RESOURCES           - Use INL resources */
 #define INL_RESOURCES
 
-                                /*  INL_POP        - Use INL style planet
-                                                     popping scheme */
+/*      INL_POP                 - Use INL style planet popping scheme */
 #define INL_POP
 
-                                /*  NO_PLANET_PLAGUE -Define for plagueing
-                                                     (Don't use with
-                                                     ERIKPLAGUE) */
+/*      NO_PLANET_PLAGUE        - Define for plagueing (Don't use with ERIKPLAGUE) */
 #undef  NO_PLANET_PLAGUE
 
-                                /* NO_UNWARRING_BOMBING -No 3rd space bombing */
+/*      NO_UNWARRING_BOMBING    - No 3rd space bombing */
 #define NO_UNWARRING_BOMBING
 
-                                /* SHOW_RSA        - Display the client type
-                                                     at login */
+/*      SHOW_RSA                - Display the client type at login */
 #define SHOW_RSA
 
-                                /* RESETGALAXY     - Reset the galaxy after
-                                                     each conquer */
+/*      RESETGALAXY             - Reset the galaxy after each conquer */
 #define RESETGALAXY
 
-                                /* RESTRICT_BOMB   - No bombing out of t-mode */
+/*      RESTRICT_BOMB           - No bombing out of t-mode */
 #define RESTRICT_BOMB
 
-                                /* SELF_RESET      - Galaxy will reset if the
-                                                     daemon dies */
+/*      SELF_RESET              - Galaxy will reset if the daemon dies */
 #define SELF_RESET
 
-                                /* SHORT_THRESHOLD - For Short Packets */
+/*      SHORT_THRESHOLD         - For Short Packets */
 #define SHORT_THRESHOLD
 
-                                /* SURRENDER_SHORT - Cut surrender time in
-                                                     half */
+/*      SURRENDER_SHORT         - Cut surrender time in half */
 #undef  SURRENDER_SHORT
 
-                                /* TWO_RACE        - Conquer only a 1/4 of the
-                                                     galaxy for reset */
+/*      TWO_RACE                - Conquer only a 1/4 of the galaxy for reset */
 #define TWO_RACE
 
-                                /* SENDFLAGS       - Print flags set in MOTD */
+/*      SENDFLAGS               - Print flags set in MOTD */
 #undef  SENDFLAGS
 
-                                /* CHECK_ENV       - Check environment variable                                                     NTSERV_PATH for location
-                                                     of system files */
+/*      CHECK_ENV               - Check environment variable NTSERV_PATH for location of system files */
 #undef  CHECK_ENV
 
-                                /* GPPRINT         - Print which path is being
-                                                     used to find the system
-                                                     files */
+/*      GPPRINT                 - Print which path is being used to find the system files */
 #undef  GPPRINT
 
-                                /* ONCHECK         - support for trekon player
-                                                     check */
+/*       ONCHECK                - support for trekon player check */
 #define  ONCHECK
 
-                                /* NBR             - Leave in for server. It
-                                                     tells programs like xsg
-                                                     that it is this code. */
+/*      NBR                     - Leave in for server. It tells programs like xsg that it is this code. */
 #define NBR
 
-                                /* DS              - Daemon Sychronization -
-                                                     Tedd Hadley */
+/*      DS                      - Daemon Sychronization - Tedd Hadley */
 #define DS
 
 
-                                /* NEED_EXIT       - For systems that need exit                                                     defined */
+/*      NEED_EXIT               - For systems that need exit defined */
 #define NEED_EXIT
-                                /* NEWMASK         - New tournament selection
-                                                     code. Less rigid than
-                                                     older code. */
+
+/*      NEWMASK                 - New tournament selection code. Less rigid than older code. */
 #define NEWMASK
 
-                                /* SB_TRANSWARP    - starbase transwarp */
+/*      SB_TRANSWARP            - starbase transwarp */
 #define SB_TRANSWARP
 
-                                /* FLAT_BONUS      - 3x bonus for killing last
-                                                     army on a planet */
+/*     FLAT_BONUS               - 3x bonus for killing last army on a planet */
 #undef FLAT_BONUS
 
-                                /* BASEPRACTICE    - trainingserver support */
+/*      BASEPRACTICE            - trainingserver support */
 #define BASEPRACTICE
 
-                                /* NEW_CREDIT      - give 1 planet for
-                                                     destroying, two planets
-                                                     for taking */
+/*     NEW_CREDIT               - give 1 planet for destroying, two planets for taking */
 #undef NEW_CREDIT
 
-                                /* FASTER_SB_MAXUPDATES - allow 10 ups/sec for
-                                                           SB's */
+/*      FASTER_SB_MAXUPDATES    - allow 10 ups/sec for SB's */
 #define FASTER_SB_MAXUPDATES
 
-                                /* SBFUEL_FIX      - fix starbase re-fueling */
+/*      SBFUEL_FIX              - fix starbase re-fueling */
 #define SBFUEL_FIX
 
-                                /* NEW_ETEMP       - Wreck's etemp fix */
+/*     NEW_ETEMP                - Wreck's etemp fix */
 #undef NEW_ETEMP
 
-                                /* DOGFIGHT        - .sysdef interface
-                                                   for dogfight robot */
+/*      DOGFIGHT                - .sysdef interface for dogfight robot */
 #define DOGFIGHT
 
-                                /* OBSERVERS       - allow players to watch */
+/*      OBSERVERS               - allow players to watch */
 #define OBSERVERS
 
-                                /* VOTING          - allow voting mode */
+/*      VOTING                  - allow voting mode */
 #define VOTING
 
-                                /* ALLOW_EJECT     - define to allow players to                                                     eject others*/
+/*     ALLOW_EJECT              - define to allow players to eject others */
 #ifdef VOTING
 #undef ALLOW_EJECT
 #endif
 
-                                /* NO_BRUTALITY    - disallow fighting between
-                                                     waiting players in the
-                                                     dogfighting mode */
+/*      NO_BRUTALITY            - disallow fighting between waiting players in the dogfighting mode */
 #ifdef DOGFIGHT
 #define NO_BRUTALITY
 #endif
 
-                                /* AS_CLOAK        - gives cloaked AS's more
-                                                     randomness in their
-                                                     apparent positions */
+/*     AS_CLOAK                 - gives cloaked AS's more randomness in their apparent positions */
 #undef AS_CLOAK
 
-                                /* GENO_COUNT      - keep track of a player's
-                                                     winning genocides */
+/*     GENO_COUNT               - keep track of a player's winning genocides */
 #undef GENO_COUNT
 
 #ifdef VOTING
-                                /* AUTO_INL        - starts up INL robot
-                                                     by majority vote   */
+/*      AUTO_INL                - starts up INL robot by majority vote   */
 #define AUTO_INL
-                                /* AUTO_PRACTICE   - starts up PRACTICE robot
-                                                     by majority vote   */
+
+/*      AUTO_PRACTICE           - starts up PRACTICE robot by majority vote   */
 #ifdef BASEPRACTICE
 #define AUTO_PRACTICE
 #endif
-                                /* AUTO_HOCKEY     - starts up HOCKEY robot
-                                                     by majority vote   */
+
+/*      AUTO_HOCKEY             - starts up HOCKEY robot by majority vote   */
 #define AUTO_HOCKEY
-                                /* AUTO_DOGFIGHT   - starts up DOGFIGHT robot
-                                                     by majority vote   */
+
+/*      AUTO_DOGFIGHT           - starts up DOGFIGHT robot by majority vote   */
 #ifdef DOGFIGHT
 #define AUTO_DOGFIGHT
 #endif
 
-                                /* TRIPLE_PLANET_MAYHEM - enable voting
-                                for the three planet cool server idea
-                                by felix@coop.com */
+/*      TRIPLE_PLANET_MAYHEM    - enable voting for the three planet cool server idea by felix@coop.com */
 #define TRIPLE_PLANET_MAYHEM
 #endif
-                                /* MESSAGES_ALL_TIME - allow messaging during
-                                freezes like twarp, refit, and war decl.  */
+                                
+/*     MESSAGES_ALL_TIME        - allow messaging during freezes like twarp, refit, and war decl.  */
 #undef MESSAGES_ALL_TIME
 
 
@@ -449,8 +398,6 @@ typedef short SHORT;
 typedef unsigned short int ushort;
 #define strncasecmp strncmp
 #ifdef THREADED
-#define THREAD(fn) {ThreadCreated = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)fn, 0, 0, &ThreadCreatedID); }
-#define ENDTHREAD ExitThread(0);
 typedef unsigned long int SEMAPHORE;
 #define CREATE_SEMAPHORE(initstate) CreateEvent(NULL, 1, initstate, NULL)
 #define SET_SEMAPHORE(sem) SetEvent((HANDLE)sem)

@@ -94,6 +94,10 @@ death (void)
 
     deathFont = W_RegularFont;
 
+#ifdef DEBUG
+    LineToConsole ("Death cause: %d\n", me->p_whydead);
+#endif
+
     switch (me->p_whydead)
     {
     case KQUIT:
@@ -102,13 +106,6 @@ death (void)
     case KTORP:
         sprintf (deathmessage,
                  "You were thumped by a photon torpedo from %s (%c%c).",
-                 players[me->p_whodead].p_name,
-                 teamlet[players[me->p_whodead].p_team],
-                 shipnos[me->p_whodead]);
-        break;
-    case KPLASMA:
-        sprintf (deathmessage,
-                 "You were SMACKed by a plasma torpedo from %s (%c%c) ",
                  players[me->p_whodead].p_name,
                  teamlet[players[me->p_whodead].p_team],
                  shipnos[me->p_whodead]);
@@ -159,22 +156,36 @@ death (void)
     case KPROVIDENCE:
         strcpy (deathmessage, "You were nuked by GOD.");
         break;
-    case KOVER:
-        strcpy (deathmessage, "The game is  over!");
-        break;
-    case TOURNSTART:
-        strcpy (deathmessage, "The tournament game has begun!");
+    case KPLASMA:
+        sprintf (deathmessage,
+                 "You were SMACKed by a plasma torpedo from %s (%c%c) ",
+                 players[me->p_whodead].p_name,
+                 teamlet[players[me->p_whodead].p_team],
+                 shipnos[me->p_whodead]);
         break;
     case TOURNEND:
         strcpy (deathmessage, "The tournament game has ended.");
         break;
+    case KOVER:
+        strcpy (deathmessage, "The game is over!");
+        break;
+    case TOURNSTART:
+        strcpy (deathmessage, "The tournament game has begun!");
+        break;
     case KBADBIN:
-        strcpy (deathmessage,
-                "Your netrek executable didn't verify correctly.");
+        strcpy (deathmessage, "Your netrek executable didn't verify correctly.");
+        break;
+    case KTORP2:
+        strcpy (deathmessage, "You were killed by detonated torpedo");
+        break;
+    case KSHIP2:
+        strcpy (deathmessage, "You were killed by chain reaction explosion");
+        break;
+    case KPLASMA2:
+        strcpy (deathmessage, "You were killed by zapped plasma");
         break;
     default:
-        strcpy (deathmessage,
-                "You were killed by something unknown to this game?");
+        strcpy (deathmessage, "You were killed by something unknown to this game?");
         break;
     }
 
@@ -201,7 +212,7 @@ death (void)
     if (!playback)
     {                           /* If we are not playing back a recorded game, do this */
         W_TerminateWait ();
-        ENDTHREAD;
+        ExitThread(0);
     }
     else
     {                           /* Otherwise we aren't within a thread, so... */

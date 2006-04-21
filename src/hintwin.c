@@ -1,14 +1,9 @@
 /******************************************************************************/
 /***  File:  hintwin.c                                                      ***/
 /***                                                                        ***/
-/***  Function:                                                             ***/
-/***  hintwin.c copyright 2003 Stas Pirogov Free to use, hack, etc. Just keep
-/***  these credits here. Use of this code may be dangerous to your health
-/***  and/or system. Its use is at your own risk. I assume no responsibility for
-/***  damages, real, potential, or imagined, resulting  from the use of it.
-/***  
+/***  Function: set of hint window manipulation functions                   ***/
+/***                                                                        ***/
 /******************************************************************************/
-
 
 #include <stdio.h>
 #include <signal.h>

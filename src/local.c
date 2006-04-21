@@ -1037,7 +1037,7 @@ DrawShips (void)
                             if (highlightFriendlyPhasers)
                             	W_CacheLine (w, px, py, tx, ty, foreColor);
                             else
-	                    {
+                            {
 	                        if ((php->ph_fuse % 2) == 1)
 	                            W_CacheLine (w, px, py, tx, ty, foreColor);
 	                        else
@@ -1895,7 +1895,6 @@ DrawMisc (void)
                     tri_y = dy + 20;    /* below ship */
                     facing = 1;
                 }
-                /* printf("Drawing local triangle at %d %d\n", tri_x, tri_y); */
             }
         }
         else if (me->p_flags & PFPLLOCK)
@@ -1913,7 +1912,6 @@ DrawMisc (void)
                 tri_y = dy - 20;        /* below planet */
                 facing = 0;
             }
-            /* printf("Drawing local triangle at %d %d\n", tri_x, tri_y); */
         }
         if (tri_x != -1)
         {

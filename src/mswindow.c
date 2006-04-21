@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-
+#include <richedit.h>
 
 #include "copyright2.h"
 #include "config.h"
@@ -79,12 +79,13 @@
 #define WIN_TEXT        2
 #define WIN_MENU        3
 #define WIN_SCROLL      4
+#define WIN_RICHTEXT    5
 
 #define MoveTo(dc, x, y) MoveToEx(dc, x, y, NULL);
 
 // Custom window messages, used for communicating between threads
-#define WM_TERMINATE_WAIT WM_USER
-#define WM_CROSS_THREAD_DESTROY (WM_USER+1)
+#define WM_TERMINATE_WAIT 0x8000
+#define WM_CROSS_THREAD_DESTROY 0x8001
 
 #ifdef DEBUG
 #define MAX_SCROLLWINDOW_LINES 300
@@ -159,7 +160,6 @@ char ClassName[] = "NetrekWindow";
 char FontFileName[] = "\\ntfonts2.fon";
 extern int DefaultsLoaded;
 HWND AnyWindow;
-DWORD MainThreadID;
 
 int W_FastClear = 0;
 W_Font W_BigFont, W_RegularFont;
@@ -525,6 +525,16 @@ W_Cleanup (void)
         pfnFastCallKill(0);
         FreeLibrary(hWinkeyLibrary);
     }
+
+    /* empty console buffer */
+    while (consHead)
+    {
+        struct cons_buffer * tmp;
+        tmp = consHead->next;
+        free (consHead->string);
+        free (consHead);
+        consHead = tmp;
+    }
 }
 
 #define MakeTeamCursor(upper, team) \
@@ -553,7 +563,8 @@ W_Initialize (char *display)
     char FileName[100];
     WNDCLASSEX wc;
     static int InitDone = 0;
-    HINSTANCE hCursorLibrary;
+    HMODULE hCursorLibrary;
+    HMODULE hRichTextLibrary;
 
     GetColors ();
 
@@ -562,7 +573,7 @@ W_Initialize (char *display)
     InitDone = -1;
 
 #ifdef DEBUG
-    printf ("Initializing windowing system\n");
+    LineToConsole ("Initializing windowing system\n");
 #endif
 
     //Register our class
@@ -582,7 +593,13 @@ W_Initialize (char *display)
     RegisterClassEx (&wc);
     if ((hCursorLibrary = LoadLibrary ("bitmaps/CURSLIB.DLL")) == NULL)
     {
-        fprintf (stderr, "Could not open curslib.dll\n");
+        LineToConsole ("Could not load curslib.dll\n");
+        exit (1);
+    }
+
+    if ((hRichTextLibrary = LoadLibrary ("riched20.dll")) == NULL)
+    {
+        LineToConsole ("Could not load riched20.dll\n");
         exit (1);
     }
 
@@ -613,7 +630,7 @@ W_Initialize (char *display)
                    32, 32, LR_MONOCHROME);
 
     if (RomCursor == NULL)
-        printf ("Whhops, there it is!\n");
+        LineToConsole ("Whoops, there it is!\n");
 
     FreeLibrary (hCursorLibrary);
 
@@ -708,6 +725,7 @@ W_Initialize (char *display)
     VKShiftMap[VK_ESCAPE] = 27; // Map shift+escape-> escape
 
     MainThreadID = GetCurrentThreadId ();       // Save main thread ID so we can tell
+    MainThread = GetCurrentThread;              // Also save main thread handle
     // which thread we're in later
 
     // Get the current system colors
@@ -724,7 +742,7 @@ W_Initialize (char *display)
         if (hWinkeyLibrary < (HINSTANCE) 32)
         {
             //Just continue if there is a problem
-            fprintf (stderr, "Unable to load __fastcall DLL");
+            LineToConsole ("Unable to load __fastcall DLL");
         }
         else 
         {
@@ -733,7 +751,7 @@ W_Initialize (char *display)
             if (!pfnFastCallKill)
             {
                 //Just continue if there is a problem
-                fprintf (stderr, "Unable to initialize __fastcall");
+                LineToConsole ("Unable to initialize __fastcall");
             }
             else
             {
@@ -784,7 +802,7 @@ GetColors ()
                 i = GetDeviceCaps (hdc, BITSPIXEL) * GetDeviceCaps (hdc,
                                                                     PLANES);
 #ifdef DEBUG
-                printf ("Bits per pixel detected: %d\n", i);
+                LineToConsole ("Bits per pixel detected: %d\n", i);
 #endif
 
                 if ((i <= 4)
@@ -833,7 +851,9 @@ GetColors ()
                         colortable[i].rgb =
                             RGB (xclrs[j].r, xclrs[j].g, xclrs[j].b);
                     else
-                        fprintf (stderr, "Color '%s' unknown\n", def);
+                    {
+                        LineToConsole ("Color '%s' unknown\n", def);
+                    }
                 }
         }
 
@@ -841,7 +861,7 @@ GetColors ()
         {
         case 1:
 #ifdef DEBUG
-            printf ("16 color display detected.\n");
+            LineToConsole ("16 color display detected.\n");
 #endif
             break;
 
@@ -868,7 +888,7 @@ GetColors ()
                 NetrekPalette = CreatePalette (pal);
 
 #ifdef DEBUG
-                printf ("Paletted color display detected.\n");
+                LineToConsole ("Paletted color display detected.\n");
 #endif
             }
             break;
@@ -934,7 +954,7 @@ checkParent (char *name,
 
     /* find the window with the name specified */
     if (found = FindWindow (ClassName, adefault))
-        *parent = (W_Window) GetWindowLong (found, 0);  //Return struct ptr
+        *parent = (W_Window) GetWindowLongPtr (found, GWLP_USERDATA);  //Return struct ptr
 
     return;
 }
@@ -963,7 +983,7 @@ newWindow (char *name,
 
     if (!(window = (Window *) malloc (sizeof (Window))))
     {
-        printf ("Not enough memory to create a new window.");
+        LineToConsole ("Not enough memory to create a new window.");
         return 0;
     }
     memset (window, 0, sizeof (Window));
@@ -1053,17 +1073,28 @@ newWindow (char *name,
 
     //Actually create the window
     //Hacked to allow negative create locations -SAC
-    window->hwnd = CreateWindow (ClassName, s, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | SpecialStyle, 
-                                x + parentwin->border, y + parentwin->border, width + border * 2, 
-                                height + border * 2 + 
-                                ((SpecialStyle & WS_CAPTION) ? GetSystemMetrics (SM_CYCAPTION) : 0), 
-                                parentwin->hwnd, NULL, MyInstance, (void *) window);      
-                                //Pass Window struct * as user param
-
+    if (window->type == WIN_RICHTEXT)
+    {
+        window->hwnd = CreateWindowEx (0, RICHEDIT_CLASS, "",
+                                       WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CHILD |
+                                       WS_VSCROLL | WS_BORDER | ES_READONLY | ES_MULTILINE,
+                                       x + parentwin->border, y + parentwin->border,
+                                       width + border * 2, height + border * 2,
+                                       parentwin->hwnd, NULL, MyInstance, (void *) window);
+    }
+    else
+    {
+        window->hwnd = CreateWindow (ClassName, s, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | SpecialStyle, 
+                                    x + parentwin->border, y + parentwin->border, 
+                                    width + border * 2, height + border * 2 + 
+                                    ((SpecialStyle & WS_CAPTION) ? GetSystemMetrics (SM_CYCAPTION) : 0), 
+                                    parentwin->hwnd, NULL, MyInstance, (void *) window);      
+                                    //Pass Window struct * as user param
+    }
 
     if (!window->hwnd)
     {
-        printf ("CreateWindow() for %s failed...", name);
+        LineToConsole ("CreateWindow() for %s failed...", name);
         return (0);
     }
 
@@ -1221,8 +1252,8 @@ W_MakeScrollingWindow (char *name,
 	newwin->orig_height = orig_height;
 
     //Give it a scroll bar, and set the range (to zero, initially)
-    SetWindowLong (newwin->hwnd, GWL_STYLE,
-                   GetWindowLong (newwin->hwnd, GWL_STYLE) | WS_VSCROLL);
+    SetWindowLongPtr (newwin->hwnd, GWL_STYLE,
+                      GetWindowLongPtr (newwin->hwnd, GWL_STYLE) | WS_VSCROLL);
     SetScrollRange (newwin->hwnd, SB_VERT, 0, 0, FALSE);
 
     //Map (show) the window if the user spec'd it
@@ -1272,7 +1303,7 @@ W_MakeMenu (char *name,
     if (!
         (items =
          (struct menuItem *) malloc (height * sizeof (struct menuItem))))
-        fprintf (stderr, "Could not allocate storage for menu window");
+        LineToConsole ("Could not allocate storage for menu window");
     else
         for (i = 0; i < height; i++)
         {
@@ -1581,7 +1612,7 @@ W_EventsPending ()
 }
 
 // Wait for an event to become available; it returns zero if it recieves a
-// WM_TERMAINTE_WAIT (defined as WM_USER) message,
+// WM_TERMINATE_WAIT (defined as 0x8000) message,
 // which we use to reset the game (it's issued by another thread)
 int
 W_WaitForEvent ()
@@ -1590,9 +1621,8 @@ W_WaitForEvent ()
 
     while (EventHead == EventTail)      // Get an event
     {
-
         GetMessage (&msg, NULL, 0, 0);
-        if (msg.message == WM_TERMINATE_WAIT)   // Quit message recieved
+        if (msg.message == WM_TERMINATE_WAIT || exitFlag)   // Quit message recieved
             return 0;
 
         //TranslateMessage(&msg);          //translate keyboard messages,
@@ -1606,7 +1636,8 @@ W_WaitForEvent ()
 void
 W_TerminateWait ()
 {
-    PostMessage (AnyWindow, WM_TERMINATE_WAIT, 0, 0);
+    while (PostMessage (AnyWindow, WM_TERMINATE_WAIT, 0, 0) == 0)
+        ;
 }
 
 //Get the next event (message). Simply copies the event *, and advances the pointer
@@ -1643,7 +1674,7 @@ W_SpNextEvent (W_Event * event)
 //processing of the zillion other messages that go through the loop.
 
 #define GET_STRUCT_PTR\
-   win=(Window *)GetWindowLong(hwnd, 0)
+   win = (Window *) GetWindowLongPtr (hwnd, GWLP_USERDATA)
 
 #define STORE_EVENT\
    i = (EventTail + 1) % EVENT_Q_SIZE;\
@@ -1718,9 +1749,8 @@ NetrekWndProc (HWND hwnd,
     {
     case WM_CREATE:
         //Store our structure pointer - passed from newWindow() as final CreateWindow() param
-        SetWindowLong (hwnd, 0,
-                       (LONG) (Window *) ((CREATESTRUCT *) lParam)->
-                       lpCreateParams);
+        SetWindowLongPtr (hwnd, GWLP_USERDATA,
+                         (LONG) (Window *) ((CREATESTRUCT *) lParam)->lpCreateParams);
         return (0);
 
     case WM_SIZE:
@@ -1735,20 +1765,63 @@ NetrekWndProc (HWND hwnd,
 
     case WM_ENTERSIZEMOVE:
         //Disable possibility to move internal windows
+        {   // have to add bracket to be able to declare variables
+        RECT baseRect;  // baseWin rectangle
+        RECT winRect;   // current window rectangle       
+
         GET_STRUCT_PTR;
 
-        if (windowMove || (win->hwnd == ((Window *) baseWin)->hwnd))
+        /* this has to be the same as for WM_EXITSIZEMOVE */
+        if (windowMove || 
+            (win->hwnd == ((Window *) baseWin)->hwnd) ||
+            (((Window *) metaWin != NULL && win->hwnd == ((Window *) metaWin)->hwnd)) ||
+            (((Window *) waitWin != NULL && win->hwnd == ((Window *) waitWin)->hwnd)) ||
+            (((Window *) countWin != NULL && win->hwnd == ((Window *) countWin)->hwnd)) ||
+            (((Window *) motdButtonWin != NULL && win->hwnd == ((Window *) motdButtonWin)->hwnd)) ||
+            (((Window *) motdWin != NULL && win->hwnd == ((Window *) motdWin)->hwnd)))
             break;
 
-        //Save window position to RECT
-        GetWindowRect (win->hwnd, &movingr);
+        GetWindowRect (win->hwnd, &winRect);
+        GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
+
+        movingr.left = winRect.left - baseRect.left;
+        movingr.top = winRect.top - baseRect.top;
+        movingr.right = winRect.right - baseRect.left;
+        movingr.bottom = winRect.bottom - baseRect.top;
+
+        /* In case of WS_CAPTION (titlebar on) we have to subtract caption size and
+           additional borders to get screen coordinates */
+        if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
+        {
+            movingr.left -= GetSystemMetrics (SM_CXFIXEDFRAME);
+            movingr.top -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            movingr.right -= GetSystemMetrics (SM_CXFIXEDFRAME);
+            movingr.bottom -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+        }
+
+        /* If our window has parent we have to subtract parent's border as well */
+        if (win->parent != (Window *) baseWin)
+        {
+            movingr.left -= win->parent->border / 2;
+            movingr.top -= win->parent->border / 2;
+            movingr.right -= win->parent->border / 2;
+            movingr.bottom -= win->parent->border / 2;
+        }
+        }
         break;
 
     case WM_EXITSIZEMOVE:
         //Disable possibility to move internal windows
         GET_STRUCT_PTR;
 
-        if (windowMove || (win->hwnd == ((Window *) baseWin)->hwnd))
+        /* this has to be the same as for WM_ENTERSIZEMOVE */
+        if (windowMove || 
+            (win->hwnd == ((Window *) baseWin)->hwnd) ||
+            (((Window *) metaWin != NULL && win->hwnd == ((Window *) metaWin)->hwnd)) ||
+            (((Window *) waitWin != NULL && win->hwnd == ((Window *) waitWin)->hwnd)) ||
+            (((Window *) countWin != NULL && win->hwnd == ((Window *) countWin)->hwnd)) ||
+            (((Window *) motdButtonWin != NULL && win->hwnd == ((Window *) motdButtonWin)->hwnd)) ||
+            (((Window *) motdWin != NULL && win->hwnd == ((Window *) motdWin)->hwnd)))
             break;
 
         //Get window position from RECT to restore original location
@@ -1791,7 +1864,7 @@ NetrekWndProc (HWND hwnd,
             if (i != EventHead)
                 EventTail = i;
             EventQueue[EventTail].type = W_EV_EXPOSE;
-            EventQueue[EventTail].Window = (W_Window) GetWindowLong (hwnd, 0);
+            EventQueue[EventTail].Window = (W_Window) GetWindowLongPtr (hwnd, GWLP_USERDATA);
             EventQueue[EventTail].x = ps.rcPaint.left;  //- win->border;
             EventQueue[EventTail].y = ps.rcPaint.top;   //- win->border;
 /*            EventQueue[EventTail].width = ps.rcPaint.right - ps.rcPaint.left;
@@ -1959,14 +2032,6 @@ NetrekWndProc (HWND hwnd,
         {
             LONG wl;
             RECT r;
-            int cx, cy;
-
-            cx = GetSystemMetrics (SM_CXEDGE);
-            if (!cx)
-                cx = GetSystemMetrics (SM_CXBORDER);
-            cy = GetSystemMetrics (SM_CYEDGE);
-            if (!cy)
-                GetSystemMetrics (SM_CYBORDER);
 
             wl = GetWindowLong (((Window *) baseWin)->hwnd, GWL_STYLE);
             GetWindowRect (((Window *) baseWin)->hwnd, &r);
@@ -1982,7 +2047,7 @@ NetrekWndProc (HWND hwnd,
                 r.left -= GetSystemMetrics (SM_CXBORDER);
                 r.top -= GetSystemMetrics (SM_CYBORDER);
             }
-            SetWindowLong (((Window *) baseWin)->hwnd, GWL_STYLE, wl);
+            SetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE, wl);
             // Update the window since the height has changed
             MoveWindow (((Window *) baseWin)->hwnd, r.left, r.top,
                         r.right - r.left, r.bottom - r.top, TRUE);
@@ -2039,7 +2104,7 @@ NetrekWndProc (HWND hwnd,
         //the mouse is in.
 
         hwnd = WindowFromPoint (pos);
-        if (GetWindowLong (hwnd, GWL_WNDPROC) != (LONG) NetrekWndProc)
+        if (GetWindowLongPtr (hwnd, GWLP_WNDPROC) != (LONG) NetrekWndProc)
             return 0;           //Mouse is not in one of our windows
 
         if (!hwnd || hwnd == ((Window *) baseWin)->hwnd)
@@ -2078,6 +2143,8 @@ NetrekWndProc (HWND hwnd,
 
     case WM_MOUSEMOVE:
         GET_STRUCT_PTR;
+        /*if (win->hwnd != GetFocus ())
+            SetFocus (win->hwnd);*/
         SetCursor (win->cursor);
 
 #if defined(MOTION_MOUSE) || defined(XTRA_MESSAGE_UI)
@@ -2516,10 +2583,14 @@ NetrekWndProc (HWND hwnd,
 
         // If we're not in message windows then we'll map wheel up and
 		// wheel down events as regular mouse events
-        if (win->type != WIN_SCROLL)
+        if (win->type == WIN_GRAPH || win->type == WIN_TEXT || win->type == WIN_MENU)
 		{
 	        //BringWindowToTop (hwnd);
-			GET_STRUCT_PTR;
+			//GET_STRUCT_PTR;
+
+            /* Let's see whether we should process wheel messages */
+            if (!allowWheelActions)
+                return (1);
 
 			STORE_EVENT_MOUSE;
 			LastPressHwnd = hwnd;
@@ -2536,25 +2607,62 @@ NetrekWndProc (HWND hwnd,
 			}
             return (0);
 		}
-
-        i = GetScrollPos (hwnd, SB_VERT);
-        
-        switch (wheel)
+        else if (win->type == WIN_SCROLL)
         {
-        case -1:
-            i += 1;
-            break;
-        case 1:
-            i -= 1;
-            break;
-        default:
+            i = GetScrollPos (hwnd, SB_VERT);
+        
+            switch (wheel)
+            {
+            case -1:
+                i += 1;
+                break;
+            case 1:
+                i -= 1;
+                break;
+            default:
+                return (0);
+            }
+
+            SetScrollPos (hwnd, SB_VERT, i, TRUE);  //Move scroll
+            InvalidateRect (hwnd, &win->ClipRect, TRUE);    //Redraw text in window
+            UpdateWindow (hwnd);
             return (0);
         }
+        else if (win->type == WIN_RICHTEXT)
+        {
+            POINT p;
+            RECT r;
+            int lines, visline, maxscroll;
 
-        SetScrollPos (hwnd, SB_VERT, i, TRUE);  //Move scroll
-        InvalidateRect (hwnd, &win->ClipRect, TRUE);    //Redraw text in window
-        UpdateWindow (hwnd);
-        return (0);
+            SendMessage (win->hwnd, EM_GETSCROLLPOS, 0, (LPARAM) &p);
+            SendMessage (win->hwnd, EM_GETRECT, 0, (LPARAM) &r);
+            visline = SendMessage (win->hwnd, EM_GETFIRSTVISIBLELINE, 0, 0);
+            lines = SendMessage (win->hwnd, EM_GETLINECOUNT, 0, 0);
+
+            maxscroll = ((lines - visline) - (r.bottom / W_Textheight)) * W_Textheight;
+
+            switch (wheel)
+            {
+            case -1:
+                p.y += W_Textheight;
+                break;
+            case 1:
+                p.y -= W_Textheight;
+                break;
+            default:
+                return (0);
+            }
+
+            if (p.y > maxscroll)
+                return (0);
+
+            SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &p);
+            //InvalidateRect (hwnd, &win->ClipRect, TRUE);    //Redraw text in window
+            //UpdateWindow (hwnd);
+            return (0);
+        }
+        else
+            return (1);
 
         //Trap WM_ERASEBKGRND, to handle windows with tiled backgrounds
     case WM_ERASEBKGND:
@@ -2610,6 +2718,14 @@ NetrekWndProc (HWND hwnd,
         else
             return i;
 
+        // When PostMessage sends us WM_TERMINATE_WAIT it isn't always reaching the right
+        // thread (somehow ;), so to fix the die while scrolling bug I had to add this stupid
+        // flag
+    case WM_TERMINATE_WAIT:
+        exitFlag = 1;
+        WaitForSingleObject (InputThread, INFINITE);
+        return 0;
+
         //This message sent from another thread to indicate a window should be destroyed,
         // which only the main thread can do
     case WM_CROSS_THREAD_DESTROY:
@@ -2664,6 +2780,25 @@ NetrekWndProc (HWND hwnd,
         {
             ResetSysColors ();
             return (0);
+        }
+        break;
+
+    case WM_NOTIFY:
+        if (((NMHDR *) lParam)->code == EN_LINK)
+        {
+            ENLINK *link = (ENLINK *) lParam;
+            CHARRANGE cr;
+            char str[250];
+            HWND hwndFrom = link->nmhdr.hwndFrom;
+
+            if (link->msg == WM_LBUTTONDOWN || link->msg == WM_LBUTTONDBLCLK)
+            {
+                SendMessage (hwndFrom, EM_EXGETSEL, 0, (LPARAM) &cr);
+                SendMessage (hwndFrom, EM_EXSETSEL, (WPARAM) 0, (LPARAM) &(link->chrg));
+                SendMessage (hwndFrom, EM_GETSELTEXT, 0, (LPARAM) str);
+                SendMessage (hwndFrom, EM_EXSETSEL, 0, (LPARAM) &cr);
+                ShellExecute (NULL, "open", str, NULL, NULL, SW_SHOWNORMAL);
+            }
         }
         break;
 
@@ -3097,13 +3232,18 @@ W_WriteText (W_Window window,
         AddToScrolling (win, color, str, len);
         break;
 
+    case WIN_RICHTEXT:
+//         str[len]=0;
+        AddToRichText (win, color, str, len);
+        break;
+
     case WIN_MENU:
 //         str[len]=0;
         ChangeMenuItem (win, y, str, len, color);
         break;
 
     default:
-        printf ("Unknown window type in W_WriteText");
+        LineToConsole ("Unknown window type in W_WriteText");
     }
 }
 
@@ -3149,13 +3289,18 @@ W_MaskText (W_Window window,
         AddToScrolling (win, color, str, len);
         break;
 
+    case WIN_RICHTEXT:
+        str[len]=0;
+        AddToRichText (win, color, str, len);
+        break;
+
     case WIN_MENU:
         str[len] = 0;
         ChangeMenuItem (win, y, str, len, color);
         break;
 
     default:
-        printf ("Unknown window type in W_WriteText");
+        LineToConsole ("Unknown window type in W_WriteText");
     }
 }
 
@@ -3170,7 +3315,7 @@ W_ShowBitmaps ()
     HDC hdc;
     int t;
 
-    printf ("pBM: %p\nbmlCount: %d", pBM, bmlCount);
+    LineToConsole ("pBM: %p\nbmlCount: %d", pBM, bmlCount);
 
     if (!pBM)
     {
@@ -3189,7 +3334,8 @@ W_ShowBitmaps ()
 
     if (pBM && tmp)
     {
-        printf ("tmp: %p\n", tmp);
+        LineToConsole ("tmp: %p\n", tmp);
+
         if (!SelectObject (GlobalMemDC, pBM->bm))
             goto fail;
         if (!(hdc = GetDC (((Window *) tmp)->hwnd)))
@@ -3270,7 +3416,7 @@ W_StoreBitmap (int width,
         if (!(temp2 = CreateBitmap (width, height, 1, 1, NULL)))
             goto memfail;
 
-        printf (".");
+        LineToConsole (".");
         bmlCount++;
 
         //Mirror bitmap
@@ -3291,7 +3437,7 @@ W_StoreBitmap (int width,
         }
         else
         {
-            printf
+            LineToConsole
                 ("Got impossible internal error in W_StoreBitmap(). Please report to author.\n");
             exit (-1);
         }
@@ -3350,9 +3496,9 @@ W_StoreBitmap (int width,
 
         //Copy the bits to their new location, mirroring as we go
         if (!SelectObject (GlobalMemDC, temp))
-            printf ("SelectObject(DC, temp) bombed");
+            LineToConsole ("SelectObject(DC, temp) bombed");
         if (!SelectObject (GlobalMemDC2, CurrentBitmap->bm))
-            printf ("SelectObject(DC2,CurrentBitmap->tm) bombed");
+            LineToConsole ("SelectObject(DC2,CurrentBitmap->tm) bombed");
 
         StretchBlt (GlobalMemDC2, CurX, CurY, width, height, GlobalMemDC,
                     newwidth - 1, 0, -width, height, SRCCOPY);
@@ -3373,7 +3519,7 @@ W_StoreBitmap (int width,
     return (W_Icon) bitmap;
 
   memfail:
-    printf ("Memory allocation or CreateBitmap() failure in StoreBitmap\n");
+    LineToConsole ("Memory allocation or CreateBitmap() failure in StoreBitmap\n");
     if (bits2)
         free (bits2);
     if (bitmap)
@@ -3439,9 +3585,9 @@ W_StoreBitmap2 (HINSTANCE hDLLInstance,
     return (W_Icon) bitmap;
 
   memfail:
-    printf
-        ("Memory allocation or CreateBitmap() failure in StoreBitmap2()\n");
-    printf ("Id: %d %d %d\n", height, width, bits);
+    LineToConsole ("Memory allocation or CreateBitmap() failure in StoreBitmap2()\n");
+    LineToConsole ("Id: %d %d %d\n", height, width, bits);
+
     if (bitmap)
         free (bitmap);
     if (temp)
@@ -3497,9 +3643,9 @@ W_StoreBitmap3 (char *BMPfile,
     return (W_Icon) bitmap;
 
   memfail:
-    printf
-        ("Memory allocation or CreateBitmap() failure in StoreBitmap3()\n");
-    printf ("Id: %d %d %s\n", height, width, BMPfile);
+    LineToConsole ("Memory allocation or CreateBitmap() failure in StoreBitmap3()\n");
+    LineToConsole ("Id: %d %d %s\n", height, width, BMPfile);
+
     if (bitmap)
         free (bitmap);
     if (temp)
@@ -3534,8 +3680,9 @@ W_PointBitmap2 (W_Icon bigbitmap,
     return (W_Icon) bitmap;
 
   memfail:
-    printf ("Memory allocation or malloc() failure in PointBitmap2()\n");
-    printf ("Id: %d %d %d %d \n", col, row, height, width);
+    LineToConsole ("Memory allocation or malloc() failure in PointBitmap2()\n");
+    LineToConsole ("Id: %d %d %d %d \n", col, row, height, width);
+
     if (bitmap)
         free (bitmap);
     return NULL;
@@ -3866,8 +4013,7 @@ AddToScrolling (Window * win,
         p2 = (struct stringList *) malloc (sizeof (struct stringList));
         if (!p2)
         {
-            fprintf (stderr,
-                     "Not enough memory to allocate a new listbox string.\n");
+            LineToConsole ("Not enough memory to allocate a new listbox string.\n");
             return;
         }
 
@@ -3891,7 +4037,7 @@ AddToScrolling (Window * win,
     p->string = (char *) malloc (win->TextWidth + 1);
     if (!p->string)
     {
-        printf ("Not enough memory to allocate a new listbox string.");
+        LineToConsole ("Not enough memory to allocate a new listbox string.");
         return;
     }
 
@@ -3911,6 +4057,7 @@ AddToScrolling (Window * win,
     //Mark as out of date...
     win->AddedStrings++;
 }
+
 
 //Redraw a scrolling window
 void
@@ -4283,7 +4430,7 @@ findMouseInWin (int *x,
 
     GetCursorPos (&p);
     hwnd = ChildWindowFromPoint (((Window *) baseWin)->hwnd, p);
-    if (!hwnd || (W_Window) GetWindowLong (hwnd, 0) != window)
+    if (!hwnd || (W_Window) GetWindowLongPtr (hwnd, GWLP_USERDATA) != window)
     {
         *x = 0;
         *y = 0;
@@ -4330,8 +4477,7 @@ X11toCursor (unsigned char *bits,
 {
     if (width > 32 || height > 32)
     {
-        fprintf (stderr,
-                 "Attempt to define cursor > 32x32. Cursor will be garbled!");
+        LineToConsole ("Attempt to define cursor > 32x32. Cursor will be garbled!");
         width = min (32, width);
         height = min (32, height);
     }
@@ -5422,7 +5568,7 @@ W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, 
         break;
 
     default:
-        printf ("Unknown window type in W_WriteText");
+        LineToConsole ("Unknown window type in W_WriteText");
     }
 }
 
@@ -5454,7 +5600,7 @@ W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W
         break;
 
     default:
-        printf ("Unknown window type in W_WriteText");
+        LineToConsole ("Unknown window type in W_WriteText");
     }
 }
 
@@ -5611,4 +5757,206 @@ W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
 
     BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
             width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
+}
+
+
+// Make a WIN_SCROLL type window.
+// We use a scrollbar so we can look through the text, something the X version
+// didn't have. Nyah, nyah.
+W_Window
+W_MakeScrollingRichTextWindow (char *name,
+                               int x,
+                               int y,
+                               int width,
+                               int height,
+                               W_Window parent,
+                               int border)
+{
+    Window *newwin;
+	int orig_x, orig_y, orig_width, orig_height;
+
+    orig_x = x;
+	orig_y = y;
+	orig_width = width;
+	orig_height = height;
+
+    //Get the default position, etc.
+    checkGeometry (name, &x, &y, &width, &height);
+
+    //Get the default parent..
+    checkParent (name, &parent);
+
+    if (!(newwin = newWindow (name, x, y,
+                              width * W_Textwidth + WIN_EDGE * 2 +
+                              GetSystemMetrics (SM_CXVSCROLL),
+                              height * W_Textheight + MENU_PAD * 2, parent,
+                              border, W_White, WIN_RICHTEXT)))
+        return (0);
+
+    SetWindowLongPtr (newwin->hwnd, GWLP_USERDATA, (LONG_PTR) newwin);
+    lpfnDefRichEditWndProc = (WNDPROC) SetWindowLongPtr (newwin->hwnd, GWLP_WNDPROC, 
+                                                        (DWORD) RichTextWndProc);
+    SendMessage (newwin->hwnd, EM_AUTOURLDETECT, TRUE, 0);
+    SendMessage (newwin->hwnd, EM_SETEVENTMASK, 0, ENM_LINK);
+    SendMessage (newwin->hwnd, EM_SETBKGNDCOLOR, 0, W_Black);
+    SendMessage (newwin->hwnd, WM_SETFONT, (WPARAM) W_RegularFont, TRUE);
+
+    //Store the original textheight, width
+    newwin->TextHeight = height;
+    newwin->TextWidth = width;
+
+	/* Set original coordinates, so we will be able to restore to them */
+	newwin->orig_x = orig_x;
+	newwin->orig_y = orig_y;
+	newwin->orig_width = orig_width;
+	newwin->orig_height = orig_height;
+
+    //Map (show) the window if the user spec'd it
+    if (checkMapped (name))
+        W_MapWindow ((W_Window) newwin);
+
+    return (W_Window) newwin;
+}
+
+
+void
+AddToRichText (Window * win,
+               W_Color color,
+               char *str,
+               int len)
+{
+    struct stringList *p = win->strings;
+    struct stringList *end, *p2;
+    int NumStrings = win->NumItems;
+    char str1[256];
+    CHARFORMAT2 cf;
+    POINT point;
+    RECT rect;
+    HWND hwnd;
+    CHARRANGE cr;
+    int numLines, visibleLines;
+
+    //Find the end of the linked-list of strings...
+    if (p)                      // ...if the list has been created
+    {
+        end = p;
+        while (end->next)
+            end = end->next;
+    }
+    else
+    {
+        end = 0;
+        NumStrings = 0;
+    }
+
+    if (NumStrings < MAX_SCROLLWINDOW_LINES)    //Create a new stringList item
+    {
+        p2 = (struct stringList *) malloc (sizeof (struct stringList));
+        if (!p2)
+        {
+            LineToConsole ("Not enough memory to allocate a new listbox string.\n");
+            return;
+        }
+
+        if (!p)
+            win->strings = p2;  //Store the new start of list
+
+        p = p2;                 //Point p to the new string
+
+        win->NumItems = ++NumStrings;   //Inc the string number
+    }
+    else                        //Re-use the first string, place it at the end of the list
+    {
+        if (p->string)
+            free (p->string);
+        win->strings = p->next; //Store the new start of list
+    }
+
+    if (str[len - 1] == '\n')   //Remove trailing newlines
+        str[--len] = 0;
+
+    p->string = (char *) malloc (win->TextWidth + 1);
+    if (!p->string)
+    {
+        LineToConsole ("Not enough memory to allocate a new listbox string.");
+        return;
+    }
+
+    p->color = color;
+    strncpy (p->string, str, win->TextWidth);
+
+    /* we pad out the string with spaces so we don't have to clear
+       the window */
+    if (len < win->TextWidth - 1)
+        memset (p->string + len, ' ', win->TextWidth - len - 1);
+    p->string[win->TextWidth - 1] = 0;
+
+    if (end)
+        end->next = p;
+    p->next = 0;
+
+    //Mark as out of date...
+    win->AddedStrings++;
+
+    hwnd = GetFocus ();
+    SendMessage (win->hwnd, EM_EXGETSEL, 0, (LPARAM) &cr);
+    //SendMessage (win->hwnd, EM_HIDESELECTION, TRUE, 0);
+
+    cf.cbSize = sizeof (CHARFORMAT2);
+    cf.dwEffects = 0;
+    cf.dwMask = CFM_COLOR;
+    cf.crTextColor = colortable[color].rgb;
+
+    strcpy (str1, str);
+    strcat (str1, "\n");
+
+    SendMessage (win->hwnd, EM_GETSCROLLPOS, 0, (LPARAM) &point);
+    numLines = SendMessage (win->hwnd, EM_GETLINECOUNT, 0, 0);
+    SendMessage (win->hwnd, EM_GETRECT, 0, (LPARAM) &rect);
+    visibleLines = rect.bottom / W_Textheight;
+    SendMessage (win->hwnd, EM_SETSEL, -1, -1);
+    SendMessage (win->hwnd, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf);
+    SendMessage (win->hwnd, EM_REPLACESEL, FALSE, (LPARAM) str1);
+    if (numLines - point.y / W_Textheight > visibleLines + 1)
+    {
+        SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
+    }
+    else if (numLines - point.y / W_Textheight == visibleLines + 1)
+    {
+        point.y += W_Textheight;
+        SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
+    }
+    //SendMessage (win->hwnd, EM_HIDESELECTION, FALSE, 0);
+    SendMessage (win->hwnd, EM_SCROLLCARET, 0, 0);
+
+    if (cr.cpMin != cr.cpMax)
+        SendMessage (win->hwnd, EM_SETSEL, 0, (LPARAM) &cr);
+
+    if (hwnd)
+        SetFocus (hwnd);
+}
+
+
+LRESULT CALLBACK RichTextWndProc (HWND hwnd,
+                                  UINT msg,
+                                  WPARAM wParam,
+                                  LPARAM lParam)
+{
+//    Window * win;
+
+    switch (msg)
+    {
+/*    case WM_PAINT:
+        GET_STRUCT_PTR;
+        W_ChangeBorder ((W_Window) win, W_White);
+        break;*/
+
+/*    case WM_KEYDOWN:
+        LineToConsole ("key down\n");
+        return (0);*/
+    case WM_LBUTTONDOWN:
+        BringWindowToTop (hwnd);
+        break;
+    }
+    return CallWindowProc (lpfnDefRichEditWndProc, hwnd, msg, wParam, lParam);
 }

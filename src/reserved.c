@@ -80,7 +80,7 @@ encryptReservedPacket (struct reserved_spacket *spacket,
         netaddr = saddr.sin_addr.s_addr;
     }
 
-    /* printf("Verifying with netaddr %x\n", netaddr); */
+    /* LineToConsole ("Verifying with netaddr %x\n", netaddr); */
     mixin1 = (unsigned char) ((netaddr >> 24) & 0xff);
     mixin2 = pno;
     mixin3 = (unsigned char) ((netaddr >> 16) & 0xff);

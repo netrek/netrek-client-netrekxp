@@ -107,4 +107,11 @@ ORIGINAL COPYRIGHT NOTICES
  * Netrek XP Mod
  * Stas Pirogov (keyos@keyos.org)
  *
+ * ----------------------------------------------------------- Copyright 2006
+ *
+ * As above.
+ *
+ * Netrek XP
+ * Bill Balcerski
+ *
  */

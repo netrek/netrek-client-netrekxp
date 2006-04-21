@@ -137,14 +137,12 @@ solvetest (char *bufa,
     if (bufa[*inda])
         (*inda)--;
 
-    if (!operation)             /* incomplete is truth, just
-                                 * ask Godel */
+    if (!operation)             /* incomplete is truth, just ask Godel */
         return (1);
 
     switch (operation)
     {
-    case '=':                  /* character by character
-                                 * equality */
+    case '=':                  /* character by character equality */
         if (indc != indh)
             return (0);
         for (i = 0; i < indc; i++)
@@ -171,11 +169,9 @@ solvetest (char *bufa,
 
     default:
         warning ("Bad operation in Macro!");
-        printf
-            ("Unrecognizable operation in macro pass3: %c  Trying to continue.\n",
-             operation);
-        return (1);             /* don't know what happened,
-                                 * pretend we do */
+        LineToConsole ("Unrecognizable operation in macro pass3: %c  Trying to continue.\n",
+                        operation);
+        return (1);             /* don't know what happened, pretend we do */
         break;
     }
 }
@@ -219,14 +215,12 @@ testmacro (char *bufa,
                         bufb[(*indb)++] = bufa[(*inda)++];
                 }
                 else
-                    return;     /* we are full, so we are
-                                 * done */
+                    return;     /* we are full, so we are done */
                 state = 0;
                 continue;
                 break;
 
-            case '?':          /* the dreaded conditional,
-                                 * evaluate it */
+            case '?':          /* the dreaded conditional, evaluate it */
                 bufb[*indb] = '0' + solvetest (bufa, inda);
                 (*indb)++;
                 state = 0;
@@ -235,10 +229,10 @@ testmacro (char *bufa,
 
             default:
                 warning ("Bad character in Macro!");
-                printf
-                    ("Unrecognizable special character in macro pass2: %c  Trying to continue.\n",
+                LineToConsole (
+                    "Unrecognizable special character in macro pass2: %c  Trying to continue.\n",
                      bufa[(*inda) - 1]);
-                fprintf (stderr, "macro: %s\n", bufa);
+                LineToConsole ("macro: %s\n", bufa);
                 state = 0;
                 continue;
                 break;
@@ -302,8 +296,8 @@ skipmacro (char *buf,
                 break;
             default:
                 warning ("Bad character in Macro!");
-                printf
-                    ("Unrecognizable special character in macro pass5: %c  Trying to continue.\n",
+                LineToConsole (
+                    "Unrecognizable special character in macro pass5: %c  Trying to continue.\n",
                      buf[index - 1]);
             }
         }
@@ -347,31 +341,28 @@ condmacro (char *bufa,
         {
             switch (bufa[(*inda)++])
             {
-            case '}':          /* done with this
-                                 * conditional, return */
+            case '}':          /* done with this conditional, return */
                 return (0);
                 break;
 
             case '{':          /* handle new conditional */
-                if (*indb > 0)
+                if ((bufa[*inda - 3] == '0') && ((*inda - 3) >= 0))
                 {
-                    (*indb)--;
-                    if (bufb[*indb] == '0')
-                        newflag = 0;
-                    else
-                        newflag = 1;
+                    if (*indb > 0 && include)
+                        (*indb)--;
+                    newflag = 0;
                 }
-                else            /* moron starting with cond,
-                                 * assume true */
+                else
+                {
+                    if (*indb > 0 && include)
+                        (*indb)--;
                     newflag = 1;
+                }
 
                 if (include)
                     condmacro (bufa, bufb, inda, indb, newflag);
                 else
-                {
-                    (*indb)++;
                     *inda = skipmacro (bufa, *inda);
-                }
 
                 state = 0;
                 continue;
@@ -427,8 +418,8 @@ condmacro (char *bufa,
 
             default:
                 warning ("Bad character in Macro!");
-                printf
-                    ("Unrecognizable special character in macro pass4: %c  Trying to continue.\n",
+                LineToConsole (
+                    "Unrecognizable special character in macro pass4: %c  Trying to continue.\n",
                      bufa[(*inda) - 1]);
             }
         }
@@ -480,7 +471,7 @@ strcap (char *s)
     *t = 0;
     if (buf[255])
     {
-        fprintf (stderr, "ERROR: String constant overwritten\n");
+        LineToConsole ("ERROR: String constant overwritten\n");
         return NULL;
     }
     return buf;
@@ -629,10 +620,8 @@ makedistress (struct distress *dist,
     char *strcap (char *s);
 
 #ifndef SERVER
-    extern int ping_tloss_sc;   /* total % loss 0--100,
-                                 * server to client */
-    extern int ping_tloss_cs;   /* total % loss 0--100,
-                                 * client to server */
+    extern int ping_tloss_sc;   /* total % loss 0--100, server to client */
+    extern int ping_tloss_cs;   /* total % loss 0--100, client to server */
     extern int ping_av;         /* average rt */
     extern int ping_sd;         /* standard deviation */
 
@@ -666,11 +655,9 @@ makedistress (struct distress *dist,
             case ' ':
                 *pbuf1++ = ' ';
                 break;
-            case 'O':          /* push a 3 character team
-                                 * name into buf */
+            case 'O':          /* push a 3 character team name into buf */
                 cap = 1;
-            case 'o':          /* push a 3 character team
-                                 * name into buf */
+            case 'o':          /* push a 3 character team name into buf */
                 APPEND_CAP (pbuf1, cap, teamshort[sender->p_team]);
                 cap = 0;
                 break;
@@ -694,16 +681,12 @@ makedistress (struct distress *dist,
                 break;
 
             case 'P':          /* push player id into buf */
-            case 'G':          /* push friendly player id
-                                 * into buf */
-            case 'H':          /* push enemy target player
-                                 * id into buf */
+            case 'G':          /* push friendly player id into buf */
+            case 'H':          /* push enemy target player id into buf */
 
             case 'p':          /* push player id into buf */
-            case 'g':          /* push friendly player id
-                                 * into buf */
-            case 'h':          /* push enemy target player
-                                 * id into buf */
+            case 'g':          /* push friendly player id into buf */
+            case 'h':          /* push enemy target player id into buf */
 
                 switch (c)
                 {
@@ -729,8 +712,7 @@ makedistress (struct distress *dist,
                 *pbuf1++ = j->p_mapchars[1];
                 break;
 
-            case 'n':          /* push planet armies into
-                                 * buf */
+            case 'n':          /* push planet armies into buf */
                 l = &planets[dist->tclose_pl];
                 APPEND_INT (pbuf1,
                             ((l->pl_info & sender->p_team) ? l->
@@ -762,17 +744,14 @@ makedistress (struct distress *dist,
                 l = &planets[dist->tclose_pl];
                 APPEND (pbuf1, l->pl_name);
                 break;
-            case 'Z':          /* push a 3 character team
-                                 * name into buf */
+            case 'Z':          /* push a 3 character team name into buf */
                 cap = 1;
-            case 'z':          /* push a 3 character team
-                                 * name into buf */
+            case 'z':          /* push a 3 character team name into buf */
                 l = &planets[dist->tclose_pl];
                 APPEND_CAP (pbuf1, cap, teamshort[l->pl_owner]);
                 cap = 0;
                 break;
-            case 't':          /* push a team character
-                                 * into buf */
+            case 't':          /* push a team character into buf */
                 l = &planets[dist->tclose_pl];
                 *pbuf1++ = teamlet[l->pl_owner];
                 break;
@@ -861,26 +840,22 @@ makedistress (struct distress *dist,
                 break;
 
 #ifdef SERVER
-            case 'v':          /* push average ping round
-                                 * trip time into buf */
+            case 'v':          /* push average ping round trip time into buf */
             case 'V':          /* push ping stdev into buf */
             case 'y':          /* push packet loss into buf */
                 *pbuf1++ = '0';
-            case 'M':          /* push capitalized
-                                 * lastMessage into buf */
+            case 'M':          /* push capitalized lastMessage into buf */
             case 'm':          /* push lastMessage into buf */
                 break;
 #else
-            case 'M':          /* push capitalized
-                                 * lastMessage into buf */
+            case 'M':          /* push capitalized lastMessage into buf */
                 cap = 1;
             case 'm':          /* push lastMessage into buf */
                 APPEND_CAP (pbuf1, cap, lastMessage);
                 cap = 0;
                 break;
 
-            case 'v':          /* push average ping round
-                                 * trip time into buf */
+            case 'v':          /* push average ping round trip time into buf */
                 APPEND_INT (pbuf1, ping_av);
                 break;
 
@@ -921,7 +896,7 @@ makedistress (struct distress *dist,
                  * message will be parsed without whatever %. has occurred. -
                  * jn */
                 warning ("Bad Macro character in distress!");
-                fprintf (stderr,
+                LineToConsole (
                          "Unrecognizable special character in distress pass 1: %c\n",
                          *(pm - 1));
                 break;

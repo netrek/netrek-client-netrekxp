@@ -13,7 +13,7 @@
 #include <math.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <sys/stat.h>
+
 #include <time.h>
 #include <winsock.h>
 
@@ -478,9 +478,11 @@ newwin (char *hostmon,
     rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
-    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50,
-                                PlistMaxWidth (), 21, baseWin, 2);
+    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 21, baseWin, 2);
     W_SetWindowExposeHandler (playerw, RedrawPlayerList);
+
+    playerw2 = W_MakeTextWindow ("player2", 140, 100, PlistMaxWidth2 (), 32, baseWin, 2);
+    W_SetWindowExposeHandler (playerw2, RedrawPlayerList);
 
 #ifdef RECORDGAME
     if (playback)
@@ -509,29 +511,58 @@ newwin (char *hostmon,
 #endif
 
     /* Message windows */
-    messwa = W_MakeScrollingWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
-    wam_windows[0] = messwa;
-    W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
+    if (richText)
+    {
+        messwa = W_MakeScrollingRichTextWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
+        wam_windows[0] = messwa;
+        W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
 
-    messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
-    wam_windows[1] = messwt;
-    W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
+        messwt = W_MakeScrollingRichTextWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
+        wam_windows[1] = messwt;
+        W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
    
-    messwi = W_MakeScrollingWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
-    wam_windows[2] = messwi;
-    W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
+        messwi = W_MakeScrollingRichTextWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
+        wam_windows[2] = messwi;
+        W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
     
-    messwk = W_MakeScrollingWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
-    wam_windows[3] = messwk;
+        messwk = W_MakeScrollingRichTextWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
+        wam_windows[3] = messwk;
 
-    phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
-                                        WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                                        15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
-    wam_windows[4] = phaserwin;
+        phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
+                                                    WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
+                                                    15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
+        wam_windows[4] = phaserwin;
 
-    reviewWin = W_MakeScrollingWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
-    wam_windows[5] = reviewWin;
-    W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
+        reviewWin = W_MakeScrollingRichTextWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
+        wam_windows[5] = reviewWin;
+        W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
+    }
+    else
+    {
+        messwa = W_MakeScrollingWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
+        wam_windows[0] = messwa;
+        W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
+
+        messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
+        wam_windows[1] = messwt;
+        W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
+   
+        messwi = W_MakeScrollingWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
+        wam_windows[2] = messwi;
+        W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
+    
+        messwk = W_MakeScrollingWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
+        wam_windows[3] = messwk;
+
+        phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
+                                           WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
+                                           15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
+        wam_windows[4] = phaserwin;
+
+        reviewWin = W_MakeScrollingWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
+        wam_windows[5] = reviewWin;
+        W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
+    }
     /* End of Message windows */
 
     pStats = W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
@@ -580,31 +611,30 @@ newwin (char *hostmon,
     statwin = W_MakeWindow ("stats", 405, 506, 100, 80, baseWin, BORDER, foreColor);
     W_SetWindowExposeHandler (statwin, redrawStats);
 
-    scanwin = W_MakeWindow ("scanner", 422, 13, 160, 120, baseWin, 5, foreColor);
-
     W_DefineTrekCursor (baseWin);
     W_DefineLocalcursor (w);
     W_DefineMapcursor (mapw);
     W_DefineTrekCursor (pStats);
     W_DefineTextCursor (warnw);
+    W_DefineTextCursor (messagew);
+    W_DefineTrekCursor (messwa);
     W_DefineTrekCursor (messwt);
     W_DefineTrekCursor (messwi);
+    W_DefineTrekCursor (messwk);
+    W_DefineTrekCursor (reviewWin);
+    W_DefineTrekCursor (phaserwin);
     W_DefineTrekCursor (helpWin);
 
 #ifdef META
     W_DefineArrowCursor (metaWin);
 #endif
 
-    W_DefineTrekCursor (reviewWin);
-    W_DefineTrekCursor (messwk);
-    W_DefineTrekCursor (phaserwin);
     W_DefineTrekCursor (playerw);
+    W_DefineTrekCursor (playerw2);
     W_DefineTrekCursor (rankw);
     W_DefineTrekCursor (statwin);
-    W_DefineTextCursor (messagew);
     W_DefineTrekCursor (tstatw);
     W_DefineWarningCursor (qwin);
-    W_DefineTrekCursor (scanwin);
     W_DefineArrowCursor (udpWin);
 
 #ifdef SHORT_PACKETS
@@ -677,6 +707,8 @@ mapAll (void)
         W_MapWindow (phaserwin);
         phaserWindow = 1;
     }
+    if (checkMapped ("player2"))
+        W_MapWindow (playerw2);
     if (checkMappedPref ("player", 1))
         W_MapWindow (playerw);
     if (checkMappedPref ("review", 1))
@@ -1049,7 +1081,7 @@ entrywindow (int *team,
             elapsed = time (0) - startTime;
             if (elapsed > autoQuit)
             {
-                printf ("Auto-Quit.\n");
+                LineToConsole ("Auto-Quit.\n");
                 *team = 4;
                 break;
             }
@@ -1249,7 +1281,9 @@ entrywindow (int *team,
                 redrawQuit ();
             }
             else if (event.Window == tstatw)
+            {
                 redrawTstats ();
+            }
             else if (event.Window == w)
             {
                 showMotdWin (w, line);
@@ -1319,8 +1353,8 @@ teamRequest (int team,
         readFromServer (NULL);
         if (isServerDead ())
         {
-            printf ("Oh SHIT,  We've been ghostbusted!\n");
-            printf ("hope you weren't in a base\n");
+            LineToConsole ("Oh SHIT,  We've been ghostbusted!\n");
+            LineToConsole ("hope you weren't in a base\n");
             /* UDP fail-safe */
             commMode = commModeReq = COMM_TCP;
             commSwitchTimeout = 0;
@@ -1332,7 +1366,7 @@ teamRequest (int team,
                 udprefresh (UDP_STATUS);
             }
             connectToServer (nextSocket);
-            printf (" We've been resurrected!\n");
+            LineToConsole (" We've been resurrected!\n");
             pickOk = 0;
             break;
         }
@@ -1594,7 +1628,7 @@ newMotdLine (char *line)
     if ((*temp) == NULL)
     {                           /* malloc error checking --
                                  * 10/30/92 EM */
-        printf ("Warning:  Couldn't malloc space for a new motd line!");
+        LineToConsole ("Warning:  Couldn't malloc space for a new motd line!");
         return;
     }
     /* Motd clearing code */

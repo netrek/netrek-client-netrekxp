@@ -423,7 +423,7 @@ setNoDelay (int fd)
                          (char *) &option_value, sizeof (option_value));
     if (status < 0)
     {
-        fprintf (stderr, ("setsockopt() failed, %s\n", strerror (errno)));
+        LineToConsole ("setsockopt() failed, %s\n", strerror (errno));
         /* can still play without this, proceed */
     }
 }
@@ -447,11 +447,11 @@ connectToServer (int port)
         sock = -1;
     }
 
-    printf ("Waiting for connection (port %d). \n", port);
+    LineToConsole ("Waiting for connection (port %d). \n", port);
 
     if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        printf ("I can't create a socket\n");
+        LineToConsole ("I can't create a socket\n");
         terminate (2);
     }
 
@@ -489,7 +489,7 @@ connectToServer (int port)
 
     if (select (max_fd, &readfds, NULL, NULL, &timeout) == 0)
     {
-        printf ("Well, I think the server died!\n");
+        LineToConsole ("Well, I think the server died!\n");
         terminate (0);
     }
 
@@ -503,7 +503,7 @@ connectToServer (int port)
     if (sock >= max_fd)
         max_fd = sock + 1;
 
-    printf ("Got connection.\n");
+    LineToConsole ("Got connection.\n");
 
     closesocket (s);
     setNoDelay (sock);
@@ -536,7 +536,7 @@ connectToServer (int port)
             strcpy (serverName, inet_ntoa (addr.sin_addr));
         }
     }
-    printf ("Connection from server %s (0x%x)\n", serverName, serveraddr);
+    LineToConsole ("Connection from server %s (0x%x)\n", serverName, serveraddr);
 
 }
 
@@ -550,11 +550,11 @@ callServer (int port,
 
     serverDead = 0;
 
-    printf ("Calling %s on port %d.\n", server, port);
+    LineToConsole ("Calling %s on port %d\n", server, port);
 
     if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        printf ("I can't create a socket\n");
+        LineToConsole ("I can't create a socket\n");
         terminate (0);
     }
     addr.sin_family = AF_INET;
@@ -564,7 +564,7 @@ callServer (int port,
     {
         if ((hp = gethostbyname (server)) == NULL)
         {
-            printf ("Who is %s?\n", server);
+            LineToConsole ("Who is %s?\n", server);
             terminate (0);
         }
         else
@@ -576,10 +576,10 @@ callServer (int port,
 
     if (connect (s, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
-        printf ("Server not listening!\n");
+        LineToConsole ("Server not listening!\n");
         terminate (0);
     }
-    printf ("Got connection.\n");
+    LineToConsole ("Got connection.\n");
 
     sock = s;
 
@@ -611,10 +611,10 @@ callServer (int port,
             strcpy (msg.mesg + 16, host_req);
             if (gwrite (s, &msg, sizeof (struct mesg_cpacket)) < 0)
             {
-                fprintf (stderr, "trekhopd init failure\n");
+                LineToConsole ("trekhopd init failure\n");
                 terminate (1);
             }
-            printf ("--- trekhopd request sent, awaiting reply\n");
+            LineToConsole ("--- trekhopd request sent, awaiting reply\n");
             /* now block waiting for reply */
             count = sizeof (struct mesg_spacket);
 
@@ -629,7 +629,7 @@ callServer (int port,
 
             if (reply.type != SP_MESSAGE)
             {
-                fprintf (stderr, "Got bogus reply from trekhopd (%d)\n",
+                LineToConsole ("Got bogus reply from trekhopd (%d)\n",
                          reply.type);
                 terminate (1);
             }
@@ -637,9 +637,9 @@ callServer (int port,
             gw_serv_port = ntohl (*ip++);
             gw_port = ntohl (*ip++);
             serv_port = ntohl (*ip++);
-            printf ("--- trekhopd reply received\n");
+            LineToConsole ("--- trekhopd reply received\n");
 
-            /* printf("ports = %d/%d, %d\n", gw_serv_port, gw_port, serv_port); */
+            /* LineToConsole ("ports = %d/%d, %d\n", gw_serv_port, gw_port, serv_port); */
         }
     }
 #endif /* TREKHOPD */
@@ -836,7 +836,7 @@ getvpsize (char *bufptr)
         size = ((unsigned char) bufptr[1] * 2) + 2;
         break;
     default:
-        fprintf (stderr, "Unknown variable packet\n");
+        LineToConsole ("Unknown variable packet\n");
         /* terminate(1); */
         return -1;
         break;
@@ -871,8 +871,10 @@ doRead (int asock)
               0);
 
     if (debug)
-        printf ("read %d bytes from %s socket\n",
+    {
+        LineToConsole ("read %d bytes from %s socket\n",
                 count, asock == udpSock ? "UDP" : "TCP");
+    }
 
     if (count <= 0)
     {
@@ -916,7 +918,7 @@ doRead (int asock)
             }
             return (0);
         }
-        printf ("1) Got read() of %d. Server dead\n", count);
+        LineToConsole ("1) Got read() of %d. Server dead\n", count);
         perror ("1) read()");
         serverDead = 1;
         return (0);
@@ -933,14 +935,14 @@ doRead (int asock)
             int i;
 #endif
 
-            fprintf (stderr, "Unknown packet type: %d\n", *bufptr);
+            LineToConsole ("Unknown packet type: %d\n", *bufptr);
 
 #ifndef CORRUPTED_PACKETS
-            printf ("count: %d, bufptr at %d,  Content:\n", count,
-                    bufptr - buf);
+            LineToConsole ("count: %d, bufptr at %d,  Content:\n", count,
+                            bufptr - buf);
             for (i = 0; i < count; i++)
             {
-                printf ("0x%x, ", (unsigned int) buf[i]);
+                LineToConsole ("0x%x, ", (unsigned int) buf[i]);
             }
 #endif
 
@@ -954,20 +956,23 @@ doRead (int asock)
             size = getvpsize (bufptr);
             if (size <= 0)
             {
-                fprintf (stderr, "Bad short-packet size value (%d)\n", size);
+                LineToConsole ("Bad short-packet size value (%d)\n", size);
                 return 0;
             }
 
             if (debug)
-                printf ("read variable packet size %d, type %d\n",
-                        size, *bufptr);
+            {
+                LineToConsole ("read variable packet size %d, type %d\n",
+                                size, *bufptr);
+            }
         }
 #endif /* SHORT_PACKETS */
 
         if (size == 0)
-            fprintf (stderr,
-                     "Variable packet has 0 length! type=%d Trying to read more!\n",
-                     *bufptr);
+        {
+            LineToConsole ("Variable packet has 0 length! type=%d Trying to read more!\n",
+                          *bufptr);
+        }
         /* read broke in the middle of a packet, wait until we get the rest */
         while (size > count + (buf - bufptr) || size == 0)
         {
@@ -981,7 +986,7 @@ doRead (int asock)
             /* readfds=1<<asock; */
             if ((temp = select (max_fd, &readfds, 0, 0, &timeout)) == 0)
             {
-                printf ("Packet fragment.  Server must be dead\n");
+                LineToConsole ("Packet fragment.  Server must be dead\n");
                 serverDead = 1;
                 return (0);
             }
@@ -998,7 +1003,7 @@ doRead (int asock)
             count += temp;
             if (temp <= 0)
             {
-                printf ("2) Got read() of %d.  Server is dead\n", temp);
+                LineToConsole ("2) Got read() of %d.  Server is dead\n", temp);
                 serverDead = 1;
                 return (0);
             }
@@ -1014,7 +1019,9 @@ doRead (int asock)
                  || *bufptr == SP_SC_SEQUENCE))
             {
                 if (debug)
-                    printf ("read packet %d\n", *bufptr);
+                {
+                    LineToConsole ("read packet %d\n", *bufptr);
+                }
 
 #ifdef RECORDGAME
                 if (recordFile != NULL && ckRecordPacket (*bufptr))
@@ -1047,14 +1054,16 @@ doRead (int asock)
                 if (debug)
                 {
                     if (drop_flag)
-                        printf ("%d bytes dropped.\n", size);
+                    {
+                        LineToConsole ("%d bytes dropped.\n", size);
+                    }
                 }
                 UDPDIAG (("Ignored type %d\n", *bufptr));
             }
         }
         else
         {
-            printf ("Handler for packet %d not installed...\n", *bufptr);
+            LineToConsole ("Handler for packet %d not installed...\n", *bufptr);
         }
 
         bufptr += size;
@@ -1071,7 +1080,7 @@ handleTorp (struct torp_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (ntohs (packet->tnum) >= MAXPLAYER * MAXTORP)
     {
-        fprintf (stderr, "handleTorp: bad index %d\n", ntohs (packet->tnum));
+        LineToConsole ("handleTorp: bad index %d\n", ntohs (packet->tnum));
         return;
     }
 #endif
@@ -1103,8 +1112,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (ntohs (packet->tnum) >= MAXPLAYER * MAXTORP)
     {
-        fprintf (stderr, "handleTorpInfo: bad index %d\n",
-                 ntohs (packet->tnum));
+        LineToConsole ("handleTorpInfo: bad index %d\n", ntohs (packet->tnum));
         return;
     }
 #endif
@@ -1116,7 +1124,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
     if (packet->status == TEXPLODE && thetorp->t_status == TFREE)
     {
         /* FAT: redundant explosion; don't update p_ntorp */
-        /* printf("texplode ignored\n"); */
+        /* LineToConsole ("texplode ignored\n"); */
         return;
     }
 
@@ -1161,12 +1169,12 @@ handleStatus (struct status_spacket *packet)
 
     if (debug)
     {
-        printf ("SERVER STATS:\n");
-        printf ("time: %d\n", status->time / (60 * 60 * 10));
-        printf ("kills: %d\n", status->kills);
-        printf ("losses: %d\n", status->losses);
-        printf ("planets: %d\n", status->planets);
-        printf ("armsbomb: %d\n", status->armsbomb);
+        LineToConsole ("SERVER STATS:\n");
+        LineToConsole ("time: %d\n", status->time / (60 * 60 * 10));
+        LineToConsole ("kills: %d\n", status->kills);
+        LineToConsole ("losses: %d\n", status->losses);
+        LineToConsole ("planets: %d\n", status->planets);
+        LineToConsole ("armsbomb: %d\n", status->armsbomb);
     }
 }
 
@@ -1177,7 +1185,7 @@ handleSelf (struct you_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleSelf: bad index %d\n", packet->pnum);
+        LineToConsole ("handleSelf: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1233,7 +1241,7 @@ handlePlayer (struct player_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handlePlayer: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlayer: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1382,7 +1390,7 @@ sendServerPacket (struct player_spacket *packet)
     if (packet->type < 1 || packet->type > NUM_SIZES
         || sizes[packet->type] == 0)
     {
-        printf ("Attempt to send strange packet %d!\n", packet->type);
+        LineToConsole ("Attempt to send strange packet %d!\n", packet->type);
         return;
     }
     size = sizes[packet->type];
@@ -1407,7 +1415,7 @@ sendServerPacket (struct player_spacket *packet)
         /* business as usual (or player has turned off UDP transmission) */
         if (gwrite (sock, (char *) packet, size) != size)
         {
-            printf ("gwrite failed.  Server must be dead\n");
+            LineToConsole ("gwrite failed.  Server must be dead\n");
             serverDead = 1;
         }
     }
@@ -1471,7 +1479,7 @@ sendServerPacket (struct player_spacket *packet)
             /* critical stuff, use TCP */
             if (gwrite (sock, (char *) packet, size) != size)
             {
-                printf ("gwrite failed.  Server must be dead\n");
+                LineToConsole ("gwrite failed.  Server must be dead\n");
                 serverDead = 1;
             }
         }
@@ -1489,7 +1497,7 @@ handlePlanet (struct planet_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLANETS)
     {
-        fprintf (stderr, "handlePlanet: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlanet: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1543,14 +1551,13 @@ handlePhaser (struct phaser_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handlePhaser: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePhaser: bad index %d\n", packet->pnum);
         return;
     }
     if (packet->status == PHHIT &&
         (ntohl (packet->target) < 0 || ntohl (packet->target) >= MAXPLAYER))
     {
-        fprintf (stderr, "handlePhaser: bad target %d\n",
-                 ntohl (packet->target));
+        LineToConsole ("handlePhaser: bad target %d\n", ntohl (packet->target));
         return;
     }
 #endif
@@ -1587,9 +1594,10 @@ handleMessage (struct mesg_spacket *packet)
     packet->mesg[sizeof (packet->mesg) - 1] = '\0';
 #endif
 
-    /* printf("flags: 0x%x\n", packet->m_flags); printf("from: %d\n",
-     * packet->m_from); printf("recpt: %d\n", packet->m_recpt); printf("mesg:
-     * %s\n", packet->mesg); */
+    /* LineToConsole ("flags: 0x%x\n", packet->m_flags);
+     * LineToConsole ("from: %d\n", * packet->m_from);
+     * LineToConsole ("recpt: %d\n", packet->m_recpt);
+     * LineToConsole ("mesg: * %s\n", packet->mesg); */
 
 
     dmessage (packet->mesg, packet->m_flags, packet->m_from, packet->m_recpt);
@@ -1697,7 +1705,7 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (ntohs (packet->pnum) >= MAXPLAYER * MAXPLASMA)
     {
-        fprintf (stderr, "handlePlasmaInfo: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlasmaInfo: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1738,7 +1746,7 @@ handlePlasma (struct plasma_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (ntohs (packet->pnum) >= MAXPLAYER * MAXPLASMA)
     {
-        fprintf (stderr, "handlePlasma: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlasma: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1765,7 +1773,7 @@ handleFlags (struct flags_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleFlags: bad index %d\n", packet->pnum);
+        LineToConsole ("handleFlags: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1802,7 +1810,7 @@ handleKills (struct kills_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleKills: bad index %d\n", packet->pnum);
+        LineToConsole ("handleKills: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1831,7 +1839,7 @@ handlePStatus (struct pstatus_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handlePStatus: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePStatus: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -1954,8 +1962,8 @@ handleBadVersion (struct badversion_spacket *packet)
     switch (packet->why)
     {
     case 0:
-        printf ("Sorry, this is an invalid client version.\n");
-        printf ("You need a new version of the client code.\n");
+        LineToConsole ("Sorry, this is an invalid client version.\n");
+        LineToConsole ("You need a new version of the client code.\n");
         break;
     case 1:
     case 2:
@@ -1963,11 +1971,11 @@ handleBadVersion (struct badversion_spacket *packet)
     case 4:
     case 5:
     case 6:
-        printf ("Sorry, but you cannot play xtrek now.\n");
-        printf ("Try again later.\n");
+        LineToConsole ("Sorry, but you cannot play xtrek now.\n");
+        LineToConsole ("Try again later.\n");
         break;
     default:
-        printf ("Unknown message from handleBadVersion.\n");
+        LineToConsole ("Unknown message from handleBadVersion.\n");
         return;
     }
     terminate (1);
@@ -1985,8 +1993,7 @@ gwrite (int fd, char *buf, register int bytes)
         {
             if (fd == udpSock)
             {
-                fprintf (stderr, "Tried to write %d, 0x%x, %d\n",
-                         fd, buf, bytes);
+                LineToConsole ("Tried to write %d, 0x%x, %d\n", fd, buf, bytes);
                 perror ("write");
                 printUdpInfo ();
             }
@@ -2006,7 +2013,7 @@ handleHostile (struct hostile_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleHostile: bad index %d\n", packet->pnum);
+        LineToConsole ("handleHostile: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -2031,7 +2038,7 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
 #ifdef CORRUPTED_PACKETS
     if (sock == udpSock)
     {
-        fprintf (stderr, "garbage packet discarded.\n");
+        LineToConsole ("garbage packet discarded.\n");
         return;
     }
 #endif
@@ -2039,12 +2046,12 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handlePlyrLogin: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlyrLogin: bad index %d\n", packet->pnum);
         return;
     }
     if (packet->rank >= NUMRANKS)
     {
-        fprintf (stderr, "handlePlyrLogin: bad rank %d\n", packet->rank);
+        LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
     }
     packet->name[sizeof (packet->name) - 1] = '\0';
@@ -2059,7 +2066,7 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
     strcpy (pl->p_login, packet->login);
     pl->p_stats.st_rank = packet->rank;
 
-    /* printf("read player login %s, %s, %s\n", pl->p_name, pl->p_monitor,
+    /* LineToConsole ("read player login %s, %s, %s\n", pl->p_name, pl->p_monitor,
      * pl->p_login); */
 
     if (packet->pnum == me->p_no)
@@ -2094,7 +2101,7 @@ handleStats (struct stats_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleStats: bad index %d\n", packet->pnum);
+        LineToConsole ("handleStats: bad index %d\n", packet->pnum);
         return;
     }
 #endif
@@ -2139,12 +2146,12 @@ handlePlyrInfo (struct plyr_info_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handlePlyrInfo: bad index %d\n", packet->pnum);
+        LineToConsole ("handlePlyrInfo: bad index %d\n", packet->pnum);
         return;
     }
     if (packet->team > ALLTEAM)
     {
-        fprintf (stderr, "handlePlyrInfo: bad team %d\n", packet->team);
+        LineToConsole ("handlePlyrInfo: bad team %d\n", packet->team);
         return;
     }
 #endif
@@ -2195,7 +2202,7 @@ handlePlanetLoc (struct planet_loc_spacket *packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLANETS)
     {
-        fprintf (stderr, "handlePlanetLoc: bad index\n");
+        LineToConsole ("handlePlanetLoc: bad index\n");
         return;
     }
 #endif
@@ -2207,7 +2214,7 @@ handlePlanetLoc (struct planet_loc_spacket *packet)
     if (pl_update[packet->pnum].plu_update != -1)
     {
         pl_update[packet->pnum].plu_update = 1;
-        /* printf("update: %s, old (%d,%d) new (%d,%d)\n", pl->pl_name,
+        /* LineToConsole ("update: %s, old (%d,%d) new (%d,%d)\n", pl->pl_name,
          * pl->pl_x, pl->pl_y, ntohl(packet->x),ntohl(packet->y)); */
     }
     else
@@ -2239,7 +2246,7 @@ handleReserved (struct reserved_spacket *packet,
 #ifdef CORRUPTED_PACKETS
     if (sock == udpSock)
     {
-        fprintf (stderr, "garbage Reserved packet discarded.\n");
+        LineToConsole ("garbage Reserved packet discarded.\n");
         return;
     }
 #endif
@@ -2263,7 +2270,7 @@ handleReserved (struct reserved_spacket *packet,
         response.type = CP_RESERVED;
 
 #ifdef DEBUG
-        printf ("Sending RSA reserved response\n");
+        LineToConsole ("Sending RSA reserved response\n");
 #endif
     }
     else
@@ -2358,7 +2365,7 @@ handleRSAKey (struct rsa_key_spacket *packet)
 
     sendServerPacket ((struct player_spacket *) &response);
     /* #ifdef DEBUG */
-    printf ("RSA verification requested.\n");
+    LineToConsole ("RSA verification requested.\n");
     /* #endif */
 }
 
@@ -2374,7 +2381,7 @@ handleScan (packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleScan: bad index\n");
+        LineToConsole ("handleScan: bad index\n");
         return;
     }
 #endif
@@ -2622,8 +2629,8 @@ handleUdpReply (struct udp_reply_spacket *packet)
         UDPDIAG (("Received UDP verification\n"));
         break;
     default:
-        fprintf (stderr, "netrek: Got funny reply (%d) in UDP_REPLY packet\n",
-                 packet->reply);
+        LineToConsole ("netrek: Got funny reply (%d) in UDP_REPLY packet\n",
+                         packet->reply);
         break;
     }
 }
@@ -2637,7 +2644,7 @@ openUdpConn (void)
 
     if (udpSock >= 0)
     {
-        fprintf (stderr, "netrek: tried to open udpSock twice\n");
+        LineToConsole ("netrek: tried to open udpSock twice\n");
         return (0);             /* pretend we succeeded
                                  * (this could be bad) */
     }
@@ -2708,7 +2715,7 @@ openUdpConn (void)
         {
             if ((hp = gethostbyname (serverName)) == NULL)
             {
-                printf ("Who is %s?\n", serverName);
+                LineToConsole ("Who is %s?\n", serverName);
                 terminate (0);
             }
             else
@@ -2735,7 +2742,7 @@ connUdpConn ()
               udpServerPort));
     if (connect (udpSock, (const struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
-        fprintf (stderr, "Error %d: ");
+        LineToConsole ("Error %d: ", WSAGetLastError ());
         perror ("netrek: unable to connect UDP socket");
         printUdpInfo ();        /* debug */
         return (-1);
@@ -2828,7 +2835,7 @@ closeUdpConn (void)
     V_UDPDIAG (("Closing UDP socket\n"));
     if (udpSock < 0)
     {
-        fprintf (stderr, "netrek: tried to close a closed UDP socket\n");
+        LineToConsole ("netrek: tried to close a closed UDP socket\n");
         return (-1);
     }
     shutdown (udpSock, 2);
@@ -2880,7 +2887,7 @@ handleSequence (struct sequence_spacket *packet)
             udprefresh (UDP_DROPPED);
 
     newseq = (LONG) ntohs (packet->sequence);
-    /* printf("read %d - ", newseq); */
+    /* LineToConsole ("read %d - ", newseq); */
 
     if (((unsigned short) sequence) > 65000 &&
         ((unsigned short) newseq) < 1000)
@@ -2957,7 +2964,7 @@ handleSequence (struct sequence_spacket *packet)
             drop_flag = 1;
         }
     }
-    /* printf("newseq %d, sequence %d\n", newseq, sequence); */
+    /* LineToConsole ("newseq %d, sequence %d\n", newseq, sequence); */
     if (recent_count > UDP_RECENT_INTR)
     {
         /* once a minute (at 5 upd/sec), report on how many were dropped */
@@ -2999,7 +3006,7 @@ Log_Packet (char type,
 
     if (type <= 0 && type > NUM_PACKETS)
     {
-        fprintf (stderr, "Attempted to log a bad packet? \n");
+        LineToConsole ("Attempted to log a bad packet? \n");
         return;
     }
     packet_log[type]++;
@@ -3016,8 +3023,8 @@ Log_Packet (char type,
         lasttime = this_sec;
         if (log_packets > 1)
         {
-            fprintf (stdout, "%d %d %d\n", this_sec - Start_Time,
-                     data_this_sec, outdata_this_sec);
+            LineToConsole ("%d %d %d\n", this_sec - Start_Time,
+                          data_this_sec, outdata_this_sec);
         }
         if (Start_Time == 0)
         {
@@ -3069,19 +3076,19 @@ Dump_Packet_Log_Info (void)
 
     Now = time (NULL);
 
-    printf ("Packet Logging Summary:\n");
-    printf ("Start time: %s ", ctime (&Start_Time));
-    printf (" End time: %s Elapsed play time: %3.2f min\n",
-            ctime (&Now), (float) ((Now - Start_Time) / 60));
-    printf ("Maximum CPS in during normal play: %d bytes per sec\n", Max_CPS);
-    printf ("Standard deviation in: %d\n",
-            (int) sqrt ((numpl * s2 - sumpl * sumpl) /
-                        (numpl * (numpl - 1))));
-    printf ("Maximum CPS out during normal play: %d bytes per sec\n",
-            Max_CPSout);
-    printf ("Standard deviation out: %d\n",
-            (int) sqrt ((numpl * sout2 - sumout * sumout) /
-                        (numpl * (numpl - 1))));
+    LineToConsole ("Packet Logging Summary:\n");
+    LineToConsole ("Start time: %s ", ctime (&Start_Time));
+    LineToConsole (" End time: %s Elapsed play time: %3.2f min\n",
+                    ctime (&Now), (float) ((Now - Start_Time) / 60));
+    LineToConsole ("Maximum CPS in during normal play: %d bytes per sec\n", Max_CPS);
+    LineToConsole ("Standard deviation in: %d\n",
+                    (int) sqrt ((numpl * s2 - sumpl * sumpl) /
+                    (numpl * (numpl - 1))));
+    LineToConsole ("Maximum CPS out during normal play: %d bytes per sec\n",
+                    Max_CPSout);
+    LineToConsole ("Standard deviation out: %d\n",
+                    (int) sqrt ((numpl * sout2 - sumout * sumout) /
+                    (numpl * (numpl - 1))));
 
 #ifdef SHORT_PACKETS
     /* total_bytes = ALL_BYTES; *//* Hope this works  HW */
@@ -3113,10 +3120,10 @@ Dump_Packet_Log_Info (void)
 #endif
     }
 
-    printf ("Total bytes received %d, average CPS: %4.1f\n",
-            total_bytes, (float) (total_bytes / (Now - Start_Time)));
-    printf ("Server Packets Summary:\n");
-    printf ("Num #Rcvd    Size   TotlBytes   %%Total\n");
+    LineToConsole ("Total bytes received %d, average CPS: %4.1f\n",
+                    total_bytes, (float) (total_bytes / (Now - Start_Time)));
+    LineToConsole ("Server Packets Summary:\n");
+    LineToConsole ("Num #Rcvd    Size   TotlBytes   %%Total\n");
     for (i = 0; i <= NUM_PACKETS; i++)
     {
 
@@ -3126,20 +3133,20 @@ Dump_Packet_Log_Info (void)
         else
             calc_temp = vari_sizes[i];
 
-        printf ("%3d %5d    %4d   %9d   %3.2f\n",
-                i, packet_log[i], handlers[i].size, calc_temp,
-                (float) (calc_temp * 100 / total_bytes));
+        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
+                        i, packet_log[i], handlers[i].size, calc_temp,
+                        (float) (calc_temp * 100 / total_bytes));
 #else
         calc_temp = handlers[i].size * packet_log[i];
-        printf ("%3d %5d    %4d   %9d   %3.2f\n",
-                i, packet_log[i], handlers[i].size, calc_temp,
-                (float) (calc_temp * 100 / total_bytes));
+        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
+                        i, packet_log[i], handlers[i].size, calc_temp,
+                        (float) (calc_temp * 100 / total_bytes));
 #endif
     }
-    printf ("Total bytes sent %d, average CPS: %4.1f\n",
-            outtotal_bytes, (float) (outtotal_bytes / (Now - Start_Time)));
-    printf ("Client Packets Summary:\n");
-    printf ("Num #Sent    Size   TotlBytes   %%Total\n");
+    LineToConsole ("Total bytes sent %d, average CPS: %4.1f\n",
+                    outtotal_bytes, (float) (outtotal_bytes / (Now - Start_Time)));
+    LineToConsole ("Client Packets Summary:\n");
+    LineToConsole ("Num #Sent    Size   TotlBytes   %%Total\n");
     for (i = 0; i <= NUM_SIZES; i++)
     {
 
@@ -3148,15 +3155,15 @@ Dump_Packet_Log_Info (void)
             calc_temp = cp_msg_size;
         else
             calc_temp = sizes[i] * outpacket_log[i];
-        printf ("%3d %5d    %4d   %9d   %3.2f\n",
-                i, outpacket_log[i], sizes[i], calc_temp,
-                (float) (calc_temp * 100 / outtotal_bytes));
+        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
+                        i, outpacket_log[i], sizes[i], calc_temp,
+                        (float) (calc_temp * 100 / outtotal_bytes));
     }
 #else
         calc_temp = sizes[i] * outpacket_log[i];
-        printf ("%3d %5d    %4d   %9d   %3.2f\n",
-                i, outpacket_log[i], sizes[i], calc_temp,
-                (float) (calc_temp * 100 / outtotal_bytes));
+        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
+                        i, outpacket_log[i], sizes[i], calc_temp,
+                        (float) (calc_temp * 100 / outtotal_bytes));
     }
 #endif
 }

@@ -39,6 +39,13 @@ void check (void);
 /******************************************************************************/
 void getColorDefs (void);
 
+/******************************************************************************/
+/***  console.c                                                             ***/
+/******************************************************************************/
+int IsConsoleVisible (void);
+void ShowConsole (void);
+void LineToConsole (char * format, ...);
+void BufferToConsole (void);
 
 /******************************************************************************/
 /***  cowmain.c                                                             ***/
@@ -479,6 +486,13 @@ W_Window W_MakeScrollingWindow (char *name,
                                 int height,
                                 W_Window parent,
                                 int border);
+W_Window W_MakeScrollingRichTextWindow (char *name,
+                                        int x,
+                                        int y,
+                                        int width,
+                                        int height,
+                                        W_Window parent,
+                                        int border);
 W_Window W_MakeMenu (char *name,
                      int x,
                      int y,
@@ -635,6 +649,10 @@ void AddToScrolling (Window * win,
                      W_Color color,
                      char *str,
                      int len);
+void AddToRichText (Window * win,
+                    W_Color color,
+                    char *str,
+                    int len);
 void RedrawScrolling (Window * win,
                       HDC hdc);
 void W_FlushScrollingWindow (W_Window window);
@@ -708,6 +726,11 @@ void W_MessageAllowedWindows (int messtype,
                               int len,
                               W_Font font);
 void W_SetWAM (W_Window win);
+/* RichText */
+LRESULT CALLBACK RichTextWndProc (HWND hwnd,
+                                  UINT msg,
+                                  WPARAM wParam,
+                                  LPARAM lParam);
 /* DoubleBuffering */
 SDBUFFER * W_InitSDB (W_Window window);
 void W_Win2Mem (SDBUFFER * sdb);
@@ -855,13 +878,10 @@ void rpb_dorev (char *buf);
 /******************************************************************************/
 void InitPlayerList ();
 int PlistMaxWidth ();
+int PlistMaxWidth2 ();
 void RedrawPlayerList ();
 void UpdatePlistFn ();
 int GetPlayerFromPlist (int x, int y);
-//static void WriteSortedPlist();
-//static void WriteUnsortedPlist(void);
-//static int PlistHeader(char *layout, int doWrite);
-//static void PlistLine(struct player *j, int pos);
 
 /******************************************************************************/
 /***  ranklist.c
@@ -954,19 +974,19 @@ void new_flags (unsigned int data,
 /******************************************************************************/
 void DisplayMessage ();
 void smessage (char ichar);
-pmessage (char *str,
-          short recip,
-          short group);
+void pmessage (char *str, 
+               short recip, 
+               short group);
 char *getaddr2 (int flags,
                 int recip);
-message_on (void);
-message_off (void);
+void message_on (void);
+void message_off (void);
 #ifdef XTRA_MESSAGE_UI
-message_hold (void);
+void message_hold (void);
 #endif
 int getgroup (char addr,
               int *recip);
-pnbtmacro (int c);
+void pnbtmacro (int c);
 
 /******************************************************************************/
 /***  socket.c

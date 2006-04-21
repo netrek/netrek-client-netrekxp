@@ -20,6 +20,7 @@
 #include "Wlib.h"
 #include "struct.h"
 #include "proto.h"
+#include "data.h"
 
 char *servertmp = NULL;
 
@@ -30,48 +31,48 @@ char *servertmp = NULL;
 static void
 printUsage (char *prog)
 {
-    printf ("%s %s\n", version, mvers);
-    printf ("Usage: %s [options] [display-name]\n", prog);
-    printf ("Options:\n");
-    printf (" [-h servername]     Specify a server\n");
-    printf (" [-p port number]     Specify a port to connect to\n");
-    printf (" [-r defaultsfile]   Specify defaults file\n");
-    printf
-        (" [-s socketnum]      Specify listen socket port for manual start\n");
-    printf (" [-u]   show usage\n");
-    printf (" [-A]   character password\n");
-    printf (" [-C]   character name\n");
+    LineToConsole ("%s %s\n", version, mvers);
+    LineToConsole ("Usage: %s [options] [display-name]\n", prog);
+
+    LineToConsole ("Options:\n");
+    LineToConsole (" [-h servername]     specify a server\n");
+    LineToConsole (" [-p port number]    specify a port to connect to\n");
+    LineToConsole (" [-r defaultsfile]   specify defaults file\n");
+    LineToConsole (" [-s socketnum]      specify listen socket port for manual start\n");
+    LineToConsole (" [-U udp_port]       specify client UDP port (useful for some firewalls)\n");
+#ifdef RECORDGAME
+    LineToConsole (" [-F filename]       view recorded game from 'filename'\n");
+    LineToConsole (" [-f filename]       record game into 'filename'\n");
+#endif
+    LineToConsole (" [-l filename]       record messages into 'filename'\n");
+
+    LineToConsole (" [-A]   character password\n");
+    LineToConsole (" [-C]   character name\n");
 
 #ifdef GATEWAY
-    printf (" [-H]   specify host (via gateway)\n");
+    LineToConsole (" [-H]   specify host (via gateway)\n");
 #endif
 
-    printf
-        (" [-U udp_port]       Specify client UDP port (useful for some firewalls)\n");
-
 #ifdef RSA
-    printf (" [-o]   use old-style binary verification)\n");
-    printf (" [-R]   use RSA binary verification\n");
+    LineToConsole (" [-o]   use old style binary verification\n");
+    LineToConsole (" [-R]   use RSA binary verification\n");
 #endif
 
 #ifdef PACKET_LOG
-    printf (" [-P]   Log server packets, repeat for increased information\n");
+    LineToConsole (" [-P]   log server packets, repeat for increased information\n");
 #endif
 
-    printf (" [-c]   to just do ck_players on the server\n");
-#ifdef RECORDGAME
-    printf (" [-F filename]   View recorded game from 'filename'\n");
-    printf (" [-f filename]   Record game into 'filename'\n");
-#endif
-    printf (" [-l filename]   Record messages into 'filename'\n");
+    LineToConsole (" [-c]   run players check on the server\n");
 
 #ifdef META
-    printf (" [-m]   check metaserver for active servers\n");
-    printf (" [-k]   display known servers\n");
+    LineToConsole (" [-m]   check metaserver for active servers\n");
+    LineToConsole (" [-k]   display known servers\n");
 #endif
 
-	printf (" [-n]   show console window\n");
-    printf (" [-v]   display client version info\n");
+    LineToConsole (" [-D]   output debug info\n");
+    LineToConsole (" [-n]   show console window\n");
+    LineToConsole (" [-u]   show usage\n");
+    LineToConsole (" [-v]   display client version info\n");
 
 }
 
@@ -97,8 +98,6 @@ main2 (int argc,
     int xtrekPort = -1;
 
     name = argv[0];
-//  if ((ptr = RINDEX(name, "/")) != NULL)
-//    name = ptr + 1;
 
 #ifdef GATEWAY
     netaddr = 0;
@@ -143,13 +142,15 @@ main2 (int argc,
 
             case 'u':           /* program usage */
                 usage++;
+                hideConsole = 0;
                 break;
 
             case 'c':           /* run ck_players */
                 checking = 1;
+                hideConsole = 0;
                 break;
 
-            case 's':
+            case 's':           /* listen socket number */
                 if (i < argc)
                 {
                     xtrekPort = atoi (argv[i + 1]);
@@ -160,11 +161,11 @@ main2 (int argc,
                     usage++;
                 break;
 #ifdef RECORDGAME
-            case 'F':
+            case 'F':           /* playback recorded cambot */
                 inplayback = 1;
                 /* No break */
 
-            case 'f':
+            case 'f':           /* record to cambot file */
                 if (i < argc)
                 {
                     recordFileName = argv[i + 1];
@@ -174,7 +175,7 @@ main2 (int argc,
                     usage++;
                 break;
 #endif
-            case 'l':
+            case 'l':           /* log to file */
                 if (i < argc)
                 {
                     logFileName = argv[i + 1];
@@ -184,7 +185,7 @@ main2 (int argc,
                     usage++;
                 break;
 
-            case 'p':
+            case 'p':           /* port to connect to */
                 if (i < argc)
                 {
                     xtrekPort = atoi (argv[i + 1]);
@@ -193,6 +194,7 @@ main2 (int argc,
                 else
                     usage++;
                 break;
+
             case 'd':
                 if (i < argc)
                 {
@@ -204,17 +206,17 @@ main2 (int argc,
                 break;
 
 #ifdef META
-            case 'm':
+            case 'm':           /* show metaserver window */
                 if (usemeta && usemeta != 1)
                 {
-                    fputs ("The options -k and -m are mutuall exclusive\n",
+                    fputs ("The options -k and -m are mutually exclusive\n",
                            stderr);
                     err++;
                 }
                 usemeta = 1;
                 break;
 
-            case 'k':
+            case 'k':           /* show metacache window */
                 if (usemeta && usemeta != 2)
                 {
                     fputs ("The options -k and -m are mutually exclusive\n",
@@ -226,31 +228,31 @@ main2 (int argc,
 #endif
 
 #ifdef RSA
-            case 'o':
+            case 'o':               /* try old binary verification */
                 useRsa = -1;        /* will be reset leter, set
-                                         * negative here * to flag
-                                         * that it should override
-                                         * xtrekrc */
-                printf ("Using standard binary verification\n");
+                                     * negative here * to flag
+                                     * that it should override
+                                     * xtrekrc */
+                LineToConsole ("Using standard binary verification\n");
                 break;
 
-            case 'R':
+            case 'R':               /* try RSA verification */
                 useRsa = -2;        /* will be reset leter, set
-                                         * negative here * to flag
-                                         * that it should override
-                                         * xtrekrc */
-                printf ("Using RSA verification\n");
+                                     * negative here * to flag
+                                     * that it should override
+                                     * xtrekrc */
+                LineToConsole ("Using RSA verification\n");
                 break;
 #else
             case 'R':
-                printf ("This client does not support RSA verification\n");
+                LineToConsole ("This client does not support RSA verification\n");
 
             case 'o':
-                printf ("Using standard binary verification\n");
+                LineToConsole ("Using standard binary verification\n");
                 break;
 #endif
 
-            case 'h':
+            case 'h':           /* server to connect to */
                 if (i < argc)
                 {
                     servertmp = argv[i + 1];
@@ -267,7 +269,7 @@ main2 (int argc,
                 break;
 
 #ifdef GATEWAY
-            case 'H':
+            case 'H':           /* gateway to connect through */
                 hset++;
                 if (i < argc)
                 {
@@ -278,12 +280,12 @@ main2 (int argc,
                     usage++;
                 break;
 #endif
-            case 'U':
+            case 'U':           /* local UDP port */
                 if (i < argc)
                 {
                     if ((baseUdpLocalPort = atoi (argv[i + 1])) == 0)
                     {
-                        fprintf (stderr, "Error: -U requires a port number\n");
+                        LineToConsole ("Error: -U requires a port number\n");
                         exit (1);
                     }
                     i++;
@@ -293,23 +295,23 @@ main2 (int argc,
                 break;
 
 #ifdef PACKET_LOG
-            case 'P':
+            case 'P':           /* log packets */
                 log_packets++;
                 break;
 #endif
-            case 'G':
+            case 'G':           /* try restarting previous session */
                 if (i < argc)
                 {
                     ghoststart++;
                     ghost_pno = atoi (argv[i + 1]);
-                    printf ("Emergency restart being attempted...\n");
+                    LineToConsole ("Emergency restart being attempted...\n");
                     i++;
                 }
                 else
                     usage++;
                 break;
             
-            case 't':
+            case 't':           /* window title */
                 if (i < argc)
                 {
                     title = argv[i + 1];
@@ -319,7 +321,7 @@ main2 (int argc,
                     usage++;
                 break;
             
-            case 'r':
+            case 'r':           /* defaults file */
                 if (i < argc)
                 {
                     deffile = argv[i + 1];
@@ -329,29 +331,31 @@ main2 (int argc,
                     usage++;
                 break;
             
-            case 'D':
+            case 'D':           /* add debug info */
                 debug++;
+                hideConsole = 0;
                 break;
             
-			case 'n':
-				hideConsole = 0;
-				break;
+            case 'n':           /* don't hide console window */
+		hideConsole = 0;
+		break;
 
-            case 'v':
-				printf ("%s %s\n", version, mvers);
-				printf ("%s\n", CBUGS);
+            case 'v':           /* output version info */
+                hideConsole = 0;
+		LineToConsole ("%s %s\n", version, mvers);
+		LineToConsole ("%s\n", CBUGS);
 #ifdef RSA
-                printf ("RSA key installed: %s --- Created by: %s\n", key_name, client_creator);
-                printf ("Client type: %s\n", client_type);
-                printf ("Client arch: %s\n", client_arch);
-                printf ("Key permutation date: %s\n", client_key_date);
-                printf ("Comments: %s\n", client_comments);
+                LineToConsole ("RSA key installed: %s --- Created by: %s\n", key_name, client_creator);
+                LineToConsole ("Client type: %s\n", client_type);
+                LineToConsole ("Client arch: %s\n", client_arch);
+                LineToConsole ("Key permutation date: %s\n", client_key_date);
+                LineToConsole ("Comments: %s\n", client_comments);
 #endif
                 exit (0);
                 break;
             
             default:
-                fprintf (stderr, "%s: unknown option '%c'\n", name, *ptr);
+                LineToConsole ("%s: unknown option '%c'\n", name, *ptr);
                 err++; 
                 break;
             }   /* end switch */
@@ -360,21 +364,25 @@ main2 (int argc,
         }       /* end while */
     }           /* end for */
 
+    if (!usemeta && !servertmp)  /* no meta type was selected, pick metaserver */
+        usemeta = 1;
+
+	if (hideConsole)
+		FreeConsole ();
+
     if (usage || err)
     {
         printUsage (name);
         exit (err);
     }
 
-	if (hideConsole)
-		FreeConsole ();
-
 #ifdef GATEWAY
-    if (!hset) use_trekhopd = 0;        /* allow use via normal
-                                         * connections */
+    if (!hset) use_trekhopd = 0;        /* allow use via normal connections */
     if (netaddr == 0)
-        fprintf (stderr, "netrek: no remote address set (-H).  
+    {
+        LineToConsole ("netrek: no remote address set (-H).  
                           Restricted server will not work.\n");
+    }
 #endif
 
 #ifdef RECORDGAME

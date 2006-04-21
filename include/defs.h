@@ -219,7 +219,7 @@
 #define INVISIBLE(j)        (((j)->p_flags & PFCLOAK) && \
         ((j)->p_cloakphase == (CLOAK_PHASES-1)))
 
-#define ANNOUNCESOCKET      if (me!=NULL)printf("***  socket %d, player %d  ***\n",nextSocket,me->p_no); else
+#define ANNOUNCESOCKET      if (me!=NULL)LineToConsole("***  socket %d, player %d  ***\n",nextSocket,me->p_no); else
 
 
 #if !defined(_IBMR2)
@@ -320,7 +320,7 @@
 #define UDP_UPDATE_WAIT	5
 
 /* client version of UDPDIAG */
-#define UDPDIAG(x)      { if (udpDebug) { printf("UDP: "); printf x; }}
+#define UDPDIAG(x)      { if (udpDebug) { LineToConsole("UDP: "); LineToConsole x; }}
 #define V_UDPDIAG(x)    UDPDIAG(x)
 
 #ifdef ROTATERACE
@@ -451,5 +451,8 @@
 #define T_SHIP      3   /* time in ship */
 #define T_USER      4   /* user reset timer */
 #define T_TOTAL     5   /* number of T_ defs */
+
+/* The maximum length of message in buffer */
+#define MAX_MLENGTH 286
 
 #endif /* _h_defs */

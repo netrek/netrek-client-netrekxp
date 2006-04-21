@@ -152,13 +152,12 @@ main (int argc,
     //Kick winsock into gear
     if (WSAStartup (MAKEWORD (1, 1), &data) != 0)
     {
-        fprintf (stderr,
-                 "Could not find WINSOCK.DLL / WINSOCK initializtion failed\n");
+        LineToConsole ("Could not find WINSOCK.DLL / WINSOCK initializtion failed\n");
         return -1;
     }
     if (data.wVersion < MAKEWORD (1, 1))
     {
-        fprintf (stderr, "Bad WINSOCK.DLL version (need at least v1.1).\n");
+        LineToConsole ("Bad WINSOCK.DLL version (need at least v1.1).\n");
         WSACleanup ();
         return -1;
     }
@@ -264,7 +263,7 @@ rint (double r)
 void
 perror (const char *str)
 {
-    printf ("%s: errno = %d, WSALast = %d\n", str, errno, WSAGetLastError ());
+    LineToConsole ("%s: errno = %d, WSALast = %d\n", str, errno, WSAGetLastError ());
 }
 
 
@@ -289,27 +288,27 @@ select (int nfds,
     if (timeout)
     {
         ms = (timeout->tv_sec << 10) + (timeout->tv_usec >> 10);
-        printf ("sec = %d, usec = %d\n", timeout->tv_sec, timeout->tv_usec);
+        LineToConsole ("sec = %d, usec = %d\n", timeout->tv_sec, timeout->tv_usec);
     }
     else
         ms = INFINITE;
 
-    printf ("ms=%d, ", ms);
+    LineToConsole ("ms=%d, ", ms);
 
     /* Scan through the array, copying and looking for W_Socket */
     for (i = j = 0; i < readfds->fd_count; i++)
     {
         if (readfds->fd_array[i] != W_SOCKET)
         {
-            printf ("handle %d, sock=%d\n", readfds->fd_array[i], sock);
+            LineToConsole ("handle %d, sock=%d\n", readfds->fd_array[i], sock);
             handles[j++] = readfds->fd_array[i];
         }
         else
             wsocket_present = 1;
     }
 
-    printf ("handles=%d, handle[0]=%d, wsocket=%d\n", j, handles[0],
-            wsocket_present);
+    LineToConsole ("handles=%d, handle[0]=%d, wsocket=%d\n", j, handles[0],
+                    wsocket_present);
 
     readfds->fd_count = 1;
 
@@ -335,7 +334,7 @@ select (int nfds,
 
     if (got == WAIT_TIMEOUT)
     {
-        printf ("Timeout\n");
+        LineToConsole ("Timeout\n");
         readfds->fd_count = 0;  // clear
         return 0;
     }
@@ -343,7 +342,7 @@ select (int nfds,
     readfds->fd_array[0] = handles[got - WAIT_OBJECT_0];
     return 1;
 
-    printf ("Success! Returned %d\n", got);
+    LineToConsole ("Success! Returned %d\n", got);
 }
 #endif
 

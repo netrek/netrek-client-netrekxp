@@ -99,6 +99,10 @@ SOURCE=.\src\colors.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\console.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\cowmain.c
 # End Source File
 # Begin Source File

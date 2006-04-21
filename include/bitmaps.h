@@ -1,5 +1,4 @@
 #include "config.h"
-
 // Ships
 // -----
 

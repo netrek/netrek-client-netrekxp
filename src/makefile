@@ -88,7 +88,7 @@ RSADEFS = -DRSA
 DEBUGDEFS = -DDEBUG
 !endif
 
-ROBJ            = beeplite.obj check.obj colors.obj data.obj death.obj defaults.obj dmessage.obj\
+ROBJ            = beeplite.obj check.obj colors.obj console.obj data.obj death.obj defaults.obj dmessage.obj\
                   enter.obj findslot.obj getname.obj getship.obj helpwin.obj hintwin.obj inform.obj\
                   interface.obj newwin.obj option.obj planetlist.obj macrowin.obj\
                   map.obj playerlist.obj ranklist.obj reserved.obj sintab.obj\
@@ -99,7 +99,7 @@ ROBJ            = beeplite.obj check.obj colors.obj data.obj death.obj defaults.
                   docwin.obj feature.obj\
                   string_util.obj local.obj cowmain.obj playback.obj
 
-RSRC            = beeplite.c check.c colors.c data.c death.c defaults.c dmessage.c\
+RSRC            = beeplite.c check.c colors.c console.c data.c death.c defaults.c dmessage.c\
                   enter.c findslot.c getname.c getship.c helpwin.c hintwin.c inform.c\
                   input.c interface.c newwin.c option.c planetlist.c\
                   macrowin.c map.c playerlist.c ranklist.c redraw.c\

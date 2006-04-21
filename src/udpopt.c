@@ -61,8 +61,8 @@ udprefresh (int i)
             strcat (buf, "Verifying UDP connection");
             break;
         default:
-            fprintf (stderr, "netrek: UDP error: bad commStatus (%d)\n",
-                     commStatus);
+            LineToConsole ("netrek: UDP error: bad commStatus (%d)\n",
+                             commStatus);
         }
         break;
     case UDP_DROPPED:
@@ -145,7 +145,7 @@ udprefresh (int i)
         strcpy (buf, "Done");
         break;
     default:
-        fprintf (stderr, "netrek: UDP error: bad udprefresh(%d) call\n", i);
+        LineToConsole ("netrek: UDP error: bad udprefresh(%d) call\n", i);
     }
 
     W_WriteText (udpWin, 0, i, textColor, buf, strlen (buf), 0);

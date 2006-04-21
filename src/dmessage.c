@@ -102,12 +102,10 @@ CheckFeatures (char *m)
 
     buf[79] = '\0';
 
-    /* printf("%s\n", buf); */
-
 #ifdef TOOLS
     W_WriteText (toolsWin, 0, 0, textColor, buf, strlen (buf), W_RegularFont);
 #else
-    W_MessageAllowedWindows (WAM_INDIV, 0, 0, W_White, buf, stlen (buf), 0);
+    W_MessageAllowedWindows (WAM_INDIV, 0, 0, W_White, buf, strlen (buf), 0);
 #endif
 }
 
@@ -178,19 +176,17 @@ dmessage (char *message,
             }
             else
             {
-                printf ("%s: %s\n", timebuf, message);
+                LineToConsole ("%s: %s\n", timebuf, message);
             }
         }
         if (!(logging && logFile == NULL) && flags == conq)
         {
             /* output conquer stuff to stdout in addition to message window */
-            fprintf (stdout, "%s\n", message);
+            LineToConsole ("%s\n", message);
             if (instr (message, "kill"))
             {
-                fprintf (stdout,
-                         "NOTE: The server here does not properly set message flags\n");
-                fprintf (stdout,
-                         "You should probably pester the server god to update....\n");
+                LineToConsole ("NOTE: The server here does not properly set message flags\n");
+                LineToConsole ("You should probably pester the server god to update....\n");
             }
         }
         if (flags == (MCONFIG + MINDIV + MVALID))
@@ -205,7 +201,7 @@ dmessage (char *message,
             if ((flags == team) &&
                 !strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                printf ("dmessage:flags==team PIG call from=%d\n", from);
+                LineToConsole ("dmessage:flags==team PIG call from=%d\n", from);
                 pmessage (pigcall, from, MINDIV);
             }
         }
@@ -226,13 +222,13 @@ dmessage (char *message,
             W_MessageAllowedWindows (WAM_INDIV, 0, 0, color, message, len, 0);
             if (!strncmp (message + 10, "     ", 5) && (message[15] == 0))
             {
-                printf ("dmessage:MINDIV PIG call from=%d\n", from);
+                LineToConsole ("dmessage:MINDIV PIG call from=%d\n", from);
                 pmessage (pigcall, from, MINDIV);
             }
 #ifdef CLUECHECKBORG
             if (from == 255)
             {
-                printf ("dmessage: Message from God %s\n", message);
+                LineToConsole ("dmessage: Message from God %s\n", message);
                 ClueRespond (message);
             }
 #endif
@@ -275,8 +271,8 @@ dmessage (char *message,
                 }
                 else
                 {
-                    printf ("%s ", message);
-                    printf ("%s\n", timebuf);
+                    LineToConsole ("%s ", message);
+                    LineToConsole ("%s\n", timebuf);
                 }
             }
             return;
@@ -299,8 +295,8 @@ dmessage (char *message,
                 }
                 else
                 {
-                    printf ("%s ", message);
-                    printf ("%s\n", timebuf);
+                    LineToConsole ("%s ", message);
+                    LineToConsole ("%s\n", timebuf);
                 }
             }
             break;
@@ -326,8 +322,8 @@ dmessage (char *message,
                 }
                 else
                 {
-                    printf ("%s ", message);
-                    printf ("%s\n", timebuf);
+                    LineToConsole ("%s ", message);
+                    LineToConsole ("%s\n", timebuf);
                 }
             }
             break;
@@ -347,8 +343,8 @@ dmessage (char *message,
                 }
                 else
                 {
-                    printf ("%s", message);
-                    printf ("%s\n", timebuf);
+                    LineToConsole ("%s", message);
+                    LineToConsole ("%s\n", timebuf);
                 }
             }
             break;

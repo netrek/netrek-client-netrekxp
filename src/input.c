@@ -632,7 +632,7 @@ initkeymap (void)
 #endif /* SHIFTED_MOUSE */
                 
             default:
-                fprintf (stderr, "%c ignored in buttonmap\n", *(str - 1));
+                LineToConsole ("%c ignored in buttonmap\n", *(str - 1));
                 break;
             }
         }
@@ -673,9 +673,12 @@ input ()
        event detection and handling into the select() mechanism.
        It probably also increases performance */
     // Close HANDLE from previously created thread.
-    if (ThreadCreated != NULL)
-        CloseHandle (ThreadCreated);
-    THREAD (input2);
+    if (InputThread != NULL)
+    {
+        WaitForSingleObject (InputThread, INFINITE);
+        CloseHandle (InputThread);
+    }
+    InputThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) input2, 0, 0, &InputThreadID);
 
     while (1)
     {
@@ -683,6 +686,9 @@ input ()
             break;
         process_event ();
     }
+
+    /* clear exitFlag */
+    exitFlag = 0;
 
     while (W_EventsPending ())
         W_NextEvent (&event);
@@ -745,8 +751,8 @@ input ()
 
                 if (isServerDead ())
                 {
-                    printf ("Whoops!  We've been ghostbusted!\n");
-                    printf ("Pray for a miracle!\n");
+                    LineToConsole ("Whoops!  We've been ghostbusted!\n");
+                    LineToConsole ("Pray for a miracle!\n");
                     /* UDP fail-safe */
                     commMode = commModeReq = COMM_TCP;
                     commSwitchTimeout = 0;
@@ -758,7 +764,7 @@ input ()
                         udprefresh (UDP_STATUS);
                     }
                     connectToServer (nextSocket);
-                    printf ("Yea!  We've been resurrected!\n");
+                    LineToConsole ("Yea!  We've been resurrected!\n");
                 }
             }
 
@@ -968,8 +974,8 @@ input ()
                 intrupt ();
                 if (isServerDead ())
                 {
-                    printf ("Shit, We've been ghostbusted\n");
-                    printf ("hope you're not in a base\n");
+                    LineToConsole ("Shit, We've been ghostbusted\n");
+                    LineToConsole ("hope you're not in a base\n");
                     /* UDP fail-safe */
                     commMode = commModeReq = COMM_TCP;
                     commSwitchTimeout = 0;
@@ -981,7 +987,7 @@ input ()
                         udprefresh (UDP_STATUS);
                     }
                     connectToServer (nextSocket);
-                    printf ("We've been resurrected!\n");
+                    LineToConsole ("We've been resurrected!\n");
                     map ();
                 }
             }
@@ -1010,7 +1016,7 @@ input ()
         case W_EV_KEY:
 
 #ifdef DEBUG
-            printf ("W_EV_KEY\n");
+            LineToConsole ("W_EV_KEY\n");
 #endif
 
             if ((handler = W_GetWindowKeyDownHandler (data.Window)) != NULL)
@@ -1109,7 +1115,7 @@ input ()
         case W_EV_KEY_OFF:
 
 #ifdef DEBUG
-            printf ("W_EV_KEY_OFF\n");
+            LineToConsole ("W_EV_KEY_OFF\n");
 #endif
 
             if ((handler = W_GetWindowKeyUpHandler (data.Window)) != NULL)
@@ -1122,7 +1128,7 @@ input ()
         case W_EV_BUTTON:
 
 #ifdef DEBUG
-            printf ("W_EV_BUTTON\n");
+            LineToConsole ("W_EV_BUTTON\n");
 #endif
 
             if ((handler = W_GetWindowButtonHandler (data.Window)) != NULL)
@@ -1134,7 +1140,7 @@ input ()
         case W_EV_EXPOSE:
 
 #ifdef DEBUG
-            printf ("W_EV_EXPOSE\n");
+            LineToConsole ("W_EV_EXPOSE\n");
 #endif
 
             if ((handler = W_GetWindowExposeHandler (data.Window)) != NULL)
@@ -1178,7 +1184,7 @@ keyaction (W_Event * data)
                                  * fastquit! */
 
     if (data->Window != mapw && data->Window != w && data->Window != infow
-        && data->Window != scanw && data->Window != playerw)
+        && data->Window != playerw)
         return;
 
     key = data->key;
@@ -1481,7 +1487,7 @@ buttonaction (W_Event * data)
 
 
     if (data->Window != w && data->Window != mapw
-        && data->Window != infow && data->Window != scanwin
+        && data->Window != infow
 		&& data->Window != playerw)
         return;
 
@@ -1489,9 +1495,9 @@ buttonaction (W_Event * data)
 	{
 		int x, y;
 
-        	if (findMouseInWin (&x, &y, playerw))
-	   	{
-		    	data->Window = playerw;
+        if (findMouseInWin (&x, &y, playerw))
+	    {
+		    data->Window = playerw;
 			data->x = x;
 			data->y = y;
 		}
@@ -1819,15 +1825,6 @@ getcourse (W_Window ww,
                                        / 3.14159 * 128.) + 0.5));
 }
 
-/******************************************************************************/
-/***  scan.c  - Why do you have a func that does nothing?                   ***/
-/******************************************************************************/
-void
-scan (W_Window w,
-      int x,
-      int y)
-{
-}
 
 /******************************************************************************/
 /***  detmine()                                                             ***/
@@ -1915,8 +1912,9 @@ doMacro (W_Event * data)
         if (MacroNum > -1)
         {                       /* macro identified, who to? */
             if (MacroNum >= MAX_MACRO)
-                fprintf (stderr,
-                         "Unknown Macro Num!  There is a macro bug!!\n");
+            {
+                LineToConsole ("Unknown Macro Num!  There is a macro bug!!\n");
+            }
 
             if (!pmacro (MacroNum, data->key, data))
                 W_Beep ();
@@ -2050,7 +2048,7 @@ doMacro (W_Event * data)
 
 
             default:
-                fprintf (stderr, "Unknown Macro Type!  Jeff's a twink!!\n");
+                LineToConsole ("Unknown Macro Type!  Jeff's a twink!!\n");
                 warning ("Unknown macro type (eg There is a macro bug)");
                 return;
                 break;
@@ -2095,6 +2093,7 @@ Key32 (void)
     if (infomapped)
         destroyInfo ();
     W_UnmapWindow (helpWin);
+    W_UnmapWindow (playerw2);
 
 #ifdef NBT
     W_UnmapWindow (macroWin);
@@ -2108,11 +2107,7 @@ Key32 (void)
     W_UnmapWindow (war);
     if (optionWin)
         optiondone ();
-    if (scanmapped)
-    {
-        W_UnmapWindow (scanwin);
-        scanmapped = 0;
-    }
+
     if (udpWin)
         udpdone ();
 
@@ -2488,8 +2483,10 @@ Key64 (void)
 void
 Key65 (W_Event * data)
 {
-    /*  W_ShowBitmaps(); */
-    emptyKey ();
+    if (W_IsMapped (playerw2))
+        W_UnmapWindow (playerw2);
+    else
+        W_MapWindow (playerw2);
 }
 
 /******************************************************************************/
@@ -2919,16 +2916,7 @@ Key96 (void)
 void
 Key97 (W_Event * data)
 {
-    if (!W_IsMapped (scanwin))
-    {
-        scan (data->Window, data->x, data->y);
-    }
-    else
-    {
-        if (scanmapped)
-            W_UnmapWindow (scanwin);
-        scanmapped = 0;
-    }
+    emptyKey ();
 }
 
 /******************************************************************************/

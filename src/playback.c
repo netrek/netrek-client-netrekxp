@@ -512,7 +512,9 @@ pb_dopacket (char *buf)
     if (size > count)
         count += fread (buf + count, 1, size - count, recordFile);
     if (debug)
-        printf ("Reading packet %d\n", buf[0]);
+    {
+        LineToConsole ("Reading packet %d\n", buf[0]);
+    }
     if (count < size)
     {
         return 1;
@@ -977,7 +979,7 @@ rpb_analyze (int diskpos,
         break;
 #ifdef nodef
     default:
-        printf ("packet type %d", *(unsigned char *) packet);
+        LineToConsole ("packet type %d", *(unsigned char *) packet);
 #endif
     }
 }

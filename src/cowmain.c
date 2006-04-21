@@ -74,10 +74,8 @@ char *home, homedot[256];
 unsigned LONG mkaddr ();
 
 
-unsigned LONG netaddr;          /* used for blessedness
-                                 * checking */
-int serv_port;                  /* used for blessedness
-                                 * checking */
+unsigned LONG netaddr;          /* used for blessedness checking */
+int serv_port;                  /* used for blessedness checking */
 
 static char *gateway = DEFAULT_GATEWAY;
 
@@ -123,7 +121,7 @@ strToNetaddr (char *str)
 
     if (!server_count)
     {
-        fprintf (stderr, "No server list, cannot resolve id\n");
+        LineToConsole ("No server list, cannot resolve id\n");
         return (-1);
     }
 
@@ -132,8 +130,8 @@ strToNetaddr (char *str)
     {
         if (!strcmp (str, slp->id))
         {
-            printf ("%s is %s(%d) (%s)\n", slp->id, slp->full_name,
-                    slp->remote_port, slp->comment);
+            LineToConsole ("%s is %s(%d) (%s)\n", slp->id, slp->full_name,
+                            slp->remote_port, slp->comment);
             xtrekPort = slp->gw_port;
             str = slp->inet_addr;
             break;
@@ -141,7 +139,7 @@ strToNetaddr (char *str)
     }
     if (i == server_count)
     {
-        fprintf (stderr, "Specified server not found.\n");
+        LineToConsole ("Specified server not found.\n");
         return (-1);
     }
 
@@ -162,18 +160,18 @@ strToNetaddr (char *str)
     /* do things slightly different */
     if (slp->id == NULL)
     {
-        fprintf (stderr, "ERROR: host ID '%s' unknown\n", str);
+        LineToConsole ("ERROR: host ID '%s' unknown\n", str);
         return (-1);
     }
     xtrekPort = trekhopd_port;  /* ought to have an arg to
                                  * specify this */
     port_req = slp->remote_port;
     host_req = slp->full_name;
-    printf ("Connecting to %s (%d) via trekhopd (%s %d)\n", host_req,
-            port_req, serverName, xtrekPort);
+    LineToConsole ("Connecting to %s (%d) via trekhopd (%s %d)\n", host_req,
+                    port_req, serverName, xtrekPort);
 #else
-    printf ("Connecting to %s through %s port %d\n", str, serverName,
-            xtrekPort);
+    LineToConsole ("Connecting to %s through %s port %d\n", str, serverName,
+                    xtrekPort);
 #endif
 
     return (answer);
@@ -226,7 +224,7 @@ getUdpPort ()
             return;
         }
     }
-    printf ("unable to get ports for your uid\n");      /* debug */
+    LineToConsole ("unable to get ports for your uid\n");      /* debug */
 
     gw_p = getenv ("GW_PORT");
     gw_sp = getenv ("GW_SPORT");
@@ -237,8 +235,7 @@ getUdpPort ()
         gw_port = strtol (gw_p, &err, 10);
         if (err == gw_p)
         {
-            fprintf (stderr, "netrek: malformed integer for GW_PORT: %s\n",
-                     gw_p);
+            LineToConsole ("netrek: malformed integer for GW_PORT: %s\n", gw_p);
             /* let something else complain about port 0 */
         }
     }
@@ -249,8 +246,7 @@ getUdpPort ()
         gw_serv_port = strtol (gw_sp, &err, 10);
         if (err == gw_sp)
         {
-            fprintf (stderr, "netrek: malformed integer for GW_SPORT: %s\n",
-                     gw_sp);
+            LineToConsole ("netrek: malformed integer for GW_SPORT: %s\n", gw_sp);
             /* let something else complain about port 0 */
         }
     }
@@ -262,8 +258,7 @@ getUdpPort ()
         gw_local_port = strtol (gw_lp, &err, 10);
         if (err == gw_lp)
         {
-            fprintf (stderr, "netrek: malformed integer for GW_LPORT: %s\n",
-                     gw_lp);
+            LineToConsole ("netrek: malformed integer for GW_LPORT: %s\n", gw_lp);
             /* let something else complain about port 0 */
         }
     }
@@ -293,7 +288,7 @@ mkaddr (char *m)
         ad.s_addr = inet_addr (m);
         if (ad.s_addr == -1)
         {
-            fprintf (stderr, "netrek: unknown host \'%s\'\n", m);
+            LineToConsole ("netrek: unknown host \'%s\'\n", m);
             terminate (1);
         }
     }
@@ -343,8 +338,8 @@ read_servers ()
     {
         /* failed, give up */
         perror ("warning: Unable to open server list");
-        fprintf (stderr, "Tried to open '%s', '%s', and './%s'\n",
-                 homedot, buf, SERVER_FILE);
+        LineToConsole ("Tried to open '%s', '%s', and './%s'\n",
+                        homedot, buf, SERVER_FILE);
         return;
     }
 
@@ -393,8 +388,7 @@ read_servers ()
             }
             if (map_count >= MAX_UDPMAP)
             {
-                fprintf (stderr, "UDP map too large; max is %d entries\n",
-                         MAX_UDPMAP);
+                LineToConsole ("UDP map too large; max is %d entries\n", MAX_UDPMAP);
                 break;
             }
             ump = &udpmap[map_count];
@@ -409,8 +403,8 @@ read_servers ()
             ump->local_port = atoi (cp);
 
 #ifdef DEBUG
-            printf ("%2d: %-8d %-8d %-8d %-8d\n", map_count,
-                    ump->uid, ump->serv_port, ump->port, ump->local_port);
+            LineToConsole ("%2d: %-8d %-8d %-8d %-8d\n", map_count,
+                            ump->uid, ump->serv_port, ump->port, ump->local_port);
 #endif
 
             map_count++;
@@ -424,8 +418,7 @@ read_servers ()
             }
             if (server_count >= MAX_SERVER)
             {
-                fprintf (stderr, "server list too large; max is %d entries\n",
-                         MAX_SERVER);
+                LineToConsole ("server list too large; max is %d entries\n", MAX_SERVER);
                 break;
             }
             slp = &servers[server_count];
@@ -443,9 +436,9 @@ read_servers ()
             STRNCPY (slp->comment, cp, sizeof (slp->comment));
 
 #ifdef DEBUG
-            printf ("%2d: %-9s %-15s %-5d %-5d %-25s \"%s\"\n", server_count,
-                    slp->id, slp->inet_addr, slp->remote_port, slp->gw_port,
-                    slp->full_name, slp->comment);
+            LineToConsole ("%2d: %-9s %-15s %-5d %-5d %-25s \"%s\"\n", server_count,
+                            slp->id, slp->inet_addr, slp->remote_port, slp->gw_port,
+                            slp->full_name, slp->comment);
 #endif
 
             server_count++;
@@ -453,7 +446,7 @@ read_servers ()
         case 5:                /* all done! */
             break;
         default:
-            fprintf (stderr, "Whoops!\n");
+            LineToConsole ("Whoops!\n");
             terminate (2);
         }
     }
@@ -472,8 +465,7 @@ read_servers ()
 static RETSIGTYPE
 handle_exception (int _dummy)
 {
-    printf
-        ("floating point exception error detected; attempting to continue\n");
+    LineToConsole ("floating point exception error detected; attempting to continue\n");
     /* Under Watcom C++, after a signal handler is called the signal reverts
        to SIG_DFL so has to be reset... is this standard? */
     (void) SIGNAL (SIGFPE, handle_exception);
@@ -501,7 +493,7 @@ int passive = 0;
 int checking = 0;
 
 #ifdef META
-int usemeta = 1;
+int usemeta = 0;
 #endif
 
 /******************************************************************************/
@@ -541,17 +533,16 @@ cowmain (char *server,
         {
             if ((hp = gethostbyname (myname)) == NULL)
             {
-                fprintf (stderr, "unable to get addr for local host\n");
+                LineToConsole ("unable to get addr for local host\n");
                 return (1);
             }
             myaddr = *(LONG *) hp->h_addr;
         }
 
-        /* printf("myname = '%s', myaddr = 0x%.8lx\n", myname, myaddr); */
+        /* LineToConsole ("myname = '%s', myaddr = 0x%.8lx\n", myname, myaddr); */
         if ((myaddr & MYADDR_MASK) != MYADDR)
         {
-            fprintf (stderr,
-                     "Sorry, you may not run this client on this host\n");
+            LineToConsole ("Sorry, you may not run this client on this host\n");
             return (1);
         }
     }
@@ -966,7 +957,7 @@ cowmain (char *server,
         sleep (1);
         if (logFile != NULL)
             fclose (logFile);
-        printf ("OK, bye!\n");
+        LineToConsole ("OK, bye!\n");
 
 #ifdef PACKET_LOG
         if (log_packets)

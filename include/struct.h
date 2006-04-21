@@ -129,6 +129,7 @@ enum dist_type
 #define PFOBSERV	0x8000000       /* for observers */
 #define PFTWARP     0x40000000      /* transwarping to base */
 
+#define KLOGIN      0x00    /* initial state */
 #define KQUIT		0x01    /* Player quit */
 #define KTORP		0x02    /* killed by torp */
 #define KPHASER		0x03    /* killed by phaser */
@@ -139,12 +140,14 @@ enum dist_type
 #define KGHOST		0x08    /* killed because a ghost */
 #define KGENOCIDE	0x09    /* killed by genocide */
 #define KPROVIDENCE	0x0a    /* killed by a hacker */
-#define KPLASMA         0x0b    /* killed by a plasma
-                                 * torpedo */
+#define KPLASMA     0x0b    /* killed by a plasma torpedo */
 #define TOURNEND	0x0c    /* tournament game ended */
 #define KOVER		0x0d    /* game over  */
 #define TOURNSTART	0x0e    /* tournament game starting */
 #define KBADBIN		0x0f    /* bad binary */
+#define KTORP2      0x10    /* killed by detted torps */
+#define KSHIP2      0x11    /* chain-reaction explosions */
+#define KPLASMA2    0x12    /* killed by zapped plasma */
 
 #define NUM_TYPES 8
 #define SCOUT 0
@@ -672,5 +675,12 @@ typedef struct _sdbuffer
     HBITMAP mem_bmp;    /* memory to handle bitmap */
     HBITMAP old_bmp;    /* saved bitmap */
 }SDBUFFER;
+
+// Linked list for console buffer
+struct cons_buffer
+{
+    char * string;
+    struct cons_buffer * next;
+};
 
 #endif /* _h_struct */

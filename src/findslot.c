@@ -99,9 +99,6 @@ int
 findslot (void)
 {
     int oldcount = -1;
-    W_Window waitWin, qwin, countWin, motdButtonWin;
-
-    W_Window motdWin;
     extern int MaxMotdLine;
     int WaitMotdLine = 0;
     int showMotd = booleanDefault ("showMotd", 1);
@@ -119,7 +116,7 @@ findslot (void)
             Exit_Sound ();
 #endif
 
-            printf ("Shit!  Ghostbusted!\n");
+            LineToConsole ("Shit!  Ghostbusted!\n");
             terminate (0);
         }
         readFromServer (NULL);
@@ -165,7 +162,7 @@ findslot (void)
             Exit_Sound ();
 #endif
 
-            printf ("Damn, We've been ghostbusted!\n");
+            LineToConsole ("Damn, We've been ghostbusted!\n");
             terminate (0);
         }
         while (W_EventsPending ())
@@ -224,7 +221,7 @@ findslot (void)
                     Exit_Sound ();
 #endif
 
-                    printf ("OK, bye!\n");
+                    LineToConsole ("OK, bye!\n");
                     terminate (0);
                 }
                 break;

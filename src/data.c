@@ -46,7 +46,7 @@ int theirPhaserShrink = 0;
 int shrinkPhaserOnMiss = 0;
 
 int colorClient = 1;            /* Use new colorized bitmaps SRS 11/12/99 */
-int dynamicBitmaps = 1;		/* in game switching of ship bitmaps, default to on */
+int dynamicBitmaps = 1;         /* in game switching of ship bitmaps, default to on */
 int newDashboard = 2;           /* use new graphic
                                  * dashboard, 6/2/93 LAB */
 int old_db = 0;                 /* should be same as
@@ -90,7 +90,7 @@ int warntimer = -1;
 int infomapped = 0;
 int mustexit = 0;
 int messtime = 5;
-int keepPeace = 0;
+int keepPeace = 1;
 
 #ifdef GATEWAY
 unsigned LONG netaddr = 0;      /* for blessing */
@@ -98,7 +98,6 @@ unsigned LONG netaddr = 0;      /* for blessing */
 #endif
 
 int msgBeep = 1;                /* ATM - msg beep */
-int scanmapped = 0;             /* ATM - scanners */
 
 int planetBitmap = 0;
 
@@ -216,12 +215,10 @@ int recv_warn = 1;
 int updatesPerSec = 10;
 
 #ifdef META
-char *metaServer = "metaserver.netrek.org";      /* Default Metaserver */
-char *metaServer1 = "metaserver.us.netrek.org";  /* First Metaserver */
-char *metaServer2 = "metaserver2.us.netrek.org"; /* Second Metaserver */
-char *metaServer3 = "metaserver.eu.netrek.org";  /* Third Metaserver */
-int metaPort = 3521;            /* HAVE to use nicely
-                                 * formated version */
+/* Metaservers list */
+char *metaServer[] = {"metaserver.us.netrek.org",
+                      "metaserever2.us.netrek.org"};
+int metaPort = 3521;
 #ifdef METAPING
 int metaPing = 1;				/*  ICMP ping the metaserverlist */
 #endif
@@ -335,8 +332,9 @@ struct rank ranks[NUMRANKS] = {
 
 W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
     warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi, messwk,
-    playerw, planetw, rankw, optionWin = 0, reviewWin;
-W_Window scanw, scanwin, udpWin, phaserwin, hintWin;
+    playerw, playerw2, planetw, rankw, optionWin = 0, reviewWin;
+W_Window udpWin, phaserwin, hintWin;
+W_Window waitWin, qwin, countWin, motdButtonWin, motdWin;
 
 #ifdef SHORT_PACKETS
 W_Window spWin = NULL;
@@ -360,7 +358,7 @@ LONG packets_received = 0;      /* # all packets received */
 W_Window pStats = NULL;
 
 char deathmessage[80];
-char outmessage[1024];          /* maximum message length */
+char outmessage[MAX_MLENGTH];          /* maximum message length */
 
 char *xdisplay_name = NULL;
 
@@ -505,7 +503,7 @@ char    lastIn[100];
 struct dmacro_list rcm_msg[] = {
     {'0', "none", "Unknown RCM message"},
     {'1', "kill", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) was kill %?%d>0%{%k%!(NO CREDIT)%} for %u (%r%p) %?%w>0%{%W%!%}"},
-    {'2', "planet", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%} killed by %l (%z) %?%w>0%{%W%!%}"},
+    {'2', "planet", "GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) killed by %l (%z) %?%w>0%{%W%!%}"},
     {'3', "bomb", "%N->%Z We are being attacked by %i (%T%c) who is %d%% damaged."},
     {'4', "destroy", "%N->%Z %N destroyed by %i (%T%c)"},
     {'5', "take", "%N->%O %N taken by %i (%T%c)"},
@@ -654,7 +652,8 @@ char *ori_ship_bmp_M;
 char *ind_ship_bmp_M;
 
 // Added to fix thread creation issue
-HANDLE ThreadCreated = NULL;
+HANDLE MainThread = NULL;
+HANDLE InputThread = NULL;
 
 // missing variables
 int forceDisplay = 0;
@@ -711,3 +710,14 @@ SDBUFFER * localSDB = NULL;
 SDBUFFER * mapSDB = NULL;
 
 int disableWinkey = 1;  /* disable WinKey + ContextKey by default */
+
+int exitFlag = 0;       /* no exit by default */
+
+struct cons_buffer * consHead = NULL;    // head of the linked list for console buffer
+struct cons_buffer * consTail = NULL;    // tail of the linked list for console buffer
+
+int allowWheelActions = 1;   /* allow wheel actions */
+
+WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
+
+int richText = 0;   /* temporary variable to select rich text message windows */

@@ -184,7 +184,7 @@ pmacro (int mnum,
 
     if (!group)
     {
-        printf ("Bad group! %c %d %d\n", addr, recip, group);
+        LineToConsole ("Bad group! %c %d %d\n", addr, recip, group);
         return (0);
     }
 

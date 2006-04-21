@@ -288,6 +288,7 @@ struct option Control_Menu[] = {
     {1, "use continuous mouse", &continuousMouse, 0, 0, 0, NULL, NULL},
     {1, "fix continuous mouse", &continuousMouseFix, 0, 0, 0, NULL, NULL},
 #endif
+    {1, "allow wheel actions", &allowWheelActions, 0, 0, 0, NULL, NULL},
     {1, "new keymap entries: %s", 0, 0, newkeys, 13, NULL, NULL},
     {1, "ignore the capslock key", &ignoreCaps, 0, 0, 0, NULL, NULL},
     {1, "%d updates per second", &updatesPerSec, 0, 0, 0, 0, &updates_range},
@@ -312,6 +313,7 @@ struct option Window_Menu[] = {
     {1, "show \"total\" message window", 0, &reviewWin, 0, 0, NULL, NULL},
     {1, "show phaser log window", 0, &phaserwin, 0, 0, NULL},
     {1, "show statistic window", 0, &statwin, 0, 0, NULL, NULL},
+    {1, "show alternate player list", 0, &playerw2, 0, 0, NULL, NULL},
     {1, "show help window", 0, &helpWin, 0, 0, NULL, NULL},
     {1, "show hints window", &showHints, &hintWin, 0, 0, NULL, NULL},
 #ifdef XTREKRC_HELP
@@ -330,7 +332,7 @@ struct option Window_Menu[] = {
     {1, "show UDP control window", 0, &udpWin, 0, 0, NULL, NULL},
     {1, "show ping stats window", 0, &pStats, 0, 0, NULL},
 #ifdef SHORT_PACKETS
-    {1, "show Short Packets window", 0, &spWin, 0, 0, NULL, NULL},
+    {1, "show short packets window", 0, &spWin, 0, 0, NULL, NULL},
 #endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
@@ -407,7 +409,7 @@ optionwindow (void)
         MaxOptions = InitOptionMenus ();
         if (MaxOptions < 0)
         {
-            fprintf (stderr, "InitOptionMenus() error %s!\n", MaxOptions);
+            LineToConsole ("InitOptionMenus() error %s!\n", MaxOptions);
             notdone = 0;
             return;
         }
@@ -677,12 +679,12 @@ optionaction (W_Event * data)
             if (plistCustomLayout == 0 && playerListStyle == 0)
                 playerListStyle = (data->key == W_LBUTTON) ? PLISTLASTSTYLE : 1;
 
-            if (W_IsMapped (playerw))
+            if (W_IsMapped (playerw) || W_IsMapped (playerw2))
                 RedrawPlayerList ();
         }
         else if (op->op_option == &playerListObserver)
         {
-            if (W_IsMapped (playerw))
+            if (W_IsMapped (playerw) || W_IsMapped (playerw2))
                 RedrawPlayerList ();
         }
         /* Let's see if this is our option changed */
@@ -837,6 +839,12 @@ optionaction (W_Event * data)
             // same as above
             if (showHockeyLinesLocal && !hockey_mode ())
                 showHockeyLinesLocal = 0;
+        }
+        else if (op->op_option == &showHockeyScore)
+        {
+            // same as above
+            if (showHockeyScore && !hockey_mode ())
+                showHockeyScore = 0;
         }
 #endif
         else if (op->op_option == &partitionPlist)

@@ -67,12 +67,15 @@ intrupt ()
 
         updateMaxStats (0);     /* Update the max stats
                                  * <isae> */
-        W_FlushScrollingWindow (messwa);
-        W_FlushScrollingWindow (messwt);
-        W_FlushScrollingWindow (messwi);
-        W_FlushScrollingWindow (messwk);
-        W_FlushScrollingWindow (reviewWin);
-        W_FlushScrollingWindow (phaserwin);
+        if (!richText)
+        {
+            W_FlushScrollingWindow (messwa);
+            W_FlushScrollingWindow (messwt);
+            W_FlushScrollingWindow (messwi);
+            W_FlushScrollingWindow (messwk);
+            W_FlushScrollingWindow (reviewWin);
+            W_FlushScrollingWindow (phaserwin);
+        }
 
         UpdatePlayerList ();
     }

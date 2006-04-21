@@ -22,16 +22,17 @@
 
 static int lcount;
 static int HUDoffset;
-static char buf[1024];
+static char buf[MAX_MLENGTH];
 static char cursor = '_';
 static char mbuf[80];
+
 
 /* Routines to handle multi-window messaging */
 void
 DisplayMessage ()
 {
     int length;
-    int offset = 0;
+    char tmp[1024];
 
     length = strlen (outmessage);
 
@@ -42,20 +43,21 @@ DisplayMessage ()
 
     if (length > 80)
     {
-        offset = length - 80;
+        strncpy (tmp, outmessage, 10);
+        tmp[10] = '\0';         // have to null terminate, because strncpy doesn't
+        strncat (tmp, outmessage + length - 70, 80);
         length = 80;
     }
+    else
+        strcpy (tmp, outmessage);
 
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
-        W_WriteText (w, 5, HUDoffset, textColor,
-                     outmessage + offset, length, W_RegularFont);
+        W_WriteText (w, 5, HUDoffset, textColor, tmp, length, W_RegularFont);
 #endif
-    W_WriteText (messagew, 5, 5, textColor,
-                 outmessage + offset, length, W_RegularFont);
-
-    printf ("length: %d, offset %d\n", length, offset);
+    W_WriteText (messagew, 5, 5, textColor, tmp, length, W_RegularFont);
 }
+
 
 void
 AddChar (char *twochar)
@@ -74,6 +76,7 @@ AddChar (char *twochar)
                  twochar, 2, W_RegularFont);
 }
 
+
 void
 BlankChar (int HUDoffsetcol,
            int len)
@@ -89,6 +92,7 @@ BlankChar (int HUDoffsetcol,
     W_ClearArea (messagew, 5 + W_Textwidth * (HUDoffsetcol), 5,
                  W_Textwidth * (len), W_Textheight);
 }
+
 
 void
 DrawCursor (int col)
@@ -202,7 +206,7 @@ smessage (char ichar)
         mdisplayed = 0;
         messpend = 0;
         message_off ();
-        for (i = 0; i < 1024; i++)
+        for (i = 0; i < MAX_MLENGTH; i++)
         {
             outmessage[i] = '\0';
         }
@@ -224,7 +228,7 @@ smessage (char ichar)
         if (strlen (clipString) == 0)
             break;
 
-        if (lcount + strlen (clipString) >= 1024)
+        if (lcount + strlen (clipString) >= MAX_MLENGTH)
         {
             W_Beep ();
             warning ("Clipboard text is too long to fit");
@@ -254,7 +258,7 @@ smessage (char ichar)
     case '\r':                 /* send message */
         buf[lcount - ADDRLEN] = '\0';
         messpend = 0;
-        for (i = 0; i < 1024; i++)
+        for (i = 0; i < MAX_MLENGTH; i++)
         {
             outmessage[i] = '\0';
         }
@@ -347,7 +351,7 @@ smessage (char ichar)
         break;
 
     default:                   /* add character */
-        if (lcount >= 1024)
+        if (lcount >= MAX_MLENGTH)
         {
             W_Beep ();
             break;
@@ -364,55 +368,112 @@ smessage (char ichar)
     }
 }
 
-// SRS - should look at using proper variable types here
+
+void
+send_pmessage (char *str,
+               short recip,
+               short group)
+{
+    char newbuf[100];
+    char * cstr;
+
+    /* message length failsafe and last message saving - jn 6/17/93 */
+    lastMessage[0] = '\0';
+    strncat (lastMessage, str, 69);
+    cstr = lastMessage;
+
+    switch (group)
+    {
+
+#ifdef TOOLS
+    case MTOOLS:
+        sendTools (cstr);
+        break;
+#endif
+
+    case MMOO:
+        strcpy (defaultsFile, cstr);
+        sprintf (mbuf, "changing defaultsFile to %s", cstr);
+        warning (mbuf);
+        break;
+    default:
+        sendMessage (cstr, group, recip);
+    }
+
+    if ((group == MTEAM && recip != me->p_team) ||
+        (group == MINDIV && recip != me->p_no))
+    {
+        sprintf (newbuf, "%s  %s", getaddr2 (group, recip), cstr);
+        newbuf[79] = 0;
+        dmessage (newbuf, (unsigned char) group, (unsigned char) me->p_no,
+                 (unsigned char) recip);
+    }
+}
+
+
+void
 pmessage (char *str,
           short recip,
           short group)
 {
-    char newbuf[100];
-    char * cstr;
-    int length;
+    char * str1;    /* temporary string 1 */
+    char * str2;    /* temporary string 2 */
+    char buf[100];  /* temporary buffer */
     int i = 0;
 
-    length = strlen (str);
+    str1 = str;     /* save original string pointer */
 
-    do
+    while (strlen (str1) > 0)
     {
-        /* message length failsafe and last message saving - jn 6/17/93 */
-        lastMessage[0] = '\0';
-        strncat (lastMessage, str + i, 69);
-        cstr = lastMessage;
-
-        switch (group)
+        if (strlen (str1) > 69)
         {
+            if (str1[69] == ' ')
+            {
+                /* We're lucky to fall on space as next character */
+                strncpy (buf, str1, 69);
+                buf[69] = 0;
+                send_pmessage (buf, recip, group);
+                str1 += 69 + 1; /* skip the space */
+            }
+            else
+            {
+                /* Have to search for first occurence of ' ' from the end
+                   of the string */
 
-#ifdef TOOLS
-        case MTOOLS:
-            sendTools (cstr);
-            break;
-#endif
+                str2 = str1 + 69;
 
-        case MMOO:
-            strcpy (defaultsFile, cstr);
-            sprintf (mbuf, "changing defaultsFile to %s", cstr);
-            warning (mbuf);
-            break;
-        default:
-            sendMessage (cstr, group, recip);
+                while (str2[0] != ' ' && str2 != str1)
+                    str2--;
+
+                if (str2 == str1)
+                {
+                    /* Well, we should send the whole string because
+                       we have no spaces here */
+                    strncpy (buf, str1, 69);
+                    buf[69] = 0;
+                    send_pmessage (buf, recip, group);
+                    str1 += 69;
+                }
+                else
+                {
+                    /* Let's send just the part until space */
+                    strncpy (buf, str1, str2 - str1);
+                    buf[str2 - str1] = 0;
+                    send_pmessage (buf, recip, group);
+                    str1 += (str2 - str1) + 1;  /* skip space */
+                }
+            }
+        }
+        else
+        {
+            /* Just output everything as is */
+            strcpy (buf, str1);
+            buf[strlen (str1)] = 0;
+            send_pmessage (buf, recip, group);
+            str1 += strlen (str1);
         }
 
-        if ((group == MTEAM && recip != me->p_team) ||
-            (group == MINDIV && recip != me->p_no))
-        {
-            sprintf (newbuf, "%s  %s", getaddr2 (group, recip), cstr);
-            newbuf[79] = 0;
-            dmessage (newbuf, (unsigned char) group, (unsigned char) me->p_no,
-                     (unsigned char) recip);
-        }
-
-        i += 69;
-
-    } while (i < length);
+    }
 
     message_off ();
 }
@@ -530,7 +591,7 @@ getaddr2 (int flags,
         }
         else
         {
-            /* printf("smessage:getaddr2 recip=%d\n",recip); */
+            /* LineToConsole ("smessage:getaddr2 recip=%d\n",recip); */
             (void) sprintf (&addrmesg[5], "%c%c ",
                             teamlet[players[recip].p_team], shipnos[recip]);
         }
@@ -553,6 +614,8 @@ getaddr2 (int flags,
     return (addrmesg);
 }
 
+
+void
 message_on (void)
 {
     messageon = 1;
@@ -565,6 +628,8 @@ message_on (void)
 #endif
 }
 
+
+void
 message_off (void)
 {
     messageon = 0;
@@ -572,7 +637,9 @@ message_off (void)
     W_DefineMapcursor (mapw);
 }
 
+
 #ifdef XTRA_MESSAGE_UI
+void
 message_hold (void)
 {
     //char twochar[2] = { '#', ' ' };
@@ -580,6 +647,7 @@ message_hold (void)
     message_off ();
 }
 #endif
+
 
 /* Used in NEWMACRO, useful elsewhere also */
 int
@@ -685,6 +753,7 @@ getgroup (char addr,
 }
 
 
+void
 pnbtmacro (int c)
 {
     switch (macro[c].who)

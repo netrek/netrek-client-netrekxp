@@ -18,6 +18,25 @@
  * the use of it.)
  * 
  * $Log: defwin.c,v $
+ * Revision 1.3  2006/04/21 12:00:06  modemhero
+ * This large patch brings the client up to Stas's version 4.4.0.4.  The visible changes to the user are:
+ * - added "allowWheelActions: (on)/off" to be able to disable wheel in non-scrolling windows
+ * - added new window "player2" that behaves exactly as player list window, but allows to
+ *   select alternate custom layout and could be toggled with 'A' key
+ * - added "playerList2: (string)" option that allows to select different player list layout
+ *   for alternate player list window, by default it will be "n T R N l M K W L r O D d "
+ * - fixed bug that caused main thread to continue in case player died while scrolling
+ *   message window using scrollbar (which forced him close client window and reconnect)
+ * - fixed incorrect behavior of 'windowMove: off' feature. Previously window would snap
+ *   back to wrong place if the main window top-left corner was not (0,0) coordinates
+ * - long lines are now wrapped by words instead of by chars. Maximum message length was
+ *   reduced to 4 full message lines (4 * 69 characters)
+ * - message input window will now show Sender->Recipient even when the input line is longer
+ *   than 69 characters
+ * - changed 'Forum' URL on metaserver window to open Google's r.g.n location
+ *
+ * There are also several internal changes, such as a new format for error messages.
+ *
  * Revision 1.2  2006/04/12 04:20:03  modemhero
  * Update to version 4.4.0.3
  *
@@ -504,7 +523,7 @@ showdef (void)
                     x = xo + INDENT;
                     break;
                 default:
-                    fprintf (stderr, "Unknown type.\n");
+                    LineToConsole ("Unknown type.\n");
                     break;
                 }
             }

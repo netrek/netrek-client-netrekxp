@@ -152,5 +152,4 @@ void RedrawPlayerList (void);
 void UpdatePlistFn (void);
 #define UpdatePlayerList()	if (plistUpdated) UpdatePlistFn()
 
-
 #endif /* defined h_playerlist */

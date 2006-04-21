@@ -153,7 +153,7 @@ loaddocs (void)
     if (temp == NULL)
     {                           /* malloc error checking --
                                  * 10/30/92 EM */
-        printf ("Warning:  Couldn't malloc space for a new doc line!");
+        LineToConsole ("Warning:  Couldn't malloc space for a new doc line!");
         return;
     }
 
@@ -202,7 +202,7 @@ loaddocs (void)
         if (temp->next == NULL)
         {                       /* malloc error checking --
                                  * 10/30/92 EM */
-            printf ("Warning:  Couldn't malloc space for a new doc line!");
+            LineToConsole ("Warning:  Couldn't malloc space for a new doc line!");
             return;
         }
 
@@ -329,7 +329,7 @@ loadxtrekrc (void)
     if (temp == NULL)
     {                           /* malloc error checking --
                                  * 10/30/92 EM */
-        printf ("Warning:  Couldn't malloc space for a new doc line!");
+        LineToConsole ("Warning:  Couldn't malloc space for a new doc line!");
         return;
     }
 
@@ -361,7 +361,7 @@ loadxtrekrc (void)
         if (temp->next == NULL)
         {                       /* malloc error checking --
                                  * 10/30/92 EM */
-            printf ("Warning:  Couldn't malloc space for a new doc line!");
+            LineToConsole ("Warning:  Couldn't malloc space for a new doc line!");
             return;
         }
 

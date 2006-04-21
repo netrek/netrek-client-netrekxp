@@ -120,13 +120,13 @@ loaddude ()
             readFromServer (NULL);
             if (isServerDead ())
             {
-                printf ("Server is dead!\n");
+                LineToConsole ("Server is dead!\n");
                 exit (0);
             }
         }
         if (loginAccept == 0)
         {
-            printf ("Hmmm... The SOB server won't let me log in as guest!\n");
+            LineToConsole ("Hmmm... The SOB server won't let me log in as guest!\n");
             exit (0);
         }
         return;
@@ -140,7 +140,7 @@ loaddude ()
         readFromServer (NULL);
         if (isServerDead ())
         {
-            printf ("Server is dead!\n");
+            LineToConsole ("Server is dead!\n");
             exit (0);
         }
     }
@@ -174,7 +174,7 @@ checkpassword ()
         readFromServer (NULL);
         if (isServerDead ())
         {
-            printf ("Server is dead!\n");
+            LineToConsole ("Server is dead!\n");
             exit (0);
         }
     }
@@ -474,7 +474,7 @@ getname (char *defname,
                 if (secondsLeft == 0)
                 {
                     me->p_status = PFREE;
-                    printf ("Auto-Quit\n");
+                    LineToConsole ("Auto-Quit\n");
                     exit (0);
                 }
             }
@@ -485,7 +485,7 @@ getname (char *defname,
 
                 if (isServerDead ())
                 {
-                    printf ("Ack!  We've been ghostbusted!\n");
+                    LineToConsole ("Ack!  We've been ghostbusted!\n");
                     exit (0);
                 }
             }
@@ -593,8 +593,7 @@ getname (char *defname,
 void
 noserver (void)
 {
-    printf ("No server name was given. Please put a default server in\n");
-    printf
-        ("your .xtrekrc file or specify the server in the command line.\n");
+    LineToConsole ("No server name was given. Please put a default server in\n");
+    LineToConsole ("your netrekrc.txt file or specify the server in the command line.\n");
     terminate (1);
 }

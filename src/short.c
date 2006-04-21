@@ -861,8 +861,10 @@ handleSMessage (struct mesg_s_spacket *packet)
     char addrbuf[9];
 
     if (debug)
-        printf ("Length of Message is: %d  total Size %d \n",
-                strlen (&packet->mesg), (int) packet->length);
+    {
+        LineToConsole ("Length of Message is: %d  total Size %d \n",
+                        strlen (&packet->mesg), (int) packet->length);
+    }
     if (packet->m_from >= MAXPLAYER)
         packet->m_from = 255;
 
@@ -905,7 +907,7 @@ handleShortReply (struct shortreply_spacket *packet)
         /* S_P2 */
         if (shortversion == SHORTVERSION && recv_short == 0)
         {                       /* retry for S_P 1 */
-            printf ("Using Short Packet Version 1.\n");
+            LineToConsole ("Using Short Packet Version 1.\n");
             shortversion = OLDSHORTVERSION;
             sendShortReq (SPK_VON);
         }
@@ -927,7 +929,7 @@ handleShortReply (struct shortreply_spacket *packet)
         sprefresh (SPK_VFIELD);
         spwinside = ntohs (packet->winside);
         spgwidth = ntohl (packet->gwidth);
-        printf ("Receiving Short Packet Version %d\n", shortversion);
+        LineToConsole ("Receiving Short Packet Version %d\n", shortversion);
         /*
          * Get a `-' style update to fix the kills shown on the playerlist
          * when you first enter and to fix other loss if short packets
@@ -965,8 +967,8 @@ handleShortReply (struct shortreply_spacket *packet)
     case SPK_THRESHOLD:
         break;
     default:
-        fprintf (stderr, "%s: unknown response packet value short-req: %d\n",
-                 "netrek", packet->repl);
+        LineToConsole ("%s: unknown response packet value short-req: %d\n",
+                        "netrek", packet->repl);
     }
 }
 
@@ -1253,12 +1255,29 @@ sendShortReq (char state)
 }
 
 char *whydeadmess[] =
-    { "", "[quit]", "[photon]", "[phaser]", "[planet]", "[explosion]",
-    "[daemon]", "[winner]", "[ghostbust]", "[genocide]", "[hacker]",
-    "[plasma]",
-    "[tournend]", "[gameover]", "[gamestart]", "[bad binary]",
-    "[detted photon]", "[chain explosion]",
-    "[zapped plasma]", "", "[team det]", "[team explosion]"
+{ 
+    "", 
+    "[quit]",               /* KQUIT        */
+    "[photon]",             /* KTORP        */
+    "[phaser]",             /* KPHASER      */
+    "[planet]",             /* KPLANET      */
+    "[explosion]",          /* KSHIP        */
+    "[daemon]",             /* KDAEMON      */
+    "[winner]",             /* KWINNER      */
+    "[ghostbust]",          /* KGHOST       */
+    "[genocide]",           /* KGENOCIDE    */
+    "[hacker]",             /* KPROVIDENCE  */
+    "[plasma]",             /* KPLASMA      */
+    "[tournend]",           /* TOURNEND     */
+    "[gameover]",           /* KOVER        */
+    "[gamestart]",          /* TOURNSTART   */
+    "[bad binary]",         /* KBADBIN      */
+    "[detted photon]",      /* KTORP2       */
+    "[chain explosion]",    /* KSHIP2       */
+    "[zapped plasma]",      /* KPLASMA2     */
+    "",
+    "[team det]",
+    "[team explosion]"
 };
 
 void
@@ -1913,7 +1932,7 @@ handleVKills (sbuf)
 #ifdef CORRUPTED_PACKETS
         if (pnum < 0 || pnum >= MAXPLAYER)
         {
-            fprintf (stderr, "handleKills: bad index %d\n", pnum);
+            LineToConsole ("handleKills: bad index %d\n", pnum);
             return;
         }
 #endif
@@ -2002,7 +2021,7 @@ handle_s_Stats (packet)
 #ifdef CORRUPTED_PACKETS
     if (packet->pnum < 0 || packet->pnum >= MAXPLAYER)
     {
-        fprintf (stderr, "handleStats: bad index %d\n", packet->pnum);
+        LineToConsole ("handleStats: bad index %d\n", packet->pnum);
         return;
     }
 #endif

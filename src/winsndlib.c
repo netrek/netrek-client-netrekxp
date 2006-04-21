@@ -82,17 +82,17 @@ ParseSoundFile (char *fname,
     in = fopen (fname, "rb");
     if (!in)
     {
-        fprintf (stderr, "Could not open wave file %s\n", fname);
+        LineToConsole ("Could not open wave file %s\n", fname);
         return 0;
     }
 
     fread (chunk, 8, 1, in);    /* read signature, and file length  (which we discard) */
 #ifdef DEBUG
-    printf ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2], chunk[3]);
+    LineToConsole ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2], chunk[3]);
 #endif
     if (strncmp (chunk, "RIFF", 4))
     {
-        fprintf (stderr, "%s is not a valid wave file\n", fname);
+        LineToConsole ("%s is not a valid wave file\n", fname);
         return 0;
     }
 
@@ -103,7 +103,7 @@ ParseSoundFile (char *fname,
         if (feof (in))
             goto NoGood;
 #ifdef DEBUG
-        printf ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2], chunk[3]);
+        LineToConsole ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2], chunk[3]);
 #endif
         if (!strncmp (chunk, "WAVE", 4))
             do
@@ -113,8 +113,8 @@ ParseSoundFile (char *fname,
                 if (feof (in))
                     goto NoGood;
 #ifdef DEBUG
-                printf ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2],
-                        chunk[3]);
+                LineToConsole ("Chunk: %c%c%c%c\n", chunk[0], chunk[1], chunk[2],
+                                chunk[3]);
 #endif
                 if (!strncmp (chunk, "fmt ", 4))        /* found fmt chunk, read header */
                 {
@@ -124,7 +124,7 @@ ParseSoundFile (char *fname,
                         != 1)
                         goto NoGood;
 #ifdef DEBUG
-                    printf ("Yup gosh read the header\n");
+                    LineToConsole ("Yup gosh read the header\n");
 #endif
                     chunksread++;
                 }
@@ -135,7 +135,7 @@ ParseSoundFile (char *fname,
                     if (fread (*data, len, 1, in) != 1)
                         goto NoGood;
 #ifdef DEBUG
-                    printf ("Read %d bytes of data\n", *datalen);
+                    LineToConsole ("Read %d bytes of data\n", *datalen);
 #endif
                     chunksread++;
                 }
@@ -150,7 +150,7 @@ ParseSoundFile (char *fname,
     return 1;
 
   NoGood:
-    fprintf (stderr, "%s is not a valid wave file\n", fname);
+    LineToConsole ("%s is not a valid wave file\n", fname);
     fclose (in);
     return 0;
 }
@@ -166,7 +166,7 @@ GetSound (char *name)
     struct sound *itr = newest, *newsnd;
 
 #ifdef DEBUG
-    printf ("Searching for sound %s in cache\n", name);
+    LineToConsole ("Searching for sound %s in cache\n", name);
 #endif
 
     while (itr)
@@ -174,17 +174,17 @@ GetSound (char *name)
 #ifdef DEBUG
         if (loopcount > 0 && itr == newest)
         {
-            printf ("Sound list is circular with %d items!\n", loopcount);
+            LineToConsole ("Sound list is circular with %d items!\n", loopcount);
             return 0;
         }
 
         if (loopcount++ > 100)
         {
-            printf ("Stuck in GetSound loop!\n");
+            LineToConsole ("Stuck in GetSound loop!\n");
             return 0;
         }
 
-        printf ("Found %s in cache\n", itr->name);
+        LineToConsole ("Found %s in cache\n", itr->name);
 #endif
 
         if (!strcmp (name, itr->name))
@@ -212,7 +212,7 @@ GetSound (char *name)
 
     /* Sound not in cache, must load */
 #ifdef DEBUG
-    printf ("Sound %s not in cache, loading\n", name);
+    LineToConsole ("Sound %s not in cache, loading\n", name);
 #endif
 
     newsnd = (struct sound *) malloc (sizeof (struct sound));
@@ -231,8 +231,8 @@ GetSound (char *name)
             struct sound *next = itr->newer;
             bytesused -= itr->hdr.dwBufferLength;
 #ifdef DEBUG
-            printf ("Trimming sound cache, file %s, %d bytes\n", itr->name,
-                    itr->hdr.dwBufferLength);
+            LineToConsole ("Trimming sound cache, file %s, %d bytes\n", itr->name,
+                            itr->hdr.dwBufferLength);
 #endif
             if (next)           /* Remove from list, simple as always at end */
             {
@@ -301,7 +301,7 @@ StopSound ()
     if (SoundPlaying ())
     {
 #ifdef DEBUG
-        printf ("Interuppting sound\n");
+        LineToConsole ("Interuppting sound\n");
 #endif
         waveOutReset (hw);
         waveOutUnprepareHeader (hw, &current->hdr, sizeof (WAVEHDR));
@@ -318,7 +318,7 @@ StartSound (char *name)
     WAVEOUTCAPS caps;
 
 #ifdef DEBUG
-    printf ("Request to play sound %s\n", name);
+    LineToConsole ("Request to play sound %s\n", name);
 #endif
     StopSound ();
 
@@ -329,33 +329,34 @@ StartSound (char *name)
         if (!hw)
         {
 #ifdef DEBUG
-            printf ("Initial open of wave device\n");
+            LineToConsole ("Initial open of wave device\n");
 #endif
             if (err =
                 waveOutOpen (&hw, WAVE_MAPPER, (LPWAVEFORMATEX) & snd->fmt, 0,
                              0, 0))
-                fprintf (stderr, "Could not open wave device, error %d\n",
-                         err);
+            {
+                LineToConsole ("Could not open wave device, error %d\n", err);
+            }
             memcpy (&lastfmt, &snd->fmt, sizeof (PCMWAVEFORMAT));
         }
         else if (memcmp (&snd->fmt, &lastfmt, sizeof (PCMWAVEFORMAT)))
             /* Re-use the currently open sound handle of the formats are the same */
         {
 #ifdef DEBUG
-            printf ("Re-open of wave device\n");
+            LineToConsole ("Re-open of wave device\n");
 #endif
             waveOutClose (hw);
             memcpy (&lastfmt, &snd->fmt, sizeof (PCMWAVEFORMAT));
             if (err =
                 waveOutOpen (&hw, WAVE_MAPPER, (LPWAVEFORMATEX) & snd->fmt, 0,
                              0, 0))
-                fprintf (stderr, "Could not open wave device, error %d\n",
-                         err);
-
+            {
+                LineToConsole ("Could not open wave device, error %d\n", err);
+            }
         }
 #ifdef DEBUG
         else
-            printf ("Re-using open sound handle\n");
+            LineToConsole ("Re-using open sound handle\n");
 #endif
         waveOutPrepareHeader (hw, &snd->hdr, sizeof (WAVEHDR));
         waveOutWrite (hw, &snd->hdr, sizeof (WAVEHDR));
@@ -389,7 +390,7 @@ SoundPlaying ()
     int playing;
 
 #ifdef DEBUG
-    printf ("playing = ...");
+    LineToConsole ("playing = ...");
 #endif
     if (!hw || !current)
         return 0;
@@ -401,7 +402,7 @@ SoundPlaying ()
         current = NULL;
     }
 #ifdef DEBUG
-    printf ("%d\n", playing);
+    LineToConsole ("%d\n", playing);
 #endif
     return playing;
 }

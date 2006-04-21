@@ -80,7 +80,6 @@ extern int msgBeep;             /* ATM - msg beep */
 extern int warncount;
 extern int warntimer;
 extern int infomapped;
-extern int scanmapped;          /* ATM - scanner stuff */
 extern int mustexit;
 extern int messtime;
 extern int keepPeace;
@@ -106,10 +105,7 @@ extern char client_key_date[];
 #endif
 
 #ifdef META
-extern char *metaServer;
-extern char *metaServer1;
-extern char *metaServer2;
-extern char *metaServer3;
+extern char *metaServer[];
 extern int metaPort;
 #ifdef METAPING
 extern int metaPing;
@@ -169,7 +165,6 @@ extern int dynamicBitmaps;
 extern int newDashboard, old_db;
 extern int niftyNewMessages;
 extern int fastQuit;
-extern int babes;
 extern char *shipnos;
 extern int sock;
 extern int xtrekPort;
@@ -316,8 +311,9 @@ extern struct rank ranks[NUMRANKS];
 
 extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
     war, warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi,
-    messwk, planetw, rankw, playerw, optionWin, reviewWin;
-extern W_Window scanw, scanwin, udpWin, phaserwin, hintWin;
+    messwk, planetw, rankw, playerw, playerw2, optionWin, reviewWin;
+extern W_Window udpWin, phaserwin, hintWin;
+extern W_Window waitWin, qwin, countWin, motdButtonWin, motdWin;
 
 #ifdef SHORT_PACKETS
 extern W_Window spWin;
@@ -548,8 +544,10 @@ extern char *ori_ship_bmp_M;
 extern char *ind_ship_bmp_M;
 
 // Added to fix thread creation issue
-HANDLE ThreadCreated;
-DWORD ThreadCreatedID;
+HANDLE MainThread;
+DWORD MainThreadID;
+HANDLE InputThread;
+DWORD InputThreadID;
 
 // Missing global variables
 #include <time.h>
@@ -561,7 +559,7 @@ extern int metaStatusLevel;
 extern int mungScrollbarColors;
 extern int showMotd;
 
-extern char *saveFile;  /* file name to save options to */
+extern char * saveFile;  /* file name to save options to */
 extern int saveBig;     /* save options with comments */
 extern int saveMacro;   /* save options with macros */
 extern int saveRCD;     /* save options with RCD */
@@ -604,12 +602,23 @@ extern int omitTeamLetter;  /* don't show team letter on map */
 
 extern int viewBox;     /* show local window box on map */
 
-extern struct stringlist *defaults; /* pointer to defaults list */
+extern struct stringlist * defaults; /* pointer to defaults list */
 
 /* DoubleBufering */
-extern SDBUFFER *localSDB;    /* double buffer for local window */
-extern SDBUFFER *mapSDB;      /* double buffer for map window */
+extern SDBUFFER * localSDB;    /* double buffer for local window */
+extern SDBUFFER * mapSDB;      /* double buffer for map window */
 
 extern int disableWinkey;   /* disable WinKey + ContextKey during the game */
+
+extern int exitFlag;        /* indicates exit state for W_WaitForEvent() */
+
+extern struct cons_buffer * consHead;    /* head of the linked list for console buffer */
+extern struct cons_buffer * consTail;    /* tail of the linked list for console buffer */
+
+extern int allowWheelActions;    /* allow mouse wheel actions */
+
+extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our richedit controls */
+
+extern int richText;    /* temporary variable to enable/disable rich text windows */
 
 #endif /* _h_data */

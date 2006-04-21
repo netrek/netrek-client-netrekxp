@@ -58,7 +58,7 @@ check (void)
     {
         if ((hp = gethostbyname (serverName)) == NULL)
         {
-            fprintf (stderr, "unknown host '%s'\n", serverName);
+            LineToConsole ("unknown host '%s'\n", serverName);
             terminate (0);
         }
         else
@@ -73,7 +73,7 @@ check (void)
         perror ("socket");
         terminate (0);
     }
-    printf ("checking %s on port %d\n", serverName, xtrekPort);
+    LineToConsole ("checking %s on port %d\n", serverName, xtrekPort);
     if (connect (sock, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
         perror ("connect");
@@ -81,7 +81,7 @@ check (void)
         terminate (0);
     }
 
-    while ((cc = read (sock, buf, BUF_SIZE)) > 0)
+    while ((cc = recv (sock, buf, BUF_SIZE, 0)) > 0)
     {
         fwrite (buf, cc, 1, stdout);
     }

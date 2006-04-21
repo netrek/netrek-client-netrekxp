@@ -88,7 +88,7 @@ Init_Sound (void)
     char buf[PATH_MAX];
 
 #ifdef DEBUG
-    printf ("Init_Sound\n");
+    LineToConsole ("Init_Sound\n");
 #endif
     if (sound_init)
     {
@@ -260,7 +260,7 @@ soundrefresh (int i)
     }
     else
     {
-        fprintf (stderr, "Uh oh, bogus refresh number in soundrefresh\n");
+        LineToConsole ("Uh oh, bogus refresh number in soundrefresh\n");
     }
 
     W_WriteText (soundWin, 0, i, textColor, buf, strlen (buf), 0);

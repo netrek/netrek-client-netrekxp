@@ -54,6 +54,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"allowWheelActions", &allowWheelActions, RC_BOOL,
+        {
+            "allow mouse wheel to produce action in non-scrollable windows",
+            NULL
+        }
+    },
     {"autoQuit", &autoQuit, RC_INT,
         {
             "Autoquit timer (default 60)",
@@ -74,7 +80,7 @@ struct save_options save_options[] = {
     },
     {"colorClient", &colorClient, RC_INT,
         {
-            "What type of ship bitmaps to load",
+            "What type of ship bitmaps to use",
             "0 - mono",
             "1 - new color bitmaps (default)",
             "2 - old color bitmaps",
@@ -723,7 +729,7 @@ initDefaults (char *deffile)
     DefaultsLoaded = 1;
 
 #ifdef DEBUG
-    printf ("Initdefaults\n");
+    LineToConsole ("Initdefaults\n");
 #endif
 
     /* Clear defaults if they exist */
@@ -750,7 +756,8 @@ initDefaults (char *deffile)
     fp = fopen (deffile, "r");
     if (!fp)
         return;
-    printf ("Reading defaults file %s\n", deffile);
+
+    LineToConsole ("Reading defaults file %s\n", deffile);
 
 #ifdef NBT
     macrocnt = 0;               /* reset macros */
@@ -784,15 +791,16 @@ initDefaults (char *deffile)
         {
             if (macrocnt == MAX_MACRO)
             {
-                fprintf (stderr, "Maximum number of macros is %d\n",
-                         MAX_MACRO);
+                LineToConsole ("Maximum number of macros is %d\n", MAX_MACRO);
             }
             else
             {
                 str = file + 6;
                 c = getctrlkey ((unsigned char **) &str);
                 if (c == '?')
-                    fprintf (stderr, "Cannot use '?' for a macro\n");
+                {
+                    LineToConsole ("Cannot use '?' for a macro\n");
+                }
                 else
                 {
                     macro[macrocnt].type = NBTM;
@@ -824,15 +832,16 @@ initDefaults (char *deffile)
         {
             if (macrocnt == MAX_MACRO)
             {
-                fprintf (stderr, "Maximum number of macros is %d\n",
-                         MAX_MACRO);
+                LineToConsole ("Maximum number of macros is %d\n", MAX_MACRO);
             }
             else
             {
                 str = file + 4;
                 c = getctrlkey ((unsigned char **) &str);
                 if (c == '?')
-                    fprintf (stderr, "Cannot use '?' for a macro\n");
+                {
+                    LineToConsole ("Cannot use '?' for a macro\n");
+                }
                 else
                 {
                     macro[macrocnt].key = c;
@@ -879,12 +888,9 @@ initDefaults (char *deffile)
 #ifdef MULTILINE_MACROS
                         if (keysused[macro[macrocnt].key])
                         {
-                            printf
-                                ("Multiline macros of nonstandard types are not recommended.\n");
-                            printf
-                                ("You might experience strange behaviour of macros.\n");
-                            printf ("Type: unspecified macro, key: %c.\n",
-                                    macro[macrocnt].key);
+                            LineToConsole ("Multiline macros of nonstandard types are not recommended.\n");
+                            LineToConsole ("You might experience strange behaviour of macros.\n");
+                            LineToConsole ("Type: unspecified macro, key: %c.\n", macro[macrocnt].key);
                         }
 #endif /* MULTILINE_MACROS */
                     }
@@ -989,8 +995,7 @@ initDefaults (char *deffile)
 
             if ((keycnt = strlen (keys)) == MAX_KEY - 1)
             {
-                fprintf (stderr, "Maximum number of keys is %d\n",
-                         MAX_KEY - 1);
+                LineToConsole ("Maximum number of keys is %d\n", MAX_KEY - 1);
             }
             else
             {
@@ -1342,6 +1347,8 @@ resetdefaults (void)
     if (timerType < T_NONE || timerType >= T_TOTAL)
         timerType = T_SHIP;
 
+    allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
+
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
 	beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
@@ -1598,7 +1605,6 @@ resetdefaults (void)
 
 	updateWindowsGeometry (qwin);
 	updateWindowsGeometry (statwin);
-	updateWindowsGeometry (scanwin);
 	updateWindowsGeometry (war);
 */
 }
@@ -1628,7 +1634,7 @@ shipchange (int type)
 
 #ifdef DEBUG
 #define CHECK_FILE \
-      printf("Checking for file %s...\n", found); \
+      LineToConsole ("Checking for file %s...\n", found); \
       accessible = access(found, R_OK); \
       if (accessible == 0)\
         return 1;
@@ -1650,7 +1656,7 @@ findfile (char *fname, char *found)
 
     /* check current directory first */
 #ifdef DEBUG
-    printf ("Checking for file %s\n", fname);
+    LineToConsole ("Checking for file %s\n", fname);
 #endif
     accessible = access (fname, R_OK);
     if (accessible == 0)

@@ -140,7 +140,9 @@ open_port (char *host,
         if ((hp = gethostbyname (host)) == NULL)
         {
             if (verbose)
-                fprintf (stderr, "unknown host '%s'\n", host);
+            {
+                LineToConsole ("unknown host '%s'\n", host);
+            }
             return (-1);
         }
         else
@@ -182,7 +184,7 @@ parseInput (char *in,
 #endif
 
 #ifdef DEBUG
-    printf ("In parseInput\n");
+    LineToConsole ("In parseInput\n");
 #endif
 
     /* Create some space to hold the entries that will be read.  More space can
@@ -302,13 +304,13 @@ parseInput (char *in,
         {
 
 #ifdef DEBUG
-            printf ("HOST:%-30s PORT:%-6d %12s %-5d %d %c\n",
-                    serverlist[num_servers].address,
-                    serverlist[num_servers].port,
-                    statusStrings[serverlist[num_servers].status],
-                    serverlist[num_servers].players,
-                    serverlist[num_servers].RSA_client,
-                    serverlist[num_servers].typeflag);
+            LineToConsole ("HOST:%-30s PORT:%-6d %12s %-5d %d %c\n",
+                            serverlist[num_servers].address,
+                            serverlist[num_servers].port,
+                            statusStrings[serverlist[num_servers].status],
+                            serverlist[num_servers].players,
+                            serverlist[num_servers].RSA_client,
+                            serverlist[num_servers].typeflag);
 #endif
 
             ++num_servers;
@@ -328,37 +330,34 @@ ReadFromMeta (int statusLevel)
     char *sockbuf, *buf;
     int bufleft = BUF - 1;
     int len;
-    int sock;
+    int sock = 0;
+    int i = 0;
 
-    if ((stringDefault ("metaServer")) != NULL)
-        metaServer = stringDefault ("metaServer");
+    if (stringDefault ("metaServer") != NULL)
+        metaServer[0] = stringDefault ("metaServer");
 
     metaPort = intDefault ("metaPort", metaPort);
 
-    if ((sock = open_port (metaServer, metaPort, 1)) <= 0)
+    /* Attempt connecting to all servers one by one */
+    do
     {
-        fprintf (stderr, "Cannot connect to MetaServer (%s , %d)\n",
-                 metaServer, metaPort);
+        LineToConsole ("Calling %s on port %d\n", metaServer[i], metaPort);
 
-        /* Okie, let's just try default servers */
-        if ((sock = open_port (metaServer1, metaPort, 1)) <= 0)
+        sock = open_port (metaServer[i], metaPort, 0);
+
+        if (sock <= 0)
         {
-            fprintf (stderr, "Cannot connect to MetaServer (%s , %d)\n",
-                             metaServer1, metaPort);
-            if ((sock = open_port (metaServer2, metaPort, 1)) <= 0)
-            {
-                fprintf (stderr, "Cannot connect to MetaServer (%s , %d)\n",
-                                    metaServer2, metaPort);
-                if ((sock = open_port (metaServer3, metaPort, 1)) <= 0)
-                {
-                    fprintf (stderr, "Cannot connect to MetaServer (%s , %d)\n",
-                                        metaServer3, metaPort);
-                    return 0;
-                }
-            }
+            LineToConsole ("Cannot connect to MetaServer (%s port %d)\n",
+                            metaServer[i], metaPort);
         }
-    }
 
+        i++;
+
+    } while (sock <= 0 && i <= 1);  /* i shouldn't be bigger than number of servers */
+
+    /* Still no connection -> return */
+    if (sock <= 0)
+        return 0;
 
     /* Allocate a buffer and read until full */
     buf = sockbuf = (char *) malloc (BUF);
@@ -367,7 +366,7 @@ ReadFromMeta (int statusLevel)
         bufleft -= len;
         buf += len;
 #ifdef DEBUG
-        printf ("Read %d bytes from Metaserver\n", len);
+        LineToConsole ("Read %d bytes from Metaserver\n", len);
 #endif
     }
     closesocket (sock);
@@ -401,10 +400,10 @@ ReadFromMeta (int statusLevel)
 
         if (out == NULL)
         {
-            fprintf (stderr,
+            LineToConsole (
                      "Can not write to the metaCache temporary file `%s'.\n",
                      tmpFileName);
-            fprintf (stderr, "Meta-server read will not be cached.\n");
+            LineToConsole ("Meta-server read will not be cached.\n");
         }
     }
     else
@@ -451,15 +450,14 @@ ReadFromCache (int statusLevel)
 
     if (!cacheName)
     {
-        fprintf (stderr,
-                 "You must define the .xtrekrc variable `metaCache' in\n");
-        fprintf (stderr, "order to use the `show known servers' option.\n");
+        LineToConsole ("You must define the .xtrekrc variable `metaCache' in\n");
+        LineToConsole ("order to use the `show known servers' option.\n");
         return 0;
     }
     else if (!findfile (cacheName, cacheFileName)
              || !(in = fopen (cacheFileName, "r")))
     {
-        fprintf (stderr,
+        LineToConsole (
                  "The metaCache file `%s' is empty or not accessable.\n",
                  cacheName);
         return 0;
@@ -476,7 +474,7 @@ ReadFromCache (int statusLevel)
         bufleft -= len;
         buf += len;
 #ifdef DEBUG
-        printf ("Read %d bytes from Metaserver cache file\n", len);
+        LineToConsole ("Read %d bytes from Metaserver cache file\n", len);
 #endif
     }
     *buf = 0;                   /* End of buffer marker */
@@ -701,7 +699,7 @@ metawindow (void)
 
 	/* Additional Help Options */
 	W_WriteText (metaWin, 0, num_servers + 1, W_Yellow, 
-		        "        Netrek Homepage | Newbie Manual | FAQ | Dogfight Manual", 63, 0);
+		        "    Netrek Homepage | Newbie Manual | Forum | FAQ | Dogfight Manual", 67, 0);
 
     /* Map window */
     W_MapWindow (metaWin);
@@ -742,7 +740,7 @@ metaaction (W_Event * data)
 	int x;
 
 #ifdef DEBUG
-    printf ("Got meta window action, y=%d\n", data->y);
+    LineToConsole ("Got meta window action, y=%d\n", data->y);
 #endif
     if ((data->y >= 0) && (data->y < num_servers))
     {
@@ -751,7 +749,7 @@ metaaction (W_Event * data)
         if (data->key == W_RBUTTON)     /* Guess at an observer port */
         {
             xtrekPort++;
-            printf ("Attempting to observe on port %d...\n", xtrekPort);
+            LineToConsole ("Attempting to observe on port %d...\n", xtrekPort);
         }
         serverName = strdup (slist->address);
 		serverType = metaGetServerType (slist->typeflag);
@@ -761,6 +759,8 @@ metaaction (W_Event * data)
 #endif
 		slist->status = statusConnecting;
         metarefresh (data->y);
+
+        LineToConsole ("Checking %s on port %d\n", serverName, xtrekPort);
 
         if ((sock = open_port (serverName, xtrekPort, 0)) <= 0)
         {
@@ -784,13 +784,15 @@ metaaction (W_Event * data)
 	else if (data->y == num_servers + 1) /* Help Line */
 	{
 		x = data->x / W_Textwidth;
-		if (x >= 0 && x <= 23)			/* Netrek Home Page */
+		if (x >= 0 && x <= 19)			/* Netrek Home Page */
 			ShellExecute (NULL, "open", "http://www.netrek.org", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 25 && x <= 39)	/* Newbie Manual */
+		else if (x >= 21 && x <= 35)	/* Newbie Manual */
 			ShellExecute (NULL, "open", "http://www.netrek.org/cow/current/newbie.html", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 41 && x <= 45)	/* FAQ */
+		else if (x >= 37 && x <= 43)	/* Forums */
+			ShellExecute (NULL, "open", "http://groups-beta.google.com/group/rec.games.netrek", NULL, NULL, SW_SHOWNORMAL);
+		else if (x >= 45 && x <= 49)	/* FAQ */
 			ShellExecute (NULL, "open", "http://www.inl.org/netrek/netrekFAQ.html", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 47 && x <= 63)	/* Dogfight Manual */
+		else if (x >= 51 && x <= 67)	/* Dogfight Manual */
 			ShellExecute (NULL, "open", "http://cha.rlie.nl/dfmanual/", NULL, NULL, SW_SHOWNORMAL);
 	}
 }
@@ -825,7 +827,8 @@ metainput (void)
 			&IDThread);							// returns thread identifier 
  
 		// Check the return value for success. 
-		if (hThread == NULL) printf("CreateThread error\n");
+		if (hThread == NULL)
+            LineToConsole ("CreateThread error\n");
 	}
 #endif
 
@@ -912,8 +915,7 @@ typedef struct tagECHOREPLY
 // What happened?
 void metaPing_ReportError(char *pWhere)
 {
-	fprintf(stderr,"\n%s error: %d\n", pWhere,
-		WSAGetLastError());
+	LineToConsole ("\n%s error: %d\n", pWhere, WSAGetLastError());
 }
 
 

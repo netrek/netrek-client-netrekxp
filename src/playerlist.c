@@ -77,6 +77,7 @@
 
 int partitionPlist = FALSE;
 char *plistCustomLayout;
+char *plist2CustomLayout;
 int plistReorder = FALSE;
 int playerListStyle = 0;
 int playerListObserver = 0;
@@ -101,16 +102,20 @@ int plistHasSpeed = FALSE;
 */
 
 char *plistLayout = "";
+char *plist2Layout = "";
 static int plistPos[MAXPLAYER];
 static int plistWidth = 0;
+static int plist2Width = 0;
 static char *my_classes[NUM_TYPES] =
     { "SC", "DD", "CA", "BB", "AS", "SB", "GA", "??" };
 
 /* Local Functions */
 
-static int PlistHeader (char *layout,
+static int PlistHeader (W_Window win,
+                        char *layout,
                         int doWrite);
-static void PlistLine (struct player *j,
+static void PlistLine (W_Window win,
+                       struct player *j,
                        int pos);
 static void WriteSortedPlist (void);
 static void WriteUnsortedPlist (void);
@@ -125,9 +130,8 @@ InitPlayerList ()
 {
     /* Find the default style number for the player list. */
 
-    plistCustomLayout = stringDefault ("playerlist");
-
-
+    plistCustomLayout = stringDefault ("playerList");
+    plist2CustomLayout = stringDefault ("playerList2");
 
     /* Select a style number base on the information in the defaults
      * (.xtrekrc) file. */
@@ -208,7 +212,7 @@ PlistMaxWidth ()
     plistCustomLayout = stringDefault ("playerlist");
 
     if (IsNotEmpty (plistCustomLayout))
-        plistWidth = PlistHeader (plistCustomLayout, FALSE);
+        plistWidth = PlistHeader (playerw, plistCustomLayout, FALSE);
     else
         plistWidth = 0;
 
@@ -216,6 +220,22 @@ PlistMaxWidth ()
         plistWidth = 83;
 
     return plistWidth;
+}
+
+
+int
+PlistMaxWidth2 ()
+/* Calculate the maximum width of all the defined player lists so that the
+ * width of the player list window can be defined. */
+{
+    plist2CustomLayout = stringDefault ("playerList2");
+
+    if (IsNotEmpty (plist2CustomLayout))
+        plist2Width = PlistHeader (playerw2, plist2CustomLayout, FALSE);
+    else
+        plist2Width = PlistHeader (playerw2, "n T R N l M K W L r O D d ", FALSE);
+
+    return plist2Width;
 }
 
 
@@ -231,7 +251,7 @@ RedrawPlayerList ()
 {
     int i;
 
-    if (IsEmpty (me) || !W_IsMapped (playerw))
+    if (IsEmpty (me))
         return;
 
 
@@ -263,7 +283,7 @@ RedrawPlayerList ()
         break;
 
     default:
-        fprintf (stderr, "Unknown playerListStyle in ChangedPlistStyle().\n");
+        LineToConsole ("Unknown playerListStyle\n");
         break;
     }
 
@@ -272,10 +292,18 @@ RedrawPlayerList ()
     if (playerListObserver == 2)
         plistLayout = "n N l M";
 
+    if (IsEmpty (plist2CustomLayout))
+        plist2Layout = "n T R N l M K W L r O D d ";
+    else
+        plist2Layout = plist2CustomLayout;
+
     /* Redraw the player list. */
 
     W_ClearWindow (playerw);
-    (void) PlistHeader (plistLayout, TRUE);
+    PlistHeader (playerw, plistLayout, TRUE);
+
+    W_ClearWindow (playerw2);
+    PlistHeader (playerw2, plist2Layout, TRUE);
 
     plistReorder = TRUE;
     plistUpdated = TRUE;
@@ -303,7 +331,7 @@ UpdatePlistFn ()
 
     plistUpdated = FALSE;
 
-    if (!W_IsMapped (playerw))
+    if (!W_IsMapped (playerw) && !W_IsMapped (playerw2))
         return;
 
     if (!plistReorder)
@@ -339,13 +367,22 @@ UpdatePlistFn ()
                 if (players[count].p_status != PFREE)
                 {
                     if (playerListObserver == 0)
-                        PlistLine (players + count, plistPos[count]);
+                    {
+                        PlistLine (playerw, players + count, plistPos[count]);
+                        PlistLine (playerw2, players + count, plistPos[count]);
+                    }
                     else if (playerListObserver == 1 &&
                              players[count].p_mapchars[1] <= 'f')
-                        PlistLine (players + count, plistPos[count]);
+                    {
+                        PlistLine (playerw, players + count, plistPos[count]);
+                        PlistLine (playerw2, players + count, plistPos[count]);
+                    }
                     else if (playerListObserver == 2 &&
                             !(players[count].p_mapchars[1] <= 'f'))
-                        PlistLine (players + count, plistPos[count]);
+                    {
+                        PlistLine (playerw, players + count, plistPos[count]);
+                        PlistLine (playerw2, players + count, plistPos[count]);
+                    }
                 }
             }
             else
@@ -356,7 +393,10 @@ UpdatePlistFn ()
                     !(players[count].p_flags & PFOBSERV)) ||
                     ((playerListObserver == 2) &&
                     (players[count].p_flags & PFOBSERV))))
-                    PlistLine (players + count, plistPos[count]);
+                {
+                    PlistLine (playerw, players + count, plistPos[count]);
+                    PlistLine (playerw2, players + count, plistPos[count]);
+                }
             }
         }
     }
@@ -458,6 +498,7 @@ WriteSortedPlist ()
             {
                 blankLine = last;
                 W_ClearArea (playerw, 0, last, plistWidth, 1);
+                W_ClearArea (playerw2, 0, last, plist2Width, 1);
             }
 
             ++last;
@@ -481,6 +522,7 @@ WriteSortedPlist ()
             {
                 blankLine = last;
                 W_ClearArea (playerw, 0, last, plistWidth, 1);
+                W_ClearArea (playerw2, 0, last, plist2Width, 1);
             }
 
             ++last;
@@ -500,6 +542,7 @@ WriteSortedPlist ()
             {
                 blankLine2 = last;
                 W_ClearArea (playerw, 0, last, plistWidth, 1);
+                W_ClearArea (playerw2, 0, last, plist2Width, 1);
             }
 
             ++last;
@@ -513,7 +556,10 @@ WriteSortedPlist ()
     /* Clear some lines if people have left. */
 
     for (row = last; row < plistLastRow; ++row)
+    {
         W_ClearArea (playerw, 0, row, plistWidth, 1);
+        W_ClearArea (playerw2, 0, row, plist2Width, 1);
+    }
 
     plistLastRow = last;
 
@@ -541,7 +587,8 @@ WriteSortedPlist ()
                 plistPos[i] = row;
                 updatePlayer[i] = FALSE;
 
-                PlistLine (current, row);
+                PlistLine (playerw, current, row);
+                PlistLine (playerw2, current, row);
             }
             else if (playerListObserver == 1 &&
                      current->p_mapchars[1] <= 'f')
@@ -553,7 +600,8 @@ WriteSortedPlist ()
                 plistPos[i] = row;
                 updatePlayer[i] = FALSE;
 
-                PlistLine (current, row);
+                PlistLine (playerw, current, row);
+                PlistLine (playerw2, current, row);
             }
             else if (playerListObserver == 2 &&
                     !(current->p_mapchars[1] <= 'f'))
@@ -565,7 +613,8 @@ WriteSortedPlist ()
                 plistPos[i] = row;
                 updatePlayer[i] = FALSE;
 
-                PlistLine (current, row);
+                PlistLine (playerw, current, row);
+                PlistLine (playerw2, current, row);
             }
         }            
         else
@@ -581,7 +630,8 @@ WriteSortedPlist ()
                 plistPos[i] = row;
                 updatePlayer[i] = FALSE;
 
-                PlistLine (current, row);
+                PlistLine (playerw, current, row);
+                PlistLine (playerw2, current, row);
             }
         }
     }
@@ -645,16 +695,23 @@ WriteUnsortedPlist (void)
         plistPos[count] = pos;
 
         if (players[count].p_status != PFREE)
-            PlistLine (players + count, pos);
+        {
+            PlistLine (playerw, players + count, pos);
+            PlistLine (playerw2, players + count, pos);
+        }
         else
+        {
             W_ClearArea (playerw, 0, pos, plistWidth, 1);
+            W_ClearArea (playerw2, 0, pos, plistWidth, 1);
+        }
     }
 }
 
 
 
 static int
-PlistHeader (char *layout,
+PlistHeader (W_Window win,
+             char *layout,
              int doWrite)
 /* Analyse the heading (field names) for a player list, and set the
  * plistHasSpeed and plistHasHostile flags.
@@ -682,7 +739,7 @@ PlistHeader (char *layout,
              * code will dump core here because of an attempt to write over a
              * constant string. */
 
-            fprintf (stderr, "Playerlist truncated to fit buffer.\n");
+            LineToConsole ("Playerlist truncated to fit buffer.\n");
             layout = '\0';
             break;
         }
@@ -911,8 +968,7 @@ PlistHeader (char *layout,
 #endif
 
         default:
-            fprintf (stderr,
-                     "%c is not an option for the playerlist\n", *layout);
+            LineToConsole ("%c is not an option for the playerlist\n", *layout);
             break;
         }
     }
@@ -920,24 +976,30 @@ PlistHeader (char *layout,
     header[num] = '\0';
 
     if (doWrite)
-        W_WriteText (playerw, 0, 0, textColor, header, num, W_RegularFont);
+        if (W_IsMapped (win))
+            W_WriteText (win, 0, 0, textColor, header, num, W_RegularFont);
 
     return num;
 }
 
 
 static void
-PlistLine (struct player *j,
+PlistLine (W_Window win,
+           struct player *j,
            int pos)
 /* Write the player list entry for player `j' on line `pos'. */
 {
     char buf[BUFSIZ];
     char *ptr;
     char *buffPoint;
+    char *tmpLayout;
     int kills, losses, my_ticks;
     float pRating, oRating, dRating, bRating, Ratings;
     float KillsPerHour, LossesPerHour;  /* Added 12/27/93 ATH */
     double ratio, max_kills;
+
+    if (!W_IsMapped (win))
+        return;
 
     /* Fill pl_row to get right player placement in the list */
     pl_row[j->p_no] = pos;
@@ -999,7 +1061,12 @@ PlistLine (struct player *j,
 
     buffPoint = buf;
 
-    for (ptr = plistLayout; IsNotZero (*ptr); ++ptr)
+    if (win == playerw)
+        tmpLayout = plistLayout;
+    else
+        tmpLayout = plist2Layout;
+
+    for (ptr = tmpLayout; IsNotZero (*ptr); ++ptr)
     {
         *(buffPoint++) = ' ';
 
@@ -1289,7 +1356,7 @@ PlistLine (struct player *j,
     *buffPoint = '\0';
     // Don't draw the line if pos has been set to -1
     if (pos > -1)
-        W_WriteText (playerw, 0, pos, playerColor (j),
+        W_WriteText (win, 0, pos, playerColor (j),
                      buf, buffPoint - buf, shipFont (j));
 }
 

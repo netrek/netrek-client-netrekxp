@@ -45,7 +45,7 @@ handlePing (struct ping_spacket *packet)        /* SP_PING */
 {
     ping = 1;                   /* we got a ping */
 
-    /* printf("ping received at %d (lag: %d)\n", msetime(), (int)packet->lag); */
+    /* LineToConsole ("ping received at %d (lag: %d)\n", msetime(), (int)packet->lag); */
     sendServerPingResponse ((int) packet->number);
     ping_lag = ntohs (packet->lag);
     ping_iloss_sc = (int) packet->iloss_sc;
@@ -70,7 +70,7 @@ startPing (void)
     if (gwrite (sock, (char *) &packet, sizeof (struct ping_cpacket)) !=
         sizeof (struct ping_cpacket))
     {
-        printf ("gwrite failed.\n");
+        LineToConsole ("gwrite failed.\n");
         serverDead = 1;
     }
 }
@@ -86,7 +86,7 @@ stopPing (void)
     if (gwrite (sock, (char *) &packet, sizeof (struct ping_cpacket)) !=
         sizeof (struct ping_cpacket))
     {
-        printf ("gwrite failed.\n");
+        LineToConsole ("gwrite failed.\n");
         serverDead = 1;
     }
 }
@@ -113,12 +113,12 @@ sendServerPingResponse (int number)     /* CP_PING_RESPONSE */
     packet.cp_sent = htonl (packets_sent);
     packet.cp_recv = htonl (packets_received);
 
-    /* printf("ping response sent at %d\n", msetime()); */
+    /* LineToConsole ("ping response sent at %d\n", msetime()); */
 
     if (gwrite (s, (char *) &packet, sizeof (struct ping_cpacket)) !=
         sizeof (struct ping_cpacket))
     {
-        printf ("gwrite failed.\n");
+        LineToConsole ("gwrite failed.\n");
         serverDead = 1;
     }
 }
