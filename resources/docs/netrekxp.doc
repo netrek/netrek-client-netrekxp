@@ -1,19 +1,25 @@
 *****************************************************
-*                                                                                                     *
-*      General Documentation for the NetrekXP Client                 *
-*                                                                                                     *
-*  Comments, suggestion and bug reports to keyos@keyos.org   *
-*                                                                                                     *
-*  This is a modified version of COW.DOC which was               *
-*  originally distributed with the Client Of Win (COW)              *
-*  netrek client.                                                                              *
-*  The point of this version is to change the original                    *
-*  document to match the current configuration options of          *
-*  NetrekXP.                                                                                  *
-*                                                                                                     *
-*    Document revised by Bill Balcerski in 2006                          *
-*                                                                                                     *
-*                                                                                                     *
+*                                                   *
+*                                                   *
+*   General Documentation for the NetrekXP Client   *
+*                                                   *
+*                                                   *
+*    Comments, suggestion and bug reports to        *
+*               keyos@keyos.org                     *
+*                                                   *
+*                                                   *
+*  This is a modified version of COW.DOC which was  *
+*  originally distributed with the Client Of Win    *
+* (COW) netrek client.                              *
+*                                                   *
+*  The point of this version is to change the       *
+*  original document to match the current           *
+*  configuration options of NetrekXP.               *
+*                                                   *
+*                                                   *
+*                                                   *
+*    Document revised by Bill Balcerski in 2006     *
+*                                                   *
 *****************************************************
 
 
@@ -271,7 +277,7 @@ V   Increase sound volume by one notch
 
 5.0 Netrekrc
 
-NetrekXP looks for a netrekrc or xtrekrc file in your netrek install directory.  There are many, many options, and for a complete list, see the xtrekrc_options.txt file in the docs directory.
+NetrekXP looks for a netrekrc or xtrekrc file in your netrek install directory.  There are many, many options, and for a complete list, see the netrekrc_options.txt file in the docs directory.
 
 
 
@@ -325,7 +331,7 @@ all macro and RCD definitions.
 
 You can add one of: sc, dd, ca, bb, as, sb, ga, att, default to the following default options to override them based on ship type:
 
-rcfile-??:  	ship specific .xtrekrc file,
+rcfile-??:  	ship specific .netrekrc file,
 keymap-??:	ship dependent keymap,
 ckeymap-??:	ship dependent CTRL keymap,
 buttonmap-??:	ship dependent buttonmap.
@@ -432,14 +438,10 @@ many clients will attempt to log you in automatically.
      tstat          - dasboard window
      help           - help window
      UDP            - UDP options window
-     lagMeter       - lag meter window
      pingStats      - ping statistics window
-     buttonkeymap   - the key map window
-     xtrekrc_help   - the xtrekrc help window (duh)
      MetaServer List- (including the space) Metaserver window
-     tools          - the shell tools window
      DocWin         - Documentation window
-     xtrekrcWin     - xtrekrc display window
+     xtrekrcWin     - netrekrc display window
      
 
      You can specify whether windows are initially mapped (displayed), like this:
@@ -1045,7 +1047,7 @@ DefLite: on
 
 2) Configuring via netrekrc
 
-     Message beeps are configured as on and off.  They are turned on if the proper line is in your .xtrekrc.  Otherwise they are left off.
+     Message beeps are configured as on and off.  They are turned on if the proper line is in your .netrekrc.  Otherwise they are left off.
 
      Message lites are configured in a way very similar to macros.  However, in addition to the original set of macro arguments, a new class of arguments is introduced to handle the highliting.
 

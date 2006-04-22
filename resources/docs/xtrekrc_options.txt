@@ -293,7 +293,8 @@ windowMove:               (on/off) enable internal windows to be moved with mous
 # help            Help Window
 # UDP             UDP Options Window
 # pingStats       Ping Statistics Window
-# xtrekrc_help    The xtrekrc help Window
+# docwin	  Documentation window
+# xtrekrcwin      Your netrekrc file
 # macro           Active Macros Window
 
 <window>.geometry:        (geometry) window geometry

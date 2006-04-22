@@ -320,7 +320,7 @@ struct option Window_Menu[] = {
     {1, "show xtrekrc defaults window", 0, &defWin, 0, 0, NULL, NULL},
 #endif
 #ifdef DOC_WIN
-    {1, "show xtrekrc", 0, &xtrekrcwin, 0, 0, NULL, NULL},
+    {1, "show netrekrc", 0, &xtrekrcwin, 0, 0, NULL, NULL},
     {1, "show documentation window", 0, &docwin, 0, 0, NULL, NULL},
 #endif
 #ifdef TOOLS

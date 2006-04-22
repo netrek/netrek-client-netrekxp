@@ -137,7 +137,7 @@ int redrawDelay = 0;            /* 1/10 secs beetween
                                  * redraws */
 int reportKills = 1;            /* report kill messages (in
                                  * review window)? */
-int phaserWindow = 0;           /* What window to show phaser msgs in */
+int phaserWindow = 0;           /* Whether to show phaser window */
 #ifdef PHASER_STATS
 int phaserStats = 0;        /* How to show phaser stats */
 int phaserStatTry = 0;          /* Try/attemps to phaser */
