@@ -1971,7 +1971,7 @@ handleBadVersion (struct badversion_spacket *packet)
     case 4:
     case 5:
     case 6:
-        LineToConsole ("Sorry, but you cannot play xtrek now.\n");
+        LineToConsole ("Sorry, but you cannot play netrek now.\n");
         LineToConsole ("Try again later.\n");
         break;
     default:

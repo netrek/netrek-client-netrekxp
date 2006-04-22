@@ -517,8 +517,8 @@ int highlightFriendlyPhasers = 0;
 
 #ifdef MOTION_MOUSE
 /* KRP */
-int continuousMouse = 0;
-int continuousMouseFix = 0;
+int continuousMouse = 1;
+int continuousMouseFix = 1;
 int motionThresh = 16;
 int motion_mouse_enablable = 1;
 int motion_mouse_steering = 0;

@@ -138,17 +138,17 @@ struct save_options save_options[] = {
     },
     {"extraAlertBorder", &extraAlertBorder, RC_BOOL,
         {
-            "Extend alter borders",
+            "Change window border on enemy approach",
             NULL
         }
     },
     {"forceDisplay", &forceDisplay, RC_INT,
         {
             "Number of colors the client will display",
-            "0 - find best available color option",
+            "0 - find best available color option (default)",
             "1 - 16 colors",
             "2 - 256 colors",
-            "3 - true color (default)",
+            "3 - true color",
             NULL
         }
     },
@@ -173,7 +173,7 @@ struct save_options save_options[] = {
     },
     {"keepInfo", &keepInfo, RC_INT,
         {
-            "How much updates to keep info window on (default 15)",
+            "How many updates to keep info window on (default 15)",
             NULL
         }
     },
@@ -439,7 +439,7 @@ struct save_options save_options[] = {
         {
             "Show tractor/pressor for all players",
             "This option actually helps to turn the feature off",
-            "Server god decides wether to enable it on server",
+            "Server god decides whether to enable it on server",
             NULL
         }
     },
@@ -490,7 +490,7 @@ struct save_options save_options[] = {
     },
     {"showMotd", &showMotd, RC_BOOL,
         {
-            "Show MOTD before login",
+            "Show MOTD if waiting on queue",
             NULL
         }
     },

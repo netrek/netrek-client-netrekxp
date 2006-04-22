@@ -1,0 +1,314 @@
+# This document lists all available options that could be changed
+# in the netrekrc file
+
+agriCAPS:                 (on/off) show AGRI planet name in caps on the map
+agriColor:                (0-2) select color to display agri planet names on the map
+# 0 - owner race color
+# 1 - white
+# 2 - gray
+
+allowWheelActions:        (on/off) allow mouse wheel to work in non-scrolling windows
+autoQuit:                 (int) autoquit time after death
+b1keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
+b2keymap:                 (string) keymap for mouse button 2 (mouseAsShift=on)
+b3keymap:                 (string) keymap for mouse button 3 (mouseAsShift=on)
+b4keymap:                 (string) keymap for mouse button 4 (mouseAsShift=on)
+b5keymap:                 (string) keymap for mouse button 5 (mouseAsShift=on)
+baseUdpLocalPort:         (port) use this port as base for UDP
+beepOnPrivateMessage:	  (on/off) beep if received private message
+buttonmap:                (string) change mouse button map
+buttonmap-<ship>:         (string) use this buttonmap for ship (sc,dd,ca,bb,as,sb,ga,att)
+ckeymap:                  (string) change control keymap
+ckeymap-<ship>:           (string) use this ckeymap for ship (sc,dd,ca,bb,as,sb,ga,att)
+cloakChars:               (two chars) how to display cloaker on galactic
+color.<color>:            (color) replace first <color> with (color)
+color.<race>:             (color) replace that race color with (color)
+colorClient:              (0-3) what type of ship bitmaps to use
+# 0 - mono
+# 1 - new color bitmaps
+# 2 - old color bitmaps
+# 3 - shaded old color bitmaps
+
+colorfulPhasers:          (on/off) make your phasers multicolored
+continueTractor:          (on/off) show tractors after lock
+continuousMouse:          (on/off) use continuous mouse mode
+continuousMouseFix:       (on/off) fix continuous mouse behavior
+disableWinkey             (on/off) disable Windows and Context keys
+documentation:            (path) path to documentation file
+dynamicBitmaps:           (on/off) allow switching of ship bitmaps in game
+enemyPhasers:             (1-10) enemy phaser line width
+extraAlertBorder:         (on/off) change window border on enemy approach
+fedshipbmpfile:           (path) - old color bitmaps
+fedship1bmpfile:          (path) - new color bitmaps
+fedshipGbmpfile:          (path) - your own ship's grayscale bitmaps
+fedshipTbmpfile:          (path) - shaded color bitmaps
+fedshipMbmpfile:          (path) - mono bitmaps
+fontSize:                 (int) default 10
+forceDisplay:             (0/3) how many colors to display
+# 0 - find best available color option (default)
+# 1 - 16 colors
+# 2 - 256 colors
+# 3 - true color
+
+forceMono:                (on/off) outdated option, that will force display to
+                                   16 colors (but only works if forceDisplay = 0).
+fullScreen:               (on/off) create border for main window
+highlightFriendlyPhasers: (on/off) use white color for friendly phasers
+ignoreCaps:               (on/off) ignore CapsLock key state
+indshipbmpfile:           (path) - old color bitmaps
+indship1bmpfile:          (path) - new color bitmaps
+indshipGbmpfile:          (path) - your own ship's grayscale bitmaps
+indshipTbmpfile:          (path) - shaded color bitmaps
+indshipMbmpfile:          (path) - mono bitmaps
+keepInfo:                 (0-100) number of updates to keep info (default 15)
+keepPeace:                (on/off) stays in peace after being killed
+keymap:                   (string) change keymap
+keymap-<ship>:            (string) use this keymap for ship (sc,dd,ca,bb,as,sb,ga,att)
+klishipbmpfile:           (path) - old color bitmaps
+kliship1bmpfile:          (path) - new color bitmaps
+klishipGbmpfile:          (path) - your own ship's grayscale bitmaps
+klishipTbmpfile:          (path) - shaded color bitmaps
+klishipMbmpfile:          (path) - mono bitmaps
+logfile:                  (path) path to logfile
+logging:                  (on/off) enable logging
+login:                    (string) character login
+macroKey:                 (char, ESC, TAB) key to toggle macro mode
+mainResizeable:           (on/off) make main window (netrek) resizeable
+messageHoldThresh:        (integer) put message on hold after mouse move (Adds # to the end of message)
+messageHUD:               (0-2) where to duplicate message that is written in message window
+# 0 - none (default)
+# 1 - tactical top
+# 2 - tactical bottom
+
+metaCache:                (path) path to metacache file
+metaPing:                 (on/off) show ping stats to all servers in metaserver window
+metaPort:                 (port) metaserver port
+metaServer:               (address) metaserver address
+metaStatusLevel:          (0-4) what servers to display
+# 0 - servers with players, but not on a wait queue
+# 1 - servers with players and with a wait queue
+# 2 - servers with nobody playing
+# 3 - servers timed out to metaserver (default)
+# 4 - servers that metaServer could not contact
+
+motionThresh:             (int) mouse motion threshold
+mouseAsShift:             (on/off) use mouse buttons to switch keymaps
+mungScrollbarColors:      (on/off) set scrollbar colors to match background colors
+name:                     (string) character nick name
+netrek.w32caption:        (on/off) when off - shows titlebar in netrek window
+newDashboard:             (0-3) dashboard style
+# 0 - Text
+# 1 - COW
+# 2 - KRP (default)
+# 3 - LABs
+
+newDistress:              (on/off) indent distress calls to the right
+newPlist:                 (on/off) compatibility variable for player list
+# on - COW style
+# off - old style
+
+omitTeamLetter:           (on/off) omit team letter on galaxy
+orishipbmpfile:           (path) - old color bitmaps
+oriship1bmpfile:          (path) - new color bitmaps
+orishipGbmpfile:          (path) - your own ship's grayscale bitmaps
+orishipTbmpfile:          (path) - shaded color bitmaps
+orishipMbmpfile:          (path) - mono bitmaps
+partitionList:            (on/off) add blank line between teams in player list
+password:                 (string) password for autologin
+phaserShrink:             (0-16) shrink own phaser by x/16 of its length
+# 0-16 for COW style phaser shrink
+# 0-11 for BRMH style phaser shrink
+
+phaserShrinkStyle:        (0-1) shrink own phasers using specific style
+# 0 - COW style (fixed length phaser)
+# 1 - BRMH style (phaser shrinks during recharge time)
+
+phaserStats:              (on/off) show phaser statistics
+phaserWindow:		  (on/off) whether to show phaser window
+planetBitmap:             (0-2) what bitmaps to use for planets
+# 0 - Bronco (default)
+# 1 - Moo
+# 2 - Rabbitear
+
+playerList:               (string) custom style of player list
+# ' ' - White Space
+# 'b' - Armies Bombed
+# 'd' - Damage Inflicted (DI)
+# 'k' - Max Kills
+# 'l' - Login Name
+# 'n' - Ship Number
+# 'p' - Planets Taken
+# 'r' - Ratio
+# 's' - Speed
+# 'v' - Deaths per hour
+# 'w' - War status
+# 'B' - Bombing
+# 'C' - Curt (short) rank
+# 'D' - Defense
+# 'H' - Hours Played
+# 'K' - Kills
+# 'L' - Losses
+# 'M' - Display, Host Machine
+# 'N' - Name
+# 'O' - Offense
+# 'P' - Planets
+# 'R' - Rank
+# 'S' - Total Rating (stats)
+# 'T' - Ship Type
+# 'V' - Kills per hour
+# 'W' - Wins
+
+playerList2:              (string) custom layout for alternate player list window (same as playerlist)
+playerListHack:           (on/off) if player's letter is greater than 'f' suppose that
+                                   the player is observer.
+playerListMessaging:      (on/off) allow messages to be sent to players by clicking player
+                                   on the player list window
+
+playerlistObserver:       (0-2) what kind of players to show
+# 0 - all (default)
+# 1 - players
+# 2 - observers
+
+playerListStyle:          (0-4) what player list style to use
+# 0 - custom style as defined in playerList
+# 1 - old style "nTRNKWLr O D d "
+# 2 - COW style "nTR N  K lrSd" (default)
+# 3 - kill watch style "nTK  RNlr Sd"
+# 4 - BRMH style "nTR N  K l M"
+
+port:                     (port) default port
+port.<server>:            (port) port for <server>
+portSwap:                 (on/off) use UDP port swap code (use if you behind NAT)
+rcfile-<ship>:            (path) use this file as netrekrc for ship (sc,dd,ca,bb,as,sb,ga,att)
+redrawDelay:              (0-10) how many updates to wait before redraw
+rejectMacro:              (on/off) reject macros
+reportKills:              (on/off) report kills
+romshipbmpfile:           (path) - old color bitmaps
+romship1bmpfile:          (path) - new color bitmaps
+romshipGbmpfile:          (path) - your own ship's grayscale bitmaps
+romshipTbmpfile:          (path) - shaded color bitmaps
+romshipMbmpfile:          (path) - mono bitmaps
+saveFile:                 (path) path to saved options file
+saveBig:                  (on/off) save options with remarks
+saveMacro:                (on/off) save macros to saveFile
+saveRCD:                  (on/off) save receiver configurable distresses to saveFile
+saveRCM:                  (on/off) save receiver configurable messages to saveFile
+server:                   (address) default server
+server.<server>:          (address) <server> is a nickname for (address)
+shiftedMouse:             (on/off) shift+mouse buttons will work as commands
+showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
+showHints:                (on/off) show hints window
+showHockeyLinesLocal:     (on/off) show hockey lines on tactical
+showHockeyLinesMap:       (on/off) show hockey lines on galactic
+showHockeyScore:          (on/off) show hockey score on galactic
+showIND:                  (on/off) show neutral planets with X over them
+showLock:                 (0-3) where to show lock triangle
+# 0 - nowhere
+# 1 - galactic
+# 2 - tactical
+# 3 - both (default)
+
+showMySpeed:              (on/off) show my speed on tactical
+showMotd:                 (on/off) show Motd if waiting on queue
+showPlanetNames:          (on/off) show planet names on tactical
+showPlanetOwner:          (on/off) show planet owner on galaxy
+showStars:                (on/off) show background stars
+showStats:                (on/off) show ship statistics
+showTractorPressor:       (on/off) show tractors and pressors
+shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
+singleMacro:              (string) macro keys that will trigger macro without macro mode
+sortMyTeamFirst:          (on/off) show my team first in the player list
+sortPlayers:              (on/off) sort players by teams
+sound:                    (on/off) enable sound
+soundDir:                 (path) path to directory containing sound files
+theirPhaserShrink:        (0-16) shrink enemy phaser by x/16 of its length
+timerType:                (0-4) type of timer on dashboard window
+# 0 - don't show
+# 1 - current time
+# 2 - server time
+# 3 - time in ship
+# 4 - user-set time
+
+tpDotDist:                (int) distance between tractor/pressor dots (default 10)
+tryShort:                 (on/off) enable short packets
+tryUdp:                   (on/off) try using UDP
+udpClientReceive:         (0-2) how to receive data from server
+# 0 - TCP
+# 1 - simple UDP (default)
+# 2 - fat UDP
+
+udpClientSend:            (0-3) how to send data to server
+# 0 - TCP
+# 1 - simple UDP (default)
+# 2 - enforced UDP (state)
+# 3 - enforced UDP (state & weapons)
+
+udpDebug:                 (0/1) debug UDP traffic
+udpSequenceCheck:         (on/off) check UDP sequence
+updatesPerSec:            (0-10) how much data updates per second to request from server
+useLite:                  (on/off) use beeplite
+defLite:                  (on/off) use default beeplite settings
+useRSA:                   (on/off) use RSA client verification
+useRSA.<server>           (on/off) user RSA for <server>
+varyShields:              (on/off) change shields color on shields damage
+viewBox:                  (on/off) show tactical window boundaries on map
+warnShields:              (on/off) change shields color on enemy approach
+warpStreaks:              (on/off) show streaks while warping to starbase
+windowMove:               (on/off) enable internal windows to be moved with mouse
+
+<window>.allow:           [A][T][I][P][K]
+# Allow specific messages to be shown in window
+# Only valid for message windows (i.e. review_* and review)
+# A - show messages sent to all
+# T - show messages sent to the team
+# I - show messages sent to yourself
+# P - show phaser messages
+# K - show kill messages
+
+<window>.mapped:          (on/off) show window <window>
+# List of possible window names
+#
+# netrek          Main Window
+# local           Main Fighting Window
+# map             Galactic Map
+# warn            Warning Window
+# message         Message Window
+# review          All Messages Window
+# review_all      Messages to All Window
+# review_team     Messages to Team Window
+# review_your     Messages to Individual Window
+# review_kill     Kill Messages Window
+# review_phaser   Phaser hits Window
+# planet          Planet List Window
+# player          Player List Window
+# player2         Alternate Player List Window
+# war             War Declarations Window
+# fed             Federation Selection Window
+# ori             Orion Selection Window
+# rom             Romulan Selection Window
+# kli             Klingon Selection Window
+# quit            The Quit Countdown Clock
+# option          Option Menu Window
+# rank            Rank Window
+# stats           Statistics Window
+# tstat           Dashboard Window
+# help            Help Window
+# UDP             UDP Options Window
+# pingStats       Ping Statistics Window
+# MetaServer List (including the space) Metaserver window
+# macro           Active Macros Window
+
+<window>.geometry:        (geometry) window geometry
+# Window Placement syntax
+#
+# This displays the size, and position of the window.
+# <window>.geometry:<width>x<height>+<xpos>+<ypos>
+#
+# This displays just the position of the window.
+# <window>.geometry:+<xpos>+<ypos>
+#
+# ...or just the size
+# <window>.geometry:<width>x<height>
+
+<window>.parent:          (window) <window> is a child of (window)
+

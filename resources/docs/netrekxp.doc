@@ -425,6 +425,7 @@ many clients will attempt to log you in automatically.
      review_phaser  - phaser hits window
      planet         - planet list window
      player         - playerlist window
+     player2        - alternate player list window
      war            - war declarations window
      fed            - Fed selection window
      ori            - Orion selection window
@@ -433,15 +434,13 @@ many clients will attempt to log you in automatically.
      quit           - The quit countdown clock
      option         - options menu window
      rank           - rank window
-     sound          - sound options window
      stats          - statistics window
      tstat          - dasboard window
      help           - help window
      UDP            - UDP options window
      pingStats      - ping statistics window
      MetaServer List- (including the space) Metaserver window
-     DocWin         - Documentation window
-     xtrekrcWin     - netrekrc display window
+     macro          - active Macros Window
      
 
      You can specify whether windows are initially mapped (displayed), like this:

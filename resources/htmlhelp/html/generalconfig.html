@@ -165,8 +165,8 @@ Doesn't beep for messages from GOD and yourself</td>
 This can be disabled by server</td>
 <td>
 	<ul>
-	<li><b>on</b></li>
-	<li><b>off (default)</b></li>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
 	</ul>
 </td>
 </tr>
@@ -177,8 +177,8 @@ in case two buttons are pressed at the same time
 </td>
 <td>
 	<ul>
-	<li><b>on</b></li>
-	<li><b>off (default)</b></li>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
 	</ul>
 </td>
 </tr>
@@ -198,13 +198,23 @@ in case two buttons are pressed at the same time
 <td><b>path</b></td>
 </tr>
 <tr>
+<td><code><b>dynamicBitmaps</b></code></td>
+<td>Allow switching of ship bitmaps in game</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
 <td><code><b>enemyPhasers</b></code></td>
 <td>Angle between enemy phaser lines</td>
 <td><b>1-10</b></td>
 </tr>
 <tr>
 <td><code><b>extraAlertBorder</b></code></td>
-<td>Extend alert border</td>
+<td>Change window border on enemy approach</td>
 <td>
 	<ul>
 	<li><b>on (default)</b></li>
@@ -214,7 +224,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>fedshipbmpfile</b></code></td>
-<td>Path to Fed bitmaps for players</td>
+<td>Path to Fed bitmaps for old color ships</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>fedship1bmpfile</b></code></td>
+<td>Path to Fed bitmaps for new color ships</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -224,29 +239,34 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>fedshipTbmpfile</b></code></td>
-<td>Path to Fed tainted bitmaps for your ship</td>
+<td>Path to Fed shaded color bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
 <td><code><b>fedshipMbmpfile</b></code></td>
-<td>Path to Fed monochrome bitmaps for players</td>
+<td>Path to Fed monochrome bitmaps</td>
 <td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>fontsize</b></code></td>
+<td>Choose your font size (default is 10)</td>
+<td><b>integer(1-whatever)</b></td>
 </tr>
 <tr>
 <td><code><b>forceDisplay</b></code></td>
 <td>Force specific number of colors to display</td>
 <td>
 	<ul>
-	<li><b>0</b> - two colors</li>
+	<li><b>0</b> - find best color option (default)</li>
 	<li><b>1</b> - 16 colors</li>
 	<li><b>2</b> - 256 colors</li>
-	<li><b>3 (default)</b> - true color</li>
+	<li><b>3 </b> - true color</li>
 	</ul>
 </td>
 </tr>
 <tr>
 <td><code><b>forceMono</b></code></td>
-<td>Use old monochrome bitmaps</td>
+<td>Outdated option that will force colors to 16 if forceDisplay=0</td>
 <td>
 	<ul>
 	<li><b>on</b></li>
@@ -266,7 +286,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>indshipbmpfile</b></code></td>
-<td>Path to Ind bitmaps for players</td>
+<td>Path to Ind bitmaps for old color ships</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>indship1bmpfile</b></code></td>
+<td>Path to Ind bitmaps for new color ships</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -276,12 +301,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>indshipTbmpfile</b></code></td>
-<td>Path to Ind tainted bitmaps for your ship</td>
+<td>Path to Ind shaded color bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
 <td><code><b>indshipMbmpfile</b></code></td>
-<td>Path to Ind monochrome bitmaps for players</td>
+<td>Path to Ind monochrome bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -304,8 +329,8 @@ in case two buttons are pressed at the same time
 <td>Keep peace with enemy team after you've been killed</td>
 <td>
 	<ul>
-	<li><b>on</b></li>
-	<li><b>off (default)</b></li>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
 	</ul>
 </td>
 </tr>
@@ -321,7 +346,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>klishipbmpfile</b></code></td>
-<td>Path to Kli bitmaps for players</td>
+<td>Path to Kli bitmaps for old color ships</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>kliship1bmpfile</b></code></td>
+<td>Path to Kli bitmaps for new color ships</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -331,12 +361,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>klishipTbmpfile</b></code></td>
-<td>Path to Kli tainted bitmaps for your ship</td>
+<td>Path to Kli shaded color bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
 <td><code><b>klishipMbmpfile</b></code></td>
-<td>Path to Kli monochrome bitmaps for players</td>
+<td>Path to Kli monochrome bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -366,11 +396,11 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>mainResizeable</b></code></td>
-<td>Enable resize caption on main window</td>
+<td>Enable resizing of main window</td>
 <td>
 	<ul>
-	<li><b>on</b></li>
-	<li><b>off (default)</b></li>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
 	</ul>
 </td>
 </tr>
@@ -463,7 +493,7 @@ in case two buttons are pressed at the same time
 <td>Hide titlebar in the main window</td>
 <td>
 	<ul>
-	<li><b>on</b> - hide titlebar</li>
+	<li><b>on (default)</b> - hide titlebar</li>
 	<li><b>off</b> - show titlebar</li>
 	</ul>
 </td>
@@ -502,7 +532,12 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>orishipbmpfile</b></code></td>
-<td>Path to Ori bitmaps for players</td>
+<td>Path to Ori bitmaps for old color ships</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>oriship1bmpfile</b></code></td>
+<td>Path to Ori bitmaps for new color ships</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -512,17 +547,18 @@ in case two buttons are pressed at the same time
 </tr>
 <tr>
 <td><code><b>orishipTbmpfile</b></code></td>
-<td>Path to Ori tainted bitmaps for your ship</td>
+<td>Path to Ori shaded color bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
 <td><code><b>orishipMbmpfile</b></code></td>
-<td>Path to Ori monochrome bitmaps for players</td>
+<td>Path to Ori monochrome bitmaps</td>
 <td><b>path</b></td>
 </tr>
+
 <tr>
 <td><code><b>partitionPlist</b></code></td>
-<td>Separate teams by space in player list</td>
+<td>Separate teams by a blank line in the player list</td>
 <td>
 	<ul>
 	<li><b>on</b></li>
@@ -690,7 +726,12 @@ RightClick - send TEAM</td>
 </tr>
 <tr>
 <td><code><b>romshipbmpfile</b></code></td>
-<td>Path to Rom bitmaps for players</td>
+<td>Path to Rom bitmaps for old color ships</td>
+<td><b>path</b></td>
+</tr>
+<tr>
+<td><code><b>romship1bmpfile</b></code></td>
+<td>Path to Rom bitmaps for new color ships</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -700,12 +741,12 @@ RightClick - send TEAM</td>
 </tr>
 <tr>
 <td><code><b>romshipTbmpfile</b></code></td>
-<td>Path to Rom tainted bitmaps for your ship</td>
+<td>Path to Rom shaded color bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
 <td><code><b>romshipMbmpfile</b></code></td>
-<td>Path to Rom monochrome bitmaps for players</td>
+<td>Path to Rom monochrome bitmaps</td>
 <td><b>path</b></td>
 </tr>
 <tr>
@@ -752,16 +793,6 @@ RightClick - send TEAM</td>
 <td><code><b>server</b></code></td>
 <td>Server name to connect to by default</td>
 <td><b>hostname</b></td>
-</tr>
-<tr>
-<td><code><b>shellTools</b></code></td>
-<td>Enable shell tools</td>
-<td>
-	<ul>
-	<li><b>on (default)</b></li>
-	<li><b>off</b></li>
-	</ul>
-</td>
 </tr>
 <tr>
 <td><code><b>shiftedMouse</b></code></td>
@@ -1059,6 +1090,26 @@ This can be disabled on server</td>
 <tr>
 <td><code><b>useRsa</b></code></td>
 <td>Use RSA client verification</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>useLite</b></code></td>
+<td>Use beeplite</td>
+<td>
+	<ul>
+	<li><b>on (default)</b></li>
+	<li><b>off</b></li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>deflite</b></code></td>
+<td>Use default beeplite settings</td>
 <td>
 	<ul>
 	<li><b>on (default)</b></li>
