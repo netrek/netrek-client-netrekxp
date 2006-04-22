@@ -1,4 +1,5 @@
 Version TBA:
+- fixed the mono fed sb bitmaps so they rotate more cleanly
 - updated NetrekXP manual (in docs folder), removed old cow manuals.
 - all greyscale and shaded old color starbase bitmaps now rotate.
 - the new color fed starbase bitmaps now rotate.
