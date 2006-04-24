@@ -1,4 +1,5 @@
 Version TBA:
+- initial SDL implementation
 - continuousMouse and continuousMouseFix now default to on
 - fixed the mono fed sb bitmaps so they rotate more cleanly
 - updated NetrekXP manual (in docs folder), removed old cow manuals.

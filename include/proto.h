@@ -1089,7 +1089,9 @@ char *strcpy_return (register char *s1,
      extern void Abort_Sound (int type);
      extern void soundwindow (void);
 //static void soundrefresh(int i);
+#if defined(SOUND) && !defined(HAVE_SDL)
      void soundaction (W_Event * data);
+#endif
      extern void sounddone (void);
 
 /******************************************************************************/

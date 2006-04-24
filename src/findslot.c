@@ -111,9 +111,9 @@ findslot (void)
         socketPause ();
         if (isServerDead ())
         {
-
-#ifdef SOUND
-            Exit_Sound ();
+        	
+#if defined(SOUND) && !defined(HAVE_SDL)
+            Exit_Sound();
 #endif
 
             LineToConsole ("Shit!  Ghostbusted!\n");
@@ -158,8 +158,8 @@ findslot (void)
         if (isServerDead ())
         {
 
-#ifdef SOUND
-            Exit_Sound ();
+#if defined(SOUND) && !defined(HAVE_SDL)
+            Exit_Sound();
 #endif
 
             LineToConsole ("Damn, We've been ghostbusted!\n");
@@ -217,8 +217,8 @@ findslot (void)
                 else if (event.Window == qwin)
                 {
 
-#ifdef SOUND
-                    Exit_Sound ();
+#if defined(SOUND) && !defined(HAVE_SDL)
+                    Exit_Sound();
 #endif
 
                     LineToConsole ("OK, bye!\n");

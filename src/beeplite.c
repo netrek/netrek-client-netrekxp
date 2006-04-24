@@ -1,6 +1,9 @@
 /* beeplite.c
  *
  * $Log: beeplite.c,v $
+ * Revision 1.4  2006/04/24 14:13:25  modemhero
+ * Initial SDL patch for multilayered sounds.
+ *
  * Revision 1.3  2006/04/19 15:18:27  modemhero
  * Tidied up the save_options function, fixing some spacing errors, and puttting the
  * keymap/buttonmap on the top of the list due to its importance.  Also added the
@@ -217,17 +220,24 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 		{
 
-#ifdef SOUND
-		    if (sound_toggle)
-		      Play_Sound(MESSAGE_SOUND);
-		    else
+#if defined(SOUND)
+#if defined(HAVE_SDL)
+                    Play_Sound(MESSAGE_WAV);
+#else
+                    if (sound_toggle)
+                        Play_Sound(MESSAGE_SOUND);
+                    else
+		        W_Beep();
 #endif
-
-		    W_Beep();
+#endif
 		}
 	        break;
 
+/* The sound files don't even exist in standard client, and
+   are not loaded into SDL library currently - can change at
+   a later time. */
 #ifdef SOUND
+#if !defined(HAVE_SDL)
 	    case '1':
 	        if (F_beeplite_flags & LITE_SOUNDS)
 		  Play_Sound(MESSAGE1_SOUND);
@@ -264,6 +274,7 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 		  Play_Sound(MESSAGE9_SOUND);
 	        break;
+#endif
 #endif
 
 	      /* Text between:  /|    |   will be displayed with TTS */

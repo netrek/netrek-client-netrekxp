@@ -579,10 +579,15 @@ newwin (char *hostmon,
 #endif
 
 #ifdef SOUND
-    soundWin = W_MakeMenu ("sound", WINSIDE + 20, -BORDER + 10, 30, MESSAGE_SOUND + 4, NULL, 2);
-    W_SetWindowKeyDownHandler (soundWin, soundaction);
-    W_SetWindowButtonHandler (soundWin, soundaction);
-    W_DefineArrowCursor (soundWin);
+#if defined(HAVE_SDL)
+    soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 40, 1, NULL, 2);
+#else
+    soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 30,
+			MESSAGE_SOUND + 4, NULL, 2);
+    W_SetWindowKeyDownHandler(soundWin, soundaction);
+    W_SetWindowButtonHandler(soundWin, soundaction);
+    W_DefineArrowCursor(soundWin);
+#endif
 #endif
 
 #ifdef TOOLS

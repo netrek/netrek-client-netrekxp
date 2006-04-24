@@ -148,8 +148,6 @@ DrawStars()
 
         /* redraw upper sector */
         redrawStarSector (sectorx, sectory-1);
-        /* redraw upper sector */
-        redrawStarSector (sectorx, sectory-1);
 
         if (r)          
             /* redraw upper-right sector */
@@ -481,8 +479,12 @@ DrawShips (void)
             {
 
 #ifdef SOUND
-                if (myPlayer (j) && (j->p_cloakphase == 0))
-                    Play_Sound (CLOAK_SOUND);
+                if (myPlayer(j) && (j->p_cloakphase == 0))
+#if defined(HAVE_SDL)
+                    Play_Sound(CLOAKED_WAV);
+#else
+                    Play_Sound(CLOAK_SOUND);
+#endif
 #endif
 
                 j->p_cloakphase++;
@@ -492,13 +494,19 @@ DrawShips (void)
         {
             if (j->p_cloakphase)
             {
+            	
 #ifdef SOUND
-                if (myPlayer (j))
+                if (myPlayer(j))
                     if (j->p_cloakphase == CLOAK_PHASES - 1)
-                        Play_Sound (UNCLOAK_SOUND);
+#if defined(HAVE_SDL)
+                        Play_Sound(UNCLOAK_WAV);
+#else
+                        Play_Sound(UNCLOAK_SOUND);
                     else
-                        Abort_Sound (CLOAK_SOUND);
+                        Abort_Sound(CLOAK_SOUND);
+#endif     	
 #endif
+            	
                 j->p_cloakphase--;
             }
         }
@@ -704,9 +712,17 @@ DrawShips (void)
             if (j->p_no == me->p_no)
             {
                 if ((sound_flags & PFSHIELD) && !(j->p_flags & PFSHIELD))
-                    Play_Sound (SHIELD_DOWN_SOUND);
+#if defined(HAVE_SDL)
+                    Play_Sound(SHIELD_DOWN_WAV);
+#else
+                    Play_Sound(SHIELD_DOWN_SOUND);
+#endif
                 if (!(sound_flags & PFSHIELD) && (j->p_flags & PFSHIELD))
-                    Play_Sound (SHIELD_UP_SOUND);
+#if defined(HAVE_SDL)
+                    Play_Sound(SHIELD_UP_WAV);
+#else
+                    Play_Sound(SHIELD_UP_SOUND);
+#endif
             }
 #endif
 
@@ -853,11 +869,14 @@ DrawShips (void)
             int i;
 
             i = j->p_explode;
-
+            
 #ifdef SOUND
             if (i == 1)
-                Play_Sound (j ==
-                            me ? EXPLOSION_SOUND : OTHER_EXPLOSION_SOUND);
+#if defined(HAVE_SDL)
+                Play_Sound(j == me ? EXPLOSION_WAV : EXPLOSION_OTHER_WAV);
+#else
+                Play_Sound(j == me ? EXPLOSION_SOUND : OTHER_EXPLOSION_SOUND);
+#endif
 #endif
 
             if (i < BMP_SHIPEXPL_FRAMES ||
@@ -900,13 +919,19 @@ DrawShips (void)
 
         if (php->ph_status != PHFREE)
         {
+        	
 #ifdef SOUND
             if (!sound_phaser)
             {
-                Play_Sound (j == me ? PHASER_SOUND : OTHER_PHASER_SOUND);
+#if defined(HAVE_SDL)
+                Play_Sound(j == me ? PHASER_WAV : PHASER_OTHER_WAV);
+#else
+                Play_Sound(j == me ? PHASER_SOUND : OTHER_PHASER_SOUND);
+#endif
                 sound_phaser++;
             }
 #endif
+
             if ((php->ph_updateFuse -= weaponUpdate) == 0)
             {
                 /* Expire the phaser */
@@ -1342,8 +1367,13 @@ DrawTorps (void)
 
 #ifdef SOUND
                 if (k->t_fuse == BMP_TORPDET_FRAMES - 1)
-                    Play_Sound (TORP_HIT_SOUND);
+#if defined(HAVE_SDL)
+                    Play_Sound(TORP_HIT_WAV);
+#else
+                    Play_Sound(TORP_HIT_SOUND);
 #endif
+#endif
+
 #ifdef COLORIZEWEAPON
                 switch (j->p_team)
                 {
@@ -1516,11 +1546,16 @@ DrawPlasmaTorps (void)
             {
                 pt->pt_fuse = BMP_TORPDET_FRAMES - 1;
             }
-
+            
 #ifdef SOUND
             if (pt->pt_fuse == BMP_TORPDET_FRAMES - 1)
-                Play_Sound (PLASMA_HIT_SOUND);
+#if defined(HAVE_SDL)
+                Play_Sound(PLASMA_HIT_WAV);
+#else
+                Play_Sound(PLASMA_HIT_SOUND);
 #endif
+#endif
+
 #ifdef COLORIZEWEAPON
             switch (players[pt->pt_owner].p_team)
             {
@@ -1820,8 +1855,8 @@ DrawMisc (void)
             }
             W_ChangeBorder (baseWin, gColor);
 
-#ifdef SOUND
-            Abort_Sound (WARNING_SOUND);
+#if defined(SOUND) && !defined(HAVE_SDL)
+            Abort_Sound(WARNING_SOUND);
 #endif
 
             break;
@@ -1835,8 +1870,8 @@ DrawMisc (void)
             }
             W_ChangeBorder (baseWin, yColor);
 
-#ifdef SOUND
-            Abort_Sound (WARNING_SOUND);
+#if defined(SOUND) && !defined(HAVE_SDL)
+            Abort_Sound(WARNING_SOUND);
 #endif
 
             break;
@@ -1849,9 +1884,13 @@ DrawMisc (void)
                 //W_ChangeBorderDB (localSDB, rColor);
             }
             W_ChangeBorder (baseWin, rColor);
-
+            
 #ifdef SOUND
-            Play_Sound (WARNING_SOUND);
+#if defined(HAVE_SDL)
+            Play_Sound(WARNING_WAV);
+#else
+            Play_Sound(WARNING_SOUND);
+#endif
 #endif
 
             break;
@@ -1859,12 +1898,21 @@ DrawMisc (void)
     }
 
 #ifdef SOUND
+#if defined(HAVE_SDL)
     if (sound_torps < me->p_ntorp)
-        Play_Sound (FIRE_TORP_SOUND);
+        Play_Sound(FIRE_TORP_WAV);
     if (sound_other_torps < num_other_torps)
-        Play_Sound (OTHER_FIRE_TORP_SOUND);
+        Play_Sound(FIRE_TORP_OTHER_WAV);
     if (sound_plasma < me->p_nplasmatorp)
-        Play_Sound (FIRE_PLASMA_SOUND);
+        Play_Sound(FIRE_PLASMA_WAV);
+#else
+    if (sound_torps < me->p_ntorp)
+        Play_Sound(FIRE_TORP_SOUND);
+    if (sound_other_torps < num_other_torps)
+        Play_Sound(OTHER_FIRE_TORP_SOUND);
+    if (sound_plasma < me->p_nplasmatorp)
+        Play_Sound(FIRE_PLASMA_SOUND);
+#endif
 
     sound_flags = me->p_flags;
     sound_torps = me->p_ntorp;

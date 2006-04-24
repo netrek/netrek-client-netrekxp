@@ -48,7 +48,7 @@ rcvars = -DWIN32
 #
 
 !IFDEF DEBUG
-ldebug = /Gn /v 
+ldebug = /Gn /v
 !ELSE
 ldebug = /Gn /w-dup
 !ENDIF
@@ -72,7 +72,7 @@ GMPLIB = ..\Win32\lib\libgmpbcc.lib
 #..\Win32\lib\libmpbcc.lib
 !ENDIF
 
-LIBS = CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
+LIBS = SDL.LIB SDL_mixer.LIB SDL_main.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 
 # ---------------------------------------------------------------------------
 # - Start of makefile proper

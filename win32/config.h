@@ -126,6 +126,8 @@
 /*      RACE_COLORS             - additional bitplane for race colors           */
 #define RACE_COLORS
 
+/*      SDL			- new SDL sound					*/
+#define HAVE_SDL
 
 #define PLIST1 
 #define PLIST 

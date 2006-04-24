@@ -768,6 +768,10 @@ cowmain (char *server,
 
     resetdefaults ();
     savebitmaps ();
+    
+#if defined(SOUND) && defined(HAVE_SDL)
+    Init_Sound();
+#endif
 
     /* open memory...? */
     openmem ();
@@ -892,9 +896,12 @@ cowmain (char *server,
     init_hockey_lines ();
 #endif
 
-#ifdef SOUND
-    Init_Sound ();
+  /* Moved SDL sound initialization to right after readdefaults() so
+   * the intro can start playing ASAP */
+#if defined(SOUND) && !defined(HAVE_SDL)
+    Init_Sound();
 #endif
+
 
     isFirstEntry = 1;           /* First entry into game */
 
@@ -902,8 +909,8 @@ cowmain (char *server,
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
 
-#ifdef SOUND
-    Abort_Sound (ENGINE_SOUND);
+#if defined(SOUND) && !defined(HAVE_SDL)
+    Abort_Sound(ENGINE_SOUND);
 #endif
 
     /* give the player the motd and find out which team he wants */
@@ -950,8 +957,8 @@ cowmain (char *server,
 
         sendByeReq ();
 
-#ifdef SOUND
-        Exit_Sound ();
+#if defined(SOUND) && !defined(HAVE_SDL)
+        Exit_Sound();
 #endif
 
         sleep (1);
@@ -1034,8 +1041,13 @@ cowmain (char *server,
 
 
 #ifdef SOUND
-    Play_Sound (ENTER_SHIP_SOUND);
-    Play_Sound (ENGINE_SOUND);
+#if defined(HAVE_SDL)
+    Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+    Play_Sound(ENTER_SHIP_WAV);
+#else
+    Play_Sound(ENTER_SHIP_SOUND);
+    Play_Sound(ENGINE_SOUND);
+#endif /* HAVE_SDL */
 #endif
 
     /* Get input until the player quits or dies */

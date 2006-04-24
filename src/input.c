@@ -1510,7 +1510,11 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-			Play_Sound (MESSAGE_SOUND);
+#if defined(HAVE_SDL)
+  			Play_Sound(MESSAGE_WAV);
+#else
+  			Play_Sound(MESSAGE_SOUND);
+#endif
 #endif
 			message_on ();
 			data->key = players[target->o_num].p_mapchars[1];
@@ -1524,7 +1528,11 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-			Play_Sound (MESSAGE_SOUND);
+#if defined(HAVE_SDL)
+  			Play_Sound(MESSAGE_WAV);
+#else
+  			Play_Sound(MESSAGE_SOUND);
+#endif
 #endif
 			message_on ();
 			data->key = 'T';
@@ -1538,7 +1546,11 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-			Play_Sound (MESSAGE_SOUND);
+#if defined(HAVE_SDL)
+  			Play_Sound(MESSAGE_WAV);
+#else
+  			Play_Sound(MESSAGE_SOUND);
+#endif
 #endif
 			message_on ();
 			data->key = 'A';
@@ -2713,7 +2725,11 @@ Key81 (void)
 {
 
 #ifdef SOUND
-    Play_Sound (SELF_DESTRUCT_SOUND);
+#if defined(HAVE_SDL)
+    Play_Sound(SELF_DESTRUCT_WAV);
+#else
+    Play_Sound(SELF_DESTRUCT_SOUND);
+#endif
 #endif
 
     sendQuitReq ();
@@ -3133,7 +3149,11 @@ Key109 (void)
 {
 
 #ifdef SOUND
-    Play_Sound (MESSAGE_SOUND);
+#if defined(HAVE_SDL)
+    Play_Sound(MESSAGE_WAV);
+#else
+    Play_Sound(MESSAGE_SOUND);
+#endif
 #endif
 
     message_on ();
@@ -3197,7 +3217,11 @@ Key113 (void)
 {
 
 #ifdef SOUND
-    Play_Sound (SELF_DESTRUCT_SOUND);
+#if defined(HAVE_SDL)
+    Play_Sound(SELF_DESTRUCT_WAV);
+#else
+    Play_Sound(SELF_DESTRUCT_SOUND);
+#endif
 #endif
 
     fastQuit = 1;

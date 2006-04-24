@@ -282,8 +282,8 @@ pbmain (char *name)
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
 
-#ifdef SOUND
-    Abort_Sound (ENGINE_SOUND);
+#if defined(SOUND) && !defined(HAVE_SDL)
+    Abort_Sound(ENGINE_SOUND);
 #endif
 
 //#ifdef nodef
@@ -326,8 +326,13 @@ pbmain (char *name)
         redrawPStats ();
 
 #ifdef SOUND
-    Play_Sound (ENTER_SHIP_SOUND);
-    Play_Sound (ENGINE_SOUND);
+#if defined(HAVE_SDL)
+    Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+    Play_Sound(ENTER_SHIP_WAV);
+#else
+    Play_Sound(ENTER_SHIP_SOUND);
+    Play_Sound(ENGINE_SOUND);
+#endif
 #endif
 
     while (1)
