@@ -621,4 +621,6 @@ extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our rich
 
 extern int richText;    /* temporary variable to enable/disable rich text windows */
 
+extern int newSound;	/* Use new SDL sound interface */
+
 #endif /* _h_data */

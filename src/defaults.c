@@ -278,6 +278,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"newSound", &newSound, RC_BOOL,
+        {
+            "Use new layered, stereo sound",
+            NULL
+        }
+    },
     {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
             "Omit team letter on galaxy",
@@ -1348,7 +1354,7 @@ resetdefaults (void)
         timerType = T_SHIP;
 
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
-
+    newSound = booleanDefault ("newSound", newSound);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
 	beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);

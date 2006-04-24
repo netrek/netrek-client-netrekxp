@@ -107,6 +107,7 @@ newPlist:                 (on/off) compatibility variable for player list
 # on - COW style
 # off - old style
 
+newSound:                 (on/off) use layered, stereo sound   
 omitTeamLetter:           (on/off) omit team letter on galaxy
 orishipbmpfile:           (path) - old color bitmaps
 oriship1bmpfile:          (path) - new color bitmaps

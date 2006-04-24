@@ -1510,11 +1510,10 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-#if defined(HAVE_SDL)
-  			Play_Sound(MESSAGE_WAV);
-#else
-  			Play_Sound(MESSAGE_SOUND);
-#endif
+                        if (newSound)
+  			    Play_Sound(MESSAGE_WAV);
+                        else
+  			    Play_Sound(MESSAGE_SOUND);
 #endif
 			message_on ();
 			data->key = players[target->o_num].p_mapchars[1];
@@ -1528,11 +1527,10 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-#if defined(HAVE_SDL)
-  			Play_Sound(MESSAGE_WAV);
-#else
-  			Play_Sound(MESSAGE_SOUND);
-#endif
+                        if (newSound)
+  			    Play_Sound(MESSAGE_WAV);
+                        else
+  			    Play_Sound(MESSAGE_SOUND);
 #endif
 			message_on ();
 			data->key = 'T';
@@ -1546,11 +1544,10 @@ buttonaction (W_Event * data)
 			/* Here we will have to enter message_on () followed by
 			   smessage to player */
 #ifdef SOUND
-#if defined(HAVE_SDL)
-  			Play_Sound(MESSAGE_WAV);
-#else
-  			Play_Sound(MESSAGE_SOUND);
-#endif
+                        if (newSound)
+  			    Play_Sound(MESSAGE_WAV);
+                        else
+  			    Play_Sound(MESSAGE_SOUND);
 #endif
 			message_on ();
 			data->key = 'A';
@@ -2725,11 +2722,10 @@ Key81 (void)
 {
 
 #ifdef SOUND
-#if defined(HAVE_SDL)
-    Play_Sound(SELF_DESTRUCT_WAV);
-#else
-    Play_Sound(SELF_DESTRUCT_SOUND);
-#endif
+    if (newSound)
+        Play_Sound(SELF_DESTRUCT_WAV);
+    else
+        Play_Sound(SELF_DESTRUCT_SOUND);
 #endif
 
     sendQuitReq ();
@@ -3149,11 +3145,10 @@ Key109 (void)
 {
 
 #ifdef SOUND
-#if defined(HAVE_SDL)
-    Play_Sound(MESSAGE_WAV);
-#else
-    Play_Sound(MESSAGE_SOUND);
-#endif
+    if (newSound)
+        Play_Sound(MESSAGE_WAV);
+    else
+        Play_Sound(MESSAGE_SOUND);
 #endif
 
     message_on ();
@@ -3217,11 +3212,10 @@ Key113 (void)
 {
 
 #ifdef SOUND
-#if defined(HAVE_SDL)
-    Play_Sound(SELF_DESTRUCT_WAV);
-#else
-    Play_Sound(SELF_DESTRUCT_SOUND);
-#endif
+    if (newSound)
+        Play_Sound(SELF_DESTRUCT_WAV);
+    else
+        Play_Sound(SELF_DESTRUCT_SOUND);
 #endif
 
     fastQuit = 1;

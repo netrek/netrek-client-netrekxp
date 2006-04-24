@@ -721,3 +721,5 @@ int allowWheelActions = 1;   /* allow wheel actions */
 WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
 int richText = 0;   /* temporary variable to select rich text message windows */
+
+int newSound = 1;   /* use new SDL sound */

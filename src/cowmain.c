@@ -769,8 +769,10 @@ cowmain (char *server,
     resetdefaults ();
     savebitmaps ();
     
-#if defined(SOUND) && defined(HAVE_SDL)
-    Init_Sound();
+#if defined(SOUND)
+    newsoundwin (display_host, name);
+    if (newSound)
+        Init_Sound();
 #endif
 
     /* open memory...? */
@@ -898,8 +900,9 @@ cowmain (char *server,
 
   /* Moved SDL sound initialization to right after readdefaults() so
    * the intro can start playing ASAP */
-#if defined(SOUND) && !defined(HAVE_SDL)
-    Init_Sound();
+#if defined(SOUND)
+    if (!newSound)
+        Init_Sound();
 #endif
 
 
@@ -909,8 +912,9 @@ cowmain (char *server,
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
 
-#if defined(SOUND) && !defined(HAVE_SDL)
-    Abort_Sound(ENGINE_SOUND);
+#if defined(SOUND)
+    if (!newSound)
+        Abort_Sound(ENGINE_SOUND);
 #endif
 
     /* give the player the motd and find out which team he wants */
@@ -957,8 +961,9 @@ cowmain (char *server,
 
         sendByeReq ();
 
-#if defined(SOUND) && !defined(HAVE_SDL)
-        Exit_Sound();
+#if defined(SOUND)
+        if (!newSound)
+            Exit_Sound();
 #endif
 
         sleep (1);
@@ -1041,13 +1046,16 @@ cowmain (char *server,
 
 
 #ifdef SOUND
-#if defined(HAVE_SDL)
-    Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
-    Play_Sound(ENTER_SHIP_WAV);
-#else
-    Play_Sound(ENTER_SHIP_SOUND);
-    Play_Sound(ENGINE_SOUND);
-#endif /* HAVE_SDL */
+    if (newSound)
+    {
+        Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+        Play_Sound(ENTER_SHIP_WAV);
+    }
+    else
+    {
+        Play_Sound(ENTER_SHIP_SOUND);
+        Play_Sound(ENGINE_SOUND);
+    }
 #endif
 
     /* Get input until the player quits or dies */

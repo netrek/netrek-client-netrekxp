@@ -10,10 +10,8 @@
 #include "config.h"
 
 #ifdef SOUND
-#if defined(HAVE_SDL)
 #include "SDL.h"
 #include "SDL_mixer.h"
-#endif
 
 #include "copyright.h"
 
@@ -30,11 +28,7 @@
 #include "audio.h"
 #include "proto.h"
 
-#if defined(HAVE_SDL)
-/* This is probably unix specific path */
-Mix_Chunk *sounds[NUM_WAVES];
-
-#else 
+Mix_Chunk *newsounds[NUM_WAVES];
 /* Each sound has a priority which controls what can override what
    Currently these are set as follows:
 
@@ -81,15 +75,9 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
 
 static int current_sound = NO_SOUND;
 static int sound_other = 1;     /* Play other ship's sounds? */
-#endif // Not SDL sound
 
 static char sound_prefix[PATH_MAX];
 
-#if defined(HAVE_SDL)
-
-/*
- * Build the patch to the sound files 
- */
 char *DATAFILE(const char* wav) {    
     strcpy(sound_prefix, sounddir);
     strcat(sound_prefix, "/");
@@ -103,39 +91,37 @@ char *DATAFILE(const char* wav) {
 int loadSounds(void) {
   int i;
 
-  sounds[CLOAKED_WAV] = Mix_LoadWAV(DATAFILE("nt_cloaked.wav"));
-  sounds[ENGINE_WAV] = Mix_LoadWAV(DATAFILE("nt_engine.wav"));
-  sounds[ENTER_SHIP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_ship.wav"));
-  sounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
-  sounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
-  sounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
-  sounds[FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp.wav"));
-  sounds[FIRE_TORP_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
-  sounds[INTRO_WAV] = Mix_LoadWAV(DATAFILE("nt_intro.wav"));
-  sounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
-  sounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
-  sounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
-  sounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));
-  sounds[RED_ALERT_WAV] = Mix_LoadWAV(DATAFILE("nt_red_alert.wav"));
-  sounds[SELF_DESTRUCT_WAV] = Mix_LoadWAV(DATAFILE("nt_self_destruct.wav"));
-  sounds[SHIELD_DOWN_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_down.wav"));
-  sounds[SHIELD_UP_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_up.wav"));
-  sounds[TORP_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_torp_hit.wav"));
-  sounds[UNCLOAK_WAV] = Mix_LoadWAV(DATAFILE("nt_uncloak.wav"));
-  sounds[WARNING_WAV] = Mix_LoadWAV(DATAFILE("nt_warning.wav"));
+  newsounds[CLOAKED_WAV] = Mix_LoadWAV(DATAFILE("nt_cloaked.wav"));
+  newsounds[ENGINE_WAV] = Mix_LoadWAV(DATAFILE("nt_engine.wav"));
+  newsounds[ENTER_SHIP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_ship.wav"));
+  newsounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
+  newsounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
+  newsounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
+  newsounds[FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp.wav"));
+  newsounds[FIRE_TORP_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
+  newsounds[INTRO_WAV] = Mix_LoadWAV(DATAFILE("nt_intro.wav"));
+  newsounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
+  newsounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
+  newsounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
+  newsounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));
+  newsounds[RED_ALERT_WAV] = Mix_LoadWAV(DATAFILE("nt_red_alert.wav"));
+  newsounds[SELF_DESTRUCT_WAV] = Mix_LoadWAV(DATAFILE("nt_self_destruct.wav"));
+  newsounds[SHIELD_DOWN_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_down.wav"));
+  newsounds[SHIELD_UP_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_up.wav"));
+  newsounds[TORP_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_torp_hit.wav"));
+  newsounds[UNCLOAK_WAV] = Mix_LoadWAV(DATAFILE("nt_uncloak.wav"));
+  newsounds[WARNING_WAV] = Mix_LoadWAV(DATAFILE("nt_warning.wav"));
 
   for (i=0; i < NUM_WAVES; i++) {
-    if (!sounds[i]) {
-      LineToConsole("Mix_LoadWAV sound[%d] could not be loaded. Check soundDir in your .netrekrc: %s\n", i, Mix_GetError());
+    if (!newsounds[i]) {
+      LineToConsole("Mix_LoadWAV newsound[%d] could not be loaded. Check soundDir in your .netrekrc: %s\n", i, Mix_GetError());
       return(-1);
     }
   }
 
   return(1);
 }
-#endif
 
-#if !defined(HAVE_SDL)
 extern void Exit_Sound (void)
 {
     if (sound_init)
@@ -143,7 +129,7 @@ extern void Exit_Sound (void)
     sound_init = 0;
     sound_toggle = 0;
 }
-#endif
+
 
 extern void Init_Sound (void)
 {
@@ -164,99 +150,101 @@ extern void Init_Sound (void)
                 sounddir = "./sounds";
         }
         
-#if defined(HAVE_SDL)
+       if (newSound)
+       {
 #ifdef DEBUG
-	LineToConsole ("Init_Sound using SDL\n");
+	    LineToConsole ("Init_Sound using SDL\n");
 #endif
 
-    	/* Initialize the SDL library */
-    	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+    	    /* Initialize the SDL library */
+    	    if (SDL_Init(SDL_INIT_AUDIO) < 0)
       		LineToConsole("Couldn't initialize SDL: %s\n",SDL_GetError());
 
-    	atexit(SDL_Quit);
+    	    atexit(SDL_Quit);
 
-    	/* Open the audio device at 22050 Hz 8 bit Microsoft PCM with stereo */
-    	if (Mix_OpenAudio(22050, AUDIO_U8, 2, 1024) < 0) 
+    	    /* Open the audio device at 22050 Hz 8 bit Microsoft PCM with stereo */
+    	    if (Mix_OpenAudio(22050, AUDIO_U8, 2, 1024) < 0) 
       		LineToConsole("Mix_OpenAudio: %s\n", Mix_GetError());
 
-    	/* If we successfully loaded the wav files, so shut-off sound_init and play
-    	 * the introduction
-    	 */
-    	if (loadSounds())
-    	{
-     	  if (Mix_PlayChannel(-1, sounds[INTRO_WAV], 0) < 0)
-		LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
-      	}
-      	/* Default of 8 channels not enough */
-      	Mix_AllocateChannels(16);
-#else
-        if (InitSound () == -1)
-        {
-            sound_toggle = 0;
-            sound_init = 0;
+    	    /* If we successfully loaded the wav files, so shut-off sound_init and play
+    	     * the introduction
+    	     */
+    	    if (loadSounds())
+    	    {
+     	        if (Mix_PlayChannel(-1, newsounds[INTRO_WAV], 0) < 0)
+		    LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+      	    }
+      	    /* Default of 8 channels not enough */
+       	    Mix_AllocateChannels(16);
         }
         else
         {
-            sound_init = 1;
-            sound_toggle = 1;
-        }
+            if (InitSound () == -1)
+            {
+                sound_toggle = 0;
+                sound_init = 0;
+            }
+            else
+            {
+                sound_init = 1;
+                sound_toggle = 1;
+            }
 
-        strcpy (sound_prefix, sounddir);
-        strcat (sound_prefix, "/");
+            strcpy (sound_prefix, sounddir);
+            strcat (sound_prefix, "/");
 
-        if (sound_toggle)
-        {
-            strcpy (buf, sounddir);
-            strcat (buf, "/nt_intro");
-            StartSound (buf);
+            if (sound_toggle)
+            {
+                strcpy (buf, sounddir);
+                strcat (buf, "/nt_intro");
+                StartSound (buf);
+            }
         }
-#endif
     }
 }
 
 extern void Play_Sound (int type)
 {
-#if defined(HAVE_SDL)
+    if (newSound)
+    {
+        if (!sound_init)
+	    return;
 
-    if (!sound_init)
-	return;
+        if ((type >= NUM_WAVES) || (type < 0))
+            LineToConsole("Invalid sound type %d\n", type);
 
-    if ((type >= NUM_WAVES) || (type < 0))
-        LineToConsole("Invalid sound type %d\n", type);
+        if (Mix_PlayChannel(-1, newsounds[type], 0) < 0)
+            LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+    }
+    else
+    {
+        char buf[PATH_MAX];
 
-    if (Mix_PlayChannel(-1, sounds[type], 0) < 0)
-        LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+        /*  Don't play other ship's sounds if turned off */
+        if (type > OTHER_SOUND_OFFSET && !sound_other)
+            return;
 
-
-#else
-    char buf[PATH_MAX];
-
-    /*  Don't play other ship's sounds if turned off */
-    if (type > OTHER_SOUND_OFFSET && !sound_other)
-        return;
-
-    if (sound_toggle && sounds[type].flag &&
+        if (sound_toggle && sounds[type].flag &&
         ((sounds[type].priority >= sounds[current_sound].priority) ||
          !SoundPlaying ()))
-    {
-        STRNCPY (buf, sound_prefix, PATH_MAX);
-        strcat (buf, sounds[type].name);
-        StartSound (buf);
-        current_sound = type;
-    }
+        {
+            STRNCPY (buf, sound_prefix, PATH_MAX);
+            strcat (buf, sounds[type].name);
+            StartSound (buf);
+            current_sound = type;
+        }
 
-    if (!(sound_toggle))
-        current_sound = NO_SOUND;
-#endif
+        if (!(sound_toggle))
+            current_sound = NO_SOUND;
+     }
 }
 
-#if !defined(HAVE_SDL)
 extern void Abort_Sound (int type)
 {
     if ((current_sound != NO_SOUND) && (type == current_sound))
         StopSound ();
 }
-#endif
+
 
 /* Sound options window stuff */
 
@@ -269,21 +257,22 @@ static void soundrefresh (int i);
 
 extern void soundwindow (void)
 {
-#if defined(HAVE_SDL)
-    char *buf="All or nothing with SDL sound. Sorry";
-    W_WriteText(soundWin, 0, 0, textColor, buf, strlen(buf), 0);
-#else
-    int i;
+    if (newSound)
+    {
+        char *buf="All or nothing with SDL sound. Sorry";
+        W_WriteText(soundWin, 0, 0, textColor, buf, strlen(buf), 0);
+    }
+    else
+    {
+        int i;
 
-    for (i = 0; i <= SOUND_DONE; i++)
-        soundrefresh (i);
-#endif
-
+        for (i = 0; i <= SOUND_DONE; i++)
+            soundrefresh (i);
+    }
     /* Map window */
     W_MapWindow (soundWin);
 }
 
-#if !defined(HAVE_SDL)
 static void soundrefresh (int i)
 {
     char buf[BUFSIZ], *flag;
@@ -371,11 +360,11 @@ static void soundrefresh (int i)
 
     W_WriteText (soundWin, 0, i, textColor, buf, strlen (buf), 0);
 }
-#endif /* HAVE_SDL */
 
 void soundaction (W_Event * data)
 {
-#if !defined(HAVE_SDL)
+  if (!newSound)
+  {
     int i, j;
 
     i = data->y;
@@ -429,7 +418,7 @@ void soundaction (W_Event * data)
     {
         sounddone ();
     }
-#endif /* HAVE_SDL */
+  }
 }
 
 extern void sounddone (void)

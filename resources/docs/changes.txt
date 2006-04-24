@@ -1,4 +1,7 @@
 Version TBA:
+- added "newSound: (on)/off".  Allows one to choose not to use the new sound system.  Note
+  that this option is not settable in game through options menu, only through the .netrekrc
+  file.
 - initial SDL implementation
 - continuousMouse and continuousMouseFix now default to on
 - fixed the mono fed sb bitmaps so they rotate more cleanly
