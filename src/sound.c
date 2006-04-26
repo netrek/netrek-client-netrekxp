@@ -58,6 +58,8 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
     {"nt_enter_ship", 4, 1},
     {"nt_self_destruct", 6, 1},
     {"nt_plasma_hit", 8, 1},
+    {"nt_enter_warp", 4, 1},
+    {"nt_exit_warp", 4, 1},
     {"nt_message", 4, 1},
     {"nt_message1", 4, 1},
     {"nt_message2", 4, 1},
@@ -95,6 +97,8 @@ int loadSounds(void) {
   newsounds[CLOAKED_WAV] = Mix_LoadWAV(DATAFILE("nt_cloaked.wav"));
   newsounds[ENGINE_WAV] = Mix_LoadWAV(DATAFILE("nt_engine.wav"));
   newsounds[ENTER_SHIP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_ship.wav"));
+  newsounds[ENTER_WARP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_warp.wav"));
+  newsounds[EXIT_WARP_WAV] = Mix_LoadWAV(DATAFILE("nt_exit_warp.wav"));
   newsounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
   newsounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
   newsounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
@@ -290,8 +294,8 @@ void Group_Sound (int type, int channel)
     // at a later time
     // Current designations: 
     // group 1 = cloaked_wav
-    // group 2 = warning_wav
-    // group 3 = red_alert_wav
+    // group 2 = warning_wav and red_alert_wav
+    // group 3 = enter_warp_wav and exit_warp_wav
     // group 4 = shield_down_wav and shield_up_wav
     switch(type)
     {
@@ -300,10 +304,12 @@ void Group_Sound (int type, int channel)
                 LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
             break;
         case WARNING_WAV:
+        case RED_ALERT_WAV:
             if(!Mix_GroupChannel(channel,2))
                 LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
             break;
-        case RED_ALERT_WAV:
+        case ENTER_WARP_WAV:
+        case EXIT_WARP_WAV:
             if(!Mix_GroupChannel(channel,3))
                 LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
             break;
@@ -379,6 +385,12 @@ static void soundrefresh (int i)
             break;
         case ENTER_SHIP_SOUND:
             sprintf (buf, "Enter ship sound is %s", flag);
+            break;
+        case ENTER_WARP_SOUND:
+            sprintf (buf, "Enter warp sound is %s", flag);
+            break;
+        case EXIT_WARP_SOUND:
+            sprintf (buf, "Exit warp sound is %s", flag);
             break;
         case EXPLOSION_SOUND:
             sprintf (buf, "Explosion sound is %s", flag);

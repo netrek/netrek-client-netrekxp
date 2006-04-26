@@ -17,35 +17,36 @@ Things to do:
 1) Add warning hull.
 2) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
-5) A lot of annoying pop up windows (like macro window, default controls) should be
-closeable by shift right click.
-6) genoed as obs on team with no planets -> you were killed by something not in this
-game
-7a) red_alert sound sounds kinda static-y
-7b) self destruct and enter ship sounds are near identical.
-11) Save options 
+3) flipping through options menus clears too large a path to the right on the galactic,
+noticeable with viewbox disappearing at low speeds , depending on what length of menu you
+flip to.  Also, closing hint window has same effect
+4) Save options 
 - name/login/meta stuff needs to be saved
 - Default windows placements need to be saved
 - uselite options need to be saved
 - review window mapping needs to be saved
 - option server/servernick/servertype needs to be saved
-12) Icon not working under Visual Studio
-14) observer sounds slightly messed up
-14a) torp_other and plasma_other not working right due to lack of torp fuse info
-15) closing hint window at warp 0 turns off the box on the galaxy map.  Also, cloaking/shields
-at warp 0 doesn't update someone else's tactical on what you did.
-15a) 
-16) why is beeplite going on when i'm obsing someone who cloaks after they used a 
-beeplite macro that lit themselves up
-17) right click on all_review window, get message "obsolete!"
+5) A lot of annoying pop up windows (like macro window, default controls) should be
+closeable by shift right click.
+6) genoed as obs on team with no planets -> you were killed by something not in this
+game
+7) Icon not working under Visual Studio
+8) torp_other and plasma_other not working right due to lack of torp fuse info
+9) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did.
+9a) observer sound messes up when someone flips shields at warp 0
+9b) the whole 'cloak when approaching base during twarp' thing is causing artifical cloak
+sounds to play
+
+
 
 Might be done:
-3) mouse scroll in message windows gets the up/down coord wrong when main title
+1) mouse scroll in message windows gets the up/down coord wrong when main title
 bar is turned on.
-4) CRASH BUG! Resize main window and try to do mouse scroll, it will crash client.
-13) Disable window move stuff still broken.
-11) save_options keymap: not saving right
-13) if waiting on queue and get in, quit clock missing
+2) CRASH BUG! Resize main window and try to do mouse scroll, it will crash client.
+3) Disable window move stuff still broken.
+4) save_options keymap: not saving right
+5) if waiting on queue and get in, quit clock missing
+6) right click on all_review window, get message "obsolete!"
 
 Stas's list:
 - color coded playerlist.

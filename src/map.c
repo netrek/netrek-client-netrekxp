@@ -549,6 +549,7 @@ map (void)
 
     static int viewx = 0, viewy = 0;
     static char clearviewbox = 0;
+    static char viewboxcleared = 0;
     int viewdist = (WINSIDE / 2 * SCALE) / (GWIDTH / WINSIDE);
     int view = WINSIDE * SCALE / 2;
     int mvx, mvy;
@@ -577,6 +578,7 @@ map (void)
         //W_ClearWindowDB (mapSDB);
         clearlock = 0;
         clearviewbox = 0;
+        viewboxcleared = 0;
 
         for (i = 0; i < MAXPLAYER; i++)
         {
@@ -603,41 +605,29 @@ map (void)
 
         if (clearviewbox)
         {
-            if (viewBox)
-            {
-                if (viewx != dx || viewy != dy)
-                {
-                    /* clear old dots - placed here for less flicker */
-                    if (viewx + viewdist < WINSIDE && viewy + viewdist < WINSIDE)
-                        W_MakePoint (mapw, viewx + viewdist, viewy + viewdist, backColor);
-                        /*W_MakeLine (mapw, viewx + viewdist, viewy + viewdist,
-                                    viewx - viewdist, viewy + viewdist, backColor);*/
-                        //W_MakePointDB (mapSDB, viewx + viewdist, viewy + viewdist, backColor);
-                    if (viewx + viewdist < WINSIDE && viewy - viewdist > 0)
-                        W_MakePoint (mapw, viewx + viewdist, viewy - viewdist, backColor);
-                        /*W_MakeLine (mapw, viewx + viewdist, viewy - viewdist,
-                                    viewx + viewdist, viewy + viewdist, backColor);*/
-                        //W_MakePointDB (mapSDB, viewx + viewdist, viewy - viewdist, backColor);
-                    if (viewx - viewdist > 0 && viewy + viewdist < WINSIDE)
-                        W_MakePoint (mapw, viewx - viewdist, viewy + viewdist, backColor);
-                        /*W_MakeLine (mapw, viewx - viewdist, viewy + viewdist,
-                                    viewx - viewdist, viewy - viewdist, backColor);*/
-                        //W_MakePointDB (mapSDB, viewx - viewdist, viewy + viewdist, backColor);
-                    if (viewx - viewdist > 0 && viewy - viewdist > 0)
-                        W_MakePoint (mapw, viewx - viewdist, viewy - viewdist, backColor);
-                        /*W_MakeLine (mapw, viewx - viewdist, viewy - viewdist,
-                                    viewx + viewdist, viewy - viewdist, backColor);*/
-                        //W_MakePointDB (mapSDB, viewx - viewdist, viewy - viewdist, backColor);
+            clearviewbox = 0;
+            /* clear old dots - placed here for less flicker */
+            if (viewx + viewdist < WINSIDE && viewy + viewdist < WINSIDE)
+                  W_MakePoint (mapw, viewx + viewdist, viewy + viewdist, backColor);
+                   
+            if (viewx + viewdist < WINSIDE && viewy - viewdist > 0)
+                  W_MakePoint (mapw, viewx + viewdist, viewy - viewdist, backColor);
 
-                    /* redraw any planets they overwrote */
-                    mvx = viewx * (GWIDTH / WINSIDE); /* correct from view scale */
-                    mvy = viewy * (GWIDTH / WINSIDE);
-                    checkRedraw(mvx + view, mvy + view);
-                    checkRedraw(mvx + view, mvy - view);
-                    checkRedraw(mvx - view, mvy + view);
-                    checkRedraw(mvx - view, mvy - view);
-                }
-            }
+            if (viewx - viewdist > 0 && viewy + viewdist < WINSIDE)
+                  W_MakePoint (mapw, viewx - viewdist, viewy + viewdist, backColor);
+
+            if (viewx - viewdist > 0 && viewy - viewdist > 0)
+                  W_MakePoint (mapw, viewx - viewdist, viewy - viewdist, backColor);
+
+
+            /* redraw any planets they overwrote */
+            mvx = viewx * (GWIDTH / WINSIDE); /* correct from view scale */
+            mvy = viewy * (GWIDTH / WINSIDE);
+            checkRedraw(mvx + view, mvy + view);
+            checkRedraw(mvx + view, mvy - view);
+            checkRedraw(mvx - view, mvy + view);
+            checkRedraw(mvx - view, mvy - view);
+            viewboxcleared = 1;
         }
 
         /* Erase the ships */
@@ -691,7 +681,7 @@ map (void)
     /* draw viewBox */
     if (viewBox)
     {
-        if (viewx != dx || viewy != dy)
+        if (viewboxcleared || viewx != dx || viewy != dy)
         {
             /* draw the new points */
             if (dx + viewdist < WINSIDE && dy + viewdist < WINSIDE)

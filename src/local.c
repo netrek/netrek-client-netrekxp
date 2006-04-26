@@ -56,6 +56,8 @@ static int other_plasma_dist = 0;
 static int new_other_plasma_dist = 0;
 static int other_plasma_angle = 0;
 static int old_pt_fuse = 0;
+static int warpchange = 0;
+static unsigned int twarpflag = 0; 
 #endif
 
 /* Background Stars Definitions */
@@ -466,6 +468,50 @@ DrawShips (void)
     {
         if ((j->p_status != PALIVE) && (j->p_status != PEXPLODE))
             continue;
+
+/* Twarp sounds put up here so observers can hear them */            
+#ifdef SOUND
+
+       /* Have to use me->p_flags because server doesn't send us twarp flag info
+        on other players.  Current Vanilla does not let observer change players
+        if the player they are observing is transwarping. */
+	if (twarpflag != (me->p_flags & PFTWARP))
+	{
+	    /* change in warp state */
+	    warpchange = 1;
+            twarpflag = (me->p_flags & PFTWARP);
+        }
+        
+        if (myPlayer(j) || isObsLockPlayer(j))
+        {     
+                if (warpchange && (j->p_flags & PFTWARP))
+	        {   
+                    
+	    	    if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+		    {
+		        Mix_HaltGroup(3);
+	                Play_Sound(ENTER_WARP_WAV);
+	            }
+	            else
+	                Play_Sound(ENTER_WARP_SOUND);
+	                
+	            warpchange = 0;
+	
+	        }
+	        if (warpchange && !(j->p_flags & PFTWARP))
+	        { 
+	     	    if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+		    {
+		        Mix_HaltGroup(3);
+	                Play_Sound(EXIT_WARP_WAV);
+	            }
+	            else
+	                Play_Sound(EXIT_WARP_SOUND);
+	                
+	            warpchange = 0;
+	        }
+        }
+#endif
 
         if (j->p_flags & PFOBSERV)
         {
@@ -2097,12 +2143,8 @@ DrawMisc (void)
             W_ChangeBorder (baseWin, gColor);
 
 #if defined(SOUND)
-            if (newSound)
-            {   // Kill any channels with WARNING_WAV on them (group 2)
-                // or RED_ALERT_WAV (group 3)
+            if (newSound) // Kill any channels with WARNING_WAV or RED_ALERT_WAV (group 2)
 		Mix_HaltGroup(2);
-		Mix_HaltGroup(3);
-	    }
             else
             {
                 Abort_Sound(WARNING_SOUND);
@@ -2124,9 +2166,9 @@ DrawMisc (void)
 
 #if defined(SOUND)
 
-            if (newSound) // Kill any channels with RED_ALERT_WAV on them (group 3)
+            if (newSound) // Kill any channels with RED_ALERT_WAV (group 2)
             {
-            	Mix_HaltGroup(3);
+            	Mix_HaltGroup(2);
                 Play_Sound(WARNING_WAV);
             }
             else

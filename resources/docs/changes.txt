@@ -1,4 +1,11 @@
 Version TBA:
+- changed self destruct sound so it doesn't sound like enter ship sound
+- added 2 new message sounds (they can be called by beeplite)
+- add 2 new sounds for enter/exiting transwarp, and observer support for hearing these as
+  well
+- replaced red alert sound with one less staticy
+- fixed beeplite observer bug
+- fixed up viewbox so map refreshes properly when toggled
 - fixed LAB dashboard to properly display armies/kills for observers
 - fixed a bunch of compiler warnings
 - change to warning sounds: changed current "warning" sound to the yellow alert sound, and
