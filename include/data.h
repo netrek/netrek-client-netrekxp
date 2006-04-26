@@ -551,7 +551,7 @@ DWORD InputThreadID;
 
 // Missing global variables
 #include <time.h>
-extern time_t autoQuit;
+extern int autoQuit;
 
 extern int forceDisplay;
 extern int forceMono;

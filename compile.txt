@@ -9,9 +9,21 @@ InstCWD = path to folder to copy files to (default \netrek_files)
 - Edit clientr.dsp and change \netrek_files to be same as InstCWD (only if using VCC)
 - Edit src\cursors\curslib.dsp and change \netrek_files to be same as InstCWD
   (again only necessary if using VCC)
-
+- Get SDL.dll and SDL_mixer.dll from the SDL website (you will need these to
+  run the client, they must be in the installer package)
 After compilation under BCC, there will be one folder under InstCWD - netrek.
 Netrek contains the ready to distribute netrek client tree.
+After compilation under VCC, there will be an additional directory called 
+tmp which can be deleted.
+
+
+Additional instructions for compiling with Microsoft Visual C++ 2005 Express Edition,
+aka Microsoft Visual Studio 2005
+
+You will need the SDK from the web, as the software doesn't come with the necessary files.
+Additionally, DirectX SDK is probably needed too, for the SDL support.  The build file
+will not work under Visual Studio.
+
 
 Stas Pirogov (keyos@keyos.org)
 

@@ -27,7 +27,7 @@
 warning (char *text)
 {
     int doPhaser;
-    LONG curtime;
+    time_t curtime;
     struct tm *tm;
     char newtext[128];
     char newtext2[128];

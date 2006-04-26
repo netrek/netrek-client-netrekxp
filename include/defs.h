@@ -35,6 +35,8 @@
                                  * tactical windows */
 #endif
 
+#define CORNER_DIST (int)(sqrt)(WINSIDE*WINSIDE/2)
+
 #define BORDER 1                /* border width for option
                                  * windows */
 #define THICKBORDER 3           /* Thicker border for windows */
@@ -170,7 +172,8 @@
 
 #define isLockPlanet(p)		((me->p_flags & PFPLLOCK) && (me->p_planet == p->pl_no))
 #define isLockPlayer(p)		((me->p_flags & PFPLOCK) && (me->p_playerl == p->p_no))
-
+#define isObsLockPlayer(p)      ((me->p_flags & PFOBSERV) && (me->p_flags & PFPLOCK) && \
+                                    (me->p_playerl == p->p_no))
 #define torpColor(t)		\
 	(myTorp(t) ? myColor : shipCol[remap[players[(t)->t_owner].p_team]])
 #define plasmatorpColor(t)		\

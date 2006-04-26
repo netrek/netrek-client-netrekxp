@@ -312,7 +312,7 @@ struct torp
     int t_x;
     int t_y;
     short t_fuse;               /* Life left in current state */
-    unsigned char t_updateFuse; /* Updates before torp will expire */
+    short t_updateFuse; /* Updates before torp will expire */
     unsigned char t_dir;        /* direction */
 };
 

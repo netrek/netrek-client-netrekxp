@@ -53,6 +53,7 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
     {"nt_shield_up", 3, 1},
     {"nt_torp_hit", 8, 1},
     {"nt_warning", 5, 1},
+    {"nt_red_alert", 5, 1},
     {"nt_engine", 0, 0},
     {"nt_enter_ship", 4, 1},
     {"nt_self_destruct", 6, 1},
@@ -97,8 +98,9 @@ int loadSounds(void) {
   newsounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
   newsounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
   newsounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
+  newsounds[OTHER_FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma_other.wav"));
   newsounds[FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp.wav"));
-  newsounds[FIRE_TORP_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
+  newsounds[OTHER_FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
   newsounds[INTRO_WAV] = Mix_LoadWAV(DATAFILE("nt_intro.wav"));
   newsounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
   newsounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
@@ -207,14 +209,18 @@ extern void Play_Sound (int type)
 {
     if (newSound)
     {
+    	int channel;
+    	
         if (!sound_init)
 	    return;
 
         if ((type >= NUM_WAVES) || (type < 0))
             LineToConsole("Invalid sound type %d\n", type);
 
-        if (Mix_PlayChannel(-1, newsounds[type], 0) < 0)
+        if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
             LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+            
+        Group_Sound(type, channel);
     }
     else
     {
@@ -237,6 +243,58 @@ extern void Play_Sound (int type)
         if (!(sound_toggle))
             current_sound = NO_SOUND;
      }
+}
+extern void Play_Sound_Loc (int type, int angle, int distance)
+{
+    int channel;
+    
+    if (!sound_init)
+        return;
+
+    if ((type >= NUM_WAVES) || (type < 0))
+        LineToConsole("Invalid sound type %d\n", type);
+
+    if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
+    {
+            LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+            return;
+    }
+    /* Make sure distance in boundary range that function accepts */
+    if (distance < 0)
+    	distance = 0;
+    if (distance > 255)
+    	distance = 255;
+    // Adjust volume with distance and angle
+    if (Mix_SetPosition(channel, angle, distance) == 0)
+        LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
+        
+    Group_Sound(type, channel);
+    return;
+}
+
+void Group_Sound (int type, int channel)
+{
+    // Add channel to group by type, useful for aborting specific sounds
+    // at a later time
+    // Current designations: 
+    // group 1 = cloaked_wav
+    // group 2 = warning_wav
+    // group 3 = red_alert_wav
+    switch(type)
+    {
+    	case CLOAKED_WAV:
+            if(!Mix_GroupChannel(channel,1))
+                LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
+            break;
+        case WARNING_WAV:
+            if(!Mix_GroupChannel(channel,2))
+                LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
+            break;
+        case RED_ALERT_WAV:
+            if(!Mix_GroupChannel(channel,3))
+                LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
+            break;
+    }
 }
 
 extern void Abort_Sound (int type)
@@ -314,6 +372,9 @@ static void soundrefresh (int i)
             break;
         case WARNING_SOUND:
             sprintf (buf, "Warning sound is %s", flag);
+            break;
+        case RED_ALERT_SOUND:
+            sprintf (buf, "Red alert sound is %s", flag);
             break;
         case SHIELD_DOWN_SOUND:
             sprintf (buf, "Shield down  sound is %s", flag);

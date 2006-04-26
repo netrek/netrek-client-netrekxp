@@ -15,31 +15,32 @@
 #define SHIELD_UP_SOUND         8
 #define TORP_HIT_SOUND          9
 #define WARNING_SOUND           10
-#define ENGINE_SOUND            11
-#define ENTER_SHIP_SOUND        12
-#define SELF_DESTRUCT_SOUND     13
-#define PLASMA_HIT_SOUND        14
-#define MESSAGE_SOUND           15
-#define MESSAGE1_SOUND          16
-#define MESSAGE2_SOUND          17
-#define MESSAGE3_SOUND          18
-#define MESSAGE4_SOUND          19
-#define MESSAGE5_SOUND          10
-#define MESSAGE6_SOUND          21
-#define MESSAGE7_SOUND          22
-#define MESSAGE8_SOUND          23
-#define MESSAGE9_SOUND          24
+#define RED_ALERT_SOUND         11
+#define ENGINE_SOUND            12
+#define ENTER_SHIP_SOUND        13
+#define SELF_DESTRUCT_SOUND     14
+#define PLASMA_HIT_SOUND        15
+#define MESSAGE_SOUND           16
+#define MESSAGE1_SOUND          17
+#define MESSAGE2_SOUND          18
+#define MESSAGE3_SOUND          19
+#define MESSAGE4_SOUND          20
+#define MESSAGE5_SOUND          21
+#define MESSAGE6_SOUND          22
+#define MESSAGE7_SOUND          23
+#define MESSAGE8_SOUND          24
+#define MESSAGE9_SOUND          25
 
-#define OTHER_SOUND_OFFSET      24
+#define OTHER_SOUND_OFFSET      26
 
 /* Other people's sounds; not all of these are currently used */
-#define OTHER_FIRE_TORP_SOUND   25
-#define OTHER_PHASER_SOUND      26
-#define OTHER_FIRE_PLASMA_SOUND 27
-#define OTHER_EXPLOSION_SOUND   28
+#define OTHER_FIRE_TORP_SOUND   27
+#define OTHER_PHASER_SOUND      28
+#define OTHER_FIRE_PLASMA_SOUND 29
+#define OTHER_EXPLOSION_SOUND   30
 
 
-#define NUM_SOUNDS 28
+#define NUM_SOUNDS 30
 
 struct Sound
 {
@@ -54,6 +55,7 @@ extern void soundwindow (void);
 /* extern void soundaction (W_Event * data); */
 
 extern void Play_Sound (int type);
+extern void Play_Sound_Loc (int type, int angle, int distance);
 extern void Abort_Sound (int type);
 extern void Init_Sound (void);
 extern void Exit_Sound (void);
@@ -65,8 +67,9 @@ enum {
   EXPLOSION_WAV,
   EXPLOSION_OTHER_WAV,
   FIRE_PLASMA_WAV,
+  OTHER_FIRE_PLASMA_WAV,
   FIRE_TORP_WAV,
-  FIRE_TORP_OTHER_WAV,
+  OTHER_FIRE_TORP_WAV,
   INTRO_WAV,
   MESSAGE_WAV,
   PHASER_WAV,

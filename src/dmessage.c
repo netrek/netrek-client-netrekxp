@@ -121,7 +121,7 @@ dmessage (char *message,
     register int len;
     W_Color color;
     char timebuf[10];
-    LONG curtime;
+    time_t curtime;
     struct tm *tm;
     int take, destroy, team, kill, killp, killa, bomb, conq;
     struct distress dist;

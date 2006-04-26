@@ -23,6 +23,8 @@
 #include "struct.h"
 #include "data.h"
 #include "proto.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
 
 #define WAITMOTD
 
@@ -115,6 +117,8 @@ findslot (void)
 #if defined(SOUND)
             if (!newSound)
                 Exit_Sound();
+            else
+                Mix_CloseAudio();
 #endif
 
             LineToConsole ("Shit!  Ghostbusted!\n");
@@ -162,6 +166,8 @@ findslot (void)
 #if defined(SOUND)
             if (!newSound)
                 Exit_Sound();
+            else
+                Mix_CloseAudio();
 #endif
 
             LineToConsole ("Damn, We've been ghostbusted!\n");
@@ -222,6 +228,8 @@ findslot (void)
 #if defined(SOUND)
                     if (!newSound)
                         Exit_Sound();
+                    else
+                        Mix_CloseAudio();
 #endif
 
                     LineToConsole ("OK, bye!\n");

@@ -65,19 +65,19 @@ lout      = "/OUT:"
 #        wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib
 
 # Borland Libs
-LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk /Tpe
+LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk;..\Win32\lib\BCC /Tpe
 
 !IFDEF RSA
-GMPLIB = ..\Win32\lib\libgmpbcc.lib 
-#..\Win32\lib\libmpbcc.lib
+GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib 
+#..\Win32\lib\BCC\libmpbcc.lib
 !ENDIF
 
-LIBS = SDL.LIB SDL_mixer.LIB SDL_main.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
+LIBS = SDL.LIB SDL_mixer.LIB SDLmain.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 
 # ---------------------------------------------------------------------------
 # - Start of makefile proper
 
-INCS = -I..\win32 -I..\win32\h -I..\win32\h\gmp -I..\include
+INCS = -I..\win32 -I..\win32\h -I..\win32\SDL -I..\win32\h\gmp -I..\include
 ARCH = Intel/Win32
 
 !IFDEF RSA

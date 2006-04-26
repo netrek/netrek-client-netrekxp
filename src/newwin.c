@@ -9,11 +9,11 @@
 /******************************************************************************/
 
 #include <stdio.h>
+#include <io.h>
 #include <stdlib.h>
 #include <math.h>
 #include <signal.h>
 #include <sys/types.h>
-
 #include <time.h>
 #include <winsock.h>
 
@@ -739,7 +739,7 @@ mapAll (void)
 /******************************************************************************/
 savebitmaps (void)
 {
-    int i, j, k;
+    int i, k;
     char *Planlib;
     char *MPlanlib;
 
@@ -1058,7 +1058,7 @@ entrywindow (int *team,
         UpdatePlayerList ();    /* Otherwise */
 
 
-    autoQuit = (time_t) intDefault ("autoQuit", autoQuit);      /* allow extra */
+    autoQuit = intDefault ("autoQuit", autoQuit);      /* allow extra */
     /* quit time -RW */
 
     do
@@ -1089,7 +1089,7 @@ entrywindow (int *team,
                 readFromServer (&rfds);
             }
             elapsed = time (0) - startTime;
-            if (elapsed > autoQuit)
+            if (elapsed > (time_t)(autoQuit))
             {
                 LineToConsole ("Auto-Quit.\n");
                 *team = 4;

@@ -349,7 +349,7 @@ goto :end
 
 :CompilerVCC
 pushd src
-%MyCWD%\tools\mkkey -k %RSAKEY%
+%MyCWD%\tools\mkkey -nt -k %RSAKEY%
 popd
 
 pushd src\cursors

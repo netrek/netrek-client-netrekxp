@@ -20,8 +20,10 @@
 #include "data.h"
 #include "map.h"
 #include "proto.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
 
-rcdlite(struct distress *dist)
+void rcdlite(struct distress *dist)
 /* the info */
 {
     char    message[100];
@@ -43,7 +45,7 @@ rcdlite(struct distress *dist)
 }
 
 
-litedefaults(void)
+void litedefaults(void)
 {
     if (distlite[take] == NULL)
       distlite[take] = "/c/l";
@@ -55,7 +57,7 @@ litedefaults(void)
       distlite[generic] = "%?%S=SB%{/c%}";
 }
 
-liteplanet(struct planet *l)
+void liteplanet(struct planet *l)
 {
     emph_planet_seq_n[l->pl_no] = beep_lite_cycle_time_planet;
     l->pl_flags |= PLREDRAW;			 /* Leave redraw on until * * 
@@ -64,7 +66,7 @@ liteplanet(struct planet *l)
 						  * done highlighting */
 }
 
-liteplayer(struct player *j)
+void liteplayer(struct player *j)
 {
     if (!j || (j->p_flags & PFCLOAK))
       return;

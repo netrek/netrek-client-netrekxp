@@ -32,6 +32,8 @@
 #include "defs.h"
 #include "playerlist.h"
 #include "proto.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
 
 #ifdef RECORDGAME
 
@@ -69,11 +71,11 @@ pbmain (char *name)
         outmessage[i] = '\0';
     }
 
-    SRANDOM (time (0));
+    SRANDOM ((unsigned int)time (0));
 
     initDefaults (deffile);
-
-    SRANDOM (getpid () * time ((LONG *) 0));
+    
+    SRANDOM (getpid () * (unsigned int)time (NULL));
 
     fed_ship_bmp = "bitmaps/shiplib/fedship.bmp";
     if ((stringDefault ("fedshipbmpfile")) != NULL)

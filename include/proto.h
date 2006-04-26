@@ -23,10 +23,10 @@
 /******************************************************************************/
 /***  beeplite.c                                                            ***/
 /******************************************************************************/
-rcdlite (struct distress *dist);
-litedefaults (void);
-liteplanet (struct planet *l);
-liteplayer (struct player *j);
+void rcdlite (struct distress *dist);
+void litedefaults (void);
+void liteplanet (struct planet *l);
+void liteplayer (struct player *j);
 makelite (struct distress * dist, char *pm);
 
 /******************************************************************************/
@@ -767,6 +767,8 @@ void loadbitmapsM (void);
 void loadbitmapsG (void);
 newwin (char *hostmon,
         char *progname);
+newsoundwin (char *hostmon,
+        char *progname);
 mapAll (void);
 savebitmaps (void);
 void entrywindow (int *team,
@@ -1086,6 +1088,8 @@ char *strcpy_return (register char *s1,
      extern void Exit_Sound (void);
      extern void Init_Sound (void);
      extern void Play_Sound (int type);
+     extern void Play_Sound_Loc (int type, int angle, int distance);
+     void Group_Sound (int type, int channel);
      extern void Abort_Sound (int type);
      extern void soundwindow (void);
 //static void soundrefresh(int i);

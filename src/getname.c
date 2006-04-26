@@ -403,7 +403,7 @@ getname (char *defname,
     W_Event event;
     unsigned char ch;
     char tempstr[40];
-    long lasttime;
+    time_t lasttime;
     int j;
     struct timeval tv;
     fd_set mask;

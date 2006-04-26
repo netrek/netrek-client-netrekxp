@@ -29,6 +29,8 @@
 #include "parsemeta.h"
 #include "map.h"
 #include "proto.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
 
 /******************************************************************************/
 /***  Local Globals                                                         ***/
@@ -583,7 +585,7 @@ cowmain (char *server,
     (void) SIGNAL (SIGFPE, handle_exception);
 #endif
 
-    SRANDOM (time (0));
+    SRANDOM ((unsigned int)time (0));
 
     initDefaults (deffile);
 
@@ -603,8 +605,8 @@ cowmain (char *server,
         if (!serverName)
             serverName = server;
     }
-
-    SRANDOM (getpid () * time ((LONG *) 0));
+    
+    SRANDOM (getpid () * (unsigned int)time (NULL));
 
     if (!passive)
     {
@@ -964,6 +966,8 @@ cowmain (char *server,
 #if defined(SOUND)
         if (!newSound)
             Exit_Sound();
+        else
+            Mix_CloseAudio();
 #endif
 
         sleep (1);

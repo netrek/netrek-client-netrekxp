@@ -20,11 +20,12 @@
 #include "data.h"
 #include "local.h"
 #include "proto.h"
-
+#include "SDL.h"
+#include "SDL_mixer.h"
 #include "bitmaps.h"
 
 /* Local Variables */
-
+#define XPI     3.1415926
 static int clearcount = 0;
 static int clearzone[4][(MAXTORP + 1) * MAXPLAYER +
                         (MAXPLASMA + 1) * MAXPLAYER + MAXPLANETS];
@@ -43,9 +44,18 @@ static int sound_torps = 0;
 static int sound_other_torps = 0;
 static int num_other_torps = 0;
 static int sound_plasma = 0;
-static int sound_other_plasma = 0;
+static int sound_other_plasmas = 0;
+static int num_other_plasmas = 0;
 static int sound_other_explode = 0;
 static unsigned int sound_flags = 0;
+static int other_torp_dist = 0;
+static int new_other_torp_dist = 0;
+static int other_torp_angle = 0;
+static int old_t_fuse = 0;
+static int other_plasma_dist = 0;
+static int new_other_plasma_dist = 0;
+static int other_plasma_angle = 0;
+static int old_pt_fuse = 0;
 #endif
 
 /* Background Stars Definitions */
@@ -442,6 +452,7 @@ DrawShips (void)
     const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
+    int newdx, newdy, distance, angle; /* For newSound */
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
 
@@ -470,21 +481,47 @@ DrawShips (void)
             if (!(j->p_flags & PFCLOAK))
                 continue;
         }
+        
+        dx = j->p_x - me->p_x;
+        dy = j->p_y - me->p_y;
+        if (dx > view || dx < -view || dy > view || dy < -view)
+            continue;
 
-        /* jmn - observer support.. tried to diplay tractors but no works */
-
+        dx = dx / SCALE + WINSIDE / 2;
+        dy = dy / SCALE + WINSIDE / 2;
+        
         if (j->p_flags & PFCLOAK)
         {
             if (j->p_cloakphase < (CLOAK_PHASES - 1))
             {
-
+            	
 #ifdef SOUND
-                if (myPlayer(j) && (j->p_cloakphase == 0))
+                if (j->p_cloakphase == 0)
                 {
                     if (newSound)
-                        Play_Sound(CLOAKED_WAV);
+                    {               
+                        newdx = dx - WINSIDE/2;
+                        newdy = dy - WINSIDE/2;
+                        
+                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                        // which would be a diagonal from player to corner of tactical
+                        // Reason for normalization is Mix_SetDistance requires that range        
+                        distance = (int)((255 * distance)/CORNER_DIST);
+                        // Calculate angle, then adjust as necessary for Mix_SetDistance
+                        angle = (int)(atan2(newdy, newdx)*180/XPI);
+                        angle = 270 - angle;
+                        // At short distances, don't use angular sound
+                        if (distance < 10)
+                            Play_Sound(CLOAKED_WAV);
+                        else
+                            Play_Sound_Loc(CLOAKED_WAV, angle, distance);
+                    }
                     else
-                        Play_Sound(CLOAK_SOUND);
+                    {
+                        if (myPlayer(j) || isObsLockPlayer(j))
+                            Play_Sound(CLOAK_SOUND);
+                    }
                 }
 #endif
 
@@ -497,32 +534,47 @@ DrawShips (void)
             {
             	
 #ifdef SOUND
-                if (myPlayer(j))
+                if (newSound)
+                {
                     if (j->p_cloakphase == CLOAK_PHASES - 1)
                     {
-                        if (newSound)
+                        newdx = dx - WINSIDE/2;
+                        newdy = dy - WINSIDE/2;
+                        
+                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                        // which would be a diagonal from player to corner of tactical
+                        // Reason for normalization is Mix_SetDistance requires that range        
+                        distance = (int)((255 * distance)/CORNER_DIST);
+                        // Calculate angle, then adjust as necessary for Mix_SetDistance
+                        angle = (int)(atan2(newdy, newdx)*180/XPI);
+                        angle = 270 - angle;
+                        // At short distances, don't use angular sound
+                        if (distance < 10)
                             Play_Sound(UNCLOAK_WAV);
                         else
-                            Play_Sound(UNCLOAK_SOUND);
+                            Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
                     }
-                    else
+                    else    // Kill any channels with CLOAKED_WAV on them (group 1)
+			Mix_HaltGroup(1);
+
+                }
+                else
+                {
+                    if (myPlayer(j) || isObsLockPlayer(j))
                     {
-                        if (!newSound)
-                             Abort_Sound(CLOAK_SOUND);
-                    } 	
+                        if (j->p_cloakphase == CLOAK_PHASES - 1)
+                            Play_Sound(UNCLOAK_SOUND);
+                        else
+                            Abort_Sound(CLOAK_SOUND);
+                    }
+                }
+                    
 #endif
             	
                 j->p_cloakphase--;
             }
         }
-        dx = j->p_x - me->p_x;
-        dy = j->p_y - me->p_y;
-        if (dx > view || dx < -view || dy > view || dy < -view)
-            continue;
-
-        dx = dx / SCALE + WINSIDE / 2;
-        dy = dy / SCALE + WINSIDE / 2;
-
 
         if (j->p_flags & PFCLOAK && (j->p_cloakphase == (CLOAK_PHASES - 1)))
         {
@@ -714,7 +766,7 @@ DrawShips (void)
 #endif
 
 #ifdef SOUND
-            if (j->p_no == me->p_no)
+            if (myPlayer(j) || isObsLockPlayer(j))
             {
                 if ((sound_flags & PFSHIELD) && !(j->p_flags & PFSHIELD))
                 {
@@ -881,9 +933,34 @@ DrawShips (void)
             if (i == 1)
             {
                 if (newSound)
-                    Play_Sound(j == me ? EXPLOSION_WAV : EXPLOSION_OTHER_WAV);
+                {
+                    if (myPlayer(j) || isObsLockPlayer(j))
+                        Play_Sound(EXPLOSION_WAV);
+                    else
+                    {
+                        int newdx, newdy, distance, angle;
+                    
+                        newdx = dx - WINSIDE/2;
+                        newdy = dy - WINSIDE/2;
+                        
+                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                        // which would be a diagonal from player to corner of tactical
+                        // Reason for normalization is Mix_SetDistance requires that range        
+                        distance = (int)((255 * distance)/CORNER_DIST);
+                        // Calculate angle, then adjust as necessary for Mix_SetDistance
+                        angle = (int)(atan2(newdy, newdx)*180/XPI);
+                        angle = 270 - angle;
+                        // At short distances, don't use angular sound
+                        if (distance < 10)
+                            Play_Sound(EXPLOSION_OTHER_WAV);
+                        else
+                            Play_Sound_Loc(EXPLOSION_OTHER_WAV, angle, distance);
+                    }
+                }
                 else
-                    Play_Sound(j == me ? EXPLOSION_SOUND : OTHER_EXPLOSION_SOUND);
+                    Play_Sound((myPlayer(j) || isObsLockPlayer(j)) 
+                               ? EXPLOSION_SOUND : OTHER_EXPLOSION_SOUND);
             }
 #endif
 
@@ -930,11 +1007,37 @@ DrawShips (void)
         	
 #ifdef SOUND
             if (!sound_phaser)
-            {
+            {           
                 if (newSound)
-                    Play_Sound(j == me ? PHASER_WAV : PHASER_OTHER_WAV);
+                {
+                    if (myPlayer(j) || isObsLockPlayer(j))
+                        Play_Sound(PHASER_WAV);
+                    else
+                    {
+                        int newdx, newdy, distance, angle;
+                    
+                        newdx = dx - WINSIDE/2;
+                        newdy = dy - WINSIDE/2;
+                        
+                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                        // which would be a diagonal from player to corner of tactical
+                        // Reason for normalization is Mix_SetDistance requires that range        
+                        distance = (int)((255 * distance)/CORNER_DIST);
+                        // Calculate angle, then adjust as necessary for Mix_SetDistance
+                        angle = (int)(atan2(newdy, newdx)*180/XPI);
+                        angle = 270 - angle;
+                        // At short distances, don't use angular sound
+                        if (distance < 10)
+                            Play_Sound(PHASER_OTHER_WAV);
+                        else
+                            Play_Sound_Loc(PHASER_OTHER_WAV, angle, distance);
+                    }
+                }
                 else
-                    Play_Sound(j == me ? PHASER_SOUND : OTHER_PHASER_SOUND);
+                    Play_Sound((myPlayer(j) || isObsLockPlayer(j))
+                               ? PHASER_SOUND : OTHER_PHASER_SOUND);
+                
                 sound_phaser++;
             }
 #endif
@@ -1116,11 +1219,9 @@ DrawShips (void)
 #ifdef SHORT_PACKETS
                         if (php->ph_status != PHMISS)   /* KOC 10/20/95  */
                         {       /* hack for SP_2 */
-#define XPI     3.1415926
                             dir = (unsigned char) 
                                   nint (atan2((double) (ty - py),
                                        (double) (tx - px)) / XPI * 128.0);
-#undef XPI
                         }
                         else
 #endif
@@ -1170,7 +1271,7 @@ DrawShips (void)
         }
 
 #ifdef SOUND
-        else if (j->p_no == me->p_no)
+        else if (myPlayer(j) || isObsLockPlayer(j))
             sound_phaser = 0;
 #endif
 
@@ -1215,7 +1316,6 @@ DrawShips (void)
                         continue;       /* this had better be last
                                          * in for(..) */
 
-#define XPI     3.1415926
                     theta = atan2 ((double) (px - dx),
                                    (double) (dy - py)) + XPI / 2.0;
                     dir = (unsigned char) nint (theta / XPI * 128.0);
@@ -1229,7 +1329,6 @@ DrawShips (void)
                     ly[0] = (int) (py + (Sin[dir] * (target_width / 2)));
                     lx[1] = (int) (px - (Cos[dir] * (target_width / 2)));
                     ly[1] = (int) (py - (Sin[dir] * (target_width / 2)));
-#undef XPI
                     if (j->p_flags & PFPRESS)
                     {
                         W_MakeTractLine (w, dx, dy, lx[0], ly[0], W_Yellow);
@@ -1354,9 +1453,50 @@ DrawTorps (void)
                 continue;
             }
 
+#ifdef SOUND
+            if (j != me && newSound)
+            {
+            	int new_t_fuse;
+            	int new_angle;
+		int newdy, newdx;
+		
+		newdy = dy / SCALE;
+		newdx = dx / SCALE;
+                // Store location of torp.
+                new_other_torp_dist = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                // which would be a diagonal from player to corner of tactical
+                // Reason for normalization is Mix_SetDistance requires that range        
+                new_other_torp_dist = (int)((255 * new_other_torp_dist)/CORNER_DIST);
+                // Find how long till torp expires...BROKEN!
+                new_t_fuse = k->t_updateFuse;
+                // Calculate angle, then adjust as necessary for Mix_SetDistance
+                new_angle = (int)(atan2(newdy, newdx)*180/XPI);
+                new_angle = 270 - new_angle;
+                // Find torp that has been around the least time, that is the one to play
+                // the sound from.  In case of tie, choose closest one.
+                if (new_t_fuse > old_t_fuse)
+                {
+                    other_torp_dist = new_other_torp_dist;
+                    old_t_fuse = new_t_fuse;
+                    other_torp_angle = new_angle;
+                }
+                else if (new_t_fuse == old_t_fuse)
+                {
+                    if (new_other_torp_dist < other_torp_dist)
+                    {
+                        other_torp_dist = new_other_torp_dist;
+                        old_t_fuse = new_t_fuse;
+                        other_torp_angle = new_angle;
+                    }
+                }
+                	
+            }
+#endif         
             dx = dx / SCALE + WINSIDE / 2;
             dy = dy / SCALE + WINSIDE / 2;
 
+  
             if (k->t_status == TEXPLODE)
             {
 
@@ -1376,7 +1516,26 @@ DrawTorps (void)
                 if (k->t_fuse == BMP_TORPDET_FRAMES - 1)
                 {
                     if (newSound)
-                        Play_Sound(TORP_HIT_WAV);
+                    {
+                        int newdx, newdy, distance, angle;
+                    
+                        newdx = dx - WINSIDE/2;
+                        newdy = dy - WINSIDE/2;
+                        
+                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                        // which would be a diagonal from player to corner of tactical
+                        // Reason for normalization is Mix_SetDistance requires that range        
+                        distance = (int)((255 * distance)/CORNER_DIST);
+                        // Calculate angle, then adjust as necessary for Mix_SetDistance
+                        angle = (int)(atan2(newdy, newdx)*180/XPI);
+                        angle = 270 - angle;
+                        // At short distances, don't use angular sound
+                        if (distance < 10)
+                            Play_Sound(TORP_HIT_WAV);
+                        else
+                            Play_Sound_Loc(TORP_HIT_WAV, angle, distance);
+                    }
                     else
                         Play_Sound(TORP_HIT_SOUND);
                 }
@@ -1509,7 +1668,10 @@ DrawPlasmaTorps (void)
     {
         if (!pt->pt_status)
             continue;
-
+#ifdef SOUND
+        if (pt->pt_owner != me->p_no)
+            num_other_plasmas++;
+#endif
         if ((pt->pt_updateFuse -= weaponUpdate) == 0)
         {
             if (pt->pt_status != PTEXPLODE)
@@ -1537,6 +1699,47 @@ DrawPlasmaTorps (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
+
+#ifdef SOUND
+        if (pt->pt_owner != me->p_no && newSound)
+        {
+            int new_pt_fuse;
+            int new_angle;
+	    int newdy, newdx;
+		
+	    newdy = dy / SCALE;
+	    newdx = dx / SCALE;
+            // Store location of plasma.
+            new_other_plasma_dist = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+            // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+            // which would be a diagonal from player to corner of tactical
+            // Reason for normalization is Mix_SetDistance requires that range        
+            new_other_plasma_dist = (int)((255 * new_other_plasma_dist)/CORNER_DIST);
+            // Find how long till torp expires...BROKEN!
+            new_pt_fuse = pt->pt_updateFuse;
+            // Calculate angle, then adjust as necessary for Mix_SetDistance
+            new_angle = (int)(atan2(newdy, newdx)*180/XPI);
+            new_angle = 270 - new_angle;
+            // Find plasma that has been around the least time, that is the one to play
+            // the sound from.  In case of tie, choose closest one.
+            if (new_pt_fuse > old_pt_fuse)
+            {
+                other_plasma_dist = new_other_plasma_dist;
+                old_pt_fuse = new_pt_fuse;
+                other_plasma_angle = new_angle;
+            }
+            else if (new_pt_fuse == old_pt_fuse)
+            {
+                if (new_other_torp_dist < other_torp_dist)
+                {
+                    other_plasma_dist = new_other_plasma_dist;
+                    old_pt_fuse = new_pt_fuse;
+                    other_plasma_angle = new_angle;
+                 }
+             }     	
+        }
+#endif   
+
         dx = dx / SCALE + WINSIDE / 2;
         dy = dy / SCALE + WINSIDE / 2;
 
@@ -1559,7 +1762,26 @@ DrawPlasmaTorps (void)
             if (pt->pt_fuse == BMP_TORPDET_FRAMES - 1)
             {
                 if (newSound)
-                    Play_Sound(PLASMA_HIT_WAV);
+                {
+                    int newdx, newdy, distance, angle;
+                    
+                    newdx = dx - WINSIDE/2;
+                    newdy = dy - WINSIDE/2;
+                        
+                    distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                    // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                    // which would be a diagonal from player to corner of tactical
+                    // Reason for normalization is Mix_SetDistance requires that range        
+                    distance = (int)((255 * distance)/CORNER_DIST);
+                    // Calculate angle, then adjust as necessary for Mix_SetDistance
+                    angle = (int)(atan2(newdy, newdx)*180/XPI);
+                    angle = 270 - angle;
+                    // At short distances, don't use angular sound
+                    if (distance < 10)
+                        Play_Sound(PLASMA_HIT_WAV);
+                    else
+                        Play_Sound_Loc(PLASMA_HIT_WAV, angle, distance);
+                }
                 else
                     Play_Sound(PLASMA_HIT_SOUND);
             }
@@ -1865,8 +2087,18 @@ DrawMisc (void)
             W_ChangeBorder (baseWin, gColor);
 
 #if defined(SOUND)
-            if (!newSound)
+            if (newSound)
+            {   // Kill any channels with WARNING_WAV on them (group 2)
+                // or RED_ALERT_WAV (group 3)
+		Mix_HaltGroup(2);
+		Mix_HaltGroup(3);
+	    }
+            else
+            {
                 Abort_Sound(WARNING_SOUND);
+                Abort_Sound(RED_ALERT_SOUND);
+            }
+                
 #endif
 
             break;
@@ -1881,8 +2113,18 @@ DrawMisc (void)
             W_ChangeBorder (baseWin, yColor);
 
 #if defined(SOUND)
-            if (!newSound)
-                Abort_Sound(WARNING_SOUND);
+
+            if (newSound) // Kill any channels with RED_ALERT_WAV on them (group 3)
+            {
+            	Mix_HaltGroup(3);
+                Play_Sound(WARNING_WAV);
+            }
+            else
+            {
+            	Abort_Sound(RED_ALERT_SOUND);
+                Play_Sound(WARNING_SOUND);
+            }
+
 #endif
 
             break;
@@ -1896,26 +2138,47 @@ DrawMisc (void)
             }
             W_ChangeBorder (baseWin, rColor);
             
-#ifdef SOUND
+#if defined(SOUND)
             if (newSound)
-                Play_Sound(WARNING_WAV);
+                Play_Sound(RED_ALERT_WAV);
             else
-                Play_Sound(WARNING_SOUND);
+                Play_Sound(RED_ALERT_SOUND);
 #endif
 
             break;
         }
     }
 
-#ifdef SOUND
+#if defined(SOUND)
     if (newSound)
     {
         if (sound_torps < me->p_ntorp)
             Play_Sound(FIRE_TORP_WAV);
         if (sound_other_torps < num_other_torps)
-            Play_Sound(FIRE_TORP_OTHER_WAV);
+        {
+            if (other_torp_dist < 10)
+                Play_Sound(OTHER_FIRE_TORP_WAV);
+            else
+                Play_Sound_Loc(OTHER_FIRE_TORP_WAV, other_torp_angle, other_torp_dist);
+        }
         if (sound_plasma < me->p_nplasmatorp)
             Play_Sound(FIRE_PLASMA_WAV);
+        if (sound_other_plasmas < num_other_plasmas)
+        {
+            if (other_plasma_dist < 10)
+                Play_Sound(OTHER_FIRE_PLASMA_WAV);
+            else
+                Play_Sound_Loc(OTHER_FIRE_PLASMA_WAV, other_plasma_angle, other_plasma_dist);
+        }
+        // Reset locations and fuses of other's closest torps and plasmas
+        other_torp_dist = CORNER_DIST;
+        new_other_torp_dist = 0;
+        old_t_fuse = 0;
+        other_torp_angle = 0;
+        other_plasma_dist = CORNER_DIST;
+        new_other_plasma_dist = 0;
+        old_pt_fuse = 0;
+        other_plasma_angle = 0;
     }
     else
     {
@@ -1925,6 +2188,8 @@ DrawMisc (void)
             Play_Sound(OTHER_FIRE_TORP_SOUND);
         if (sound_plasma < me->p_nplasmatorp)
             Play_Sound(FIRE_PLASMA_SOUND);
+        if (sound_other_plasmas < num_other_plasmas)
+            Play_Sound(OTHER_FIRE_PLASMA_SOUND);
     }
 
     sound_flags = me->p_flags;
@@ -1932,6 +2197,8 @@ DrawMisc (void)
     sound_other_torps = num_other_torps;
     num_other_torps = 0;
     sound_plasma = me->p_nplasmatorp;
+    sound_other_plasmas = num_other_plasmas;
+    num_other_plasmas = 0;
 #endif
 
     /* show 'lock' icon on local map (Actually an EM hack ) */

@@ -75,6 +75,18 @@ del resources\ships\mono\kli\klishipM.bmp resources\ships\mono\kli\kli_??.bmp
 del resources\ships\mono\ori\orishipM.bmp resources\ships\mono\ori\ori_??.bmp
 del resources\ships\mono\rom\romshipM.bmp resources\ships\mono\rom\rom_??.bmp
 
+del resources\ships\grayscale\fed\fedshipG.bmp resources\ships\grayscale\fed\fed_??.bmp
+del resources\ships\grayscale\ind\indshipG.bmp resources\ships\grayscale\ind\ind_??.bmp
+del resources\ships\grayscale\kli\klishipG.bmp resources\ships\grayscale\kli\kli_??.bmp
+del resources\ships\grayscale\ori\orishipG.bmp resources\ships\grayscale\ori\ori_??.bmp
+del resources\ships\grayscale\rom\romshipG.bmp resources\ships\grayscale\rom\rom_??.bmp
+
+del resources\ships\tinted\fed\fedshipT.bmp resources\ships\tinted\fed\fed_??.bmp
+del resources\ships\tinted\ind\indshipT.bmp resources\ships\tinted\ind\ind_??.bmp
+del resources\ships\tinted\kli\klishipT.bmp resources\ships\tinted\kli\kli_??.bmp
+del resources\ships\tinted\ori\orishipT.bmp resources\ships\tinted\ori\ori_??.bmp
+del resources\ships\tinted\rom\romshipT.bmp resources\ships\tinted\rom\rom_??.bmp
+
 del resources\planlibm\bronco\plan.bmp
 del resources\planlibm\rabbit\planR.bmp
 del resources\planlibm\moo\planM.bmp

@@ -1,7 +1,35 @@
 Version TBA:
+- fixed a bunch of compiler warnings
+- change to warning sounds: changed current "warning" sound to the yellow alert sound, and
+  made the red_alert sound file the red alert sound.  Added additional measures to stop
+  playing the alert sound if you go down in alert status
+- change to plasma_other sounds: currently buggy due to no good way to determine which torp on
+  screen is most recent for sound purposes, however the basic stereo effect mostly works.
+- change to plasma_hit sounds: nothing special other than stereo effect
+- change to phaser sounds: observers now hear phasers!  Also fixed it so observers locked
+  onto a player hear self-phaser sounds rather than phaser_other sounds when that player
+  fire phasers
+- change to shields up/down: observers now hear shields up/down sounds for ship they are
+  locked onto.
+- change to cloak/uncloak sounds: under old sound (not using newSound), observers now hear
+  cloak/uncloak sounds for ship they are locked onto.  For newSound, you now hear
+  cloak/uncloak events for all ships on the tactical.
+- change to torp_other sounds: currently buggy due to no good way to determine which torp on
+  screen is most recent for sound purposes, however the basic stereo effect mostly works.
+- change to torp_explosion sounds: nothing special other than stereo effect.
+- change to explosion sounds:  changed it so observers who are locked onto a player who blows
+  up hear the self-explosion sound rather than the explosion_other sound.
+- added a minimum distance to have the angular/distance modulation of sound effects (so close
+  sounds will sound like they are right on top of you).
+- added sound reduction with distance and stereo effect based on angle, for sound events
+  that occur on the tactical (weapons, explosions, cloaking, etc).  Current list includes
+  cloak, uncloak, torp_other, torp_explosion, explosion_other, phaser_other, plasma_other,
+  plasma_hit
+- fire_plasma_other sound now works
 - added "newSound: (on)/off".  Allows one to choose not to use the new sound system.  Note
   that this option is not settable in game through options menu, only through the .netrekrc
   file.
+- added Mix_CloseAudio calls when exiting to clean up memory
 - initial SDL implementation
 - continuousMouse and continuousMouseFix now default to on
 - fixed the mono fed sb bitmaps so they rotate more cleanly
