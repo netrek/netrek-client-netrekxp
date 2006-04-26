@@ -512,7 +512,7 @@ DrawShips (void)
                         angle = (int)(atan2(newdy, newdx)*180/XPI);
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
-                        if (distance < 10)
+                        if (distance < SCALE/2)
                             Play_Sound(CLOAKED_WAV);
                         else
                             Play_Sound_Loc(CLOAKED_WAV, angle, distance);
@@ -550,13 +550,15 @@ DrawShips (void)
                         angle = (int)(atan2(newdy, newdx)*180/XPI);
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
-                        if (distance < 10)
+                        if (distance < SCALE/2)
                             Play_Sound(UNCLOAK_WAV);
                         else
                             Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
+      
+                            
                     }
                     else    // Kill any channels with CLOAKED_WAV on them (group 1)
-			Mix_HaltGroup(1);
+		        Mix_HaltGroup(1);
 
                 }
                 else
@@ -771,14 +773,22 @@ DrawShips (void)
                 if ((sound_flags & PFSHIELD) && !(j->p_flags & PFSHIELD))
                 {
                     if (newSound)
-                        Play_Sound(SHIELD_DOWN_WAV);
+                    {
+                        // Kill any channels with SHIELD_UP/DOWN_WAV on them (group 4)
+			Mix_HaltGroup(4);
+		        Play_Sound(SHIELD_DOWN_WAV);
+		    }
                     else
                         Play_Sound(SHIELD_DOWN_SOUND);
                 }
                 if (!(sound_flags & PFSHIELD) && (j->p_flags & PFSHIELD))
                 {
                     if (newSound)
-                        Play_Sound(SHIELD_UP_WAV);
+                    {
+                        // Kill any channels with SHIELD_UP/DOWN_WAV on them (group 4)
+			Mix_HaltGroup(4);
+			Play_Sound(SHIELD_UP_WAV);
+		    }
                     else
                         Play_Sound(SHIELD_UP_SOUND);
                 }
@@ -952,7 +962,7 @@ DrawShips (void)
                         angle = (int)(atan2(newdy, newdx)*180/XPI);
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
-                        if (distance < 10)
+                        if (distance < SCALE/2)
                             Play_Sound(EXPLOSION_OTHER_WAV);
                         else
                             Play_Sound_Loc(EXPLOSION_OTHER_WAV, angle, distance);
@@ -1028,7 +1038,7 @@ DrawShips (void)
                         angle = (int)(atan2(newdy, newdx)*180/XPI);
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
-                        if (distance < 10)
+                        if (distance < SCALE/2)
                             Play_Sound(PHASER_OTHER_WAV);
                         else
                             Play_Sound_Loc(PHASER_OTHER_WAV, angle, distance);
@@ -1531,7 +1541,7 @@ DrawTorps (void)
                         angle = (int)(atan2(newdy, newdx)*180/XPI);
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
-                        if (distance < 10)
+                        if (distance < SCALE/2)
                             Play_Sound(TORP_HIT_WAV);
                         else
                             Play_Sound_Loc(TORP_HIT_WAV, angle, distance);
@@ -1777,7 +1787,7 @@ DrawPlasmaTorps (void)
                     angle = (int)(atan2(newdy, newdx)*180/XPI);
                     angle = 270 - angle;
                     // At short distances, don't use angular sound
-                    if (distance < 10)
+                    if (distance < SCALE/2)
                         Play_Sound(PLASMA_HIT_WAV);
                     else
                         Play_Sound_Loc(PLASMA_HIT_WAV, angle, distance);
@@ -2156,7 +2166,7 @@ DrawMisc (void)
             Play_Sound(FIRE_TORP_WAV);
         if (sound_other_torps < num_other_torps)
         {
-            if (other_torp_dist < 10)
+            if (other_torp_dist < SCALE/2)
                 Play_Sound(OTHER_FIRE_TORP_WAV);
             else
                 Play_Sound_Loc(OTHER_FIRE_TORP_WAV, other_torp_angle, other_torp_dist);
@@ -2165,7 +2175,7 @@ DrawMisc (void)
             Play_Sound(FIRE_PLASMA_WAV);
         if (sound_other_plasmas < num_other_plasmas)
         {
-            if (other_plasma_dist < 10)
+            if (other_plasma_dist < SCALE/2)
                 Play_Sound(OTHER_FIRE_PLASMA_WAV);
             else
                 Play_Sound_Loc(OTHER_FIRE_PLASMA_WAV, other_plasma_angle, other_plasma_dist);

@@ -215,10 +215,16 @@ extern void Play_Sound (int type)
 	    return;
 
         if ((type >= NUM_WAVES) || (type < 0))
+        {
             LineToConsole("Invalid sound type %d\n", type);
+            return;
+        }
 
         if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
+        {
             LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+            return;
+        }
             
         Group_Sound(type, channel);
     }
@@ -252,7 +258,10 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
         return;
 
     if ((type >= NUM_WAVES) || (type < 0))
+    {
         LineToConsole("Invalid sound type %d\n", type);
+        return;
+    }
 
     if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
     {
@@ -266,7 +275,10 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
     	distance = 255;
     // Adjust volume with distance and angle
     if (Mix_SetPosition(channel, angle, distance) == 0)
+    {
         LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
+        return;
+    }
         
     Group_Sound(type, channel);
     return;
@@ -280,6 +292,7 @@ void Group_Sound (int type, int channel)
     // group 1 = cloaked_wav
     // group 2 = warning_wav
     // group 3 = red_alert_wav
+    // group 4 = shield_down_wav and shield_up_wav
     switch(type)
     {
     	case CLOAKED_WAV:
@@ -292,6 +305,15 @@ void Group_Sound (int type, int channel)
             break;
         case RED_ALERT_WAV:
             if(!Mix_GroupChannel(channel,3))
+                LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
+            break;
+        case SHIELD_UP_WAV:
+        case SHIELD_DOWN_WAV:
+            if(!Mix_GroupChannel(channel,4))
+                LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
+            break;
+        default: // Reset tag
+            if(!Mix_GroupChannel(channel,-1))
                 LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
             break;
     }

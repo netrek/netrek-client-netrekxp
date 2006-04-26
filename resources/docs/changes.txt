@@ -1,4 +1,5 @@
 Version TBA:
+- fixed LAB dashboard to properly display armies/kills for observers
 - fixed a bunch of compiler warnings
 - change to warning sounds: changed current "warning" sound to the yellow alert sound, and
   made the red_alert sound file the red alert sound.  Added additional measures to stop

@@ -342,53 +342,32 @@ db_redraw_lab2 (int fr)
     static float old_kills = -1;
     int cur_max, cur_arm, label_len;
     char label[32];
-
-
-    if (me->p_ship.s_type == ASSAULT)
-    {
-        cur_arm = (int) (3 * me->p_kills);
-    }
+    float kills; 
+        
+    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+        kills = players[me->p_playerl].p_kills;
     else
-    {
-        cur_arm = (int) (2 * me->p_kills);
-    }
+        kills = me->p_kills;
 
-    if (cur_arm < 0)
-    {
-        cur_arm = 0;
-    }
-    else if ((cur_arm > me->p_ship.s_maxarmies) ||
-             (me->p_ship.s_type == STARBASE))
-    {
-        cur_arm = me->p_ship.s_maxarmies;
-    }
+    if (fr)
+        W_ClearWindow (tstatw);
 
+    db_flags (fr);
+
+    /* TIMER */
+    db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
+        
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -
                      ((me->p_ship.s_maxspeed + 1) *
                       ((float) me->p_damage /
                        (float) (me->p_ship.s_maxdamage))));
 
-
     if (cur_max < 0)
-    {
         cur_max = 0;
-    }
     else if (cur_max > me->p_ship.s_maxspeed)
-    {
         cur_max = me->p_ship.s_maxspeed;
-    }
-
-    if (fr)
-    {
-        W_ClearWindow (tstatw);
-    }
-
-    db_flags (fr);
-
-    /* TIMER */
-    db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
-
+    
     if (fr || (me->p_speed != old_spd) || (old_cur_max != cur_max))
     {
         db_bar ("Spd", 2, 2, 75, 25,
@@ -487,7 +466,17 @@ db_redraw_lab2 (int fr)
             }
         }
     }
-
+    
+    if (me->p_ship.s_type == ASSAULT)
+        cur_arm = (((kills * 3) > me->p_ship.s_maxarmies) ?
+                   me->p_ship.s_maxarmies : (int) (kills * 3));
+    else if (me->p_ship.s_type == STARBASE)
+        cur_arm = me->p_ship.s_maxarmies;
+    else
+        cur_arm = (((kills * 2) > me->p_ship.s_maxarmies) ?
+                   me->p_ship.s_maxarmies : (int) (kills * 2));
+    
+        
     if (fr || (old_arm != me->p_armies) || (old_cur_arm != cur_arm))
     {
         W_ClearArea (tstatw, 402, 2, 98, W_Textheight);
@@ -524,11 +513,11 @@ db_redraw_lab2 (int fr)
         }
     }
 
-    if (fr || (old_kills != me->p_kills))
+    if (fr || (old_kills != kills))
     {
         W_ClearArea (tstatw, 402, 4 + W_Textheight, 98, W_Textheight);
 
-        if (me->p_kills > 0.0)
+        if (kills > 0.0)
         {
             label[0] = ' ';
             label[1] = 'K';
@@ -538,7 +527,7 @@ db_redraw_lab2 (int fr)
             label[5] = 's';
             label[6] = ':';
             label[7] = ' ';
-            label_len = 8 + db_ftoa (&label[8], me->p_kills);
+            label_len = 8 + db_ftoa (&label[8], kills);
 
             if (cur_arm > 4)
             {
@@ -560,7 +549,7 @@ db_redraw_lab2 (int fr)
             }
         }
 
-        old_kills = me->p_kills;
+        old_kills = kills;
     }
 
     old_spd = me->p_speed;

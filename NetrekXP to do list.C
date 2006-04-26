@@ -31,13 +31,13 @@ game
 - option server/servernick/servertype needs to be saved
 12) Icon not working under Visual Studio
 14) observer sounds slightly messed up
-14a) torp_other not working right due to lack of torp fuse info
+14a) torp_other and plasma_other not working right due to lack of torp fuse info
 15) closing hint window at warp 0 turns off the box on the galaxy map.  Also, cloaking/shields
 at warp 0 doesn't update someone else's tactical on what you did.
 15a) 
 16) why is beeplite going on when i'm obsing someone who cloaks after they used a 
 beeplite macro that lit themselves up
-17) add dll, lib, and header files to repository
+17) right click on all_review window, get message "obsolete!"
 
 Might be done:
 3) mouse scroll in message windows gets the up/down coord wrong when main title
@@ -78,3 +78,7 @@ Stas's list:
 - add sortPlayersFirst
 - fix makedistress bug that creates 0 instead of empty string when macro starts with conditional
 
+Simple in-game, realtime variable checking:
+   char text[120];
+   sprintf (text, "Variable has value %d.", variable);
+   W_MessageAllowedWindows (WAM_ALL, 0, 0, textColor, text, 120, 0);
