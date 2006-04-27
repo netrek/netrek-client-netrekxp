@@ -8,10 +8,15 @@ which then maps windows accordingly.
 new-be-nice!!
 
 
-Things not gonna hapen:
+Things not gonna happen:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
 2) Get mkkey working.
+3) torp_other and plasma_other not working right due to lack of torp fuse info
+4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did.
+5) observer sound messes up when someone flips shields at warp 0
+6) the whole 'cloak when approaching base during twarp' thing is causing artifical cloak
+sounds to play
 
 Things to do:
 1) Add warning hull.
@@ -31,11 +36,7 @@ closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
 7) Icon not working under Visual Studio
-8) torp_other and plasma_other not working right due to lack of torp fuse info
-9) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did.
-9a) observer sound messes up when someone flips shields at warp 0
-9b) the whole 'cloak when approaching base during twarp' thing is causing artifical cloak
-sounds to play
+
 
 
 

@@ -51,11 +51,9 @@ static unsigned int sound_flags = 0;
 static int other_torp_dist = 0;
 static int new_other_torp_dist = 0;
 static int other_torp_angle = 0;
-static int old_t_fuse = 0;
 static int other_plasma_dist = 0;
 static int new_other_plasma_dist = 0;
 static int other_plasma_angle = 0;
-static int old_pt_fuse = 0;
 static int warpchange = 0;
 static unsigned int twarpflag = 0; 
 #endif
@@ -600,8 +598,7 @@ DrawShips (void)
                             Play_Sound(UNCLOAK_WAV);
                         else
                             Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
-      
-                            
+                   
                     }
                     else    // Kill any channels with CLOAKED_WAV on them (group 1)
 		        Mix_HaltGroup(1);
@@ -1447,7 +1444,6 @@ DrawTorps (void)
     register struct torp *k, *t;
     register int dx, dy;
     struct player *j;
-
     int torpCount;
     const int view = SCALE * WINSIDE / 2;
 
@@ -1512,10 +1508,9 @@ DrawTorps (void)
 #ifdef SOUND
             if (j != me && newSound)
             {
-            	int new_t_fuse;
             	int new_angle;
 		int newdy, newdx;
-		
+
 		newdy = dy / SCALE;
 		newdx = dx / SCALE;
                 // Store location of torp.
@@ -1525,28 +1520,15 @@ DrawTorps (void)
                 // Reason for normalization is Mix_SetDistance requires that range        
                 new_other_torp_dist = (int)((255 * new_other_torp_dist)/CORNER_DIST);
                 // Find how long till torp expires...BROKEN!
-                new_t_fuse = k->t_updateFuse;
                 // Calculate angle, then adjust as necessary for Mix_SetDistance
                 new_angle = (int)(atan2(newdy, newdx)*180/XPI);
                 new_angle = 270 - new_angle;
-                // Find torp that has been around the least time, that is the one to play
-                // the sound from.  In case of tie, choose closest one.
-                if (new_t_fuse > old_t_fuse)
+                // Choose closest torp - yes this sucks sometimes, but better than nothing
+                if (new_other_torp_dist < other_torp_dist)
                 {
                     other_torp_dist = new_other_torp_dist;
-                    old_t_fuse = new_t_fuse;
                     other_torp_angle = new_angle;
-                }
-                else if (new_t_fuse == old_t_fuse)
-                {
-                    if (new_other_torp_dist < other_torp_dist)
-                    {
-                        other_torp_dist = new_other_torp_dist;
-                        old_t_fuse = new_t_fuse;
-                        other_torp_angle = new_angle;
-                    }
-                }
-                	
+                }	
             }
 #endif         
             dx = dx / SCALE + WINSIDE / 2;
@@ -1759,9 +1741,8 @@ DrawPlasmaTorps (void)
 #ifdef SOUND
         if (pt->pt_owner != me->p_no && newSound)
         {
-            int new_pt_fuse;
             int new_angle;
-	    int newdy, newdx;
+            int newdy, newdx;
 		
 	    newdy = dy / SCALE;
 	    newdx = dx / SCALE;
@@ -1772,27 +1753,15 @@ DrawPlasmaTorps (void)
             // Reason for normalization is Mix_SetDistance requires that range        
             new_other_plasma_dist = (int)((255 * new_other_plasma_dist)/CORNER_DIST);
             // Find how long till torp expires...BROKEN!
-            new_pt_fuse = pt->pt_updateFuse;
             // Calculate angle, then adjust as necessary for Mix_SetDistance
             new_angle = (int)(atan2(newdy, newdx)*180/XPI);
             new_angle = 270 - new_angle;
-            // Find plasma that has been around the least time, that is the one to play
-            // the sound from.  In case of tie, choose closest one.
-            if (new_pt_fuse > old_pt_fuse)
+            // Choose closest plasma - yes this sucks sometimes, but better than nothing
+            if (new_other_plasma_dist < other_plasma_dist)
             {
                 other_plasma_dist = new_other_plasma_dist;
-                old_pt_fuse = new_pt_fuse;
                 other_plasma_angle = new_angle;
-            }
-            else if (new_pt_fuse == old_pt_fuse)
-            {
-                if (new_other_torp_dist < other_torp_dist)
-                {
-                    other_plasma_dist = new_other_plasma_dist;
-                    old_pt_fuse = new_pt_fuse;
-                    other_plasma_angle = new_angle;
-                 }
-             }     	
+            }   	
         }
 #endif   
 
@@ -2225,11 +2194,9 @@ DrawMisc (void)
         // Reset locations and fuses of other's closest torps and plasmas
         other_torp_dist = CORNER_DIST;
         new_other_torp_dist = 0;
-        old_t_fuse = 0;
         other_torp_angle = 0;
         other_plasma_dist = CORNER_DIST;
         new_other_plasma_dist = 0;
-        old_pt_fuse = 0;
         other_plasma_angle = 0;
     }
     else

@@ -11,8 +11,8 @@ Version TBA:
 - change to warning sounds: changed current "warning" sound to the yellow alert sound, and
   made the red_alert sound file the red alert sound.  Added additional measures to stop
   playing the alert sound if you go down in alert status
-- change to plasma_other sounds: currently buggy due to no good way to determine which torp on
-  screen is most recent for sound purposes, however the basic stereo effect mostly works.
+- change to plasma_other sounds: uses closest other_plasma for sound location, as there is no
+  good way to determine which torp on screen is most recent for sound purposes.
 - change to plasma_hit sounds: nothing special other than stereo effect
 - change to phaser sounds: observers now hear phasers!  Also fixed it so observers locked
   onto a player hear self-phaser sounds rather than phaser_other sounds when that player
@@ -22,8 +22,8 @@ Version TBA:
 - change to cloak/uncloak sounds: under old sound (not using newSound), observers now hear
   cloak/uncloak sounds for ship they are locked onto.  For newSound, you now hear
   cloak/uncloak events for all ships on the tactical.
-- change to torp_other sounds: currently buggy due to no good way to determine which torp on
-  screen is most recent for sound purposes, however the basic stereo effect mostly works.
+- change to torp_other sounds: uses closest other_torp for sound location, as there is no
+  good way to determine which torp on screen is most recent for sound purposes.
 - change to torp_explosion sounds: nothing special other than stereo effect.
 - change to explosion sounds:  changed it so observers who are locked onto a player who blows
   up hear the self-explosion sound rather than the explosion_other sound.
