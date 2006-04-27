@@ -260,7 +260,6 @@ struct option Ship_Menu[] = {
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
 
-
 struct option Planet_Menu[] = {
     {0, "Planet Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
@@ -277,7 +276,6 @@ struct option Planet_Menu[] = {
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
-
 
 struct option Control_Menu[] = {
     {0, "Control Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
@@ -296,12 +294,11 @@ struct option Control_Menu[] = {
      &redraw_updates_range},
     {1, "", &windowMove, 0, 0, 0, windowmovemess, NULL},
     {1, "avoid message kludge", &niftyNewMessages, 0, 0, 0, NULL, NULL},
-	{1, "", &playerListMessaging, 0, 0, 0, plistmessagingmess, NULL},
-	{1, "beep on private message", &beepOnPrivateMessage, 0, 0, 0, NULL, NULL},
+    {1, "", &playerListMessaging, 0, 0, 0, plistmessagingmess, NULL},
+    {1, "beep on private message", &beepOnPrivateMessage, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
-
 
 struct option Window_Menu[] = {
     {0, "Info Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
@@ -313,7 +310,6 @@ struct option Window_Menu[] = {
     {1, "show \"total\" message window", 0, &reviewWin, 0, 0, NULL, NULL},
     {1, "show phaser log window", 0, &phaserwin, 0, 0, NULL},
     {1, "show statistic window", 0, &statwin, 0, 0, NULL, NULL},
-    {1, "show alternate player list", 0, &playerw2, 0, 0, NULL, NULL},
     {1, "show help window", 0, &helpWin, 0, 0, NULL, NULL},
     {1, "show hints window", &showHints, &hintWin, 0, 0, NULL, NULL},
 #ifdef XTREKRC_HELP
@@ -338,16 +334,23 @@ struct option Window_Menu[] = {
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
 
-
-struct option Visual_Menu[] = {
-    {0, "Visuals Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+struct option Playerlist_Menu[] = {
+    {0, "Playerlist Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &playerListStyle, 0, 0, 0, plistoptions, NULL},
+    {1, "show alternate player list", 0, &playerw2, 0, 0, NULL, NULL},
     {1, "sort the playerlist", &sortPlayers, 0, 0, 0, NULL, 0},
     {1, "put my team first in the list", &sortMyTeamFirst, 0, 0, 0, NULL, 0},
     {1, "partition the playerlist", &partitionPlist, 0, 0, 0, NULL, 0},
     {1, "", &playerListObserver, 0, 0, 0, playerlistobservermess, &playerlistobserver_range},
     {1, "hack player list", &playerListHack, 0, 0, 0, NULL, 0},
+    {1, "done", &notdone, 0, 0, 0, NULL, NULL},
+    {-1, NULL, 0, 0, 0, 0, NULL, NULL}
+};
+
+struct option Visual_Menu[] = {
+    {0, "Visuals Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+    {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &newDashboard, 0, 0, 0, dashboardoptions, NULL},
     {1, "", &timerType, 0, 0, 0, timermess, NULL},
     {1, "keep info %d upds (0=don't remove)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
@@ -361,7 +364,7 @@ struct option Visual_Menu[] = {
 #ifdef HOCKEY_LINES
     {1, "show hockey lines on local", &showHockeyLinesLocal, 0, 0, 0, NULL, NULL},
     {1, "show hockey lines on map", &showHockeyLinesMap, 0, 0, 0, NULL, NULL},
-	{1, "show hockey score on map", &showHockeyScore, 0, 0, 0, NULL, NULL},
+    {1, "show hockey score on map", &showHockeyScore, 0, 0, 0, NULL, NULL},
 #endif
     {1, "alert on extra border(s)", &extraAlertBorder, 0, 0, 0, NULL, NULL},
 #ifdef PHASER_STATS
@@ -973,6 +976,7 @@ InitOptionMenus (void)
     AddOptMenu (Planet_Menu, 0);
     AddOptMenu (Visual_Menu, 0);
     AddOptMenu (Window_Menu, 0);
+    AddOptMenu (Playerlist_Menu, 0);
     AddOptMenu (Save_Menu, 0);
 
 

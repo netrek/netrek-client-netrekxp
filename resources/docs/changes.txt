@@ -1,4 +1,6 @@
 Version TBA:
+- added a new Playerlist menu to the Options Menus, so the other menus are not as
+  cluttered, and all playerlist options are now on the same menu page.
 - added "newSoundAngles: (on)/off" so one can choose to use SDL sound but lose the
   directionality component (sounds will still be toned down in volume with distance, but
   there will be no 3d sound component)
