@@ -536,37 +536,39 @@ DrawShips (void)
         
         if (j->p_flags & PFCLOAK)
         {
-            // To avoid sounds at twarp "cloak" speed and the speed below it ("decloak" speed)
-            if (j->p_cloakphase < (CLOAK_PHASES - 1)
-            && (F_cloak_maxwarp ? (j->p_speed != 0xf && j->p_speed != 0xe): 1))
+            if (j->p_cloakphase < (CLOAK_PHASES - 1))
             {
             	
 #ifdef SOUND
                 if (j->p_cloakphase == 0)
                 {
-                    if (newSound)
-                    {               
-                        newdx = dx - WINSIDE/2;
-                        newdy = dy - WINSIDE/2;
-                        
-                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                        // which would be a diagonal from player to corner of tactical
-                        // Reason for normalization is Mix_SetDistance requires that range        
-                        distance = (int)((255 * distance)/CORNER_DIST);
-                        // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        angle = (int)(atan2(newdy, newdx)*180/XPI);
-                        angle = 270 - angle;
-                        // At short distances, don't use angular sound
-                        if (distance < SCALE/2)
-                            Play_Sound(CLOAKED_WAV);
-                        else
-                            Play_Sound_Loc(CLOAKED_WAV, angle, distance);
-                    }
-                    else
+                    // To avoid hearing twarp cloak sounds as the twarper/observer
+                    if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
                     {
-                        if (myPlayer(j) || isObsLockPlayer(j))
-                            Play_Sound(CLOAK_SOUND);
+                        if (newSound)
+                        {               
+                            newdx = dx - WINSIDE/2;
+                            newdy = dy - WINSIDE/2;
+                        
+                            distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                            // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                            // which would be a diagonal from player to corner of tactical
+                            // Reason for normalization is Mix_SetDistance requires that range        
+                            distance = (int)((255 * distance)/CORNER_DIST);
+                            // Calculate angle, then adjust as necessary for Mix_SetDistance
+                            angle = (int)(atan2(newdy, newdx)*180/XPI);
+                            angle = 270 - angle;
+                            // At short distances, don't use angular sound
+                            if (distance < SCALE/2)
+                                Play_Sound(CLOAKED_WAV);
+                            else
+                                Play_Sound_Loc(CLOAKED_WAV, angle, distance);
+                        }
+                        else
+                        {
+                            if (myPlayer(j) || isObsLockPlayer(j))
+                                Play_Sound(CLOAK_SOUND);
+                        }
                     }
                 }
 #endif
@@ -576,49 +578,48 @@ DrawShips (void)
         }
         else
         {
-            // To avoid sounds at twarp "cloak" speed and the speed below it ("decloak" speed)
-            if (j->p_cloakphase
-            && (F_cloak_maxwarp ? (j->p_speed != 0xf && j->p_speed != 0xe): 1))
+            if (j->p_cloakphase)
             {
             	
 #ifdef SOUND
-                if (newSound)
+                // To avoid twarp cloak sounds as the twarper/observer
+                if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
                 {
-                    if (j->p_cloakphase == CLOAK_PHASES - 1)
-                    {
-                        newdx = dx - WINSIDE/2;
-                        newdy = dy - WINSIDE/2;
-                        
-                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                        // which would be a diagonal from player to corner of tactical
-                        // Reason for normalization is Mix_SetDistance requires that range        
-                        distance = (int)((255 * distance)/CORNER_DIST);
-                        // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        angle = (int)(atan2(newdy, newdx)*180/XPI);
-                        angle = 270 - angle;
-                        // At short distances, don't use angular sound
-                        if (distance < SCALE/2)
-                            Play_Sound(UNCLOAK_WAV);
-                        else
-                            Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
-                   
-                    }
-                    else    // Kill any channels with CLOAKED_WAV on them (group 1)
-		        Mix_HaltGroup(1);
-
-                }
-                else
-                {
-                    if (myPlayer(j) || isObsLockPlayer(j))
+                    if (newSound)
                     {
                         if (j->p_cloakphase == CLOAK_PHASES - 1)
-                            Play_Sound(UNCLOAK_SOUND);
-                        else
-                            Abort_Sound(CLOAK_SOUND);
+                            {
+                            newdx = dx - WINSIDE/2;
+                            newdy = dy - WINSIDE/2;
+                        
+                            distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+                            // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+                            // which would be a diagonal from player to corner of tactical
+                            // Reason for normalization is Mix_SetDistance requires that range        
+                            distance = (int)((255 * distance)/CORNER_DIST);
+                            // Calculate angle, then adjust as necessary for Mix_SetDistance
+                            angle = (int)(atan2(newdy, newdx)*180/XPI);
+                            angle = 270 - angle;
+                             // At short distances, don't use angular sound
+                            if (distance < SCALE/2)
+                                Play_Sound(UNCLOAK_WAV);
+                            else
+                                Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
+                        }
+                        else    // Kill any channels with CLOAKED_WAV on them (group 1)
+		            Mix_HaltGroup(1);
                     }
-                }
-                    
+                    else
+                    {
+                        if (myPlayer(j) || isObsLockPlayer(j))
+                        {
+                            if (j->p_cloakphase == CLOAK_PHASES - 1)
+                                Play_Sound(UNCLOAK_SOUND);
+                            else
+                                Abort_Sound(CLOAK_SOUND);
+                        }
+                    }
+                }            
 #endif
             	
                 j->p_cloakphase--;

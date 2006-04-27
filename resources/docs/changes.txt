@@ -1,5 +1,5 @@
 Version TBA:
-- made it so cloak sounds don't play at the twarp flash event (happens at warp 15, 31, 46)
+- made it so cloak sounds don't play at your twarp flash event (happens at warp 15, 31, 46)
 - changed self destruct sound so it doesn't sound like enter ship sound
 - added 2 new message sounds (they can be called by beeplite)
 - add 2 new sounds for enter/exiting transwarp, and observer support for hearing these as
