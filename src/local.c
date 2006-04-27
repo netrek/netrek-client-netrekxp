@@ -536,7 +536,9 @@ DrawShips (void)
         
         if (j->p_flags & PFCLOAK)
         {
-            if (j->p_cloakphase < (CLOAK_PHASES - 1))
+            // To avoid sounds at twarp "cloak" speed and the speed below it ("decloak" speed)
+            if (j->p_cloakphase < (CLOAK_PHASES - 1)
+            && (F_cloak_maxwarp ? (j->p_speed != 0xf && j->p_speed != 0xe): 1))
             {
             	
 #ifdef SOUND
@@ -574,7 +576,9 @@ DrawShips (void)
         }
         else
         {
-            if (j->p_cloakphase)
+            // To avoid sounds at twarp "cloak" speed and the speed below it ("decloak" speed)
+            if (j->p_cloakphase
+            && (F_cloak_maxwarp ? (j->p_speed != 0xf && j->p_speed != 0xe): 1))
             {
             	
 #ifdef SOUND

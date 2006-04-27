@@ -125,7 +125,10 @@ struct save_options save_options[] = {
     },
     {"dynamicBitmaps", &dynamicBitmaps, RC_BOOL,
     	{
-    	    "Allow switching of ship bitmaps in game",
+    	    "Allow switching of ship bitmaps in game.  With this option disabled",
+    	    "not all bitmaps load into memory.  This option is thus not changeable",
+    	    "in game.  Do not attempt to edit your netrekrc to turn dynamic bitmaps",
+    	    "on and then reload the netrekrc with the & key - restart the client instead.",
     	    NULL
     	}
     },

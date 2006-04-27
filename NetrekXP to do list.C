@@ -14,9 +14,7 @@ away, etc).  Don't think this is fixable.
 2) Get mkkey working.
 3) torp_other and plasma_other not working right due to lack of torp fuse info
 4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did.
-5) observer sound messes up when someone flips shields at warp 0
-6) the whole 'cloak when approaching base during twarp' thing is causing artifical cloak
-sounds to play
+4a) observer sound messes up when someone flips shields at warp 0
 
 Things to do:
 1) Add warning hull.
@@ -36,9 +34,9 @@ closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
 7) Icon not working under Visual Studio
-
-
-
+8) Colorize weapons
+9) Resolve curslib and winkey dll issues
+10) Option menus too long
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title
