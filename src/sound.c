@@ -277,11 +277,23 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
     	distance = 0;
     if (distance > 255)
     	distance = 255;
-    // Adjust volume with distance and angle
-    if (Mix_SetPosition(channel, angle, distance) == 0)
+    if (newSoundAngles)
     {
-        LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
-        return;
+        // Adjust volume with distance and angle
+        if (Mix_SetPosition(channel, angle, distance) == 0)
+        {
+           LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
+            return;
+        }
+    }
+    else
+    {
+        // Adjust volume with distance
+        if (Mix_SetDistance(channel, distance) == 0)
+        {
+           LineToConsole("Mix_SetDistance: %s\n", Mix_GetError());
+            return;
+        }
     }
         
     Group_Sound(type, channel);

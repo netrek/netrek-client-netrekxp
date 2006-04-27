@@ -622,5 +622,5 @@ extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our rich
 extern int richText;    /* temporary variable to enable/disable rich text windows */
 
 extern int newSound;	/* Use new SDL sound interface */
-
+extern int newSoundAngles; /* Use SDL with angular 3D sound */
 #endif /* _h_data */

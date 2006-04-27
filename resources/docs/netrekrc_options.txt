@@ -108,6 +108,7 @@ newPlist:                 (on/off) compatibility variable for player list
 # off - old style
 
 newSound:                 (on/off) use layered, stereo sound   
+newSoundAngles:           (on/off) use 3D sound effects (only works if newSound is on)
 omitTeamLetter:           (on/off) omit team letter on galaxy
 orishipbmpfile:           (path) - old color bitmaps
 oriship1bmpfile:          (path) - new color bitmaps

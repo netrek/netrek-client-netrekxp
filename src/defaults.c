@@ -287,6 +287,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"newSoundAngles", &newSoundAngles, RC_BOOL,
+        {
+            "Use 3D sound effects (only works if newSound is on)",
+            NULL
+        }
+    },
     {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
             "Omit team letter on galaxy",
@@ -1358,6 +1364,7 @@ resetdefaults (void)
 
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newSound = booleanDefault ("newSound", newSound);
+    newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
 	beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);

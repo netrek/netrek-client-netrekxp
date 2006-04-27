@@ -723,3 +723,4 @@ WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 int richText = 0;   /* temporary variable to select rich text message windows */
 
 int newSound = 1;   /* use new SDL sound */
+int newSoundAngles = 1; /* use new SDL sound with angular 3d component */

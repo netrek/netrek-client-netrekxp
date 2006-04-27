@@ -1,4 +1,7 @@
 Version TBA:
+- added "newSoundAngles: (on)/off" so one can choose to use SDL sound but lose the
+  directionality component (sounds will still be toned down in volume with distance, but
+  there will be no 3d sound component)
 - made it so cloak sounds don't play at your twarp flash event (happens at warp 15, 31, 46)
 - changed self destruct sound so it doesn't sound like enter ship sound
 - added 2 new message sounds (they can be called by beeplite)
