@@ -35,7 +35,6 @@ closeable by shift right click.
 game
 7) Icon not working under Visual Studio.  Also must resolve curslib, winkey and build issues
 9) playerlist not loading right on startup
-10) add sb_explosion sound
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

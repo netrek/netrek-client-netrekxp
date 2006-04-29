@@ -1,4 +1,5 @@
 Version TBA:
+- added a special explosion sound just for starbase explosions
 - added "colorWeapons: (on)/off" to use color weapon bitmaps for torps and plasmas!  The
   bitmaps are a blend of COW/Ted Turner bitmaps, with some improvements in the area of
   torp/plasma size and color ratio, the addition of a separate color bitmap for your own

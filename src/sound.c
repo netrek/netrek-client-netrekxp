@@ -47,6 +47,7 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
     {"nt_phaser", 9, 1},
     {"nt_fire_plasma", 9, 1},
     {"nt_explosion", 10, 1},
+    {"nt_base_explosion", 10, 1},
     {"nt_cloaked", 7, 1},
     {"nt_uncloak", 7, 1},
     {"nt_shield_down", 3, 1},
@@ -100,6 +101,7 @@ int loadSounds(void) {
   newsounds[ENTER_WARP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_warp.wav"));
   newsounds[EXIT_WARP_WAV] = Mix_LoadWAV(DATAFILE("nt_exit_warp.wav"));
   newsounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
+  newsounds[BASE_EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_base_explosion.wav"));
   newsounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
   newsounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
   newsounds[OTHER_FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma_other.wav"));
@@ -406,6 +408,9 @@ static void soundrefresh (int i)
             break;
         case EXPLOSION_SOUND:
             sprintf (buf, "Explosion sound is %s", flag);
+            break;
+        case BASE_EXPLOSION_SOUND:
+            sprintf (buf, "Base explosion sound is %s", flag);
             break;
         case FIRE_TORP_SOUND:
             sprintf (buf, "Fire torp sound is %s", flag);

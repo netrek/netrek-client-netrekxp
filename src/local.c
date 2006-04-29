@@ -46,7 +46,6 @@ static int num_other_torps = 0;
 static int sound_plasma = 0;
 static int sound_other_plasmas = 0;
 static int num_other_plasmas = 0;
-static int sound_other_explode = 0;
 static unsigned int sound_flags = 0;
 static int other_torp_dist = 0;
 static int new_other_torp_dist = 0;
@@ -993,7 +992,12 @@ DrawShips (void)
                 if (newSound)
                 {
                     if (myPlayer(j) || isObsLockPlayer(j))
-                        Play_Sound(EXPLOSION_WAV);
+                    {
+                    	if (j->p_ship.s_type == STARBASE)
+                    	    Play_Sound(BASE_EXPLOSION_WAV);
+                    	else
+                            Play_Sound(EXPLOSION_WAV);
+                    }
                     else
                     {
                         int newdx, newdy, distance, angle;
@@ -1011,14 +1015,30 @@ DrawShips (void)
                         angle = 270 - angle;
                         // At short distances, don't use angular sound
                         if (distance < SCALE/2)
-                            Play_Sound(EXPLOSION_OTHER_WAV);
+                        {
+                            if (j->p_ship.s_type == STARBASE)
+                    	        Play_Sound(BASE_EXPLOSION_WAV);
+                    	    else
+                                Play_Sound(EXPLOSION_OTHER_WAV);
+                        }
                         else
-                            Play_Sound_Loc(EXPLOSION_OTHER_WAV, angle, distance);
+                        {
+                            if (j->p_ship.s_type == STARBASE)
+                    	        Play_Sound_Loc(BASE_EXPLOSION_WAV, angle, distance);
+                    	    else
+                                Play_Sound_Loc(EXPLOSION_OTHER_WAV, angle, distance);
+                        }
                     }
                 }
                 else
-                    Play_Sound((myPlayer(j) || isObsLockPlayer(j)) 
-                               ? EXPLOSION_SOUND : OTHER_EXPLOSION_SOUND);
+                {
+                    if (j->p_ship.s_type == STARBASE)
+                        Play_Sound(BASE_EXPLOSION_SOUND);
+                    else if (myPlayer(j) || isObsLockPlayer(j))
+                        Play_Sound(EXPLOSION_SOUND);
+                    else
+                        Play_Sound(OTHER_EXPLOSION_SOUND);
+                }
             }
 #endif
 
