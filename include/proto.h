@@ -1095,6 +1095,7 @@ char *strcpy_return (register char *s1,
 //static void soundrefresh(int i);
 #if defined(SOUND)
      void soundaction (W_Event * data);
+     void sdlsoundaction (W_Event * data);
 #endif
      extern void sounddone (void);
 

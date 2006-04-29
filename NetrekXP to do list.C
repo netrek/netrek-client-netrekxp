@@ -33,8 +33,7 @@ flip to.  Also, closing hint window has same effect
 closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
-7) Icon not working under Visual Studio.  Also must resolve curslib, winkey and build issues
-9) playerlist not loading right on startup
+7) Resolve curslib, winkey, and version build issues under Visual Studio
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

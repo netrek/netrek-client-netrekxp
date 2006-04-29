@@ -158,8 +158,8 @@ extern void Init_Sound (void)
                 sounddir = "./sounds";
         }
         
-       if (newSound)
-       {
+        if (newSound)
+        {
 #ifdef DEBUG
 	    LineToConsole ("Init_Sound using SDL\n");
 #endif
@@ -182,6 +182,7 @@ extern void Init_Sound (void)
      	        if (Mix_PlayChannel(-1, newsounds[INTRO_WAV], 0) < 0)
 		    LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
       	    }
+      	    sound_toggle = 1;
       	    /* Default of 8 channels not enough */
        	    Mix_AllocateChannels(16);
         }
@@ -217,7 +218,7 @@ extern void Play_Sound (int type)
     {
     	int channel;
     	
-        if (!sound_init)
+        if (!sound_init || !sound_toggle)
 	    return;
 
         if ((type >= NUM_WAVES) || (type < 0))
@@ -260,7 +261,7 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
 {
     int channel;
     
-    if (!sound_init)
+    if (!sound_init || !sound_toggle)
         return;
 
     if ((type >= NUM_WAVES) || (type < 0))
@@ -353,24 +354,48 @@ extern void Abort_Sound (int type)
 #define SOUND_INIT    MESSAGE_SOUND + 2
 #define SOUND_DONE    MESSAGE_SOUND + 3
 
+#define SDL_SOUND_DONE 1
+
 static void soundrefresh (int i);
+static void sdlsoundrefresh (int i);
 
 extern void soundwindow (void)
 {
+    int i;
     if (newSound)
     {
-        char *buf="All or nothing with SDL sound. Sorry";
-        W_WriteText(soundWin, 0, 0, textColor, buf, strlen(buf), 0);
+        for (i = 0; i <= SDL_SOUND_DONE; i++)
+            sdlsoundrefresh (i);
     }
     else
     {
-        int i;
-
         for (i = 0; i <= SOUND_DONE; i++)
             soundrefresh (i);
     }
     /* Map window */
     W_MapWindow (soundWin);
+}
+
+
+static void sdlsoundrefresh (int i)
+{
+    char buf[BUFSIZ];
+
+    if (i == SOUND_TOGGLE)
+    {
+        sprintf (buf, "Sound is turned %s",
+                 (sound_toggle == 1) ? "ON" : "OFF");
+    }
+    else if (i == SDL_SOUND_DONE)
+    {
+        strcpy (buf, "Done");
+    }
+    else
+    {
+        LineToConsole ("Uh oh, bogus refresh number in sdlsoundrefresh\n");
+    }
+
+    W_WriteText (soundWin, 0, i, textColor, buf, strlen (buf), 0);
 }
 
 static void soundrefresh (int i)
@@ -428,7 +453,7 @@ static void soundrefresh (int i)
             sprintf (buf, "Red alert sound is %s", flag);
             break;
         case SHIELD_DOWN_SOUND:
-            sprintf (buf, "Shield down  sound is %s", flag);
+            sprintf (buf, "Shield down sound is %s", flag);
             break;
         case SHIELD_UP_SOUND:
             sprintf (buf, "Shield up sound is %s", flag);
@@ -473,10 +498,27 @@ static void soundrefresh (int i)
     W_WriteText (soundWin, 0, i, textColor, buf, strlen (buf), 0);
 }
 
+void sdlsoundaction (W_Event * data)
+{
+    int i;
+
+    i = data->y;
+
+    if (i == SOUND_TOGGLE)
+    {
+        if (sound_init)
+            sound_toggle = (sound_toggle == 1) ? 0 : 1;
+        soundrefresh (SOUND_TOGGLE);
+    }
+    else
+    {
+        sounddone ();
+    }
+}
+
+
 void soundaction (W_Event * data)
 {
-  if (!newSound)
-  {
     int i, j;
 
     i = data->y;
@@ -530,7 +572,6 @@ void soundaction (W_Event * data)
     {
         sounddone ();
     }
-  }
 }
 
 extern void sounddone (void)

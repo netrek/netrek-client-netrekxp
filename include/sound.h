@@ -55,8 +55,6 @@ struct Sound
 extern void sounddone (void);
 extern void soundwindow (void);
 
-/* extern void soundaction (W_Event * data); */
-
 extern void Play_Sound (int type);
 extern void Play_Sound_Loc (int type, int angle, int distance);
 extern void Abort_Sound (int type);

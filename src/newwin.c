@@ -742,7 +742,13 @@ newsoundwin (char *hostmon,
         char *progname)
 {
     if (newSound)
-        soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 40, 1, NULL, 2);
+    {
+        soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 30,
+                        2, NULL, 2);
+        W_SetWindowKeyDownHandler(soundWin, sdlsoundaction);
+        W_SetWindowButtonHandler(soundWin, sdlsoundaction);
+        W_DefineArrowCursor(soundWin);
+    }
     else
     {
         soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 30,
