@@ -1,4 +1,11 @@
 Version TBA:
+- added "colorWeapons: (on)/off" to use color weapon bitmaps for torps and plasmas!  The
+  bitmaps are a blend of COW/Ted Turner bitmaps, with some improvements in the area of
+  torp/plasma size and color ratio, the addition of a separate color bitmap for your own
+  weapons fire, and the addition of separate bitmaps for "friendly" and "enemy" weapons,
+  so you can tell who is at peace with you visually by the shading of their weapons.
+  This option can be toggled in game from the Ships Menu.
+- improved mono plasma explosion animation bitmaps
 - added a new Playerlist menu to the Options Menus, so the other menus are not as
   cluttered, and all playerlist options are now on the same menu page.
 - added "newSoundAngles: (on)/off" so one can choose to use SDL sound but lose the

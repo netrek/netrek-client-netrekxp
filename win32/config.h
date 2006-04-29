@@ -108,7 +108,7 @@
 /*      SMALL_SCREEN            - for 800x600 resolution screens                */
 #undef SMALL_SCREEN
 
-/*	    BEEPLITE		        - player and planets highlighting		*/
+/*      BEEPLITE                - player and planets highlighting		*/
 #define BEEPLITE
 
 /*      VSHIELD_BITMAPS         - damage dependent shields (hull)               */

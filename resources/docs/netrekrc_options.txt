@@ -30,6 +30,7 @@ colorClient:              (0-3) what type of ship bitmaps to use
 # 3 - shaded old color bitmaps
 
 colorfulPhasers:          (on/off) make your phasers multicolored
+colorWeapons:             (on/off) use colored bitmaps for torps and plasmas
 continueTractor:          (on/off) show tractors after lock
 continuousMouse:          (on/off) use continuous mouse mode
 continuousMouseFix:       (on/off) fix continuous mouse behavior

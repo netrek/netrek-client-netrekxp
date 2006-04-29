@@ -47,6 +47,7 @@ int shrinkPhaserOnMiss = 0;
 
 int colorClient = 1;            /* Use new colorized bitmaps SRS 11/12/99 */
 int dynamicBitmaps = 1;         /* in game switching of ship bitmaps, default to on */
+int colorWeapons = 1;           /* Use color bitmaps for torps and plasmas */
 int newDashboard = 2;           /* use new graphic
                                  * dashboard, 6/2/93 LAB */
 int old_db = 0;                 /* should be same as
@@ -56,7 +57,8 @@ int gen_distress = 0;           /* generic distress/macro
                                  * system support */
 int niftyNewMessages = 1;
 unsigned int oldalert = 0;
-int remap[16] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
+int remap[32] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0,
+                  5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 int messpend = 0;
 #ifdef XTRA_MESSAGE_UI
 int messageHUD = 0;             /* Show message being typed on the local display           */
@@ -243,17 +245,24 @@ W_Icon base_expview;
 W_Icon expview[BMP_SHIPEXPL_FRAMES];
 W_Icon base_sbexpview;
 W_Icon sbexpview[BMP_SBEXPL_FRAMES];
-#ifdef COLORIZE
-W_Icon cloud[5][BMP_TORPDET_FRAMES];
-W_Icon plasmacloud[5][BMP_TORPDET_FRAMES];
-W_Icon torpIcon[5][BMP_TORP_FRAMES];
-W_Icon plasmatorpIcon[5][BMP_TORP_FRAMES];
-#else
+
+W_Icon torp_cloud_bitmaps;
+W_Icon cloudC[NUM_CTORP_TYPES][BMP_TORPDET_FRAMES];
+W_Icon plasma_cloud_bitmaps;
+W_Icon plcloudC[NUM_CTORP_TYPES][BMP_TORPDET_FRAMES];
+W_Icon mtorp_bitmaps;
+W_Icon mtorpC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+W_Icon torp_bitmaps;
+W_Icon torpC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+W_Icon mplasma_bitmaps;
+W_Icon mplasmaC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+W_Icon plasma_bitmaps;
+W_Icon plasmaC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+
 W_Icon cloud[BMP_TORPDET_FRAMES];
 W_Icon plasmacloud[BMP_TORPDET_FRAMES];
 W_Icon etorp, mtorp;
 W_Icon eplasmatorp, mplasmatorp;
-#endif
 
 #ifdef VSHIELD_BITMAPS
 W_Icon base_vshield;

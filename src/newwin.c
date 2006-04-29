@@ -419,6 +419,87 @@ void loadbitmapsM()
         }
     }               
 }
+
+/******************************************************************************/
+/***  loadweaponsC() - colorized weapons
+/******************************************************************************/
+void loadweaponsC()
+{    
+    int j,k;
+
+    /* Load the four 6x8 weapon bitmaps */
+    torp_bitmaps =
+        W_StoreBitmap3 ("bitmaps/weaplibm/color/torpC.bmp",
+                        BMP_CTORP_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CTORP_HEIGHT * BMP_TORP_FRAMES, BMP_TORPC, w,
+                        LR_DEFAULTCOLOR);
+    mtorp_bitmaps =
+        W_StoreBitmap3 ("bitmaps/weaplibm/color/mtorpC.bmp",
+                        BMP_CTORP_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CTORP_HEIGHT * BMP_TORP_FRAMES, BMP_MTORPC, w,
+                        LR_DEFAULTCOLOR);
+    plasma_bitmaps =
+        W_StoreBitmap3 ("bitmaps/weaplibm/color/plasmaC.bmp",
+                        BMP_CPLASMATORP_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CPLASMATORP_HEIGHT * BMP_TORP_FRAMES, BMP_PLASMAC, w,
+                        LR_DEFAULTCOLOR);
+    mplasma_bitmaps =
+        W_StoreBitmap3 ("bitmaps/weaplibm/color/mplasmaC.bmp",
+                        BMP_CPLASMATORP_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CPLASMATORP_HEIGHT * BMP_TORP_FRAMES, BMP_MPLASMAC, w,
+                        LR_DEFAULTCOLOR);
+                        
+    /* Make pointers to the four 6x8 weapon bitmaps */
+    for (j = 0; j < NUM_CTORP_TYPES; j++)
+    {        
+    	for (k = 0; k < BMP_TORP_FRAMES; k++)
+        {
+            torpC[j][k] =
+                W_PointBitmap2 (torp_bitmaps, j, k, BMP_CTORP_WIDTH,
+                                BMP_CTORP_HEIGHT);
+                            
+            mtorpC[j][k] =
+                W_PointBitmap2 (mtorp_bitmaps, j, k, BMP_CTORP_WIDTH,
+                                BMP_CTORP_HEIGHT);
+                            
+            plasmaC[j][k] =
+                 W_PointBitmap2 (plasma_bitmaps, j, k, BMP_CPLASMATORP_WIDTH,
+                                BMP_CPLASMATORP_HEIGHT);
+                            
+            mplasmaC[j][k] =
+                W_PointBitmap2 (mplasma_bitmaps, j, k, BMP_CPLASMATORP_WIDTH,
+                                BMP_CPLASMATORP_HEIGHT);
+        }
+    }
+        
+           
+    /* Load the two 6x5 cloud bitmaps */
+    torp_cloud_bitmaps =
+         W_StoreBitmap3 ("bitmaps/weaplibm/color/cloudC.bmp",
+                        BMP_CTORPDET_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CTORPDET_HEIGHT * BMP_TORPDET_FRAMES, BMP_CLOUDC, w,
+                        LR_DEFAULTCOLOR);
+    plasma_cloud_bitmaps = 
+         W_StoreBitmap3 ("bitmaps/weaplibm/color/plcloudC.bmp",
+                        BMP_CPLASMATORPDET_WIDTH * NUM_CTORP_TYPES,
+                        BMP_CPLASMATORPDET_HEIGHT * BMP_TORPDET_FRAMES, BMP_PLCLOUDC, w,
+                        LR_DEFAULTCOLOR);
+                        
+    /* Make pointers to the two 6x5 cloud bitmaps */
+    for (j = 0; j < NUM_CTORP_TYPES; j++)
+    {
+        for (k = 0; k < BMP_TORPDET_FRAMES; k++)
+        {
+            cloudC[j][k] =
+                W_PointBitmap2 (torp_cloud_bitmaps, j, k, BMP_CTORPDET_WIDTH,
+                                BMP_CTORPDET_HEIGHT);
+            plcloudC[j][k] =
+                W_PointBitmap2 (plasma_cloud_bitmaps, j, k, BMP_CPLASMATORPDET_WIDTH,
+                                BMP_CPLASMATORPDET_HEIGHT);
+        }
+    }            
+}
+
 /******************************************************************************/
 /***  handleMessageWindowKeyDown()
 /******************************************************************************/
@@ -813,100 +894,58 @@ savebitmaps (void)
     }
 #endif
 
-/* Experimental weapons */
-#ifdef COLORIZEWEAPON
-/* Not implemented... have to redo code with StoreBitmap3
-  for (i = 0; i < BMP_TORPDET_FRAMES; i++)
-    {
-     cloud[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
-                       BMP_FED_TORP_DET + i, w, LR_DEFAULTCOLOR);
-     cloud[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
-                       BMP_ORI_TORP_DET + i, w, LR_DEFAULTCOLOR);
-     cloud[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
-                       BMP_KLI_TORP_DET + i, w, LR_DEFAULTCOLOR);
-     cloud[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
-                       BMP_ROM_TORP_DET + i, w, LR_DEFAULTCOLOR);
-     cloud[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORPDET_WIDTH, BMP_TORPDET_HEIGHT,
-                       BMP_IND_TORP_DET + i, w, LR_DEFAULTCOLOR);
 
-     plasmacloud[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
-                        BMP_FED_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
-     plasmacloud[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
-                        BMP_ORI_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
-     plasmacloud[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
-                        BMP_KLI_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
-     plasmacloud[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
-                        BMP_ROM_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
-     plasmacloud[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
-                        BMP_IND_PLASMA_DET + i, w, LR_DEFAULTCOLOR);
+    loadweaponsC();
 
-     }
-  for (i = 0; i < BMP_TORP_FRAMES; i++)
-    {
-    	torpIcon[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_FED_TORP+i, w, LR_DEFAULTCOLOR);
-    	torpIcon[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_ORI_TORP+i, w, LR_DEFAULTCOLOR);
-    	torpIcon[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_KLI_TORP+i, w, LR_DEFAULTCOLOR);
-    	torpIcon[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_ROM_TORP+i, w, LR_DEFAULTCOLOR);
-    	torpIcon[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_TORP_WIDTH, BMP_TORP_HEIGHT, BMP_IND_TORP+i, w, LR_DEFAULTCOLOR);
-    	plasmatorpIcon[0][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_FED_PLASMA+i, w, LR_DEFAULTCOLOR);
-    	plasmatorpIcon[1][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_ORI_PLASMA+i, w, LR_DEFAULTCOLOR);
-    	plasmatorpIcon[2][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_KLI_PLASMA+i, w, LR_DEFAULTCOLOR);
-    	plasmatorpIcon[3][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_ROM_PLASMA+i, w, LR_DEFAULTCOLOR);
-    	plasmatorpIcon[4][i] = W_StoreBitmap2(hWeapLibrary, BMP_PLASMATORP_WIDTH, BMP_PLASMATORP_HEIGHT, BMP_IND_PLASMA+i, w, LR_DEFAULTCOLOR);
-    }
-*/
-#else /* COLORIZEWEAPON */
     cloud[0] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/cloud1.bmp", BMP_TORPDET_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/cloud1.bmp", BMP_TORPDET_WIDTH,
                         BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
     cloud[1] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/cloud2.bmp", BMP_TORPDET_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/cloud2.bmp", BMP_TORPDET_WIDTH,
                         BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
     cloud[2] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/cloud3.bmp", BMP_TORPDET_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/cloud3.bmp", BMP_TORPDET_WIDTH,
                         BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
     cloud[3] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/cloud4.bmp", BMP_TORPDET_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/cloud4.bmp", BMP_TORPDET_WIDTH,
                         BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
     cloud[4] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/cloud5.bmp", BMP_TORPDET_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/cloud5.bmp", BMP_TORPDET_WIDTH,
                         BMP_TORPDET_HEIGHT, BMP_CLOUD, w, LR_MONOCHROME);
 
     plasmacloud[0] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/plcloud1.bmp",
                         BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
                         BMP_PLCLOUD, w, LR_MONOCHROME);
     plasmacloud[1] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/plcloud2.bmp",
                         BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
                         BMP_PLCLOUD, w, LR_MONOCHROME);
     plasmacloud[2] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/plcloud3.bmp",
                         BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
                         BMP_PLCLOUD, w, LR_MONOCHROME);
     plasmacloud[3] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/plcloud4.bmp",
                         BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
                         BMP_PLCLOUD, w, LR_MONOCHROME);
     plasmacloud[4] =
-        W_StoreBitmap3 ("bitmaps/weaplibm/plcloud1.bmp",
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/plcloud5.bmp",
                         BMP_PLASMATORPDET_WIDTH, BMP_PLASMATORPDET_HEIGHT,
                         BMP_PLCLOUD, w, LR_MONOCHROME);
 
     etorp =
-        W_StoreBitmap3 ("bitmaps/weaplibm/etorp.bmp", BMP_TORP_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/etorp.bmp", BMP_TORP_WIDTH,
                         BMP_TORP_HEIGHT, BMP_ETORP, w, LR_MONOCHROME);
     mtorp =
-        W_StoreBitmap3 ("bitmaps/weaplibm/mtorp.bmp", BMP_TORP_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/mtorp.bmp", BMP_TORP_WIDTH,
                         BMP_TORP_HEIGHT, BMP_MTORP, w, LR_MONOCHROME);
     eplasmatorp =
-        W_StoreBitmap3 ("bitmaps/weaplibm/eplasma.bmp", BMP_EPLASMA_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/eplasma.bmp", BMP_EPLASMA_WIDTH,
                         BMP_EPLASMA_HEIGHT, BMP_EPLASMA, w, LR_MONOCHROME);
     mplasmatorp =
-        W_StoreBitmap3 ("bitmaps/weaplibm/mplasma.bmp", BMP_MPLASMA_WIDTH,
+        W_StoreBitmap3 ("bitmaps/weaplibm/mono/mplasma.bmp", BMP_MPLASMA_WIDTH,
                         BMP_MPLASMA_HEIGHT, BMP_MPLASMA, w, LR_MONOCHROME);
-
-#endif /* COLORIZEWEAPON */
 
     base_planets =
         W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,

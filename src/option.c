@@ -238,6 +238,7 @@ struct option Ship_Menu[] = {
     {0, "Ship Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &colorClient, 0, 0, 0, bitmaptypemess, &bitmap_range},
+    {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
 #ifdef VSHIELD_BITMAPS
     {1, "vary shields bitmap", &varyShields, 0, 0, 0, NULL, NULL},
 #endif

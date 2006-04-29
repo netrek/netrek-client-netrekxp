@@ -1450,6 +1450,7 @@ DrawTorps (void)
     register int dx, dy;
     struct player *j;
     int torpCount;
+    int torpTeam;
     const int view = SCALE * WINSIDE / 2;
 
     for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
@@ -1584,116 +1585,144 @@ DrawTorps (void)
                 }
 #endif
 
-#ifdef COLORIZEWEAPON
-                switch (j->p_team)
+                if (colorWeapons)
                 {
-                case FED:
-                    torpTeam = 0;
-                    break;
-                case ORI:
-                    torpTeam = 1;
-                    break;
-                case KLI:
-                    torpTeam = 2;
-                    break;
-                case ROM:
-                    torpTeam = 3;
-                    break;
-                default:
-                    torpTeam = 4;
+                    if (myPlayer(j))
+                        torpTeam = 0;
+                    else
+                    {
+                        switch (j->p_team)
+                        {
+                        case FED:
+                            torpTeam = 1;
+                            break;
+                        case IND:
+                            torpTeam = 2;
+                            break;
+                        case KLI:
+                            torpTeam = 3;
+                            break;
+                        case ORI:
+                            torpTeam = 4;
+                            break;
+                        case ROM:
+                            torpTeam = 5;
+                            break;
+                        default:
+                            torpTeam = 0;
+                        }
+                    }
+                    W_WriteBitmap (dx - (BMP_CTORPDET_WIDTH / 2),
+                                   dy - (BMP_CTORPDET_HEIGHT / 2),
+                                   cloudC[torpTeam][k->t_fuse], torpColor (k));
+                    clearzone[0][clearcount] = dx - (BMP_CTORPDET_WIDTH / 2);
+                    clearzone[1][clearcount] = dy - (BMP_CTORPDET_HEIGHT / 2);
+                    clearzone[2][clearcount] = BMP_CTORPDET_WIDTH;
+                    clearzone[3][clearcount] = BMP_CTORPDET_HEIGHT;
+                    clearcount++;
                 }
-
-                W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
-                               dy - (BMP_TORPDET_HEIGHT / 2),
-                               cloud[torpTeam][k->t_fuse], torpColor (k));
-                /*W_WriteBitmapDB (localSDB, dx - (BMP_TORPDET_WIDTH / 2),
-                                 dy - (BMP_TORPDET_HEIGHT / 2),
-                                 cloud[torpTeam][k->t_fuse], torpColor (k));*/
-#else /* COLORIZEWEAPON */
-                W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
-                               dy - (BMP_TORPDET_HEIGHT / 2),
-                               cloud[k->t_fuse], torpColor (k));
-                /*W_WriteBitmapDB (localSDB, dx - (BMP_TORPDET_WIDTH / 2),
-                                 dy - (BMP_TORPDET_HEIGHT / 2),
-                                 cloud[k->t_fuse], torpColor (k));*/
-                clearzone[0][clearcount] = dx - (BMP_TORPDET_WIDTH / 2);
-                clearzone[1][clearcount] = dy - (BMP_TORPDET_HEIGHT / 2);
-                clearzone[2][clearcount] = BMP_TORPDET_WIDTH;
-                clearzone[3][clearcount] = BMP_TORPDET_HEIGHT;
-                clearcount++;
-#endif
-            }
-            else
-#ifndef COLORIZEWEAPON
-            if (j != me && ((k->t_war & me->p_team) ||
-                                (j->p_team & (me->p_hostile | me->p_swar))))
-            {
-                /* solid.  Looks strange. W_FillArea(w, dx - (etorp_width/2),
-                 * dy - (etorp_height/2), etorp_width, etorp_height,
-                 * torpColor(k)); */
-
-                /* XFIX */
-                W_WriteBitmap (dx - (etorp_width / 2),
-                               dy - (etorp_height / 2), etorp, torpColor (k));
-                /*W_WriteBitmapDB (localSDB, dx - (etorp_width / 2),
-                                 dy - (etorp_height / 2), etorp, torpColor (k));*/
-                clearzone[0][clearcount] = dx - (etorp_width / 2);
-                clearzone[1][clearcount] = dy - (etorp_height / 2);
-                clearzone[2][clearcount] = etorp_width;
-                clearzone[3][clearcount] = etorp_height;
-                clearcount++;
+                else
+                {
+                    W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
+                                   dy - (BMP_TORPDET_HEIGHT / 2),
+                                   cloud[k->t_fuse], torpColor (k));
+                    clearzone[0][clearcount] = dx - (BMP_TORPDET_WIDTH / 2);
+                    clearzone[1][clearcount] = dy - (BMP_TORPDET_HEIGHT / 2);
+                    clearzone[2][clearcount] = BMP_TORPDET_WIDTH;
+                    clearzone[3][clearcount] = BMP_TORPDET_HEIGHT;
+                    clearcount++;
+                }
             }
             else
             {
-                W_WriteBitmap (dx - (mtorp_width / 2),
-                               dy - (mtorp_height / 2), mtorp, torpColor (k));
-                /*W_WriteBitmapDB (localSDB, dx - (mtorp_width / 2),
-                                 dy - (mtorp_height / 2), mtorp, torpColor (k));*/
-
-                clearzone[0][clearcount] = dx - (mtorp_width / 2);
-                clearzone[1][clearcount] = dy - (mtorp_height / 2);
-                clearzone[2][clearcount] = mtorp_width;
-                clearzone[3][clearcount] = mtorp_height;
-                clearcount++;
+            	if (colorWeapons)
+            	{
+                    if ((k->t_fuse++ >= BMP_TORP_FRAMES - 1) || (k->t_fuse < 0))
+                        k->t_fuse = 0;
+        
+                    if (myPlayer(j))
+                        torpTeam = 0;
+                    else
+                    {
+                        switch (j->p_team)
+                        {
+                        case FED:
+                            torpTeam = 1;
+                            break;
+                        case IND:
+                            torpTeam = 2;
+                            break;
+                        case KLI:
+                            torpTeam = 3;
+                            break;
+                        case ORI:
+                            torpTeam = 4;
+                            break;
+                        case ROM:
+                            torpTeam = 5;
+                            break;
+                        default:
+                            torpTeam = 0;
+                        }
+                    }
+                    
+                    if (j != me && ((k->t_war & me->p_team) ||
+                                        (j->p_team & (me->p_hostile | me->p_swar))))
+                    {
+                        W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
+                                       dy - (BMP_CTORP_HEIGHT / 2),
+                                       torpC[torpTeam][k->t_fuse], torpColor (k));
+                    }
+                    else
+                    {
+                        W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
+                                       dy - (BMP_CTORP_HEIGHT / 2),
+                                       mtorpC[torpTeam][k->t_fuse], torpColor (k));
+                    }
+                    
+                    clearzone[0][clearcount] = dx - (BMP_CTORP_WIDTH / 2);
+                    clearzone[1][clearcount] = dy - (BMP_CTORP_HEIGHT / 2);
+                    clearzone[2][clearcount] = BMP_CTORP_WIDTH;
+                    clearzone[3][clearcount] = BMP_CTORP_HEIGHT;
+                    clearcount++;
+                }
+                else
+                {
+                    if (j != me && ((k->t_war & me->p_team) ||
+                                        (j->p_team & (me->p_hostile | me->p_swar))))
+                    {
+                        /* solid.  Looks strange. W_FillArea(w, dx - (etorp_width/2),
+                         * dy - (etorp_height/2), etorp_width, etorp_height,
+                         * torpColor(k)); */
+        
+                        /* XFIX */
+                        W_WriteBitmap (dx - (etorp_width / 2),
+                                       dy - (etorp_height / 2), etorp, torpColor (k));
+                        /*W_WriteBitmapDB (localSDB, dx - (etorp_width / 2),
+                                         dy - (etorp_height / 2), etorp, torpColor (k));*/
+                        clearzone[0][clearcount] = dx - (etorp_width / 2);
+                        clearzone[1][clearcount] = dy - (etorp_height / 2);
+                        clearzone[2][clearcount] = etorp_width;
+                        clearzone[3][clearcount] = etorp_height;
+                        clearcount++;
+                    }
+                    else
+                    {
+                        W_WriteBitmap (dx - (mtorp_width / 2),
+                                       dy - (mtorp_height / 2), mtorp, torpColor (k));
+                        /*W_WriteBitmapDB (localSDB, dx - (mtorp_width / 2),
+                                         dy - (mtorp_height / 2), mtorp, torpColor (k));*/
+        
+                        clearzone[0][clearcount] = dx - (mtorp_width / 2);
+                        clearzone[1][clearcount] = dy - (mtorp_height / 2);
+                        clearzone[2][clearcount] = mtorp_width;
+                        clearzone[3][clearcount] = mtorp_height;
+                        clearcount++;
+                    }
+                }
             }
-#else
-// Experimental weapons SRS 5/17/98
-            if ((k->t_fuse++ >= BMP_TORP_FRAMES - 1) || (k->t_fuse < 0))
-                k->t_fuse = 0;
-            switch (j->p_team)
-            {
-            case FED:
-                torpTeam = 0;
-                break;
-            case ORI:
-                torpTeam = 1;
-                break;
-            case KLI:
-                torpTeam = 2;
-                break;
-            case ROM:
-                torpTeam = 3;
-                break;
-            default:
-                torpTeam = 4;
-            }
-
-            W_WriteBitmap (dx - (BMP_TORP_WIDTH / 2),
-                           dy - (BMP_TORP_HEIGHT / 2),
-                           torpIcon[torpTeam][k->t_fuse], torpColor (k));
-            /*W_WriteBitmapDB (localSDB, dx - (BMP_TORP_WIDTH / 2),
-                             dy - (BMP_TORP_HEIGHT / 2),
-                             torpIcon[torpTeam][k->t_fuse], torpColor (k));*/
-
-            clearzone[0][clearcount] = dx - (BMP_TORP_WIDTH / 2);
-            clearzone[1][clearcount] = dy - (BMP_TORP_HEIGHT / 2);
-            clearzone[2][clearcount] = BMP_TORP_WIDTH;
-            clearzone[3][clearcount] = BMP_TORP_HEIGHT;
-            clearcount++;
         }
-#endif
     }
-}
 }
 
 
@@ -1703,6 +1732,7 @@ DrawPlasmaTorps (void)
     register struct plasmatorp *pt;
     register int dx, dy;
     const int view = SCALE * WINSIDE / 2;
+    int ptorpTeam;
 
     /* MAXPLASMA is small so work through all the plasmas rather than
        look at the number of outstanding plasma torps for each player. */
@@ -1817,125 +1847,142 @@ DrawPlasmaTorps (void)
             }
 #endif
 
-#ifdef COLORIZEWEAPON
-            switch (players[pt->pt_owner].p_team)
+            if (colorWeapons)
             {
-            case FED:
-                ptorpTeam = 0;
-                break;
-            case ORI:
-                ptorpTeam = 1;
-                break;
-            case KLI:
-                ptorpTeam = 2;
-                break;
-            case ROM:
-                ptorpTeam = 3;
-                break;
-            default:
-                ptorpTeam = 4;
+                if (pt->pt_owner == me->p_no)
+                    ptorpTeam = 0;
+                else
+                {
+                    switch (players[pt->pt_owner].p_team)
+                    {
+                    case FED:
+                        ptorpTeam = 1;
+                        break;
+                    case IND:
+                        ptorpTeam = 2;
+                        break;
+                    case KLI:
+                        ptorpTeam = 3;
+                        break;
+                    case ORI:
+                        ptorpTeam = 4;
+                        break;
+                    case ROM:
+                        ptorpTeam = 5;
+                        break;
+                    default:
+                        ptorpTeam = 0;
+                    }
+                }
+    
+                W_WriteBitmap (dx - (BMP_CPLASMATORPDET_WIDTH / 2),
+                               dy - (BMP_CPLASMATORPDET_HEIGHT / 2),
+                               plcloudC[ptorpTeam][pt->pt_fuse],
+                               plasmatorpColor (pt));
+                clearzone[0][clearcount] = dx - (BMP_CPLASMATORPDET_WIDTH / 2);
+                clearzone[1][clearcount] = dy - (BMP_CPLASMATORPDET_HEIGHT / 2);
+                clearzone[2][clearcount] = BMP_CPLASMATORPDET_WIDTH;
+                clearzone[3][clearcount] = BMP_CPLASMATORPDET_HEIGHT;
+                clearcount++;
             }
-
-            W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
-                           dy - (BMP_PLASMATORPDET_HEIGHT / 2),
-                           plasmacloud[ptorpTeam][pt->pt_fuse],
-                           plasmatorpColor (pt));
-            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORPDET_WIDTH / 2),
-                             dy - (BMP_PLASMATORPDET_HEIGHT / 2),
-                             plasmacloud[ptorpTeam][pt->pt_fuse],
-                             plasmatorpColor (pt));*/
-            clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
-            clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
-            clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
-            clearzone[3][clearcount] = BMP_PLASMATORPDET_HEIGHT;
-            clearcount++;
-#else
-            W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
-                           dy - (BMP_PLASMATORPDET_HEIGHT / 2),
-                           plasmacloud[pt->pt_fuse], plasmatorpColor (pt));
-            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORPDET_WIDTH / 2),
-                             dy - (BMP_PLASMATORPDET_HEIGHT / 2),
-                             plasmacloud[pt->pt_fuse], plasmatorpColor (pt));*/
-            clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
-            clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
-            clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
-            clearzone[3][clearcount] = BMP_PLASMATORPDET_HEIGHT;
-            clearcount++;
-#endif /* COLORIZEWEAPON */
-        }
-
-#ifndef COLORIZEWEAPON
-        /* needmore: if(pt->pt_war & me->p_team) */
-        else if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||
-                                              (players[pt->pt_owner].
-                                               p_team & (me->p_hostile | me->
-                                                         p_swar))))
-        {
-            W_WriteBitmap (dx - (eplasmatorp_width / 2),
-                           dy - (eplasmatorp_height / 2),
-                           eplasmatorp, plasmatorpColor (pt));
-            /*W_WriteBitmapDB (localSDB, dx - (eplasmatorp_width / 2),
-                             dy - (eplasmatorp_height / 2),
-                             eplasmatorp, plasmatorpColor (pt));*/
-            clearzone[0][clearcount] = dx - (eplasmatorp_width / 2);
-            clearzone[1][clearcount] = dy - (eplasmatorp_height / 2);
-            clearzone[2][clearcount] = eplasmatorp_width;
-            clearzone[3][clearcount] = eplasmatorp_height;
-            clearcount++;
+            else
+            {
+                W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
+                               dy - (BMP_PLASMATORPDET_HEIGHT / 2),
+                               plasmacloud[pt->pt_fuse], plasmatorpColor (pt));
+                clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
+                clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
+                clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
+                clearzone[3][clearcount] = BMP_PLASMATORPDET_HEIGHT;
+                clearcount++;
+            }
         }
         else
         {
-            W_WriteBitmap (dx - (mplasmatorp_width / 2),
-                           dy - (mplasmatorp_height / 2),
-                           mplasmatorp, plasmatorpColor (pt));
-            /*W_WriteBitmapDB (localSDB, dx - (mplasmatorp_width / 2),
-                             dy - (mplasmatorp_height / 2),
-                             mplasmatorp, plasmatorpColor (pt));*/
-            clearzone[0][clearcount] = dx - (mplasmatorp_width / 2);
-            clearzone[1][clearcount] = dy - (mplasmatorp_height / 2);
-            clearzone[2][clearcount] = mplasmatorp_width;
-            clearzone[3][clearcount] = mplasmatorp_height;
-            clearcount++;
-        }
-#else /*COLORIZEWEAPON */
-
-        {
-            if ((pt->pt_fuse++ >= BMP_TORP_FRAMES - 1) || (pt->pt_fuse < 0))
-                pt->pt_fuse = 0;
-            switch (players[pt->pt_owner].p_team)
+            if (colorWeapons)
             {
-            case FED:
-                ptorpTeam = 0;
-                break;
-            case ORI:
-                ptorpTeam = 1;
-                break;
-            case KLI:
-                ptorpTeam = 2;
-                break;
-            case ROM:
-                ptorpTeam = 3;
-                break;
-            default:
-                ptorpTeam = 4;
+                if ((pt->pt_fuse++ >= BMP_TORP_FRAMES - 1) || (pt->pt_fuse < 0))
+                    pt->pt_fuse = 0;
+        
+                if (pt->pt_owner == me->p_no)
+                    ptorpTeam = 0;
+                else
+                {
+                    switch (players[pt->pt_owner].p_team)
+                    {
+                    case FED:
+                        ptorpTeam = 1;
+                        break;
+                    case IND:
+                        ptorpTeam = 2;
+                        break;
+                    case KLI:
+                        ptorpTeam = 3;
+                        break;
+                    case ORI:
+                        ptorpTeam = 4;
+                        break;
+                    case ROM:
+                        ptorpTeam = 5;
+                        break;
+                    default:
+                        ptorpTeam = 0;
+                    }
+                }
+                if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||
+                                                      (players[pt->pt_owner].
+                                                       p_team & (me->p_hostile | me->
+                                                                 p_swar))))
+                {
+                    W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
+                                   dy - (BMP_CPLASMATORP_HEIGHT / 2),
+                                   plasmaC[ptorpTeam][pt->pt_fuse],
+                                   plasmatorpColor (pt));
+                }
+                else
+                {
+                    W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
+                                   dy - (BMP_CPLASMATORP_HEIGHT / 2),
+                                   mplasmaC[ptorpTeam][pt->pt_fuse],
+                                   plasmatorpColor (pt));
+                }
+                clearzone[0][clearcount] = dx - (BMP_CPLASMATORP_WIDTH / 2);
+                clearzone[1][clearcount] = dy - (BMP_CPLASMATORP_HEIGHT / 2);
+                clearzone[2][clearcount] = BMP_CPLASMATORP_WIDTH;
+                clearzone[3][clearcount] = BMP_CPLASMATORP_HEIGHT;
+                clearcount++;
+             }
+             else
+             {   
+                /* needmore: if(pt->pt_war & me->p_team) */
+                if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||
+                                                      (players[pt->pt_owner].
+                                                       p_team & (me->p_hostile | me->
+                                                                 p_swar))))
+                {
+                    W_WriteBitmap (dx - (eplasmatorp_width / 2),
+                                   dy - (eplasmatorp_height / 2),
+                                   eplasmatorp, plasmatorpColor (pt));
+                    clearzone[0][clearcount] = dx - (eplasmatorp_width / 2);
+                    clearzone[1][clearcount] = dy - (eplasmatorp_height / 2);
+                    clearzone[2][clearcount] = eplasmatorp_width;
+                    clearzone[3][clearcount] = eplasmatorp_height;
+                    clearcount++;
+                }
+                else
+                {
+                    W_WriteBitmap (dx - (mplasmatorp_width / 2),
+                                   dy - (mplasmatorp_height / 2),
+                                   mplasmatorp, plasmatorpColor (pt));
+        
+                    clearzone[0][clearcount] = dx - (mplasmatorp_width / 2);
+                    clearzone[1][clearcount] = dy - (mplasmatorp_height / 2);
+                    clearzone[2][clearcount] = mplasmatorp_width;
+                    clearzone[3][clearcount] = mplasmatorp_height;
+                    clearcount++;
+                }
             }
-
-            W_WriteBitmap (dx - (BMP_PLASMATORP_WIDTH / 2),
-                           dy - (BMP_PLASMATORP_HEIGHT / 2),
-                           plasmatorpIcon[ptorpTeam][pt->pt_fuse],
-                           plasmatorpColor (pt));
-            /*W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORP_WIDTH / 2),
-                             dy - (BMP_PLASMATORP_HEIGHT / 2),
-                             plasmatorpIcon[ptorpTeam][pt->pt_fuse],
-                             plasmatorpColor (pt));*/
-
-            clearzone[0][clearcount] = dx - (BMP_PLASMATORP_WIDTH / 2);
-            clearzone[1][clearcount] = dy - (BMP_PLASMATORP_HEIGHT / 2);
-            clearzone[2][clearcount] = BMP_PLASMATORP_WIDTH;
-            clearzone[3][clearcount] = BMP_PLASMATORP_HEIGHT;
-            clearcount++;
         }
-#endif /* COLORIZEWEAPON */
     }
 }
 

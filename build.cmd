@@ -412,7 +412,16 @@ copy resources\ships\tinted\ori\orishipT.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\tinted\rom\romshipT.bmp %InstCWD%\netrek\bitmaps\shiplib
 
 mkdir %InstCWD%\netrek\bitmaps\weaplibm
-copy resources\weaplibm\*.bmp %InstCWD%\netrek\bitmaps\weaplibm
+mkdir %InstCWD%\netrek\bitmaps\weaplibm\mono
+copy resources\weaplibm\mono\*.bmp %InstCWD%\netrek\bitmaps\weaplibm\mono
+
+mkdir %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\mtorpC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\torpC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\mplasmaC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\plasmaC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\cloudC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
+copy resources\weaplibm\color\plcloudC.bmp %InstCWD%\netrek\bitmaps\weaplibm\color
 
 mkdir %InstCWD%\netrek\bitmaps\planlibm
 copy resources\planlibm\bronco\plan.bmp %InstCWD%\netrek\bitmaps\planlibm

@@ -96,6 +96,12 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"colorWeapons", &colorWeapons, RC_BOOL,
+        {
+            "Use colored bitmaps for torps and plasmas",
+            NULL
+        }
+    },
     {"continueTractor", &continueTractor, RC_BOOL,
         {
             "Show tractor/pressor after lock",
@@ -1454,6 +1460,7 @@ resetdefaults (void)
     keepPeace = booleanDefault ("keepPeace", keepPeace);
     colorClient = intDefault ("colorClient", colorClient);
     dynamicBitmaps = booleanDefault ("dynamicBitmaps", dynamicBitmaps);
+    colorWeapons = booleanDefault ("colorWeapons", colorWeapons);
     continueTractor = booleanDefault ("continueTractor", continueTractor);
     showTractorPressor = booleanDefault ("showTractorPressor", showTractorPressor);
     showAllTractorPressor = booleanDefault ("showAllTractorPressor", showAllTractorPressor);

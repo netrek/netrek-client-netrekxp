@@ -27,41 +27,11 @@
 // Weapons
 // -------
 
-#ifdef COLORIZE
-#define BMP_FED_TORP   1
-#define BMP_FED_TORP_DET   9
-#define BMP_FED_PLASMA   14
-#define BMP_FED_PLASMA_DET   22
-#define BMP_ORI_TORP   27
-#define BMP_ORI_TORP_DET   35
-#define BMP_ORI_PLASMA   40
-#define BMP_ORI_PLASMA_DET   48
-#define BMP_KLI_TORP   53
-#define BMP_KLI_TORP_DET   61
-#define BMP_KLI_PLASMA   66
-#define BMP_KLI_PLASMA_DET   74
-#define BMP_ROM_TORP   79
-#define BMP_ROM_TORP_DET   87
-#define BMP_ROM_PLASMA   92
-#define BMP_ROM_PLASMA_DET   100
-#define BMP_IND_TORP   105
-#define BMP_IND_TORP_DET   113
-#define BMP_IND_PLASMA   118
-#define BMP_IND_PLASMA_DET   126
+#define NUM_CTORP_TYPES   6
 
 #define BMP_TORPDET_FRAMES 5
 #define BMP_TORP_FRAMES 8
 
-#define BMP_TORP_WIDTH             5
-#define BMP_TORP_HEIGHT            5
-#define BMP_PLASMATORP_WIDTH       7
-#define BMP_PLASMATORP_HEIGHT      7
-
-#define BMP_TORPDET_WIDTH 9
-#define BMP_TORPDET_HEIGHT 9
-#define BMP_PLASMATORPDET_WIDTH 15
-#define BMP_PLASMATORPDET_HEIGHT 15
-#else /* COLORIZE */
 #define BMP_EPLASMA 6
 #define BMP_ETORP 7
 #define BMP_MPLASMA 8
@@ -69,26 +39,33 @@
 #define BMP_CLOUD 1
 #define BMP_PLCLOUD 10
 
-#define BMP_TORPDET_FRAMES 5
-#define BMP_TORP_FRAMES 8
+#define BMP_PLASMAC 6
+#define BMP_TORPC 7
+#define BMP_MPLASMAC 8
+#define BMP_MTORPC 9
+#define BMP_CLOUDC 1
+#define BMP_PLCLOUDC 10
 
 #define BMP_TORP_WIDTH             3
 #define BMP_TORP_HEIGHT            3
+#define BMP_CTORP_WIDTH             5
+#define BMP_CTORP_HEIGHT            5
+#define BMP_TORPDET_WIDTH 8
+#define BMP_TORPDET_HEIGHT 8
+#define BMP_CTORPDET_WIDTH 9
+#define BMP_CTORPDET_HEIGHT 9
+
 #define BMP_EPLASMA_WIDTH       7
 #define BMP_EPLASMA_HEIGHT      7
 #define BMP_MPLASMA_WIDTH       5
 #define BMP_MPLASMA_HEIGHT      5
+#define BMP_PLASMATORPDET_WIDTH 13
+#define BMP_PLASMATORPDET_HEIGHT 13
+#define BMP_CPLASMATORP_WIDTH       7
+#define BMP_CPLASMATORP_HEIGHT      7
+#define BMP_CPLASMATORPDET_WIDTH 15
+#define BMP_CPLASMATORPDET_HEIGHT 15
 
-#define BMP_TORPDET_WIDTH 9
-#define BMP_TORPDET_HEIGHT 9
-#define BMP_PLASMATORPDET_WIDTH 15
-#define BMP_PLASMATORPDET_HEIGHT 15
-
-#define BMP_TORPDET_WIDTH 9
-#define BMP_TORPDET_HEIGHT 9
-#define BMP_PLASMATORPDET_WIDTH 15
-#define BMP_PLASMATORPDET_HEIGHT 15
-#endif /* COLORIZE */
 
 // Miscellaneous
 // ----------

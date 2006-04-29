@@ -444,18 +444,39 @@ W_Cleanup (void)
     // Free other bitmaps
     free (clockpic);
 
+    for (j = 0; j < NUM_CTORP_TYPES; j++)
+    {
+        for (i = 0; i < BMP_TORPDET_FRAMES; i++)
+        {
+            free (cloudC[j][i]);
+            free (plcloudC[j][i]);
+        }
+        for (i = 0; i < BMP_TORP_FRAMES; i++)
+        {
+            free (torpC[j][i]);
+            free (mtorpC[j][i]);
+            free (plasmaC[j][i]);
+            free (mplasmaC[j][i]);
+        }
+
+    }
+    free (torp_cloud_bitmaps);
+    free (plasma_cloud_bitmaps);
+    free (mtorp_bitmaps);
+    free (torp_bitmaps);
+    free (mplasma_bitmaps);
+    free (plasma_bitmaps);
+
     for (i = 0; i < BMP_TORPDET_FRAMES; i++)
     {
         free (cloud[i]);
         free (plasmacloud[i]);
     }
-
-#ifdef COLORIZEWEAPON
     free (etorp);
     free (mtorp);
     free (eplasmatorp);
     free (mplasmatorp);
-#endif /* COLORIZEWEAPON */
+
 
     for (i = 0; i < PLANET_VIEWS; i++)
         free (bplanets[i]);
@@ -3548,8 +3569,7 @@ W_StoreBitmap2 (HINSTANCE hDLLInstance,
     HBITMAP temp = 0;
 
     FNHEADER;
-    //Allocate memory for the bitmap structure and convert the
-    //X11 bitmap into a useful form
+    //Allocate memory for the bitmap structure
     if (!(bitmap = (struct Icon *) malloc (sizeof (struct Icon))))
         goto memfail;
 
@@ -3609,8 +3629,7 @@ W_StoreBitmap3 (char *BMPfile,
     HBITMAP temp = 0;
 
     FNHEADER;
-    //Allocate memory for the bitmap structure and convert the
-    //X11 bitmap into a useful form
+    //Allocate memory for the bitmap structure
     if (!(bitmap = (struct Icon *) malloc (sizeof (struct Icon))))
         goto memfail;
 

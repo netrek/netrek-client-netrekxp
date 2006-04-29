@@ -20,7 +20,6 @@
 #define cloak_width             20
 #define cloak_height            20
 
-#ifndef COLORIZE
 #define etorp_width             3
 #define etorp_height            3
 #define eplasmatorp_width       7
@@ -29,7 +28,6 @@
 #define mplasmatorp_height      5
 #define mtorp_width             3
 #define mtorp_height            3
-#endif
 
 extern struct player *players;
 extern struct player *me;
@@ -162,6 +160,7 @@ extern int theirPhaserShrink;
 extern int shrinkPhaserOnMiss;
 extern int colorClient;
 extern int dynamicBitmaps;
+extern int colorWeapons;
 extern int newDashboard, old_db;
 extern int niftyNewMessages;
 extern int fastQuit;
@@ -239,17 +238,24 @@ extern W_Icon base_expview;
 extern W_Icon expview[BMP_SHIPEXPL_FRAMES];
 extern W_Icon base_sbexpview;
 extern W_Icon sbexpview[BMP_SBEXPL_FRAMES];
-#ifdef COLORIZE
-extern W_Icon cloud[5][BMP_TORPDET_FRAMES];
-extern W_Icon plasmacloud[5][BMP_TORPDET_FRAMES];
-extern W_Icon torpIcon[5][BMP_TORP_FRAMES];
-extern W_Icon plasmatorpIcon[5][BMP_TORP_FRAMES];
-#else
+
+extern W_Icon torp_cloud_bitmaps;
+extern W_Icon cloudC[NUM_CTORP_TYPES][BMP_TORPDET_FRAMES];
+extern W_Icon plasma_cloud_bitmaps;
+extern W_Icon plcloudC[NUM_CTORP_TYPES][BMP_TORPDET_FRAMES];
+extern W_Icon mtorp_bitmaps;
+extern W_Icon mtorpC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+extern W_Icon torp_bitmaps;
+extern W_Icon torpC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+extern W_Icon mplasma_bitmaps;
+extern W_Icon mplasmaC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+extern W_Icon plasma_bitmaps;
+extern W_Icon plasmaC[NUM_CTORP_TYPES][BMP_TORP_FRAMES];
+
 extern W_Icon cloud[BMP_TORPDET_FRAMES];
 extern W_Icon plasmacloud[BMP_TORPDET_FRAMES];
 extern W_Icon etorp, mtorp;
 extern W_Icon eplasmatorp, mplasmatorp;
-#endif
 
 #ifdef VSHIELD_BITMAPS
 #define SHIELD_FRAMES 5
