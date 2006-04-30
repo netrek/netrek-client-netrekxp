@@ -368,6 +368,7 @@ struct save_options save_options[] = {
             "0 - all (default)",
             "1 - players",
             "2 - observers",
+            "3 - players, then observers",
             NULL
         }
     },

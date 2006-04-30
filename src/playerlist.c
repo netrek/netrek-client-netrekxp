@@ -366,7 +366,7 @@ UpdatePlistFn ()
             {
                 if (players[count].p_status != PFREE)
                 {
-                    if (playerListObserver == 0)
+                    if (playerListObserver == 0 || playerListObserver == 3)
                     {
                         PlistLine (playerw, players + count, plistPos[count]);
                         PlistLine (playerw2, players + count, plistPos[count]);
@@ -388,7 +388,7 @@ UpdatePlistFn ()
             else
             {
                 if ((players[count].p_status != PFREE) &&
-                    ((playerListObserver == 0) ||
+                    ((playerListObserver == 0 || playerListObserver == 3) ||
                     ((playerListObserver == 1) &&
                     !(players[count].p_flags & PFOBSERV)) ||
                     ((playerListObserver == 2) &&
@@ -423,6 +423,7 @@ WriteSortedPlist ()
     struct player *current;
     int teamPos[NUMTEAM + 1];
     int *pos;
+    int obscount = 0;
 
     static int plistLastRow = -1;
     static int blankLine = -1;
@@ -450,7 +451,7 @@ WriteSortedPlist ()
     }
 
 
-    /* Count the number of players in each team. */
+    /* Count the number of players in each team, and total number of in game players. */
 
     for (i = NUMTEAM; i >= 0; --i)
         teamPos[i] = 0;
@@ -463,22 +464,31 @@ WriteSortedPlist ()
             {
                 if (playerListObserver == 0)
                     ++teamPos[remap[current->p_team]];
-                else if (playerListObserver == 1 &&
-                         current->p_mapchars[1] <= 'f')
+                else if ((playerListObserver == 1 || playerListObserver == 3)
+                        && current->p_mapchars[1] <= 'f')
                     ++teamPos[remap[current->p_team]];
-                else if (playerListObserver == 2 &&
-                        !(current->p_mapchars[1] <= 'f'))
+                else if (playerListObserver == 2
+                        && !(current->p_mapchars[1] <= 'f'))
                     ++teamPos[remap[current->p_team]];
+                    
+                if (!(current->p_mapchars[1] <= 'f'))
+                    obscount++;
             }
         }
         else
         {
-            if ((current->p_status != PFREE) &&
-                ((playerListObserver == 0) ||
-                ((playerListObserver == 1) && !(current->p_flags & PFOBSERV))
-                || ((playerListObserver == 2)
-                && (current->p_flags & PFOBSERV))))
-                ++teamPos[remap[current->p_team]];
+            if (current->p_status != PFREE)
+            {
+            	if ( (playerListObserver == 0)
+                 || ((playerListObserver == 1 || playerListObserver == 3)
+            	   && !(current->p_flags & PFOBSERV))
+                 || ((playerListObserver == 2)
+                   && (current->p_flags & PFOBSERV)) )
+                   ++teamPos[remap[current->p_team]];
+                   
+                if (current->p_flags & PFOBSERV)
+                    obscount++;
+            }
         }
     }
 
@@ -562,8 +572,8 @@ WriteSortedPlist ()
     }
 
     plistLastRow = last;
-
-
+    if (playerListObserver == 3)
+        plistLastRow += obscount;
 
     /* Write out each player that has either changed position or has
      * new stats. */
@@ -578,8 +588,12 @@ WriteSortedPlist ()
         }
         if (playerListHack)
         {
-            if (playerListObserver == 0)
+            if (playerListObserver == 0 || playerListObserver == 3)
             {
+            	if (playerListObserver == 3 && !(current->p_mapchars[1] <= 'f'))
+            	    row = --plistLastRow;
+            	else
+                    row = --(teamPos[remap[current->p_team]]);
                 row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)
                     continue;
@@ -616,14 +630,30 @@ WriteSortedPlist ()
                 PlistLine (playerw, current, row);
                 PlistLine (playerw2, current, row);
             }
+            else if (playerListObserver == 3)
+            {
+            	row = --(teamPos[remap[current->p_team]]);
+                if ((!updatePlayer[i]) && plistPos[i] == row)
+                    continue;
+
+                plistPos[i] = row;
+                updatePlayer[i] = FALSE;
+
+                PlistLine (playerw, current, row);
+                PlistLine (playerw2, current, row);
+            }
         }            
         else
         {
-            if ((playerListObserver == 0) ||
+            if ((playerListObserver == 0) || 
                 ((playerListObserver == 1) && !(current->p_flags & PFOBSERV)) ||
-                ((playerListObserver == 2) && (current->p_flags & PFOBSERV)))
+                ((playerListObserver == 2) && (current->p_flags & PFOBSERV)) ||
+                (playerListObserver == 3))
             {
-                row = --(teamPos[remap[current->p_team]]);
+            	if (playerListObserver == 3 && (current->p_flags & PFOBSERV))
+            	    row = --plistLastRow;
+            	else
+                    row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)
                     continue;
 
@@ -694,7 +724,10 @@ WriteUnsortedPlist (void)
         pos = count + 1;
         plistPos[count] = pos;
 
-        if (players[count].p_status != PFREE)
+        if ( players[count].p_status != PFREE &&
+           (((playerListObserver == 0) || (playerListObserver == 3)) ||
+           ((playerListObserver == 1) && !(players[count].p_flags & PFOBSERV)) ||
+           ((playerListObserver == 2) && (players[count].p_flags & PFOBSERV))) )
         {
             PlistLine (playerw, players + count, pos);
             PlistLine (playerw2, players + count, pos);
@@ -1376,7 +1409,7 @@ GetPlayerFromPlist (int x, int y)
         {
             if (playerListHack)
             {
-                if (playerListObserver == 0)
+                if (playerListObserver == 0 || playerListObserver == 3)
                 {
                     player_no = i;
                     break;
@@ -1396,7 +1429,7 @@ GetPlayerFromPlist (int x, int y)
             }
             else
             {
-                if (playerListObserver == 0)
+                if (playerListObserver == 0 || playerListObserver == 3)
                 {
                     player_no = i;
                     break;
@@ -1420,7 +1453,7 @@ GetPlayerFromPlist (int x, int y)
     {
         if (playerListHack)
         {
-            if (playerListObserver == 0)
+            if (playerListObserver == 0 || playerListObserver == 3)
                 flag = 1;
             else if (playerListObserver == 1 &&
                     (players[player_no].p_mapchars[1] <= 'f'))
@@ -1431,7 +1464,7 @@ GetPlayerFromPlist (int x, int y)
         }
         else
         {
-            if (playerListObserver == 0)
+            if (playerListObserver == 0 || playerListObserver == 3)
                 flag = 1;
             else if (playerListObserver == 1 &&
                    !(players[player_no].p_flags & PFOBSERV))

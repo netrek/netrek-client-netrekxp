@@ -113,6 +113,8 @@ static char *messagehudmess[] = { "Message typed on message line",
 static char *playerlistobservermess[] = { "Display all players in playerlist",
                                           "Display in game players only",
                                           "Display observers only",
+                                          "Display players, then observers",
+                                          "Playerlist is off",
                                           ""
 };
 
@@ -226,7 +228,7 @@ struct int_range enPhasRng = { 0, 10, 1 };
 struct int_range messagehud_range = { 0, 2, 1 };
 #endif
 
-struct int_range playerlistobserver_range = { 0, 2, 1 };
+struct int_range playerlistobserver_range = { 0, 4, 1 };
 
 struct int_range planetbitmaprange = { 0, 2, 1 };
 

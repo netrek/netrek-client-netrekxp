@@ -34,6 +34,9 @@ closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
 7) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
+8) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
+server side problem)
+
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

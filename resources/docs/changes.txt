@@ -1,4 +1,16 @@
 Version TBA:
+- Added new value (choice 3) for playerListObserver so that observers appear
+  at the bottom of the playerlist.  Options are:
+   # What kind of players to list
+   # 0 - all (default)
+   # 1 - players
+   # 2 - observers
+   # 3 - players, then observers
+- If sortPlayers is off, toggling playerListObserver now properly shows the correct players
+  (ie all, in game players only, observers only).  Furthermore, turning player list off
+  with the L key (or whatever key you have mapped to toggle player list) will now correctly
+  update the options menu to say "Playerlist is off" in the box corresponding to
+  playerListObserver options.
 - added sound window for SDL so one can toggle sound on/off
 - added a special explosion sound just for starbase explosions
 - added "colorWeapons: (on)/off" to use color weapon bitmaps for torps and plasmas!  The

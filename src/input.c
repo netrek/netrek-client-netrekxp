@@ -2634,19 +2634,25 @@ Key76 (void)
 
     if (sortPlayers)
     {
-        playerListObserver++;
         switch (playerListObserver)
         {
         case (0):
-            W_MapWindow (playerw);
+            playerListObserver++;
             break;
         case (1):
+            playerListObserver++;
             break;
         case (2):
+            playerListObserver++;
             break;
         case (3):
-            playerListObserver = -1;
+            playerListObserver++;
             W_UnmapWindow (playerw);
+            break;
+        case (4):
+            playerListObserver = 0;
+            W_MapWindow (playerw);
+            break;
         }
 
         if (W_IsMapped (playerw))
