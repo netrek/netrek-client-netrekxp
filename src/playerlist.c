@@ -451,7 +451,7 @@ WriteSortedPlist ()
     }
 
 
-    /* Count the number of players in each team, and total number of in game players. */
+    /* Count the number of players in each team, and total number of observers. */
 
     for (i = NUMTEAM; i >= 0; --i)
         teamPos[i] = 0;
@@ -621,18 +621,6 @@ WriteSortedPlist ()
                     !(current->p_mapchars[1] <= 'f'))
             {
                 row = --(teamPos[remap[current->p_team]]);
-                if ((!updatePlayer[i]) && plistPos[i] == row)
-                    continue;
-
-                plistPos[i] = row;
-                updatePlayer[i] = FALSE;
-
-                PlistLine (playerw, current, row);
-                PlistLine (playerw2, current, row);
-            }
-            else if (playerListObserver == 3)
-            {
-            	row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)
                     continue;
 
