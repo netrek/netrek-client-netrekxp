@@ -1490,72 +1490,71 @@ buttonaction (W_Event * data)
         && data->Window != infow
 		&& data->Window != playerw)
         return;
-
-	if (data->Window == playerw)
-	{
-		int x, y;
-
-        if (findMouseInWin (&x, &y, playerw))
-	    {
-		    data->Window = playerw;
-			data->x = x;
-			data->y = y;
-		}
-		if (data->key == W_LBUTTON)
-		{
-			target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
-			if (target->o_num == -1 || messageon || !playerListMessaging)
-				return;
-
-			/* Here we will have to enter message_on () followed by
-			   smessage to player */
+    
+    if (data->Window == playerw)
+    {
+    	int x, y;
+    	
+    	if (findMouseInWin (&x, &y, playerw))
+    	{
+    	    data->Window = playerw;
+            data->x = x;
+            data->y = y;
+        }
+        if (data->key == W_LBUTTON)
+        {
+            target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
+            if (target->o_num == -1 || messageon || !playerListMessaging)
+                return;
+            /* Here we will have to enter message_on () followed by
+               smessage to player */
 #ifdef SOUND
-                        if (newSound)
-  			    Play_Sound(MESSAGE_WAV);
-                        else
-  			    Play_Sound(MESSAGE_SOUND);
+            if (newSound)
+                Play_Sound(MESSAGE_WAV);
+            else
+                Play_Sound(MESSAGE_SOUND);
 #endif
-			message_on ();
-			data->key = players[target->o_num].p_mapchars[1];
-			smessage (data->key);
-			return;
-		}
-		else if (data->key == W_RBUTTON)
-		{
-			if (messageon || !playerListMessaging)
-				return;
-			/* Here we will have to enter message_on () followed by
-			   smessage to player */
-#ifdef SOUND
-                        if (newSound)
-  			    Play_Sound(MESSAGE_WAV);
-                        else
-  			    Play_Sound(MESSAGE_SOUND);
-#endif
-			message_on ();
-			data->key = 'T';
-			smessage (data->key);
-			return;
-		}
-		else if (data->key == W_MBUTTON)
-		{
-			if (messageon || !playerListMessaging)
-				return;
-			/* Here we will have to enter message_on () followed by
-			   smessage to player */
-#ifdef SOUND
-                        if (newSound)
-  			    Play_Sound(MESSAGE_WAV);
-                        else
-  			    Play_Sound(MESSAGE_SOUND);
-#endif
-			message_on ();
-			data->key = 'A';
-			smessage (data->key);
-			return;
-		}
-		return;
+            message_on ();
+            data->key = players[target->o_num].p_mapchars[1];
+            smessage (data->key);
+	    return;
 	}
+        else if (data->key == W_RBUTTON)
+	{
+            if (messageon || !playerListMessaging)
+		return;
+            /* Here we will have to enter message_on () followed by
+               smessage to player */
+#ifdef SOUND
+            if (newSound)
+                Play_Sound(MESSAGE_WAV);
+            else
+                Play_Sound(MESSAGE_SOUND);
+#endif
+            message_on ();
+            data->key = 'T';
+            smessage (data->key);
+	    return;
+	}
+        else if (data->key == W_MBUTTON)
+	{
+            if (messageon || !playerListMessaging)
+		return;
+           /* Here we will have to enter message_on () followed by
+              smessage to player */
+#ifdef SOUND
+           if (newSound)
+               Play_Sound(MESSAGE_WAV);
+           else
+               Play_Sound(MESSAGE_SOUND);
+#endif
+           message_on ();
+           data->key = 'A';
+           smessage (data->key);
+	    return;
+	}
+        return;
+    }
 
     if (messageon)
         message_off ();         /* ATM */

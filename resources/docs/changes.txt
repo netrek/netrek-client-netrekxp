@@ -100,7 +100,7 @@ Version TBA:
 - fixed hint messages so they properly loop
 - added Maximize button to title bar
 - added buildexe script for compiling solely the source code and not the bitmaps
-- made BCC default compiler and disabled RSA mkkey check (-nt) until I get a valid one
+- disabled RSA mkkey check (-nt) until I get a valid one
 
 Version 4.4.0.4: (changes by stas, added 18-Apr-2006 )
 - added "allowWheelActions: (on)/off" to be able to disable wheel in non-scrolling windows

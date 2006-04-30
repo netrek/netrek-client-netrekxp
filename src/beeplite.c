@@ -26,10 +26,9 @@
 void rcdlite(struct distress *dist)
 /* the info */
 {
-    char    message[100];
-    int     len = 0;
-
-
+    char message[100];
+    int len = 0;
+    
     if ((dist == NULL) ||
     /* (dist->sender == me->p_no) || */
         (distlite[dist->distype] == NULL))

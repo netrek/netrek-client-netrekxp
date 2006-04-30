@@ -21,8 +21,11 @@ Additional instructions for compiling with Microsoft Visual C++ 2005 Express Edi
 aka Microsoft Visual Studio 2005
 
 You will need the SDK from the web, as the software doesn't come with the necessary files.
-Additionally, DirectX SDK is probably needed too, for the SDL support.  The build file
-will not work under Visual Studio.
+Additionally, DirectX SDK is probably needed too, for the SDL support.
+Compile the entire project in studio (which includes clientr, curslib, and winkey),
+then run the build script from DOS prompt.  I (Bill) have commented out the build lines
+that used cscript to compile the source since that command doesn't work with Visual
+Studio.
 
 
 Stas Pirogov (keyos@keyos.org)

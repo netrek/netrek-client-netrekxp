@@ -352,15 +352,15 @@ pushd src
 %MyCWD%\tools\mkkey -nt -k %RSAKEY%
 popd
 
-pushd src\cursors
-cscript %MyCWD%\tools\vcmake.vbs curslib.dsw "Win32 Release"
-popd
+rem pushd src\cursors
+rem cscript %MyCWD%\tools\vcmake.vbs curslib.dsw "Win32 Release"
+rem popd
 
-pushd src\winkey
-cscript %MyCWD%\tools\vcmake.vbs winkey.dsw "Win32 Release"
-popd
+rem pushd src\winkey
+rem cscript %MyCWD%\tools\vcmake.vbs winkey.dsw "Win32 Release"
+rem popd
 
-cscript %MyCWD%\tools\vcmake.vbs clientr.dsw "Win32 Release"
+rem cscript %MyCWD%\tools\vcmake.vbs clientr.dsw "Win32 Release"
 
 pushd %InstCWD%\netrek
 %MyCWD%\tools\stampver -v%MyCWD%\src\stampver.inf netrek.exe

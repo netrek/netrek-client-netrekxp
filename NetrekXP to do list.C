@@ -33,7 +33,7 @@ flip to.  Also, closing hint window has same effect
 closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
-7) Resolve curslib, winkey, and version build issues under Visual Studio
+7) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title
@@ -43,6 +43,7 @@ bar is turned on.
 4) save_options keymap: not saving right
 5) if waiting on queue and get in, quit clock missing
 6) right click on all_review window, get message "obsolete!"
+7) winkey working with BCC
 
 Stas's list:
 - color coded playerlist.

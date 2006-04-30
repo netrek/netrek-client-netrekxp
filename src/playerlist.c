@@ -5,7 +5,7 @@
  * rewrite for demand driven updates -> huge speedup: Oct. 94 [007] Major
  * rewrite to fix some bugs and speed things up     : Jan. 95 [Zork]
  * 
- * Sort observers separatly: opserver if (pl->p_flags & PFOBSERV) is true.  : Jul 01 [SRS]
+ * Sort observers separately: observer if (pl->p_flags & PFOBSERV) is true.  : Jul 01 [SRS]
  *
  */
 

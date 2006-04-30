@@ -2605,29 +2605,28 @@ NetrekWndProc (HWND hwnd,
         // If we're not in message windows then we'll map wheel up and
 		// wheel down events as regular mouse events
         if (win->type == WIN_GRAPH || win->type == WIN_TEXT || win->type == WIN_MENU)
-		{
+	{
 	        //BringWindowToTop (hwnd);
 			//GET_STRUCT_PTR;
 
             /* Let's see whether we should process wheel messages */
             if (!allowWheelActions)
                 return (1);
+            STORE_EVENT_MOUSE;
+            LastPressHwnd = hwnd;
 
-			STORE_EVENT_MOUSE;
-			LastPressHwnd = hwnd;
-
-			if (wheel > 0)
-			{
-				EventQueue[EventTail].key = W_WHEELUP;
-				EventQueue[EventTail].type = W_EV_BUTTON;
-			}
-			else if (wheel < 0)
-			{
-				EventQueue[EventTail].key = W_WHEELDOWN;
-				EventQueue[EventTail].type = W_EV_BUTTON;
-			}
+            if (wheel > 0)
+            {
+                EventQueue[EventTail].key = W_WHEELUP;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+            }
+            else if (wheel < 0)
+            {
+            	EventQueue[EventTail].key = W_WHEELDOWN;
+            	EventQueue[EventTail].type = W_EV_BUTTON;
+            }
             return (0);
-		}
+	}
         else if (win->type == WIN_SCROLL)
         {
             i = GetScrollPos (hwnd, SB_VERT);
@@ -3728,6 +3727,7 @@ W_WriteBitmap (int x,
     border = bitmap->ClipRectAddr->top;
     x += border;
     y += border;
+    
     if (x < border)
     {
         width = bitmap->width - (border - x);
@@ -5792,12 +5792,12 @@ W_MakeScrollingRichTextWindow (char *name,
                                int border)
 {
     Window *newwin;
-	int orig_x, orig_y, orig_width, orig_height;
+    int orig_x, orig_y, orig_width, orig_height;
 
     orig_x = x;
-	orig_y = y;
-	orig_width = width;
-	orig_height = height;
+    orig_y = y;
+    orig_width = width;
+    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -5824,11 +5824,11 @@ W_MakeScrollingRichTextWindow (char *name,
     newwin->TextHeight = height;
     newwin->TextWidth = width;
 
-	/* Set original coordinates, so we will be able to restore to them */
-	newwin->orig_x = orig_x;
-	newwin->orig_y = orig_y;
-	newwin->orig_width = orig_width;
-	newwin->orig_height = orig_height;
+    /* Set original coordinates, so we will be able to restore to them */
+    newwin->orig_x = orig_x;
+    newwin->orig_y = orig_y;
+    newwin->orig_width = orig_width;
+    newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))

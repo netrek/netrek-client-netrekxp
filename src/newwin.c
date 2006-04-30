@@ -1740,7 +1740,7 @@ redrawTeam (W_Window win,
 /******************************************************************************/
 redrawQuit (void)
 {
-    W_WriteText (qwin, 5, 5, textColor, "Quit COW  ", 10, W_RegularFont);
+    W_WriteText (qwin, 5, 5, textColor, "Quit NetrekXP", 13, W_RegularFont);
 }
 
 
