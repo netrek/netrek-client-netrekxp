@@ -3765,6 +3765,63 @@ W_WriteBitmap (int x,
     ReleaseDC (bitmap->hwnd, hdc);
 }
 
+// Modified WriteBitmap for scaling images - BB, 5/1/2006
+void
+W_WriteScaleBitmap (int x,
+               int y,
+               float SCALEX,
+               float SCALEY,
+               W_Icon icon,
+               W_Color color)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border, width, height;
+    register int srcx, srcy;
+    HDC hdc;
+
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    border = bitmap->ClipRectAddr->top;
+    x += border;
+    y += border;
+    
+    if (x < border)
+    {
+        width = bitmap->width - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((width = bitmap->ClipRectAddr->right - x) > bitmap->width)
+        width = bitmap->width;
+    if (y < border)
+    {
+        height = bitmap->height - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((height = bitmap->ClipRectAddr->bottom - y) > bitmap->height)
+        height = bitmap->height;
+
+    hdc = GetDC (bitmap->hwnd);
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+    SelectObject (GlobalMemDC, bitmap->bm);
+
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (hdc, colortable[color].rgb);
+    SetTextColor (hdc, colortable[BLACK].rgb);
+    SetStretchBltMode(hdc, HALFTONE);  // Best quality
+    StretchBlt (hdc, x, y,          //Copy the bitmap
+            (int)(height/SCALEX), (int)(width/SCALEY), GlobalMemDC, srcx, srcy, width, height, SRCPAINT);  // <-- using OR mode
+
+    ReleaseDC (bitmap->hwnd, hdc);
+}
+
 void
 W_WriteBitmapGrey (int x,
                    int y,

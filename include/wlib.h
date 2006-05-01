@@ -127,6 +127,12 @@ extern void W_WriteBitmap (int x,
                            int y,
                            W_Icon bit,
                            W_Color color);
+extern void W_WriteScaleBitmap (int x,
+                                int y,
+                                float SCALEX,
+                                float SCALEY,
+                                W_Icon icon,
+                                W_Color color);
 extern void W_ClearArea (W_Window window,
                          int x,
                          int y,

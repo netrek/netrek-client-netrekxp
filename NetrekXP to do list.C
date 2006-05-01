@@ -37,7 +37,7 @@ flip to.  Also, closing hint window has same effect
 - option server/servernick/servertype needs to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
+6) With new scaling function, implement Defcom's new bitmaps
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

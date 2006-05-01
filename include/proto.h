@@ -626,6 +626,12 @@ void W_WriteBitmap (int x,
                     int y,
                     W_Icon icon,
                     W_Color color);
+void W_WriteScaleBitmap (int x,
+                         int y,
+                         float SCALEX,
+                         float SCALEY,
+                         W_Icon icon,
+                         W_Color color);
 void W_WriteBitmapGrey (int x,
                         int y,
                         W_Icon icon,
