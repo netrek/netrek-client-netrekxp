@@ -209,9 +209,22 @@ dmessage (char *message,
         else if ((flags == kill) || (flags == killp) ||
                  (flags == killa) || (flags == bomb))
         {
-            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
             if (!reportKills)
                 return;         /* HW */
+                
+            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
+            
+#ifdef SOUND          
+            if (why_dead &&
+               (instr (message, "[plasma]") || instr (message, "[zapped plasma]")))
+            {
+            	if (newSound)
+            	    Play_Sound(PLASMA_KILL_WAV);
+            	else          	
+            	    Play_Sound(PLASMA_KILL_SOUND);
+            }
+#endif
+
         }
 
         else if (flags & MINDIV)
@@ -258,9 +271,22 @@ dmessage (char *message,
               instr (message, "Credit for")) ||
             (*message != ' ' && instr (message, "We are being attacked")))
         {
-            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
             if (!reportKills)
                 return;
+            
+            W_MessageAllowedWindows (WAM_KILL, 0, 0, color, message, len, 0);
+            
+#ifdef SOUND          
+            if (why_dead &&
+               (instr (message, "[plasma]") || instr (message, "[zapped plasma]")))
+            {
+            	if (newSound)
+            	    Play_Sound(PLASMA_KILL_WAV);
+            	else          	
+            	    Play_Sound(PLASMA_KILL_SOUND);
+            }
+#endif
+
             if (logging)
             {
                 if (logFile != NULL)

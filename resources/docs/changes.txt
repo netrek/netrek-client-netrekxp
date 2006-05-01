@@ -1,4 +1,7 @@
 Version TBA:
+- Added new plasma_kill sound (Fatality!) for when someone dies to plasma (note the
+  sound fires based on kill messages, so if reportKills is off, you won't hear it).
+- fixed the reportKills option, it wasn't working, now it does.
 - Added new value (choice 3) for playerListObserver so that observers appear
   at the bottom of the playerlist.  Options are:
    # What kind of players to list

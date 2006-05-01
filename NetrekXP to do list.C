@@ -8,13 +8,17 @@ which then maps windows accordingly.
 new-be-nice!!
 
 
-Things not gonna happen:
+Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
 2) Get mkkey working.
 3) torp_other and plasma_other not working right due to lack of torp fuse info
-4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did.
-4a) observer sound messes up when someone flips shields at warp 0
+4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did -
+server not sending right info.
+4a) observer sound messes up when someone flips shields at warp 0, again a server problem
+4b) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
+server side problem, both for the not being able to lock back onto your team, and
+the shield packet not being sent)
 
 Things to do:
 1) Add warning hull.
@@ -34,9 +38,6 @@ closeable by shift right click.
 6) genoed as obs on team with no planets -> you were killed by something not in this
 game
 7) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
-8) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
-server side problem)
-
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

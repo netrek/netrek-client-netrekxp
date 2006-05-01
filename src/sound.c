@@ -32,6 +32,7 @@ Mix_Chunk *newsounds[NUM_WAVES];
 /* Each sound has a priority which controls what can override what
    Currently these are set as follows:
 
+   11: death sounds
    10: explosion
    9: phaser,plasma
    8: torp/plasma hit
@@ -59,6 +60,7 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
     {"nt_enter_ship", 4, 1},
     {"nt_self_destruct", 6, 1},
     {"nt_plasma_hit", 8, 1},
+    {"nt_plasma_kill", 11, 1},
     {"nt_enter_warp", 4, 1},
     {"nt_exit_warp", 4, 1},
     {"nt_message", 4, 1},
@@ -112,6 +114,7 @@ int loadSounds(void) {
   newsounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
   newsounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
   newsounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));
+  newsounds[PLASMA_KILL_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_kill.wav"));
   newsounds[RED_ALERT_WAV] = Mix_LoadWAV(DATAFILE("nt_red_alert.wav"));
   newsounds[SELF_DESTRUCT_WAV] = Mix_LoadWAV(DATAFILE("nt_self_destruct.wav"));
   newsounds[SHIELD_DOWN_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_down.wav"));
@@ -469,6 +472,9 @@ static void soundrefresh (int i)
             break;
         case PLASMA_HIT_SOUND:
             sprintf (buf, "Plasma hit sound is %s", flag);
+            break;
+        case PLASMA_KILL_SOUND:
+            sprintf (buf, "Plasma kill sound is %s", flag);
             break;
         }
     }
