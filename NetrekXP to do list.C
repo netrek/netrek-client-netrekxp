@@ -19,6 +19,8 @@ server not sending right info.
 4b) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
 server side problem, both for the not being able to lock back onto your team, and
 the shield packet not being sent)
+5) KWINNER called to all players at genocide, not KGENOCIDE, and observers don't get
+any state at all (head to default which is error message).
 
 Things to do:
 1) Add warning hull.
@@ -35,9 +37,7 @@ flip to.  Also, closing hint window has same effect
 - option server/servernick/servertype needs to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) genoed as obs on team with no planets -> you were killed by something not in this
-game
-7) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
+6) Explore how changing SCALE breaks the client, and fix it: for future bitmap upgrades.
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title
@@ -60,13 +60,11 @@ Stas's list:
 - whydead dies when out of range (not confirmed)
 - add "reset to defaults" to options menu
 + add installer
-- maybe add two column playerlist
 - add bitmap themes option (change default bitmap naming and processing)
 - add shiftMouse, controlMouse on/off
 - add timestamps for messages (no place for timestamp)
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
-- add geno bitmap
 - add detCircle
 - add copy/paste possibility from message windows (richtext ?)
 - add clickable urls from message windows (richtext ?)

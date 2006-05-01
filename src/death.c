@@ -112,20 +112,20 @@ death (void)
         break;
     case KPHASER:
         sprintf (deathmessage,
-                 "You were phasered to death by %s (%c%c)",
+                 "You were phasered to death by %s (%c%c).",
                  players[me->p_whodead].p_name,
                  teamlet[players[me->p_whodead].p_team],
                  shipnos[me->p_whodead]);
         break;
     case KPLANET:
         sprintf (deathmessage,
-                 "You were killed by planetary fire from %s (%c)",
+                 "You were killed by planetary fire from %s (%c).",
                  planets[me->p_whodead].pl_name,
                  teamlet[planets[me->p_whodead].pl_owner]);
         break;
     case KSHIP:
         sprintf (deathmessage,
-                 "You were killed by the explosion of %s (%c%c)",
+                 "You were killed by the explosion of %s (%c%c).",
                  players[me->p_whodead].p_name,
                  teamlet[players[me->p_whodead].p_team],
                  shipnos[me->p_whodead]);
@@ -134,12 +134,13 @@ death (void)
         strcpy (deathmessage, "You were killed by a dying daemon.");
         break;
     case KWINNER:
-        sprintf (deathmessage, "Galaxy has been conquered by %s (%c%c) %s",
+        sprintf (deathmessage, "Galaxy has been conquered by %s (%c%c) %s.",
                  players[me->p_whodead].p_name,
                  teamlet[players[me->p_whodead].p_team],
                  shipnos[players[me->p_whodead].p_no],
                  teamstring[players[me->p_whodead].p_team]);
         deathFont = W_BoldFont;
+        W_TileWindow (mapw, genopic);
         break;
     case KGHOST:
         strcpy (deathmessage, "You were killed by a confused daemon.");
@@ -158,7 +159,7 @@ death (void)
         break;
     case KPLASMA:
         sprintf (deathmessage,
-                 "You were SMACKed by a plasma torpedo from %s (%c%c) ",
+                 "You were SMACKed by a plasma torpedo from %s (%c%c).",
                  players[me->p_whodead].p_name,
                  teamlet[players[me->p_whodead].p_team],
                  shipnos[me->p_whodead]);
@@ -176,13 +177,13 @@ death (void)
         strcpy (deathmessage, "Your netrek executable didn't verify correctly.");
         break;
     case KTORP2:
-        strcpy (deathmessage, "You were killed by detonated torpedo");
+        strcpy (deathmessage, "You were killed by detonated torpedo.");
         break;
     case KSHIP2:
-        strcpy (deathmessage, "You were killed by chain reaction explosion");
+        strcpy (deathmessage, "You were killed by chain reaction explosion.");
         break;
     case KPLASMA2:
-        strcpy (deathmessage, "You were killed by zapped plasma");
+        strcpy (deathmessage, "You were killed by zapped plasma.");
         break;
     default:
         strcpy (deathmessage, "You were killed by something unknown to this game?");

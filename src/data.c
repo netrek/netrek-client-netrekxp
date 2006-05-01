@@ -236,7 +236,7 @@ int macrocnt = 0;
 
 extern double Sin[], Cos[];
 
-W_Icon stipple, clockpic, icon;
+W_Icon stipple, clockpic, genopic, icon;
 
 W_Color borderColor, backColor, textColor, myColor, warningColor, shipCol[5],
     rColor, yColor, gColor, unColor, foreColor;

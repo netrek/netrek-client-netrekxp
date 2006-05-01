@@ -497,6 +497,7 @@ W_Cleanup (void)
 
     free (cloakicon);
     free (stipple);
+    free (genopic);
 
     //Remove default objects
     while (defaults)

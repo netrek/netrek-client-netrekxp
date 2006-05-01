@@ -1030,6 +1030,9 @@ savebitmaps (void)
     clockpic =
         W_StoreBitmap3 ("bitmaps/misclib/clock.bmp", BMP_CLOCK_WIDTH,
                         BMP_CLOCK_HEIGHT, BMP_CLOCK, qwin, LR_MONOCHROME);
+    genopic =
+        W_StoreBitmap3 ("bitmaps/misclib/genocide.bmp", WINSIDE,
+                        WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
 
 }
 
@@ -1383,6 +1386,7 @@ entrywindow (int *team,
     for (i = 0; i < 4; i++)
         W_UnmapWindow (teamWin[i]);
     W_UnmapWindow (qwin);
+    W_UnTileWindow (mapw);
 }
 
 

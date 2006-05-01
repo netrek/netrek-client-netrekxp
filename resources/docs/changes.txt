@@ -1,4 +1,5 @@
 Version TBA:
+- added pretty geno bitmap (no it's not Kathy Ireland, it's a color galaxy picture)
 - Added new plasma_kill sound (Fatality!) for when someone dies to plasma (note the
   sound fires based on kill messages, so if reportKills is off, you won't hear it).
 - fixed the reportKills option, it wasn't working, now it does.

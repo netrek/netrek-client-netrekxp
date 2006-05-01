@@ -77,6 +77,7 @@
 #define BMP_SHIELD 16
 #define BMP_VSHIELD 17
 #define BMP_STIPPLE 22
+#define BMP_GENO 23
 
 #define BMP_SHIPEXPL_FRAMES 5
 #define BMP_SBEXPL_FRAMES 7

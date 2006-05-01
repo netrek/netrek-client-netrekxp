@@ -232,7 +232,7 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
-extern W_Icon stipple, clockpic;
+extern W_Icon stipple, clockpic, genopic;
 
 extern W_Icon base_expview;
 extern W_Icon expview[BMP_SHIPEXPL_FRAMES];
