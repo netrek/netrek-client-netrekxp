@@ -454,6 +454,7 @@ DrawShips (void)
     int newdx, newdy, distance, angle; /* For newSound */
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
+    W_Icon (*ship_bitsHR);
 
     /* Kludge to try to fix missing ID chars on tactical (short range)
        display. */
@@ -667,13 +668,14 @@ DrawShips (void)
 
 	/* Logic of color scheme is as follows:
 	   1) Mono bitmaps (colorClient 0) and new bitmaps (colorClient 1)
-	      are the same for both player and everyone else.
+	      and high-res bitmaps (colorClient 4) are the same for both player
+	      and everyone else.
 	   2) Single color bitmaps (colorClient 2) and shaded single color
 	      bitmaps (colorClient 3) have a monochrome version (bitmap set
 	      G) that will be used for the player's ship, to set it apart in
 	      color from the rest of the team
 	 */
-	    if (colorClient <= 0 || colorClient > 3)
+	    if (colorClient <= 0 || colorClient > 4)
             {
             	switch (j->p_team)
             	{
@@ -757,6 +759,27 @@ DrawShips (void)
                     break;
                 }
             }
+            else if (colorClient == 4)
+            {
+                switch (j->p_team)
+                {
+                case FED:
+                    ship_bitsHR = fed_bitmapsHR;
+                    break;
+                case ROM:
+                    ship_bitsHR = rom_bitmapsHR;
+                    break;
+                case KLI:
+                    ship_bitsHR = kli_bitmapsHR;
+                    break;
+                case ORI:
+                    ship_bitsHR = ori_bitmapsHR;
+                    break;
+                default:
+                    ship_bitsHR = ind_bitmapsHR;
+                    break;
+                }
+            }
             else /* Default to bitmap set G (greyscale) for player's ship */
             {
             	switch (j->p_team)
@@ -778,14 +801,25 @@ DrawShips (void)
                     break;
                 }
             }
-
-            W_WriteBitmap (dx - (j->p_ship.s_width / 2),
+            
+            if (colorClient != 4)
+            {
+                W_WriteBitmap (dx - (j->p_ship.s_width / 2),
                            dy - (j->p_ship.s_height / 2),
                            ship_bits[j->p_ship.
                                      s_type][rosette (j->p_dir)],
-
                            playerColor (j));
-                           
+            }
+            else
+            { 
+                W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2),
+                           dy - (j->p_ship.s_height / 2),
+                           (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
+                           (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                           ship_bitsHR[j->p_ship.s_type],
+                           playerColor (j));
+            }
+                              
             if (j->p_cloakphase > 0)
             {
                 W_WriteBitmap (dx - (cloak_width / 2),

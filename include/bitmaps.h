@@ -10,12 +10,16 @@
  * #define rosette(x)   ((((x) + 256/VIEWS/2) / (256/VIEWS) + VIEWS) % VIEWS)
  *  - This function is more generic
  * An example using 16 views:
- * (((x + 8) / 16 + 16)  %  16)  */
+ * (((x + 8) / 16 + 16)  %  16)
+ * Or 32 views:
+ * (((x + 4) / 8 + 32)   %  32)  */
 #define rosette(x)   ((((x) + 256/SHIP_VIEWS/2) / (256/SHIP_VIEWS) + SHIP_VIEWS) % SHIP_VIEWS)
 
 
 #define BMP_SHIP_WIDTH  20
 #define BMP_SHIP_HEIGHT 20
+#define BMP_SHIP_WIDTH_HR  80
+#define BMP_SHIP_HEIGHT_HR 80
 
 #define BMP_FED_SHIP 1
 #define BMP_ORI_SHIP 4

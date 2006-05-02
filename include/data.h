@@ -296,6 +296,11 @@ extern W_Icon fed_bitmapsT[NUM_TYPES][SHIP_VIEWS],
     kli_bitmapsT[NUM_TYPES][SHIP_VIEWS], rom_bitmapsT[NUM_TYPES][SHIP_VIEWS],
     ori_bitmapsT[NUM_TYPES][SHIP_VIEWS], ind_bitmapsT[NUM_TYPES][SHIP_VIEWS];
 
+extern W_Icon ship_bitmapsHR[5];
+extern W_Icon fed_bitmapsHR[NUM_TYPES],
+    kli_bitmapsHR[NUM_TYPES], rom_bitmapsHR[NUM_TYPES],
+    ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
+    
 extern W_Icon base_planets;
 extern W_Icon base_mplanets;
 extern W_Icon bplanets[PLANET_VIEWS];
@@ -548,6 +553,11 @@ extern char *rom_ship_bmp_M;
 extern char *kli_ship_bmp_M;
 extern char *ori_ship_bmp_M;
 extern char *ind_ship_bmp_M;
+extern char *fed_ship_bmp_HR;
+extern char *rom_ship_bmp_HR;
+extern char *kli_ship_bmp_HR;
+extern char *ori_ship_bmp_HR;
+extern char *ind_ship_bmp_HR;
 
 // Added to fix thread creation issue
 HANDLE MainThread;

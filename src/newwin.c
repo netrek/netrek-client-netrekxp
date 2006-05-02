@@ -421,6 +421,63 @@ void loadbitmapsM()
 }
 
 /******************************************************************************/
+/***  loadweaponsHR() - high quality ship bitmaps, 80x80
+/******************************************************************************/
+void loadbitmapsHR()
+{    
+    int j;
+    
+    if ( access("bitmaps/shiplib/fedshipHR.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/indshipHR.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/klishipHR.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/orishipHR.bmp", R_OK) == 0
+     && access("bitmaps/shiplib/romshipHR.bmp", R_OK) == 0 )
+    {
+	    ship_bitmapsHR[0] =
+	        W_StoreBitmap3 (fed_ship_bmp_HR, BMP_SHIP_WIDTH_HR * 8,
+	                        BMP_SHIP_HEIGHT_HR, BMP_FED_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsHR[1] =
+	        W_StoreBitmap3 (ind_ship_bmp_HR, BMP_SHIP_WIDTH_HR * 8,
+	                        BMP_SHIP_HEIGHT_HR, BMP_IND_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsHR[2] =
+	        W_StoreBitmap3 (kli_ship_bmp_HR, BMP_SHIP_WIDTH_HR * 8,
+	                        BMP_SHIP_HEIGHT_HR, BMP_KLI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsHR[3] =
+	        W_StoreBitmap3 (ori_ship_bmp_HR, BMP_SHIP_WIDTH_HR * 8,
+	                        BMP_SHIP_HEIGHT_HR, BMP_ORI_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+	    ship_bitmapsHR[4] =
+	        W_StoreBitmap3 (rom_ship_bmp_HR, BMP_SHIP_WIDTH_HR * 8,
+	                        BMP_SHIP_HEIGHT_HR, BMP_ROM_SHIP, w,
+	                        LR_DEFAULTCOLOR);
+    }
+    else  // No bitmaps, doh!
+        return;
+    
+    for (j = 0; j < NUM_TYPES; j++)
+    {
+        fed_bitmapsHR[j] =
+            W_PointBitmap2 (ship_bitmapsHR[0], j, 0, BMP_SHIP_WIDTH_HR,
+                                BMP_SHIP_HEIGHT_HR);
+        ind_bitmapsHR[j] =
+            W_PointBitmap2 (ship_bitmapsHR[1], j, 0, BMP_SHIP_WIDTH_HR,
+                                BMP_SHIP_HEIGHT_HR);
+        kli_bitmapsHR[j] =
+            W_PointBitmap2 (ship_bitmapsHR[2], j, 0, BMP_SHIP_WIDTH_HR,
+                                BMP_SHIP_HEIGHT_HR);
+        ori_bitmapsHR[j] =
+            W_PointBitmap2 (ship_bitmapsHR[3], j, 0, BMP_SHIP_WIDTH_HR,
+                                BMP_SHIP_HEIGHT_HR);
+        rom_bitmapsHR[j] =
+            W_PointBitmap2 (ship_bitmapsHR[4], j, 0, BMP_SHIP_WIDTH_HR,
+                                BMP_SHIP_HEIGHT_HR);
+    }
+}
+
+/******************************************************************************/
 /***  loadweaponsC() - colorized weapons
 /******************************************************************************/
 void loadweaponsC()
@@ -863,6 +920,9 @@ savebitmaps (void)
     			loadbitmapsT();
     			loadbitmapsG();
     			break;
+                case 4: /* HR bitmaps */
+                    	loadbitmapsHR();
+    			break;
     		default: /* mono */
     			loadbitmapsM();
     			break;	
@@ -875,6 +935,7 @@ savebitmaps (void)
     	loadbitmapsG();
     	loadbitmapsT();
     	loadbitmapsM();
+    	loadbitmapsHR();
     }
     
 #ifdef BEEPLITE

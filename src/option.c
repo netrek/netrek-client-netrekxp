@@ -133,6 +133,7 @@ static char *bitmaptypemess[] = { "Mono bitmaps",
                                   "New color bitmaps",
                                   "Old color bitmaps",
                                   "Shaded old color bitmaps",
+                                  "Experimental high res bitmaps",
                                   ""
 };
 
@@ -218,7 +219,7 @@ struct int_range phaserShrinkRng = { 0, 16, 1 };
 /* range of menus. Will be updated when menu list is assembled */
 struct int_range Menus_Range = { 0, 1, 1 };
 
-struct int_range bitmap_range = { 0, 3, 1 };
+struct int_range bitmap_range = { 0, 4, 1 };
 
 struct int_range keepInfo_range = { 0, 100, 1 };
 

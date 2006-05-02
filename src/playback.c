@@ -177,6 +177,27 @@ pbmain (char *name)
     if ((stringDefault ("indshipMbmpfile")) != NULL)
         ind_ship_bmp_M = stringDefault ("indshipMbmpfile");
 
+    // HR bitmaps
+    fed_ship_bmp_HR = "bitmaps/shiplib/fedshipHR.bmp";
+    if ((stringDefault ("fedshipHRbmpfile")) != NULL)
+        fed_ship_bmp_HR = stringDefault ("fedshipHRbmpfile");
+        
+    rom_ship_bmp_HR = "bitmaps/shiplib/romshipHR.bmp";
+    if ((stringDefault ("romshipHRbmpfile")) != NULL)
+        rom_ship_bmp_HR = stringDefault ("romshipHRbmpfile");
+
+    kli_ship_bmp_HR = "bitmaps/shiplib/klishipHR.bmp";
+    if ((stringDefault ("klishipHRbmpfile")) != NULL)
+        kli_ship_bmp_HR = stringDefault ("klishipHRbmpfile");
+
+    ori_ship_bmp_HR = "bitmaps/shiplib/orishipHR.bmp";
+    if ((stringDefault ("orishipHRbmpfile")) != NULL)
+        ori_ship_bmp_HR = stringDefault ("orishipHRbmpfile");
+
+    ind_ship_bmp_HR = "bitmaps/shiplib/indshipHR.bmp";
+    if ((stringDefault ("indshipHRbmpfile")) != NULL)
+        ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
+
     newwin (display_host, name);
 
     resetdefaults ();

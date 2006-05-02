@@ -406,6 +406,7 @@ W_Cleanup (void)
 
     // Remove the ship bitmap structures we've created
     for (j = 0; j < NUM_TYPES; j++)
+    {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
             free (fed_bitmapsT[j][k]);
@@ -434,7 +435,12 @@ W_Cleanup (void)
             free (rom_bitmaps1[j][k]);
             free (rom_bitmaps[j][k]);
         }
-
+        free (fed_bitmapsHR[j]);
+        free (ind_bitmapsHR[j]);
+        free (kli_bitmapsHR[j]);
+        free (ori_bitmapsHR[j]);
+        free (rom_bitmapsHR[j]);
+    }
     free (ship_bitmaps[0]);
     free (ship_bitmaps[1]);
     free (ship_bitmaps[2]);

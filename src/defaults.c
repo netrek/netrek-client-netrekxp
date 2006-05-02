@@ -84,7 +84,8 @@ struct save_options save_options[] = {
             "0 - mono",
             "1 - new color bitmaps (default)",
             "2 - old color bitmaps",
-            "3 - shaded old color bitmaps",
+            "3 - shaded old color bitmaps"
+            "4 - experimental high res bitmaps",
             NULL
         }
     },
