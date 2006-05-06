@@ -299,8 +299,8 @@ parseInput (char *in,
 			slist->pkt_rtt[i] = -1;
 #endif
 
-        /* Don't list Paradise Servers  */
-        if (slist->typeflag != 'P')
+        /* Don't list Paradise Servers or *.tamu.edu */
+        if (slist->typeflag != 'P' && strstr(slist->address,".tamu.edu") == NULL)
         {
 
 #ifdef DEBUG
@@ -572,27 +572,31 @@ static void
 metarefresh (int i)
 /* Refresh line i in the list */
 {
-	struct servers *slist;
-	W_Color color = textColor;
+    struct servers *slist;
+    W_Color color = textColor;
     char buf[LINE + 1];
 
 #ifdef METAPING
-	DWORD lag = 0;
-	int idx, replies = 0;
+    DWORD lag = 0;
+    int idx, replies = 0;
 #endif
 
-	slist = serverlist + i;
-
+    slist = serverlist + i;
+    
+    // Don't list *.tamu.edu
+    if (strstr(slist->address,".tamu.edu") != NULL)
+        return;
+        
 #ifdef METAPING
-	if (metaPing)
-		sprintf (buf, "%-34s %14s ",
-			slist->address, statusStrings[slist->status]);
-	else
+    if (metaPing)
+	sprintf (buf, "%-34s %14s ",
+		slist->address, statusStrings[slist->status]);
+    else
 #endif
 	sprintf (buf, "%-40s %14s ",
 		slist->address, statusStrings[slist->status]);
 
-	if (slist->status == statusConnecting) color = W_Yellow;
+    if (slist->status == statusConnecting) color = W_Yellow;
 
     if (slist->status <= statusNull)
     {
@@ -634,44 +638,44 @@ metarefresh (int i)
             break;
         }
     }
-	else
-	{
-		strcat (buf, "               ");
-	}
+    else
+    {
+	strcat (buf, "               ");
+    }
 
 #ifdef METAPING
-	if (metaPing)
+    if (metaPing)
+    {
+	/* Print out the lag statistics */
+	for (idx = 0; idx < RTT_AVG_BUFLEN; ++idx)
 	{
-		/* Print out the lag statistics */
-		for (idx = 0; idx < RTT_AVG_BUFLEN; ++idx)
+		if (serverlist[i].pkt_rtt[idx] != -3 &&
+		    serverlist[i].pkt_rtt[idx] != -2 &&
+		    serverlist[i].pkt_rtt[idx] != -1)      // dont count these non-values
 		{
-			if (serverlist[i].pkt_rtt[idx] != -3 &&
-			    serverlist[i].pkt_rtt[idx] != -2 &&
-			    serverlist[i].pkt_rtt[idx] != -1)      // dont count these non-values
-			{
-				//printf ("i=%d  idx=%d  replies=%d  rtt=%ld  lag=%ld\n", i , idx, replies, serverlist[i].pkt_rtt[idx], lag);
-			    lag += serverlist[i].pkt_rtt[idx];
-			    replies++;
-			}
+			//printf ("i=%d  idx=%d  replies=%d  rtt=%ld  lag=%ld\n", i , idx, replies, serverlist[i].pkt_rtt[idx], lag);
+		    lag += serverlist[i].pkt_rtt[idx];
+		    replies++;
 		}
-    
-		//printf("i=%d  replies=%ld  idx=%ld   rtt=%ld  %s\n", i, replies,
-		//	   ((serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN),
-		//	   serverlist[i].pkt_rtt[(serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN],
-		//	   serverlist[i].address);
-
-		if (replies > 0)
-		{
-			lag = lag / replies;
-			if (lag < 1000) sprintf (buf + strlen (buf), " %3ldms", lag);
-			else strcat(buf, " >1sec");
-		}
-		else if (replies == 0 && serverlist[i].pkt_rtt[0] == -2)
-			strcat(buf, " Unknw"); // Unknown host
-		else if (replies == 0 && serverlist[i].pkt_rtt[0] == -3)
-			strcat(buf, " TmOut"); // TimeOut
-		else strcat(buf, "      ");
 	}
+    
+	//printf("i=%d  replies=%ld  idx=%ld   rtt=%ld  %s\n", i, replies,
+	//	   ((serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN),
+	//	   serverlist[i].pkt_rtt[(serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN],
+	//	   serverlist[i].address);
+
+	if (replies > 0)
+	{
+		lag = lag / replies;
+		if (lag < 1000) sprintf (buf + strlen (buf), " %3ldms", lag);
+		else strcat(buf, " >1sec");
+	}
+	else if (replies == 0 && serverlist[i].pkt_rtt[0] == -2)
+		strcat(buf, " Unknw"); // Unknown host
+	else if (replies == 0 && serverlist[i].pkt_rtt[0] == -3)
+		strcat(buf, " TmOut"); // TimeOut
+	else strcat(buf, "      ");
+    }
 #endif
 
     W_WriteText (metaWin, 0, i, color, buf, strlen (buf), 0);

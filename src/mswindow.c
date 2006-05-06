@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <string.h>
 #include <richedit.h>
+#include <math.h>
 
 #include "copyright2.h"
 #include "config.h"
@@ -3560,6 +3561,7 @@ W_StoreBitmap (int width,
     return NULL;
 }
 
+
 // Simplified version of StoreBitmap
 // Loads bitmap from resource file
 // This one is a bit more of a hog, no more giant bitmaps
@@ -3620,6 +3622,7 @@ W_StoreBitmap2 (HINSTANCE hDLLInstance,
         DeleteObject (temp);
     return NULL;
 }
+
 
 // Simplified version of StoreBitmap
 // Loads bitmap from .BMP file
@@ -3771,61 +3774,104 @@ W_WriteBitmap (int x,
     ReleaseDC (bitmap->hwnd, hdc);
 }
 
-// Modified WriteBitmap for scaling images - BB, 5/1/2006
+
+// Modified WriteBitmap for scaling and rotating images - BB, 5/1/2006
 void
 W_WriteScaleBitmap (int x,
-               int y,
-               float SCALEX,
-               float SCALEY,
-               W_Icon icon,
-               W_Color color)
+                    int y,
+                    float SCALEX,
+                    float SCALEY,
+                    unsigned char p_dir,
+                    W_Icon icon,
+                    W_Color color)
 {
     register struct Icon *bitmap = (struct Icon *) icon;
-    register int border, width, height;
+    register int borderx, bordery, width, height;
     register int srcx, srcy;
     HDC hdc;
+    HBITMAP newbmp;
+    XFORM xForm;
+    double radians;
+    float cosine, sine, Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
+    float xscale, yscale;
+    float eDx, eDy;
 
     //Fast (I hope) rectangle intersection, don't overwrite our borders
     srcx = bitmap->x;
     srcy = bitmap->y;
-    border = bitmap->ClipRectAddr->top;
-    x += border;
-    y += border;
-    
-    if (x < border)
-    {
-        width = bitmap->width - (border - x);
-        srcx += border - x;
-        x = border;
-    }
-    else if ((width = bitmap->ClipRectAddr->right - x) > bitmap->width)
-        width = bitmap->width;
-    if (y < border)
-    {
-        height = bitmap->height - (border - y);
-        srcy += (border - y);
-        y = border;
-    }
-    else if ((height = bitmap->ClipRectAddr->bottom - y) > bitmap->height)
-        height = bitmap->height;
+    borderx = bitmap->ClipRectAddr->left;
+    x += borderx;
+    bordery = bitmap->ClipRectAddr->top;
+    y += bordery;
 
+    width = bitmap->width;
+    height = bitmap->height;
+    
     hdc = GetDC (bitmap->hwnd);
+    newbmp = CreateCompatibleBitmap ( hdc, width, height );
+
     if (NetrekPalette)
     {
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
     SelectObject (GlobalMemDC, bitmap->bm);
-
+    SelectObject (GlobalMemDC2, newbmp);
+    
+    // Copy selected section of main bitmap into newbmp before rotation
+    BitBlt (GlobalMemDC2, 0, 0, width, height, GlobalMemDC, srcx, srcy, SRCPAINT);
+    
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
     SetBkColor (hdc, colortable[color].rgb);
     SetTextColor (hdc, colortable[BLACK].rgb);
-    SetStretchBltMode(hdc, HALFTONE);  // Best quality
-    StretchBlt (hdc, x, y,          //Copy the bitmap
-            (int)(height/SCALEX), (int)(width/SCALEY), GlobalMemDC, srcx, srcy, width, height, SRCPAINT);  // <-- using OR mode
+    
+    //Convert p_dir to radians 
+    radians=(2*3.14159*p_dir*360/255)/360;
+    cosine=(float)cos(radians);
+    sine=(float)sin(radians);
+    
+    // Scale used to find bitmap center
+    xscale = (float)(width/SCALEX/2);
+    yscale = (float)(height/SCALEY/2);
+    
+    // Compute dimensions of the resulting bitmap
+    // First get the coordinates of the 3 corners other than origin
+    Point1x=(height*sine);
+    Point1y=(height*cosine);
+    Point2x=(width*cosine+height*sine);
+    Point2y=(height*cosine-width*sine);
+    Point3x=(width*cosine);
+    Point3y=-(width*sine);
 
+    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
+    SetGraphicsMode(hdc,GM_ADVANCED);
+
+    xForm.eM11=cosine/SCALEX;
+    xForm.eM12=sine/SCALEX;
+    xForm.eM21=-sine/SCALEY;
+    xForm.eM22=cosine/SCALEY;
+    xForm.eDx = eDx;
+    xForm.eDy = eDy;
+ 
+    SetWorldTransform(hdc,&xForm);
+    BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+          
     ReleaseDC (bitmap->hwnd, hdc);
+    DeleteObject (newbmp);
+
+/*  Alternative method using PlgBlt, left in for reference purposes
+    
+    P[0].x = (long)(x + xscale - xscale*cos(angle) + yscale*sin(angle));
+    P[0].y = (long)(y + yscale - yscale*cos(angle) - xscale*sin(angle));
+    P[1].x = (long)(x + xscale - xscale*cos(angle+PI/2) + yscale*sin(angle+PI/2));
+    P[1].y = (long)(y + yscale - yscale*cos(angle+PI/2) - xscale*sin(angle+PI/2));
+    P[2].x = (long)(x + xscale - xscale*cos(angle-PI/2) + yscale*sin(angle-PI/2));
+    P[2].y = (long)(y + yscale - yscale*cos(angle-PI/2) - xscale*sin(angle-PI/2));
+
+    PlgBlt (hdc, P, GlobalMemDC, srcx, srcy, width, height, 0, 0, 0 );
+*/
 }
 
 void

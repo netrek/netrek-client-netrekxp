@@ -424,9 +424,9 @@ void loadbitmapsM()
 /***  loadweaponsHR() - high quality ship bitmaps, 80x80
 /******************************************************************************/
 void loadbitmapsHR()
-{    
+{
     int j;
-    
+
     if ( access("bitmaps/shiplib/fedshipHR.bmp", R_OK) == 0
      && access("bitmaps/shiplib/indshipHR.bmp", R_OK) == 0
      && access("bitmaps/shiplib/klishipHR.bmp", R_OK) == 0
@@ -1094,7 +1094,7 @@ savebitmaps (void)
     genopic =
         W_StoreBitmap3 ("bitmaps/misclib/genocide.bmp", WINSIDE,
                         WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
-
+                        
 }
 
 

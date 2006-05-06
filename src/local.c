@@ -806,8 +806,7 @@ DrawShips (void)
             {
                 W_WriteBitmap (dx - (j->p_ship.s_width / 2),
                            dy - (j->p_ship.s_height / 2),
-                           ship_bits[j->p_ship.
-                                     s_type][rosette (j->p_dir)],
+                           ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
                            playerColor (j));
             }
             else
@@ -816,8 +815,9 @@ DrawShips (void)
                            dy - (j->p_ship.s_height / 2),
                            (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
                            (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                           j->p_dir,
                            ship_bitsHR[j->p_ship.s_type],
-                           playerColor (j));
+                           playerColor (j));                
             }
                               
             if (j->p_cloakphase > 0)

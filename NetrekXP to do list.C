@@ -38,6 +38,10 @@ flip to.  Also, closing hint window has same effect
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
 6) With new scaling function, implement Defcom's new bitmaps
+6a) Issue with flickering.
+7) Sorted playerlist messing up with multiple teams , with playerlistobs set to anything
+but ingame players only, or observers only
+7a) When someone leaves, in playersthenobservers option, last line isn't cleared
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

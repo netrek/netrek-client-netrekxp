@@ -411,6 +411,12 @@ copy resources\ships\tinted\kli\klishipT.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\tinted\ori\orishipT.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\tinted\rom\romshipT.bmp %InstCWD%\netrek\bitmaps\shiplib
 
+copy resources\ships\highres\fedshipHR.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\highres\indshipHR.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\highres\klishipHR.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\highres\orishipHR.bmp %InstCWD%\netrek\bitmaps\shiplib
+copy resources\ships\highres\romshipHR.bmp %InstCWD%\netrek\bitmaps\shiplib
+
 mkdir %InstCWD%\netrek\bitmaps\weaplibm
 mkdir %InstCWD%\netrek\bitmaps\weaplibm\mono
 copy resources\weaplibm\mono\*.bmp %InstCWD%\netrek\bitmaps\weaplibm\mono

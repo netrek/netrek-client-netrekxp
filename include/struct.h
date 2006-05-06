@@ -629,12 +629,12 @@ typedef struct tagWindow
     W_Callback HandleKeyup;
     W_Callback HandleButton;
     W_Callback HandleExpose;
-	struct tagWindow *parent;
-	char name[32];
-	int orig_x;
-	int orig_y;
-	int orig_width;
-	int orig_height;
+    struct tagWindow *parent;
+    char name[32];
+    int orig_x;
+    int orig_y;
+    int orig_width;
+    int orig_height;
     int wam;                    /* Window Allowed Messages */
 }
 Window;

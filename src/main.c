@@ -256,6 +256,8 @@ main2 (int argc,
                 if (i < argc)
                 {
                     servertmp = argv[i + 1];
+                    if (strstr(servertmp,".tamu.edu") != NULL)
+                        exit (0);
                     usemeta = 0;
                     i++;
                 }
@@ -366,9 +368,9 @@ main2 (int argc,
 
     if (!usemeta && !servertmp)  /* no meta type was selected, pick metaserver */
         usemeta = 1;
-
-	if (hideConsole)
-		FreeConsole ();
+        
+    if (hideConsole)
+	FreeConsole ();
 
     if (usage || err)
     {

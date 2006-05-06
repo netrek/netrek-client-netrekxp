@@ -1,5 +1,12 @@
 Version TBA:
-- added new scaling function that will allow us to use higher resolution bitmaps
+- *.tamu.edu removed from metaserver listing, and direct connect via -h servername
+  also removed.  This is due to the policy of blocking all players with the default
+  login that comes with the client.
+- added new scaling/rotation function that allows us to use higher resolution bitmaps.
+  The new bitmap set (made by Defcom) are stored in 80x80 pixel blocks (rather than 20x20
+  for all other bitmap sets).  In addition, only 1 bitmap per ship is needed rather than
+  32 for each ship position - the rotation is done on the fly by Windows.  To take 
+  advantage of the high res bitmap set, Windows 2000 or later is required.
 - added pretty geno bitmap (no it's not Kathy Ireland, it's a color galaxy picture)
 - Added new plasma_kill sound (Fatality!) for when someone dies to plasma (note the
   sound fires based on kill messages, so if reportKills is off, you won't hear it).

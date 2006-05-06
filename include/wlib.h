@@ -131,6 +131,7 @@ extern void W_WriteScaleBitmap (int x,
                                 int y,
                                 float SCALEX,
                                 float SCALEY,
+                                unsigned char p_dir,
                                 W_Icon icon,
                                 W_Color color);
 extern void W_ClearArea (W_Window window,
