@@ -616,7 +616,7 @@ newwin (char *hostmon,
     rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
-    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 21, baseWin, 2);
+    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 32, baseWin, 2);
     W_SetWindowExposeHandler (playerw, RedrawPlayerList);
 
     playerw2 = W_MakeTextWindow ("player2", 140, 100, PlistMaxWidth2 (), 32, baseWin, 2);

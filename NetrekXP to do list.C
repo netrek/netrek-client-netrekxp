@@ -39,9 +39,7 @@ flip to.  Also, closing hint window has same effect
 closeable by shift right click.
 6) With new scaling function, implement Defcom's new bitmaps
 6a) Issue with flickering.
-7) Sorted playerlist messing up with multiple teams , with playerlistobs set to anything
-but ingame players only, or observers only
-7a) When someone leaves, in playersthenobservers option, last line isn't cleared
+6b) Issue with 0 degree messing up bitmap.
 
 Might be done:
 1) mouse scroll in message windows gets the up/down coord wrong when main title

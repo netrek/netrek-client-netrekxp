@@ -594,7 +594,6 @@ WriteSortedPlist ()
             	    row = --plistLastRow;
             	else
                     row = --(teamPos[remap[current->p_team]]);
-                row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)
                     continue;
 
