@@ -3828,6 +3828,9 @@ W_WriteScaleBitmap (int x,
     
     //Convert p_dir to radians 
     radians=(2*3.14159*p_dir*360/255)/360;
+    //Setworldtransform screws up at angle = 0, slight hack to fix
+    if (radians == 0.0)
+        radians = 0.0000001;
     cosine=(float)cos(radians);
     sine=(float)sin(radians);
     
