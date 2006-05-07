@@ -1469,23 +1469,6 @@ buttonaction (W_Event * data)
         return;
 #endif
 
-
-#ifdef SHORT_PACKETS
-    if (data->Window == reviewWin)
-    {
-        if (recv_mesg)
-        {
-            sendShortReq (SPK_MOFF);
-        }
-        else
-        {
-            sendShortReq (SPK_MON);
-        }
-        return;
-    }
-#endif
-
-
     if (data->Window != w && data->Window != mapw
         && data->Window != infow
 		&& data->Window != playerw)

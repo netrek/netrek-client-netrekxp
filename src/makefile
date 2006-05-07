@@ -23,8 +23,8 @@ ccompileonly = -c
 ldebug = -Gn -w-dup
 !ENDIF
 
-# Borland Libs
-LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk;..\Win32\lib\BCC /Tpe
+# Libs
+#LIBOPTS = /L..\Win32\lib\BCC /Tpe
 
 LIBS = SDL.LIB SDL_mixer.LIB SDLmain.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 

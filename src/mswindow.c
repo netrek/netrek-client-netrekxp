@@ -3914,7 +3914,7 @@ W_WriteScaleBitmap (int x,
     xForm.eM22=cosine/SCALEY;
     xForm.eDx = eDx;
     xForm.eDy = eDy;
- 
+
     SetWorldTransform(hdc,&xForm);
     BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
           

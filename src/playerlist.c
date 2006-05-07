@@ -193,7 +193,7 @@ InitPlayerList ()
 
     sortMyTeamFirst = booleanDefault ("sortMyTeamFirst", sortMyTeamFirst);
 
-    /* Do we show observers in playerlist?  0 = all, 1 = only players, 2 = only observers */
+    /* Do we show observers in playerlist?  0 = all, 1 = only players, 2 = only observers 3 = players then observers */
     playerListObserver = intDefault ("playerListObserver", 0);
 
     /* plistUpdate[MAXPLAYER] must always be TRUE because thats how we no when
@@ -422,8 +422,8 @@ WriteSortedPlist ()
     int row, i, last;
     struct player *current;
     int teamPos[NUMTEAM + 1];
+    int obsPos = 0;
     int *pos;
-    int obscount = 0;
 
     static int plistLastRow = -1;
     static int blankLine = -1;
@@ -472,7 +472,7 @@ WriteSortedPlist ()
                     ++teamPos[remap[current->p_team]];
                     
                 if (!(current->p_mapchars[1] <= 'f'))
-                    obscount++;
+                    ++obsPos;
             }
         }
         else
@@ -487,7 +487,7 @@ WriteSortedPlist ()
                    ++teamPos[remap[current->p_team]];
                    
                 if (current->p_flags & PFOBSERV)
-                    obscount++;
+                    ++obsPos;
             }
         }
     }
@@ -541,6 +541,7 @@ WriteSortedPlist ()
         last += teamPos[myTeam];
         teamPos[myTeam] = last;
     }
+    
 
     if (myTeam != NOBODY)
     {
@@ -561,7 +562,11 @@ WriteSortedPlist ()
         last += teamPos[NOBODY];
         teamPos[NOBODY] = last;
     }
-
+    if (playerListObserver == 3)
+    {
+    	last += obsPos;
+    	obsPos = last;
+    }
 
     /* Clear some lines if people have left. */
 
@@ -572,9 +577,7 @@ WriteSortedPlist ()
     }
 
     plistLastRow = last;
-    if (playerListObserver == 3)
-        plistLastRow += obscount;
-
+    
     /* Write out each player that has either changed position or has
      * new stats. */
 
@@ -591,7 +594,7 @@ WriteSortedPlist ()
             if (playerListObserver == 0 || playerListObserver == 3)
             {
             	if (playerListObserver == 3 && !(current->p_mapchars[1] <= 'f'))
-            	    row = --plistLastRow;
+            	    row = --obsPos;
             	else
                     row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)
@@ -638,7 +641,7 @@ WriteSortedPlist ()
                 (playerListObserver == 3))
             {
             	if (playerListObserver == 3 && (current->p_flags & PFOBSERV))
-            	    row = --plistLastRow;
+            	    row = --obsPos;
             	else
                     row = --(teamPos[remap[current->p_team]]);
                 if ((!updatePlayer[i]) && plistPos[i] == row)

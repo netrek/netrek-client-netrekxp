@@ -42,8 +42,7 @@ closeable by shift right click.
 6b) Border issue
 6c) The new smooth turning only working on self, not obs or others - short packets!
 6d) Not working with BCC
-7) right click on all_review window, get message "obsolete!"
-8) login not read in before metaserver info (for metablocking purposes)
+7) login not read in before metaserver info (for metablocking purposes)
 
 Stas's list:
 - color coded playerlist.

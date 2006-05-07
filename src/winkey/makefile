@@ -16,9 +16,6 @@ cflags = -O2 -5 -pr -DWIN32 -DBorland -tW -tWM
 ccompileonly = -c
 !ENDIF
 
-# Borland Libs
-LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk;..\Win32\lib\BCC /Tpe
-
 all: winkey.dll
 
 .cpp.obj:
