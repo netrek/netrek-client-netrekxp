@@ -82,14 +82,12 @@ static int initialized = 0;
 static int st_width = -1;
 
 static void
-box (filled,
-     x,
-     y,
-     wid,
-     hei,
-     color)
-     int filled, x, y, wid, hei;
-     W_Color color;
+box (int filled,
+     int x,
+     int y,
+     int wid,
+     int hei,
+     W_Color color)
 {
     if (wid == 0)
         return;

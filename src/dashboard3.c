@@ -34,42 +34,42 @@ db_itoa (char *s,
     char *buf = s;
 
 
-    *buf = '0' + (v / 100000);
+    *buf = (char) ('0' + (v / 100000));
 
     if (*buf != '0')
     {
         buf++;
     }
 
-    *buf = '0' + ((v % 100000) / 10000);
+    *buf = (char) ('0' + ((v % 100000) / 10000));
 
     if ((*buf != '0') || (v >= 100000))
     {
         buf++;
     }
 
-    *buf = '0' + ((v % 10000) / 1000);
+    *buf = (char) ('0' + ((v % 10000) / 1000));
 
     if ((*buf != '0') || (v >= 10000))
     {
         buf++;
     }
 
-    *buf = '0' + ((v % 1000) / 100);
+    *buf = (char) ('0' + ((v % 1000) / 100));
 
     if ((*buf != '0') || (v >= 1000))
     {
         buf++;
     }
 
-    *buf = '0' + ((v % 100) / 10);
+    *buf = (char) ('0' + ((v % 100) / 10));
 
     if ((*buf != '0') || (v >= 100))
     {
         buf++;
     }
 
-    *buf++ = '0' + (v % 10);
+    *buf++ = (char) ('0' + (v % 10));
 
     return buf - s;
 }
@@ -86,18 +86,18 @@ db_ftoa (char *s,
 
     if (v >= 100.0)
     {
-        *buf++ = '0' + ((int) (v / 100));
-        *buf++ = '0' + ((int) (((int) v % 100) / 10));
+        *buf++ = (char) ('0' + ((int) (v / 100)));
+        *buf++ = (char) ('0' + ((int) (((int) v % 100) / 10)));
     }
     else if (v >= 10.0)
     {
-        *buf++ = '0' + ((int) (v / 10));
+        *buf++ = (char) ('0' + ((int) (v / 10)));
     }
 
-    *buf++ = '0' + (((int) v) % 10);
+    *buf++ = (char) ('0' + (((int) v) % 10));
     *buf++ = '.';
-    *buf++ = '0' + (((int) (v * 10)) % 10);
-    *buf++ = '0' + (((int) (v * 100)) % 10);
+    *buf++ = (char) ('0' + (((int) (v * 10)) % 10));
+    *buf++ = (char) ('0' + (((int) (v * 100)) % 10));
 
     return buf - s;
 }
@@ -246,14 +246,14 @@ db_bar (char *l,
 static void
 db_flags (int fr)
 {
-    static unsigned int old_flags = -1;
-    static unsigned char old_tourn = -1;
+    static unsigned int old_flags = (unsigned int) -1;
+    static unsigned char old_tourn = (unsigned char) -1;
     char buf[13];
 
 
     if (fr || (old_flags != me->p_flags) || (old_tourn != status->tourn))
     {
-        buf[0] = (me->p_flags & PFSHIELD ? 'S' : ' ');
+        buf[0] = (char) ((me->p_flags & PFSHIELD ? 'S' : ' '));
 
         if (me->p_flags & PFGREEN)
         {
@@ -268,23 +268,23 @@ db_flags (int fr)
             buf[1] = 'R';
         }
 
-        buf[2] = (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
-        buf[3] = (me->p_flags & PFREPAIR ? 'R' : ' ');
-        buf[4] = (me->p_flags & PFBOMB ? 'B' : ' ');
-        buf[5] = (me->p_flags & PFORBIT ? 'O' : ' ');
+        buf[2] = (char) (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
+        buf[3] = (char) (me->p_flags & PFREPAIR ? 'R' : ' ');
+        buf[4] = (char) (me->p_flags & PFBOMB ? 'B' : ' ');
+        buf[5] = (char) (me->p_flags & PFORBIT ? 'O' : ' ');
 
         if (me->p_ship.s_type == STARBASE)
         {
-            buf[6] = (me->p_flags & PFDOCKOK ? 'D' : ' ');
+            buf[6] = (char) (me->p_flags & PFDOCKOK ? 'D' : ' ');
         }
         else
         {
-            buf[6] = (me->p_flags & PFDOCK ? 'D' : ' ');
+            buf[6] = (char) (me->p_flags & PFDOCK ? 'D' : ' ');
         }
 
-        buf[7] = (me->p_flags & PFCLOAK ? 'C' : ' ');
-        buf[8] = (me->p_flags & PFWEP ? 'W' : ' ');
-        buf[9] = (me->p_flags & PFENG ? 'E' : ' ');
+        buf[7] = (char) (me->p_flags & PFCLOAK ? 'C' : ' ');
+        buf[8] = (char) (me->p_flags & PFWEP ? 'W' : ' ');
+        buf[9] = (char) (me->p_flags & PFENG ? 'E' : ' ');
 
         if (me->p_flags & PFPRESS)
         {

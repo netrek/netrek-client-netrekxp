@@ -34,9 +34,11 @@ static int needredraw = 0;
 static unsigned long lastredraw = 0;
 
 #ifdef BRMH
+void
 intrupt (fd_set * readfds)
 #else
-intrupt ()
+void
+intrupt (void)
 #endif
 {
     time_t time (time_t *);
@@ -92,6 +94,7 @@ intrupt ()
     }
 }
 
+void
 redraw (void)
 {
     /* erase warning line if necessary */
@@ -148,7 +151,7 @@ redraw (void)
     map ();
 }
 
-
+void
 stline (int flag)
 {
     static char buf1[80];
@@ -157,7 +160,7 @@ stline (int flag)
     register char *buf, *oldbuf;
     register char *s;
     register int i, j;
-    int k;
+    int k = 0;
     struct player *plr;
 
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
@@ -182,24 +185,24 @@ stline (int flag)
         buf = buf2;
         oldbuf = buf1;
     }
-    buf[0] = (me->p_flags & PFSHIELD ? 'S' : ' ');
+    buf[0] = (char) (me->p_flags & PFSHIELD ? 'S' : ' ');
     if (me->p_flags & PFGREEN)
         buf[1] = 'G';
     else if (me->p_flags & PFYELLOW)
         buf[1] = 'Y';
     else if (me->p_flags & PFRED)
         buf[1] = 'R';
-    buf[2] = (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
-    buf[3] = (me->p_flags & PFREPAIR ? 'R' : ' ');
-    buf[4] = (me->p_flags & PFBOMB ? 'B' : ' ');
-    buf[5] = (me->p_flags & PFORBIT ? 'O' : ' ');
+    buf[2] = (char) (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
+    buf[3] = (char) (me->p_flags & PFREPAIR ? 'R' : ' ');
+    buf[4] = (char) (me->p_flags & PFBOMB ? 'B' : ' ');
+    buf[5] = (char) (me->p_flags & PFORBIT ? 'O' : ' ');
     if (me->p_ship.s_type == STARBASE)
-        buf[6] = (me->p_flags & PFDOCKOK ? 'D' : ' ');
+        buf[6] = (char) (me->p_flags & PFDOCKOK ? 'D' : ' ');
     else
-        buf[6] = (me->p_flags & PFDOCK ? 'D' : ' ');
-    buf[7] = (me->p_flags & PFCLOAK ? 'C' : ' ');
-    buf[8] = (me->p_flags & PFWEP ? 'W' : ' ');
-    buf[9] = (me->p_flags & PFENG ? 'E' : ' ');
+        buf[6] = (char) (me->p_flags & PFDOCK ? 'D' : ' ');
+    buf[7] = (char) (me->p_flags & PFCLOAK ? 'C' : ' ');
+    buf[8] = (char) (me->p_flags & PFWEP ? 'W' : ' ');
+    buf[9] = (char) (me->p_flags & PFENG ? 'E' : ' ');
     if (me->p_flags & PFPRESS)
         buf[10] = 'P';
     else if (me->p_flags & PFTRACT)
@@ -212,98 +215,98 @@ stline (int flag)
         buf[11] = 'd';
     else
         buf[11] = ' ';
-    buf[12] = (status->tourn) ? 't' : ' ';
+    buf[12] = (char) ((status->tourn) ? 't' : ' ');
     buf[13] = ' ';
-    buf[14] = '0' + ((me->p_speed % 100) / 10);
+    buf[14] = (char) ('0' + ((me->p_speed % 100) / 10));
     if (buf[14] == '0')
         buf[14] = ' ';
-    buf[15] = '0' + (me->p_speed % 10); /* speed */
+    buf[15] = (char) ('0' + (me->p_speed % 10)); /* speed */
     buf[16] = ' ';
     buf[17] = ' ';
-    buf[18] = '0' + (me->p_damage / 100);
+    buf[18] = (char) ('0' + (me->p_damage / 100));
     if (buf[18] == '0')
         buf[18] = ' ';
-    buf[19] = '0' + ((me->p_damage % 100) / 10);
+    buf[19] = (char) ('0' + ((me->p_damage % 100) / 10));
     if ((buf[19] == '0') && (me->p_damage < 100))
         buf[19] = ' ';
-    buf[20] = '0' + (me->p_damage % 10);
+    buf[20] = (char) ('0' + (me->p_damage % 10));
     buf[21] = ' ';
-    buf[22] = '0' + (me->p_shield / 100);
+    buf[22] = (char) ('0' + (me->p_shield / 100));
     if (buf[22] == '0')
         buf[22] = ' ';
-    buf[23] = '0' + ((me->p_shield % 100) / 10);
+    buf[23] = (char) ('0' + ((me->p_shield % 100) / 10));
     if ((buf[23] == '0') && (me->p_shield < 100))
         buf[23] = ' ';
-    buf[24] = '0' + (me->p_shield % 10);
+    buf[24] = (char) ('0' + (me->p_shield % 10));
     buf[25] = ' ';
     buf[26] = ' ';
-    buf[27] = '0' + ((plr->p_ntorp % 100) / 10);
+    buf[27] = (char) ('0' + ((plr->p_ntorp % 100) / 10));
     if (buf[27] == '0')
         buf[27] = ' ';
-    buf[28] = '0' + (plr->p_ntorp % 10);
+    buf[28] = (char) ('0' + (plr->p_ntorp % 10));
     buf[29] = ' ';
     buf[30] = ' ';
     buf[31] = ' ';
-    buf[32] = '0' + ((int) (plr->p_kills / 100));
+    buf[32] = (char) ('0' + ((int) (plr->p_kills / 100)));
     if (buf[32] == '0')
         buf[32] = ' ';
-    buf[33] = '0' + ((int) (plr->p_kills / 10)) % 10;
+    buf[33] = (char) ('0' + ((int) (plr->p_kills / 10)) % 10);
     if (buf[32] == ' ' && buf[33] == '0')
         buf[33] = ' ';
-    buf[34] = '0' + (((int) plr->p_kills) % 10);
+    buf[34] = (char) ('0' + (((int) plr->p_kills) % 10));
     buf[35] = '.';
-    buf[36] = '0' + (((int) (plr->p_kills * 10)) % 10);
-    buf[37] = '0' + (((int) (plr->p_kills * 100)) % 10);
+    buf[36] = (char) ('0' + (((int) (plr->p_kills * 10)) % 10));
+    buf[37] = (char) ('0' + (((int) (plr->p_kills * 100)) % 10));
     buf[38] = ' ';
     buf[39] = ' ';
     buf[40] = ' ';
     buf[41] = ' ';
-    buf[42] = '0' + ((me->p_armies % 100) / 10);
+    buf[42] = (char) ('0' + ((me->p_armies % 100) / 10));
     if (buf[42] == '0')
         buf[42] = ' ';
-    buf[43] = '0' + (me->p_armies % 10);
+    buf[43] = (char) ('0' + (me->p_armies % 10));
     buf[44] = ' ';
     buf[45] = ' ';
 
-    buf[46] = '0' + (me->p_fuel / 100000);
+    buf[46] = (char) ('0' + (me->p_fuel / 100000));
     if (buf[46] == '0')
         buf[46] = ' ';
-    buf[47] = '0' + ((me->p_fuel % 100000) / 10000);
+    buf[47] = (char) ('0' + ((me->p_fuel % 100000) / 10000));
     if ((buf[47] == '0') && (me->p_fuel < 100000))
         buf[47] = ' ';
-    buf[48] = '0' + ((me->p_fuel % 10000) / 1000);
+    buf[48] = (char) ('0' + ((me->p_fuel % 10000) / 1000));
     if ((buf[48] == '0') && (me->p_fuel < 10000))
         buf[48] = ' ';
-    buf[49] = '0' + ((me->p_fuel % 1000) / 100);
+    buf[49] = (char) ('0' + ((me->p_fuel % 1000) / 100));
     if ((buf[49] == '0') && (me->p_fuel < 1000))
         buf[49] = ' ';
-    buf[50] = '0' + ((me->p_fuel % 100) / 10);
+    buf[50] = (char) ('0' + ((me->p_fuel % 100) / 10));
     if ((buf[50] == '0') && (me->p_fuel < 100))
         buf[50] = ' ';
-    buf[51] = '0' + (me->p_fuel % 10);
+    buf[51] = (char) ('0' + (me->p_fuel % 10));
     buf[52] = ' ';
     buf[53] = ' ';
     buf[54] = ' ';
 
-    buf[55] = '0' + ((me->p_wtemp / 10) / 100);
+    buf[55] = (char) ('0' + ((me->p_wtemp / 10) / 100));
     if (buf[55] == '0')
         buf[55] = ' ';
-    buf[56] = '0' + (((me->p_wtemp / 10) % 100) / 10);
+    buf[56] = (char) ('0' + (((me->p_wtemp / 10) % 100) / 10));
     if ((buf[56] == '0') && (me->p_wtemp < 1000))
         buf[56] = ' ';
-    buf[57] = '0' + ((me->p_wtemp / 10) % 10);
+    buf[57] = (char) ('0' + ((me->p_wtemp / 10) % 10));
 
     buf[58] = ' ';
     buf[59] = ' ';
     buf[60] = ' ';
 
-    buf[61] = '0' + ((me->p_etemp / 10) / 100);
+    buf[61] = (char) ('0' + ((me->p_etemp / 10) / 100));
     if (buf[61] == '0')
         buf[61] = ' ';
-    buf[62] = '0' + (((me->p_etemp / 10) % 100) / 10);
+    buf[62] = (char) ('0' + (((me->p_etemp / 10) % 100) / 10));
     if ((buf[62] == '0') && (me->p_etemp < 1000))
         buf[62] = ' ';
-    buf[63] = '0' + ((me->p_etemp / 10) % 10);
+    buf[63] = (char) ('0' + ((me->p_etemp / 10) % 10));
 
     if (whichbuf == 0)
     {
@@ -314,7 +317,7 @@ stline (int flag)
     else
     {                           /* Hacks to make it print
                                  * only what is necessary */
-        whichbuf = 3 - whichbuf;
+        whichbuf = (char) (3 - whichbuf);
         j = -1;
         for (i = 0; i < 64; i++)
         {

@@ -419,7 +419,6 @@ pmessage (char *str,
     char * str1;    /* temporary string 1 */
     char * str2;    /* temporary string 2 */
     char buf[100];  /* temporary buffer */
-    int i = 0;
 
     str1 = str;     /* save original string pointer */
 

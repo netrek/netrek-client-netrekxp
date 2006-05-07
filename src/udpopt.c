@@ -22,6 +22,7 @@
 #define UDPLEN		35
 
 /* Set up the UDP control window */
+void
 udpwindow (void)
 {
     register int i;
@@ -34,6 +35,7 @@ udpwindow (void)
 }
 
 /* Refresh item i */
+void
 udprefresh (int i)
 {
     char buf[BUFSIZ];
@@ -229,6 +231,7 @@ udpaction (W_Event * data)
     }
 }
 
+void
 udpdone (void)
 {
     /* Unmap window */

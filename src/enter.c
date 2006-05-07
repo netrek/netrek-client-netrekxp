@@ -71,7 +71,7 @@ openmem (void)
     for (i = 0; i < MAXPLAYER * MAXTORP; i++)
     {
         torps[i].t_status = TFREE;
-        torps[i].t_owner = (i / MAXTORP);
+        torps[i].t_owner = (short) (i / MAXTORP);
     }
     for (i = 0; i < MAXPLAYER; i++)
         phasers[i].ph_status = PHFREE;
@@ -79,7 +79,7 @@ openmem (void)
     for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
     {
         plasmatorps[i].pt_status = PTFREE;
-        plasmatorps[i].pt_owner = (i / MAXPLASMA);
+        plasmatorps[i].pt_owner = (short) (i / MAXPLASMA);
     }
 
     for (i = 0; i < MAXPLANETS; i++)

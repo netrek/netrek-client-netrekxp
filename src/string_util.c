@@ -46,13 +46,13 @@ itoapad (int val,
             h = 0;
         }
 
-        result[j] = (val % (i * 10)) / i + '0';
+        result[j] = (char) ((val % (i * 10)) / i + '0');
 
         if (result[j] != '0' && !lead_digit)
             lead_digit = 1;
 
         if (!lead_digit && !pad)
-            if ((result[j] = (val % (i * 10)) / i + '0') == '0')
+            if ((result[j] = (char) ((val % (i * 10)) / i + '0')) == '0')
                 result[j] = ' ';
     }
 

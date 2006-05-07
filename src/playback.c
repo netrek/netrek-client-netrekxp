@@ -241,15 +241,15 @@ pbmain (char *name)
     mystats->st_tticks = 1;
     for (i = 0; i < 95; i++)
     {
-        mystats->st_keymap[i] = i + 32;
-        mystats->st_keymap[i + 96] = i + 32 + 96;
+        mystats->st_keymap[i] = (unsigned char) (i + 32);
+        mystats->st_keymap[i + 96] = (unsigned char) (i + 32 + 96);
 
 #ifdef MOUSE_AS_SHIFT
-        mystats->st_keymap[i + 192] = i + 32;
-        mystats->st_keymap[i + 288] = i + 32;
-        mystats->st_keymap[i + 384] = i + 32;
-        mystats->st_keymap[i + 480] = i + 32;
-        mystats->st_keymap[i + 576] = i + 32;
+        mystats->st_keymap[i + 192] = (unsigned char) (i + 32);
+        mystats->st_keymap[i + 288] = (unsigned char) (i + 32);
+        mystats->st_keymap[i + 384] = (unsigned char) (i + 32);
+        mystats->st_keymap[i + 480] = (unsigned char) (i + 32);
+        mystats->st_keymap[i + 576] = (unsigned char) (i + 32);
 #endif
     }
     mystats->st_keymap[95] = 0;
@@ -365,10 +365,9 @@ pbmain (char *name)
 
     while (1)
     {
-#ifdef nodef
+#ifdef BRMH
         fd_set readfds;
         struct timeval timeout;
-        int xsock = W_Socket ();
 
         timeout.tv_sec = 0;
         timeout.tv_usec = 0;
@@ -383,7 +382,11 @@ pbmain (char *name)
             process_event ();
         }
 
+#ifdef BRMH
+        intrupt (&readfds);
+#else
         intrupt ();
+#endif
         Sleep (pbdelay);
     }
 }

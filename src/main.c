@@ -21,6 +21,7 @@
 #include "struct.h"
 #include "proto.h"
 #include "data.h"
+#include "parsemeta.h"
 
 char *servertmp = NULL;
 
@@ -94,7 +95,6 @@ main2 (int argc,
     int hset = 0;
 
 #endif
-    int first = 1;
     int xtrekPort = -1;
 
     name = argv[0];
@@ -256,8 +256,11 @@ main2 (int argc,
                 if (i < argc)
                 {
                     servertmp = argv[i + 1];
-                    if (strstr(servertmp,".tamu.edu") != NULL)
+                    if (metablock(servertmp))
+                    {
+                        LineToConsole ("Default logins not welcome there, please edit your netrekrc file and add a 'login: yourhandle' line\n");
                         exit (0);
+                    }
                     usemeta = 0;
                     i++;
                 }
@@ -339,13 +342,13 @@ main2 (int argc,
                 break;
             
             case 'n':           /* don't hide console window */
-		hideConsole = 0;
-		break;
+                hideConsole = 0;
+                break;
 
             case 'v':           /* output version info */
                 hideConsole = 0;
-		LineToConsole ("%s %s\n", version, mvers);
-		LineToConsole ("%s\n", CBUGS);
+                LineToConsole ("%s %s\n", version, mvers);
+                LineToConsole ("%s\n", CBUGS);
 #ifdef RSA
                 LineToConsole ("RSA key installed: %s --- Created by: %s\n", key_name, client_creator);
                 LineToConsole ("Client type: %s\n", client_type);
@@ -370,7 +373,7 @@ main2 (int argc,
         usemeta = 1;
         
     if (hideConsole)
-	FreeConsole ();
+        FreeConsole ();
 
     if (usage || err)
     {

@@ -39,7 +39,7 @@ char *pappend;
    pappend = str;               \
    while(*pappend)              \
    {                            \
-       *ptr++ = (cap ? toupper(*pappend) : *pappend); \
+       *ptr++ = (char) (cap ? toupper(*pappend) : *pappend); \
        pappend++;               \
    }
 
@@ -69,7 +69,7 @@ itoa2 (int n,
     i = 0;
     do
     {
-        s[i++] = n % 10 + '0';
+        s[i++] = (char) (n % 10 + '0');
     }
     while ((n /= 10) > 0);
 
@@ -84,7 +84,7 @@ itoa2 (int n,
     {
         c = s[i];
         s[i] = s[j];
-        s[j] = c;
+        s[j] = (char) c;
     }
 
     return len;
@@ -221,7 +221,7 @@ testmacro (char *bufa,
                 break;
 
             case '?':          /* the dreaded conditional, evaluate it */
-                bufb[*indb] = '0' + solvetest (bufa, inda);
+                bufb[*indb] = (char) ('0' + solvetest (bufa, inda));
                 (*indb)++;
                 state = 0;
                 continue;
@@ -464,7 +464,7 @@ strcap (char *s)
     while (*s)
     {
         if (islower (*s))
-            *t++ = toupper (*s++);
+            *t++ = (char) toupper (*s++);
         else
             *t++ = *s++;
     }
@@ -500,30 +500,30 @@ HandleGenDistr (char *message,
 #endif
 
     dist->sender = from;
-    dist->distype = mtext[0] & 0x1f;
-    dist->macroflag = ((mtext[0] & 0x20) > 0);
-    dist->fuelp = mtext[1] & 0x7f;
-    dist->dam = mtext[2] & 0x7f;
-    dist->shld = mtext[3] & 0x7f;
-    dist->etmp = mtext[4] & 0x7f;
-    dist->wtmp = mtext[5] & 0x7f;
-    dist->arms = mtext[6] & 0x1f;
-    dist->sts = mtext[7] & 0x7f;
-    dist->wtmpflag = ((dist->sts & PFWEP) > 0) ? 1 : 0;
-    dist->etempflag = ((dist->sts & PFENG) > 0) ? 1 : 0;
-    dist->cloakflag = ((dist->sts & PFCLOAK) > 0) ? 1 : 0;
-    dist->close_pl = mtext[8] & 0x7f;
-    dist->close_en = mtext[9] & 0x7f;
-    dist->tclose_pl = mtext[10] & 0x7f;
-    dist->tclose_en = mtext[11] & 0x7f;
-    dist->tclose_j = mtext[12] & 0x7f;
-    dist->close_j = mtext[13] & 0x7f;
-    dist->tclose_fr = mtext[14] & 0x7f;
-    dist->close_fr = mtext[15] & 0x7f;
+    dist->distype = (unsigned char) (mtext[0] & 0x1f);
+    dist->macroflag = (unsigned char) ((mtext[0] & 0x20) > 0);
+    dist->fuelp = (unsigned char) (mtext[1] & 0x7f);
+    dist->dam = (unsigned char) (mtext[2] & 0x7f);
+    dist->shld = (unsigned char) (mtext[3] & 0x7f);
+    dist->etmp = (unsigned char) (mtext[4] & 0x7f);
+    dist->wtmp = (unsigned char) (mtext[5] & 0x7f);
+    dist->arms = (unsigned char) (mtext[6] & 0x1f);
+    dist->sts = (unsigned char) (mtext[7] & 0x7f);
+    dist->wtmpflag = (unsigned char) (((dist->sts & PFWEP) > 0) ? 1 : 0);
+    dist->etempflag = (unsigned char) (((dist->sts & PFENG) > 0) ? 1 : 0);
+    dist->cloakflag = (unsigned char) (((dist->sts & PFCLOAK) > 0) ? 1 : 0);
+    dist->close_pl = (unsigned char) (mtext[8] & 0x7f);
+    dist->close_en = (unsigned char) (mtext[9] & 0x7f);
+    dist->tclose_pl = (unsigned char) (mtext[10] & 0x7f);
+    dist->tclose_en = (unsigned char) (mtext[11] & 0x7f);
+    dist->tclose_j = (unsigned char) (mtext[12] & 0x7f);
+    dist->close_j = (unsigned char) (mtext[13] & 0x7f);
+    dist->tclose_fr = (unsigned char) (mtext[14] & 0x7f);
+    dist->close_fr = (unsigned char) (mtext[15] & 0x7f);
     i = 0;
     while ((mtext[16 + i] & 0xc0) == 0xc0 && (i < 6))
     {
-        dist->cclist[i] = mtext[16 + i] & 0x1f;
+        dist->cclist[i] = (unsigned char) (mtext[16 + i] & 0x1f);
         i++;
     }
     dist->cclist[i] = mtext[16 + i];
@@ -722,7 +722,7 @@ makedistress (struct distress *dist,
                 cap = 1;
             case 'b':          /* push planet into buf */
                 l = &planets[dist->close_pl];
-                tmp[0] = l->pl_name[0] - 'A' + 'a';
+                tmp[0] = (char) (l->pl_name[0] - 'A' + 'a');
                 tmp[1] = l->pl_name[1];
                 tmp[2] = l->pl_name[2];
                 tmp[3] = '\0';
@@ -733,7 +733,7 @@ makedistress (struct distress *dist,
                 cap = 1;
             case 'l':          /* push planet into buf */
                 l = &planets[dist->tclose_pl];
-                tmp[0] = l->pl_name[0] - 'A' + 'a';
+                tmp[0] = (char) (l->pl_name[0] - 'A' + 'a');
                 tmp[1] = l->pl_name[1];
                 tmp[2] = l->pl_name[2];
                 tmp[3] = '\0';
@@ -881,9 +881,9 @@ makedistress (struct distress *dist,
             case '>':          /* push tab stop */
                 c = '\0';
                 if (*pm >= '0' && *pm <= '9')
-                    c = (*pm++) - '0';
+                    c = (char) ((*pm++) - '0');
                 if (*pm >= '0' && *pm <= '9')
-                    c = c * 10 + ((*pm++) - '0');
+                    c = (char) (c * 10 + ((*pm++) - '0'));
                 if (c)
                 {
                     *pbuf1++ = '%';

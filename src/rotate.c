@@ -16,6 +16,7 @@
 #include "proto.h"
 
 #ifdef ROTATERACE
+void
 rotate_dir (unsigned char *d,
             int r)
 {

@@ -247,7 +247,7 @@ void
 helpaction (W_Event * data)
 {
 	int i, message_number = -1;
-	int row, column;
+	int row, column = 0;
 
 	/* Let's find row and column from mouse coordinates */
 	row = (data->y - 4)/ W_Textheight;
@@ -364,7 +364,7 @@ update_Help_to_Keymap (char *helpmessage)
         if (i == 0)
             helpmessage[1 + num_mapped] = 2;    /* Let's draw space-like character */
         else
-            helpmessage[1 + num_mapped] = i + 32;
+            helpmessage[1 + num_mapped] = (char) (i + 32);
     }
 
 

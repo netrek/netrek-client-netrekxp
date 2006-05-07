@@ -1,18 +1,9 @@
 #
-# =========================================================================
-# COW on Win32 Makefile
-#
 # This makefile is written for Borland C++ 5.5
 #
-#
-
-# Definitions needed to be changed before compile
 
 #DEBUG = 1
-
 RSA = 1
-
-RSAKEY = \netrek_files\rsa\NetrekXP-Mod-RSA-Key-Win32.secret
 
 # Borland C++ 5.5
 cc     = bcc32
@@ -20,73 +11,24 @@ rc     = brcc32
 link   = ilink32
 compileandlink = bcc32
 
-# Borland C++ 5.5 options
-# /MT       - Multi-threaded app
-# /Ox       - max optimization
-# /Od       - disable optimizations
-# -4        - 486 optimized code
-# -5        - Pentium optimized code
-# -c        - compile only
-# -v        - debugging info
-# -O1       - Optimize for size
-# -O2       - Optimize for speed
-
-
+# Compiler and linker flags
 !IFDEF DEBUG
 cflags = -O2 -5 -v -DWIN32 -DBorland -tW -tWM
 ccompileonly = -c
+ldebug = -Gn -v 
+DEBUGDEFS = -DDEBUG
 !ELSE
 cflags = -O2 -5 -DWIN32 -DBorland -tW -tWM
 ccompileonly = -c
+ldebug = -Gn -w-dup
 !ENDIF
-
-# resource compiler
-rcvars = -DWIN32 
-
-########################################
-# Link flags
-#
-
-!IFDEF DEBUG
-ldebug = /Gn /v
-!ELSE
-ldebug = /Gn /w-dup
-!ENDIF
-
-########################################
-
-# declarations common to all linker options
-
-#Dunno here...
-conlflags = $(lflags) /NODEFAULTLIB /SUBSYSTEM:CONSOLE /MACHINE:IX86
-lout      = "/OUT:"
-
-#LIBS =  libcmt.lib user32.lib gdi32.lib\
-#        wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib
 
 # Borland Libs
 LIBOPTS = /LC:\Borland\bcc55\lib;c:\Borland\bcc55\lib\psdk;..\Win32\lib\BCC /Tpe
 
-!IFDEF RSA
-GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib 
-#..\Win32\lib\BCC\libmpbcc.lib
-!ENDIF
-
 LIBS = SDL.LIB SDL_mixer.LIB SDLmain.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 
-# ---------------------------------------------------------------------------
-# - Start of makefile proper
-
 INCS = -I..\win32 -I..\win32\h -I..\win32\SDL -I..\win32\h\gmp -I..\include
-ARCH = Intel/Win32
-
-!IFDEF RSA
-RSADEFS = -DRSA
-!endif
-
-!ifdef DEBUG
-DEBUGDEFS = -DDEBUG
-!endif
 
 ROBJ            = beeplite.obj check.obj colors.obj console.obj data.obj death.obj defaults.obj dmessage.obj\
                   enter.obj findslot.obj getname.obj getship.obj helpwin.obj hintwin.obj inform.obj\
@@ -115,25 +57,24 @@ MAINOBJ         = main.obj
 MAINSRC         = main.c
 
 !ifdef RSA
+GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib
+RSADEFS = -DRSA
 RSASRC = rsa_box.c rsa_box_0.c rsa_box_1.c rsa_box_2.c\
-		rsa_box_3.c rsa_box_4.c
+                  rsa_box_3.c rsa_box_4.c
 RSAOBJ = rsa_box.obj rsa_box_0.obj rsa_box_1.obj rsa_box_2.obj\
-		rsa_box_3.obj rsa_box_4.obj
+                  rsa_box_3.obj rsa_box_4.obj
 !endif
 
 WIN32_SRCS = winmain.c mswindow.c winsndlib.c
 WIN32_OBJS = winmain.obj mswindow.obj winsndlib.obj
 
-RANDOMOBJ = random.obj
-
 INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
                   oldbitmaps.h tngbitmaps.h hullbitmaps.h rabbitbitmaps.h\
                   sound.h audio.h litebitmaps.h copyright2.h Wlib.h\
-		  playerlist.h version.h moobitmaps.h\
-		  parsemeta.h spopt.h map.h string_util.h wtext.h local.h
+                  playerlist.h version.h moobitmaps.h\
+                  parsemeta.h spopt.h map.h string_util.h wtext.h local.h
 
 all: netrek.exe
-
 
 OBJS = $(ROBJ) $(MAINOBJ) $(RSAOBJ) $(INPUTOBJ) $(WIN32_OBJS)
 .c.obj:
@@ -144,13 +85,9 @@ RESOURCES = bccnetrek.res
 $(RESOURCES): bccnetrek.rc
         $(rc) bccnetrek.rc
 
-rsa_box.c: 
-	..\tools\mkkey -nt -k $(RSAKEY)
-
 netrek.exe:  $(OBJS) $(RESOURCES) main.ico
                 $(link) $(ldebug) $(LIBOPTS) $(OBJS) C0x32.OBJ, netrek.exe,, $(LIBS), , $(RESOURCES)
 
 clean:
 	del *.obj
-	del rsa*.c
 	del netrek.exe netrek.ilc netrek.ild netrek.ild netrek.ilf netrek.ils netrek.map bccnetrek.res netrek.tds

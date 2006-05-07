@@ -16,13 +16,14 @@
 extern unsigned LONG netaddr;
 #endif
 
+void
 makeReservedPacket (struct reserved_spacket *packet)
 {
     int i;
 
     for (i = 0; i < 16; i++)
     {
-        packet->data[i] = RANDOM () % 256;
+        packet->data[i] = (char) (RANDOM () % 256);
     }
     packet->type = SP_RESERVED;
 }
@@ -48,6 +49,7 @@ static unsigned char swap[16][16] = {
     {12, 6, 5, 8, 14, 4, 13, 15, 10, 0, 11, 9, 3, 1, 7, 2}
 };
 
+void
 encryptReservedPacket (struct reserved_spacket *spacket,
                        struct reserved_cpacket *cpacket,
                        int pno)
@@ -82,7 +84,7 @@ encryptReservedPacket (struct reserved_spacket *spacket,
 
     /* LineToConsole ("Verifying with netaddr %x\n", netaddr); */
     mixin1 = (unsigned char) ((netaddr >> 24) & 0xff);
-    mixin2 = pno;
+    mixin2 = (unsigned char) pno;
     mixin3 = (unsigned char) ((netaddr >> 16) & 0xff);
     mixin4 = (unsigned char) ((netaddr >> 8) & 0xff);
     mixin5 = (unsigned char) (netaddr & 0xff);

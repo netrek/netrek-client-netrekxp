@@ -27,7 +27,6 @@
 #include <limits.h>
 #include <string.h>
 #include <richedit.h>
-#include <math.h>
 
 #include "copyright2.h"
 #include "config.h"
@@ -392,7 +391,7 @@ W_Cleanup (void)
 
     strcpy (FileName, GetExeDir ());
     strcat (FileName, FontFileName);
-    RemoveFontResource (FileName);
+    RemoveFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
 
     //Select the original bitmaps back and delete our memory DCs
     SelectObject (GlobalMemDC, GlobalOldMemDCBitmap);
@@ -535,7 +534,7 @@ W_Cleanup (void)
         p = tmp;
     }
 
-    /* DoubleBuffer */
+#ifdef DOUBLE_BUFFERING
     SelectObject (localSDB->mem_dc, localSDB->old_bmp);
     DeleteObject (localSDB->mem_bmp);
     ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
@@ -547,6 +546,7 @@ W_Cleanup (void)
     ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
     free (mapSDB->window);
     free (mapSDB);
+#endif
 
     //WinKey Kill Library Stop
     if (pfnFastCallKill != NULL)
@@ -564,6 +564,9 @@ W_Cleanup (void)
         free (consHead);
         consHead = tmp;
     }
+
+    if (saveFile)
+        free (saveFile);
 }
 
 #define MakeTeamCursor(upper, team) \
@@ -666,30 +669,36 @@ W_Initialize (char *display)
     //Create the fonts that we need. The fonts are actually in our resource file
     strcpy (FileName, GetExeDir ());
     strcat (FileName, FontFileName);
-    AddFontResource (FileName);
+    AddFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
 
     memset (&lf, 0, sizeof (LOGFONT));
+
+    lf.lfCharSet = ANSI_CHARSET;
+    lf.lfOutPrecision = OUT_TT_PRECIS;
+    lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+    lf.lfQuality = DEFAULT_QUALITY;
+    lf.lfPitchAndFamily = FF_MODERN | FIXED_PITCH;
+
     strcpy (lf.lfFaceName, "Netrek");
-//   lf.lfWidth = 6;
-//   lf.lfHeight=10;
-    lf.lfHeight = intDefault ("fontsize", 10);
+    lf.lfHeight = -intDefault ("fontsize", 10);
     lf.lfWeight = FW_REGULAR;
+
     W_RegularFont = (W_Font) CreateFontIndirect (&lf);
 
-    lf.lfWeight = FW_BOLD;
     strcpy (lf.lfFaceName, "Netrek");
+    lf.lfWeight = FW_BOLD;
     W_HighlightFont = (W_Font) CreateFontIndirect (&lf);
 
+    strcpy (lf.lfFaceName, "Netrek");
     lf.lfWeight = FW_REGULAR;
     lf.lfUnderline = TRUE;
-    strcpy (lf.lfFaceName, "Netrek");
     W_UnderlineFont = (W_Font) CreateFontIndirect (&lf);
 
     //Use arial for the BigFont
+    strcpy (lf.lfFaceName, "Arial");
     lf.lfUnderline = FALSE;
     lf.lfWeight = FW_MEDIUM;
-    strcpy (lf.lfFaceName, "Arial");
-    lf.lfHeight = 52;           // 52
+    lf.lfHeight = 52;
     lf.lfWidth = 32;
     W_BigFont = (W_Font) CreateFontIndirect (&lf);
 
@@ -727,9 +736,9 @@ W_Initialize (char *display)
 
         /* Converted SHR's to TESTs, faster on x86 -SAC */
         if (!(res & 0xff00))    //!highbyte == no shift,ctrl,alt
-            VKMap[res] = i;
+            VKMap[res] = (char) i;
         else if (res & 0x100)   //Bit 1 of high byte = shift key
-            VKShiftMap[res & 0xff] = i;
+            VKShiftMap[res & 0xff] = (char) i;
     }
     VKMap[VK_ESCAPE] = 27;      // 27 is mapped as Ctrl-[ by Windows
     VKMap[VK_TAB] = (char) 201; //'i'+96;     // Make it look like '^i' so macroKey: TAB will work
@@ -754,7 +763,7 @@ W_Initialize (char *display)
     VKShiftMap[VK_ESCAPE] = 27; // Map shift+escape-> escape
 
     MainThreadID = GetCurrentThreadId ();       // Save main thread ID so we can tell
-    MainThread = GetCurrentThread;              // Also save main thread handle
+    MainThread = GetCurrentThread ();              // Also save main thread handle
     // which thread we're in later
 
     // Get the current system colors
@@ -928,7 +937,6 @@ GetColors ()
         //Create the various pens and brushes for each color
         for (i = 0; i < COLORS; i++)
         {
-            DWORD dashbits[] = { 1, 2 };
             colortable[i].brush = CreateSolidBrush (colortable[i].rgb);
             colortable[i].pen =
                 CreatePen (PS_SOLID | PS_INSIDEFRAME, 1, colortable[i].rgb);
@@ -1075,8 +1083,8 @@ newWindow (char *name,
         color = WHITE;
 
     //Set the various attributes to default states
-    window->type = type;
-    window->border = border;
+    window->type = (short) type;
+    window->border = (short) border;
     window->BorderColor = color;
     window->cursor = LoadCursor (NULL, IDC_ARROW);
 
@@ -1221,8 +1229,8 @@ W_MakeTextWindow (char *name,
         return (0);
 
     //Store the original textheight, width
-    newwin->TextHeight = height;
-    newwin->TextWidth = width;
+    newwin->TextHeight = (short) height;
+    newwin->TextWidth = (short) width;
 
 	/* Set original coordinates, so we will be able to restore to them */
 	newwin->orig_x = orig_x;
@@ -1271,8 +1279,8 @@ W_MakeScrollingWindow (char *name,
         return (0);
 
     //Store the original textheight, width
-    newwin->TextHeight = height;
-    newwin->TextWidth = width;
+    newwin->TextHeight = (short) height;
+    newwin->TextWidth = (short) width;
 
 	/* Set original coordinates, so we will be able to restore to them */
 	newwin->orig_x = orig_x;
@@ -1340,8 +1348,8 @@ W_MakeMenu (char *name,
             items[i].color = W_White;
         }
     newwin->items = items;
-    newwin->NumItems = height;
-    newwin->TextHeight = height;
+    newwin->NumItems = (short) height;
+    newwin->TextHeight = (short) height;
 
 	/* Set original coordinates, so we will be able to restore to them */
 	newwin->orig_x = orig_x;
@@ -1805,6 +1813,7 @@ NetrekWndProc (HWND hwnd,
             (win->hwnd == ((Window *) baseWin)->hwnd) ||
             (((Window *) metaWin != NULL && win->hwnd == ((Window *) metaWin)->hwnd)) ||
             (((Window *) waitWin != NULL && win->hwnd == ((Window *) waitWin)->hwnd)) ||
+            (((Window *) waitqWin != NULL && win->hwnd == ((Window *) waitqWin)->hwnd)) ||
             (((Window *) countWin != NULL && win->hwnd == ((Window *) countWin)->hwnd)) ||
             (((Window *) motdButtonWin != NULL && win->hwnd == ((Window *) motdButtonWin)->hwnd)) ||
             (((Window *) motdWin != NULL && win->hwnd == ((Window *) motdWin)->hwnd)))
@@ -1819,13 +1828,30 @@ NetrekWndProc (HWND hwnd,
         movingr.bottom = winRect.bottom - baseRect.top;
 
         /* In case of WS_CAPTION (titlebar on) we have to subtract caption size and
-           additional borders to get screen coordinates */
-        if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
+           additional borders to get screen coordinates.
+           If the main window is also resizeable then border sizes change from SM_CnFIXEDFRAME
+           to SM_CnSIZEFRAME
+        */
+        if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && !mainResizeable)
         {
             movingr.left -= GetSystemMetrics (SM_CXFIXEDFRAME);
             movingr.top -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
             movingr.right -= GetSystemMetrics (SM_CXFIXEDFRAME);
             movingr.bottom -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+        }
+        else if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && mainResizeable)
+        {
+            movingr.left -= GetSystemMetrics (SM_CXSIZEFRAME);
+            movingr.top -= (GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            movingr.right -= GetSystemMetrics (SM_CXSIZEFRAME);
+            movingr.bottom -= (GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION));
+        }
+        else if (!(GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION) && mainResizeable)
+        {
+            movingr.left -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
+            movingr.top -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
+            movingr.right -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
+            movingr.bottom -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
         }
 
         /* If our window has parent we have to subtract parent's border as well */
@@ -1848,6 +1874,7 @@ NetrekWndProc (HWND hwnd,
             (win->hwnd == ((Window *) baseWin)->hwnd) ||
             (((Window *) metaWin != NULL && win->hwnd == ((Window *) metaWin)->hwnd)) ||
             (((Window *) waitWin != NULL && win->hwnd == ((Window *) waitWin)->hwnd)) ||
+            (((Window *) waitqWin != NULL && win->hwnd == ((Window *) waitqWin)->hwnd)) ||
             (((Window *) countWin != NULL && win->hwnd == ((Window *) countWin)->hwnd)) ||
             (((Window *) motdButtonWin != NULL && win->hwnd == ((Window *) motdButtonWin)->hwnd)) ||
             (((Window *) motdWin != NULL && win->hwnd == ((Window *) motdWin)->hwnd)))
@@ -2162,11 +2189,11 @@ NetrekWndProc (HWND hwnd,
 
 #ifdef CONTROL_KEY
         if (use_control_key && (GetKeyState (VK_CONTROL) & ~0x1))
-            EventQueue[EventTail].key = (char) j + 96;
+            EventQueue[EventTail].key = (unsigned char) (j + 96);
         else
-            EventQueue[EventTail].key = (char) j;
+            EventQueue[EventTail].key = (unsigned char) j;
 #else
-        EventQueue[EventTail].key = (char) j;
+        EventQueue[EventTail].key = (unsigned char) j;
 #endif
         return (0);
 
@@ -2603,38 +2630,68 @@ NetrekWndProc (HWND hwnd,
         return (0);
 
     case WM_MOUSEWHEEL:
+        {
+        RECT baseRect;
         // wheel could be 1/-1 to show the direction of wheel move
-        wheel = (signed short) HIWORD (wParam) / WHEEL_DELTA;
+        wheel = (short) (GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
         pos.x = (long) LOWORD (lParam);
         pos.y = (long) HIWORD (lParam);
+
+        /* Fix in case main window isn't at (0,0) coordinates */
+        GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
+        pos.x -= baseRect.left;
+        pos.y -= baseRect.top;
+        
+        /* Fix in case main window has caption or resizeable */
+        if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && !mainResizeable)
+        {
+            pos.x -= GetSystemMetrics (SM_CXFIXEDFRAME);
+            pos.y -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+        }
+        else if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && mainResizeable)
+        {
+            pos.x -= GetSystemMetrics (SM_CXSIZEFRAME);
+            pos.y -= (GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION));
+        }
+        else if (!(GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION) && mainResizeable)
+        {
+            pos.x -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
+            pos.y -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
+        }
+
         hwnd = ChildWindowFromPoint (((Window *) baseWin)->hwnd, pos);
+
+        if (!hwnd)
+            return (0);
+
         GET_STRUCT_PTR;
 
         // If we're not in message windows then we'll map wheel up and
 		// wheel down events as regular mouse events
         if (win->type == WIN_GRAPH || win->type == WIN_TEXT || win->type == WIN_MENU)
-	{
+		{
 	        //BringWindowToTop (hwnd);
 			//GET_STRUCT_PTR;
 
             /* Let's see whether we should process wheel messages */
             if (!allowWheelActions)
                 return (1);
-            STORE_EVENT_MOUSE;
-            LastPressHwnd = hwnd;
 
-            if (wheel > 0)
-            {
-                EventQueue[EventTail].key = W_WHEELUP;
-                EventQueue[EventTail].type = W_EV_BUTTON;
-            }
-            else if (wheel < 0)
-            {
-            	EventQueue[EventTail].key = W_WHEELDOWN;
-            	EventQueue[EventTail].type = W_EV_BUTTON;
-            }
+			STORE_EVENT_MOUSE;
+			LastPressHwnd = hwnd;
+
+			if (wheel > 0)
+			{
+				EventQueue[EventTail].key = W_WHEELUP;
+				EventQueue[EventTail].type = W_EV_BUTTON;
+			}
+			else if (wheel < 0)
+			{
+				EventQueue[EventTail].key = W_WHEELDOWN;
+				EventQueue[EventTail].type = W_EV_BUTTON;
+			}
             return (0);
-	}
+		}
         else if (win->type == WIN_SCROLL)
         {
             i = GetScrollPos (hwnd, SB_VERT);
@@ -2691,7 +2748,7 @@ NetrekWndProc (HWND hwnd,
         }
         else
             return (1);
-
+        }
         //Trap WM_ERASEBKGRND, to handle windows with tiled backgrounds
     case WM_ERASEBKGND:
         GET_STRUCT_PTR;
@@ -3013,7 +3070,7 @@ W_MakeTractLine (W_Window window,
             d1 = (unsigned __int32) ((((__int64) d3) << 32) / d2);
         else
             d1 = 1;
-        d2 = CINIT;
+        d2 = (unsigned __int32) CINIT;
         Md = x0 < x1 ? 1 : -1;
         md = y0 < y1 ? 1 : -1;
         dp = 0;
@@ -3052,7 +3109,7 @@ W_MakeTractLine (W_Window window,
             d1 = (unsigned __int32) ((((__int64) d2) << 32) / d3);
         else
             d1 = 1;
-        d2 = CINIT;
+        d2 = (unsigned __int32) CINIT;
 
         Md = y0 < y1 ? 1 : -1;
         md = x0 < x1 ? 1 : -1;
@@ -3737,7 +3794,7 @@ W_WriteBitmap (int x,
     border = bitmap->ClipRectAddr->top;
     x += border;
     y += border;
-    
+
     if (x < border)
     {
         width = bitmap->width - (border - x);
@@ -3934,9 +3991,9 @@ W_WriteBitmapGrey (int x,
             colorsum = (colorsum / 3 + 96);
         if (colorsum > 255)
             colorsum = 255;
-        rgbq[i].rgbRed = colorsum;
-        rgbq[i].rgbBlue = colorsum;
-        rgbq[i].rgbGreen = colorsum;
+        rgbq[i].rgbRed = (unsigned char) colorsum;
+        rgbq[i].rgbBlue = (unsigned char) colorsum;
+        rgbq[i].rgbGreen = (unsigned char) colorsum;
     }
 
     SetDIBColorTable (GreyBitmapDC, 0, 256, (LPRGBQUAD) rgbq);
@@ -4085,7 +4142,7 @@ ChangeMenuItem (Window * win,
 
     strncpy (p->string, str, len);
     p->color = color;
-    p->len = len;
+    p->len = (short) len;
 
     hdc = GetDC (win->hwnd);
     if (NetrekPalette)
@@ -4154,7 +4211,7 @@ AddToScrolling (Window * win,
 
         p = p2;                 //Point p to the new string
 
-        win->NumItems = ++NumStrings;   //Inc the string number
+        win->NumItems = (short) (++NumStrings);   //Inc the string number
     }
     else                        //Re-use the first string, place it at the end of the list
     {
@@ -4515,6 +4572,7 @@ checkMapped (char *name)
     return (booleanDefault (buf, 0));
 }
 
+int
 checkMappedPref (char *name, int preferred)
 {
     char buf[100];
@@ -4745,8 +4803,8 @@ W_ResizeTextWindow (W_Window window,
 
     if (!window)
         return;
-    win->TextHeight = newh;
-    win->TextWidth = neww;
+    win->TextHeight = (short) newh;
+    win->TextWidth = (short) neww;
     W_ResizeWindow (window, neww * W_Textwidth + WIN_EDGE * 2,
                     newh * W_Textheight + WIN_EDGE * 2);
 }
@@ -4758,9 +4816,9 @@ W_ResizeMenu (W_Window window,
 {
     FNHEADER_VOID;
 
-    win->NumItems = newh;
-    win->TextHeight = newh;
-    win->TextWidth = neww;
+    win->NumItems = (short) newh;
+    win->TextHeight = (short) newh;
+    win->TextWidth = (short) neww;
 
     W_ResizeWindow (window, neww * W_Textwidth + WIN_EDGE * 2,
                     newh * (W_Textheight + MENU_PAD * 2) + (newh -
@@ -5166,7 +5224,7 @@ updateWindowsGeometry (W_Window window)
 }
 
 
-/* DoubleBuffering */
+#ifdef DOUBLE_BUFFERING
 #define DBHEADER\
    register Window *win;\
    if (!sdb->window)\
@@ -5522,7 +5580,7 @@ W_MakeTractLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color
             d1 = (unsigned __int32) ((((__int64) d3) << 32) / d2);
         else
             d1 = 1;
-        d2 = CINIT;
+        d2 = (unsigned __int32) CINIT;
         Md = x0 < x1 ? 1 : -1;
         md = y0 < y1 ? 1 : -1;
         dp = 0;
@@ -5561,7 +5619,7 @@ W_MakeTractLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color
             d1 = (unsigned __int32) ((((__int64) d2) << 32) / d3);
         else
             d1 = 1;
-        d2 = CINIT;
+        d2 = (unsigned __int32) CINIT;
 
         Md = y0 < y1 ? 1 : -1;
         md = x0 < x1 ? 1 : -1;
@@ -5782,6 +5840,88 @@ W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
             width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
 }
 
+
+void
+W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
+                    unsigned char p_dir, W_Icon icon, W_Color color)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int borderx, bordery, width, height;
+    register int srcx, srcy;
+    HBITMAP newbmp;
+    XFORM xForm;
+    double radians;
+    float cosine, sine, Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
+    float xscale, yscale;
+    float eDx, eDy;
+
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    borderx = bitmap->ClipRectAddr->left;
+    x += borderx;
+    bordery = bitmap->ClipRectAddr->top;
+    y += bordery;
+
+    width = bitmap->width;
+    height = bitmap->height;
+    
+    newbmp = CreateCompatibleBitmap ( sdb->mem_dc, width, height );
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+    SelectObject (GlobalMemDC, bitmap->bm);
+    SelectObject (GlobalMemDC2, newbmp);
+    
+    // Copy selected section of main bitmap into newbmp before rotation
+    BitBlt (GlobalMemDC2, 0, 0, width, height, GlobalMemDC, srcx, srcy, SRCPAINT);
+    
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (sdb->mem_dc, colortable[color].rgb);
+    SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
+    
+    //Convert p_dir to radians 
+    radians=(2*3.14159*p_dir*360/255)/360;
+    //Setworldtransform screws up at angle = 0, slight hack to fix
+    if (radians == 0.0)
+        radians = 0.0000001;
+    cosine=(float)cos(radians);
+    sine=(float)sin(radians);
+    
+    // Scale used to find bitmap center
+    xscale = (float)(width/SCALEX/2);
+    yscale = (float)(height/SCALEY/2);
+    
+    // Compute dimensions of the resulting bitmap
+    // First get the coordinates of the 3 corners other than origin
+    Point1x=(height*sine);
+    Point1y=(height*cosine);
+    Point2x=(width*cosine+height*sine);
+    Point2y=(height*cosine-width*sine);
+    Point3x=(width*cosine);
+    Point3y=-(width*sine);
+
+    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
+    SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
+
+    xForm.eM11=cosine/SCALEX;
+    xForm.eM12=sine/SCALEX;
+    xForm.eM21=-sine/SCALEY;
+    xForm.eM22=cosine/SCALEY;
+    xForm.eDx = eDx;
+    xForm.eDy = eDy;
+ 
+    SetWorldTransform(sdb->mem_dc,&xForm);
+    BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+
+    DeleteObject (newbmp);
+}
+
 void
 W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
 {
@@ -5833,9 +5973,9 @@ W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
             colorsum = (colorsum / 3 + 96);
         if (colorsum > 255)
             colorsum = 255;
-        rgbq[i].rgbRed = colorsum;
-        rgbq[i].rgbBlue = colorsum;
-        rgbq[i].rgbGreen = colorsum;
+        rgbq[i].rgbRed = (unsigned char) colorsum;
+        rgbq[i].rgbBlue = (unsigned char) colorsum;
+        rgbq[i].rgbGreen = (unsigned char) colorsum;
     }
 
     SetDIBColorTable (GreyBitmapDC, 0, 256, (LPRGBQUAD) rgbq);
@@ -5890,7 +6030,7 @@ W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
     BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
             width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
 }
-
+#endif /* DOUBLE_BUFFERING */
 
 // Make a WIN_SCROLL type window.
 // We use a scrollbar so we can look through the text, something the X version

@@ -2,12 +2,19 @@
 #define STRICT
 #include <windows.h>
 
+#if defined(__BORLANDC__)
+extern HHOOK g_hMsgHook;
+extern HHOOK g_hKeyHook;
+
+extern int   g_iFlags;
+#else
 #pragma data_seg(".shared")
 HHOOK g_hMsgHook = NULL;
 HHOOK g_hKeyHook = NULL;
 
 int   g_iFlags = NULL;
 #pragma data_seg()
+#endif
 
 const int KILL_WINKEY =  0x0001;
 const int KILL_CTRLESC = 0x0002;

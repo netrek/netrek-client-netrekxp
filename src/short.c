@@ -228,7 +228,7 @@ int spwinside = 500;            /* WINSIDE from Server */
 #define SPWINSIDE 500           /* To make it safe */
 LONG spgwidth = GWIDTH;
 
-
+void
 sendThreshold (short unsigned int v)
 {
     struct threshold_cpacket p;
@@ -447,7 +447,6 @@ void
 handleVPlayer (unsigned char *sbuf)
 {
     register int x, y, i, numofplayers, pl_no, save;
-    unsigned char *savebuf = sbuf;
     register struct player *pl;
 
     numofplayers = (unsigned char) sbuf[1] & 0x3f;
@@ -481,11 +480,11 @@ handleVPlayer (unsigned char *sbuf)
                     pl->p_flags &= ~PFCLOAK;
             }
 
-            Pdir[pl_no] = (unsigned char) *sbuf >> 4;   /* DIR */
-            pl->p_dir = (unsigned char) Pdir[pl_no] * 16;       /* real DIR */
+            Pdir[pl_no] = (unsigned char) (*sbuf >> 4);   /* DIR */
+            pl->p_dir = (unsigned char) (Pdir[pl_no] * 16);       /* real DIR */
             sbuf++;
-            x = (unsigned char) *sbuf++;
-            y = (unsigned char) *sbuf++;        /* The lower 8 Bits are
+            x = (unsigned char) (*sbuf++);
+            y = (unsigned char) (*sbuf++);        /* The lower 8 Bits are
                                                  * saved */
             /* Now we must preprocess the coordinates */
             if ((unsigned char) save & 64)
@@ -605,11 +604,11 @@ handleVPlayer (unsigned char *sbuf)
                     pl->p_flags &= ~PFCLOAK;
             }
 
-            Pdir[pl_no] = (unsigned char) *sbuf >> 4;   /* DIR */
-            pl->p_dir = (unsigned char) Pdir[pl_no] * 16;       /* real DIR */
+            Pdir[pl_no] = (unsigned char) (*sbuf >> 4);   /* DIR */
+            pl->p_dir = (unsigned char) (Pdir[pl_no] * 16);       /* real DIR */
             sbuf++;
-            x = (unsigned char) *sbuf++;
-            y = (unsigned char) *sbuf++;        /* The lower 8 Bits are
+            x = (unsigned char) (*sbuf++);
+            y = (unsigned char) (*sbuf++);        /* The lower 8 Bits are
                                                  * saved */
             /* Now we must preprocess the coordinates */
             if ((unsigned char) save & 64)
@@ -773,11 +772,11 @@ handleVPlayer (unsigned char *sbuf)
                     pl->p_flags &= ~PFCLOAK;
             }
 
-            Pdir[pl_no] = (unsigned char) *sbuf >> 4;   /* DIR */
-            pl->p_dir = (unsigned char) Pdir[pl_no] * 16;       /* real DIR */
+            Pdir[pl_no] = (unsigned char) (*sbuf >> 4);   /* DIR */
+            pl->p_dir = (unsigned char) (Pdir[pl_no] * 16);       /* real DIR */
             sbuf++;
-            x = (unsigned char) *sbuf++;
-            y = (unsigned char) *sbuf++;        /* The lower 8 Bits are
+            x = (unsigned char) (*sbuf++);
+            y = (unsigned char) (*sbuf++);        /* The lower 8 Bits are
                                                  * saved */
             /* Now we must preprocess the coordinates */
             if ((unsigned char) save & 64)
@@ -1072,8 +1071,8 @@ handleVTorpInfo (unsigned char *sbuf)
         /* Now the TorpInfo */
         if (*infobitset & 01)
         {
-            war = (unsigned char) *infodata & 15 /* 0x0f */ ;
-            status = ((unsigned char) *infodata & 0xf0) >> 4;
+            war = (char) ((unsigned char) *infodata & 15) /* 0x0f */ ;
+            status = (char) (((unsigned char) *infodata & 0xf0) >> 4);
             infodata++;
             if (status == TEXPLODE && thetorp->t_status == TFREE)
             {
@@ -1195,6 +1194,7 @@ handleVPlanet (unsigned char *sbuf)
 }
 
 
+void
 resetWeaponInfo (void)
 /*
  *  Give all weapons for all ships the status of not being active.
@@ -1224,7 +1224,7 @@ sendShortReq (char state)
 
     shortReq.type = CP_S_REQ;
     shortReq.req = state;
-    shortReq.version = shortversion;    /* need a var now because 2
+    shortReq.version = (char) shortversion;    /* need a var now because 2
                                          * S_P versions exist S_P2 */
     switch (state)
     {
@@ -1468,8 +1468,8 @@ handleSWarning (struct warning_s_spacket *packet)
 #ifndef RCM
             float kills;
 #endif
-            victim = (unsigned char) packet->argument & 0x3f;
-            killer = (unsigned char) packet->argument2 & 0x3f;
+            victim = (unsigned char) (((unsigned char) packet->argument) & 0x3f);
+            killer = (unsigned char) (((unsigned char) packet->argument2) & 0x3f);
             /* that's only a temp */
             damage = (unsigned char) karg3;
             damage |= (karg4 & 127) << 8;
@@ -1482,10 +1482,10 @@ handleSWarning (struct warning_s_spacket *packet)
                 sprintf (killmess, "%0.2f", kills);
 #endif
 
-            armies =
-                (((unsigned char) packet->
+            armies = (unsigned char) 
+                ((((unsigned char) packet->
                   argument >> 6) | ((unsigned char) packet->
-                                    argument2 & 192) >> 4);
+                                    argument2 & 192) >> 4));
             if (karg4 & 128)
                 armies |= 16;
 
@@ -1494,9 +1494,9 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.sender = victim;
             dist.tclose_j = killer;
             dist.arms = armies;
-            dist.dam = damage / 100;
-            dist.shld = damage % 100;
-            dist.wtmp = karg5;
+            dist.dam = (unsigned char) (damage / 100);
+            dist.shld = (unsigned char) (damage % 100);
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[1].macro);
             msg.m_flags = MALL | MVALID | MKILL;
 #else
@@ -1526,7 +1526,7 @@ handleSWarning (struct warning_s_spacket *packet)
             }
             if (why_dead)
             {
-		add_whydead (msg.mesg, karg5);
+				add_whydead (msg.mesg, karg5);
                 karg5 = 0;
             }
 #endif
@@ -1562,7 +1562,7 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.dam = '\0';
             dist.shld = '\0';
             dist.tclose_pl = packet->argument2;
-            dist.wtmp = karg5;
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[2].macro);
 #else
             (void) sprintf (msg.mesg, "GOD->ALL %s (%c%c) killed by %s (%c)",
@@ -1601,10 +1601,10 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.sender = packet->argument;
             dist.tclose_j = packet->argument;
             dist.arms = '\0';
-            dist.dam = arg3;
+            dist.dam = (unsigned char) arg3;
             dist.shld = '\0';
             dist.tclose_pl = packet->argument2;
-            dist.wtmp = karg5;
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[3].macro);
 #else
             (void) sprintf (buf, "%-3s->%-3s",
@@ -1624,7 +1624,7 @@ handleSWarning (struct warning_s_spacket *packet)
             msg.type = SP_MESSAGE;
             msg.mesg[79] = '\0';
             msg.m_flags = MTEAM | MBOMB | MVALID;
-            msg.m_recpt = planets[(unsigned char) packet->argument2].pl_owner;
+            msg.m_recpt = (unsigned char) (planets[(unsigned char) packet->argument2].pl_owner);
             msg.m_from = 255;
             handleMessage (&msg);
         }
@@ -1641,7 +1641,7 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.dam = '\0';
             dist.shld = '\0';
             dist.tclose_pl = packet->argument;
-            dist.wtmp = karg5;
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[4].macro);
 #else
             char buf1[80];
@@ -1662,7 +1662,7 @@ handleSWarning (struct warning_s_spacket *packet)
             msg.type = SP_MESSAGE;
             msg.mesg[79] = '\0';
             msg.m_flags = MTEAM | MDEST | MVALID;
-            msg.m_recpt = planets[(unsigned char) packet->argument].pl_owner;
+            msg.m_recpt = (unsigned char) (planets[(unsigned char) packet->argument].pl_owner);
             msg.m_from = 255;
             handleMessage (&msg);
         }
@@ -1679,7 +1679,7 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.dam = '\0';
             dist.shld = '\0';
             dist.tclose_pl = packet->argument;
-            dist.wtmp = karg5;
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[5].macro);
 #else
             char buf1[80];
@@ -1716,9 +1716,9 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.sender = packet->argument;
             dist.tclose_j = packet->argument;
             dist.arms = '\0';
-            dist.dam = damage / 100;
-            dist.shld = damage % 100;
-            dist.wtmp = karg5;
+            dist.dam = (unsigned char) (damage / 100);
+            dist.shld = (unsigned char) (damage % 100);
+            dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[6].macro);
 #else
             (void) sprintf (msg.mesg,
@@ -1899,6 +1899,7 @@ handleSWarning (struct warning_s_spacket *packet)
 
 #define MY_SIZEOF(a) (sizeof(a) / sizeof(*(a)))
 
+void
 add_whydead (char *s,
              int m)             /* 7/22/93 LAB */
 {
@@ -1914,8 +1915,7 @@ add_whydead (char *s,
 
 /* S_P2 */
 void
-handleVKills (sbuf)
-     unsigned char *sbuf;
+handleVKills (unsigned char *sbuf)
 {
     register int i, numofkills, pnum;
     register unsigned short pkills;
@@ -1957,8 +1957,7 @@ handleVKills (sbuf)
 }                               /* handleVKills */
 
 void
-handleVPhaser (sbuf)
-     unsigned char *sbuf;
+handleVPhaser (unsigned char *sbuf)
 {
     struct phaser *phas;
     struct phaser_s_spacket *packet = (struct phaser_s_spacket *) &sbuf[0];
@@ -1993,11 +1992,11 @@ handleVPhaser (sbuf)
         break;
     }
     phas = &phasers[pnum];
-    phas->ph_status = status;
-    phas->ph_dir = dir;
+    phas->ph_status = (unsigned char) status;
+    phas->ph_dir = (unsigned char) dir;
     phas->ph_x = x;
     phas->ph_y = y;
-    phas->ph_target = target;
+    phas->ph_target = (short) target;
     phas->ph_fuse = 0;
     phas->ph_updateFuse = PHASER_UPDATE_FUSE;
     phas->ph_maxfuse = (players[pnum].p_ship.s_phaserfuse * updatesPerSec) / 10;
@@ -2013,8 +2012,7 @@ handleVPhaser (sbuf)
 }
 
 void
-handle_s_Stats (packet)
-     struct stats_s_spacket *packet;
+handle_s_Stats (struct stats_s_spacket *packet)
 {
     register struct player *pl;
 

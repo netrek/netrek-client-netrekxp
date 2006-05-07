@@ -213,7 +213,7 @@ death (void)
     if (!playback)
     {                           /* If we are not playing back a recorded game, do this */
         W_TerminateWait ();
-        ExitThread(0);
+        ExitThread (0);
     }
     else
     {                           /* Otherwise we aren't within a thread, so... */

@@ -840,7 +840,7 @@ initDefaults (char *deffile)
                     }
                     else
                     {
-                        keysused[macro[macrocnt].key] = macrocnt + 1;
+                        keysused[macro[macrocnt].key] = (unsigned char) (macrocnt + 1);
                     }
 #endif /* MULTILINE_MACROS */
 
@@ -927,7 +927,7 @@ initDefaults (char *deffile)
                     }
                     else
                     {
-                        keysused[macro[macrocnt].key] = macrocnt + 1;
+                        keysused[macro[macrocnt].key] = (unsigned char) (macrocnt + 1);
                     }
 #endif /* MULTILINE_MACROS */
 
@@ -1224,6 +1224,7 @@ getServerType (char *srvName)
 /***  grr... are you telling me this sort of function isn't in the std      ***/
 /***  libraries somewhere?! sons of satan... - jn                           ***/
 /******************************************************************************/
+int
 strncmpi (char *str1, char *str2, int max)
 {
     char chr1, chr2;
@@ -1242,8 +1243,8 @@ strncmpi (char *str1, char *str2, int max)
 
     for (duh = 0; duh < stop; duh++)
     {
-        chr1 = isupper (str1[duh]) ? str1[duh] : toupper (str1[duh]);
-        chr2 = isupper (str2[duh]) ? str2[duh] : toupper (str2[duh]);
+        chr1 = (char) (isupper (str1[duh]) ? str1[duh] : toupper (str1[duh]));
+        chr2 = (char) (isupper (str2[duh]) ? str2[duh] : toupper (str2[duh]));
         if (chr1 == 0 || chr2 == 0)
         {
             return (0);
@@ -1277,6 +1278,7 @@ stringDefault (char *def)
 /******************************************************************************/
 /***  booleanDefault()                                                      ***/
 /******************************************************************************/
+int
 booleanDefault (char *def, int preferred)
 {
     char *str;
@@ -1297,6 +1299,7 @@ booleanDefault (char *def, int preferred)
 /******************************************************************************/
 /***  intDefault()                                                          ***/
 /******************************************************************************/
+int
 intDefault (char *def, int preferred)
 {
     char *str;
@@ -1814,6 +1817,8 @@ saveOptions ()
     // we're going to print only keymap that differs from standard one
     // we have to start from second key, because first one is space
     str[0] = '\0';
+    str1[0] = '\0';
+
     for (c = 1; c < 95; c++)
     {
         if (c + 32 != mystats->st_keymap[c])
@@ -1821,14 +1826,20 @@ saveOptions ()
             if (mystats->st_keymap[c] != 'X' &&
                (mystats->st_keymap[c] > 32 &&
                 mystats->st_keymap[c] < 127))
-                sprintf (str, "%s%c%c", str, c + 32, mystats->st_keymap[c]);
+            {
+                sprintf (str1, "%c%c", c + 32, mystats->st_keymap[c]);
+                strcat (str, str1);
+            }
             else
                 sprintf (macroKey, "%c", c + 32);
         }
     }
     // space time
     if (mystats->st_keymap[0] != 32)
-        sprintf (str, "%s %c", str, mystats->st_keymap[0]);
+    {
+        sprintf (str1, " %c", mystats->st_keymap[0]);
+        strcat (str, str1);
+    }
     if (saveBig && strlen (str) != 0)
         fputs ("# Key mapping\n", fp);
     if (strlen (str) != 0)

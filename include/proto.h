@@ -92,10 +92,10 @@ char *getdefault (char *str);
 char *getServerNick (char *srvName);
 int getServerType (char *srvName);
 #ifndef __BORLANDC__
-strncmpi (char *str1, char *str2, int max);
+int strncmpi (char *str1, char *str2, int max);
 #endif
-booleanDefault (char *def, int preferred);
-intDefault (char *def, int preferred);
+int booleanDefault (char *def, int preferred);
+int intDefault (char *def, int preferred);
 char *stringDefault (char *str);
 int findDefaults (char *deffile, char *file);
 void resetdefaults (void);
@@ -167,13 +167,12 @@ void init_hockey_lines (void);
 /***  feature.c                                                             ***/
 /******************************************************************************/
 #ifdef FEATURE_PACKETS
-//static void checkFeature(struct feature_cpacket *packet);
 void sendFeature (char *name,
                   char feature_type,
                   int value,
                   char arg1,
                   char arg2);
-//static void reportFeatures(void);
+struct feature_cpacket;
 void handleFeature (struct feature_cpacket *packet);
 #endif
 
@@ -675,8 +674,8 @@ int checkGeometry (char *name,
                    int *width,
                    int *height);
 int checkMapped (char *name);
-checkMappedPref (char *name,
-                 int preferred);
+int checkMappedPref (char *name,
+                     int preferred);
 void W_WarpPointer (W_Window window);
 int findMouseInWin (int *x,
                     int *y,
@@ -738,7 +737,7 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
                                   UINT msg,
                                   WPARAM wParam,
                                   LPARAM lParam);
-/* DoubleBuffering */
+#ifdef DOUBLE_BUFFERING
 SDBUFFER * W_InitSDB (W_Window window);
 void W_Win2Mem (SDBUFFER * sdb);
 void W_Mem2Win (SDBUFFER * sdb);
@@ -759,42 +758,41 @@ void W_WriteTriangleDB (SDBUFFER * sdb, int x, int y, int s, int t, W_Color colo
 void W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
 void W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
 void W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
+void W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
+                           unsigned char p_dir, W_Icon icon, W_Color color);
 void W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
 void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
+#endif
 
 /******************************************************************************/
 /***  newwin.c
 /******************************************************************************/
 //static void handleMessageWindowKeyDown(W_Event * event);
 //static void handleMessageWindowButton(W_Event * event);
-void loadbitmaps (void);
-void loadbitmaps1 (void);
-void loadbitmapsT (void);
-void loadbitmapsM (void);
-void loadbitmapsG (void);
-newwin (char *hostmon,
+void newwin (char *hostmon,
         char *progname);
-newsoundwin (char *hostmon,
+void newsoundwin (char *hostmon,
         char *progname);
-mapAll (void);
-savebitmaps (void);
+void mapAll (void);
+void savebitmaps (void);
 void entrywindow (int *team,
                   int *s_type);
-teamRequest (int team,
-             int ship);
-numShips (int owner);
-realNumShips (int owner);
-deadTeam (int owner);
-checkBold (char *line);
-showMotdWin (W_Window motdwin, int atline);
+int teamRequest (int team,
+                 int ship);
+int numShips (int owner);
+int realNumShips (int owner);
+int deadTeam (int owner);
+int checkBold (char *line);
+void showMotdWin (W_Window motdwin, int atline);
+struct list;
 void showValues (struct list *data);
 void newMotdLine (char *line);
-getResources (char *prog);
+void getResources (char *prog);
 void redrawTeam (W_Window win,
                  int teamNo,
                  int *lastnum);
-redrawQuit (void);
-showTimeLeft (time_t time, time_t max);
+void redrawQuit (void);
+void showTimeLeft (time_t time, time_t max);
 void W_DefineFedCursor (W_Window window);
 void W_DefineRomCursor (W_Window window);
 void W_DefineKliCursor (W_Window window);
@@ -805,13 +803,14 @@ void W_DefineOriCursor (W_Window window);
 /******************************************************************************/
 void optionwindow (void);
 void RefreshOptions (void);
-OptionClear (int i);
+void OptionClear (int i);
 void optionredrawtarget (W_Window win);
 void optionredrawoption (int *ip);
+struct option;
 void optionrefresh (register struct option *op);
 void optionaction (W_Event * data);
-SetMenuPage (int pagenum);
-optiondone (void);
+void SetMenuPage (int pagenum);
+void optiondone (void);
 int InitOptionMenus (void);
 void AddOptMenu (struct option *NewMenu,
                  int updated);
@@ -838,20 +837,21 @@ DWORD WINAPI metaPing_thread(void);
 /******************************************************************************/
 /***  ping.c
 /******************************************************************************/
+struct ping_spacket;
 void handlePing (struct ping_spacket *packet);
-startPing (void);
-stopPing (void);
-sendServerPingResponse (int number);
+void startPing (void);
+void stopPing (void);
+void sendServerPingResponse (int number);
 void calc_lag (void);
 
 /******************************************************************************/
 /***  pingstats.c
 /******************************************************************************/
-pStatsHeight (void);
-pStatsWidth (void);
+int pStatsHeight (void);
+int pStatsWidth (void);
 void initPStats (void);
 void redrawPStats (void);
-updatePStats (void);
+void updatePStats (void);
 // int box(int filled, int x, int y, int wid, int hei, W_Color color);
 //static void text(int value, int y);
 
@@ -900,25 +900,31 @@ void ranklist (void);
 /******************************************************************************/
 /***  redraw.c
 /******************************************************************************/
-intrupt ();
-redraw (void);
-stline (int flag);
+#ifdef BRMH
+void intrupt (fd_set * readfds);
+#else
+void intrupt (void);
+#endif
+void redraw (void);
+void stline (int flag);
 void redrawTstats (void);
 void updateMaxStats (int redraw);
 
 /******************************************************************************/
 /***  reserved.c
 /******************************************************************************/
-makeReservedPacket (struct reserved_spacket *packet);
-encryptReservedPacket (struct reserved_spacket *spacket,
-                       struct reserved_cpacket *cpacket,
-                       int pno);
+struct reserved_spacket;
+struct reserved_cpacket;
+void makeReservedPacket (struct reserved_spacket *packet);
+void encryptReservedPacket (struct reserved_spacket *spacket,
+                            struct reserved_cpacket *cpacket,
+                            int pno);
 
 /******************************************************************************/
 /***  rotate.c
 /******************************************************************************/
-rotate_dir (unsigned char *d,
-            int r);
+void rotate_dir (unsigned char *d,
+                 int r);
 void rotate_coord (int *x,
                    int *y,
                    int d,
@@ -953,27 +959,33 @@ void rsa_partial_box_4 (MP_INT * m,
 /******************************************************************************/
 struct distress *loaddistress (enum dist_type i, W_Event * data);
 void emergency (enum dist_type i, W_Event * data);
-pmacro (int mnum, char who, W_Event * data);
+int pmacro (int mnum, char who, W_Event * data);
 
 /******************************************************************************/
 /***  short.c
 /******************************************************************************/
-sendThreshold (short unsigned int v);
+void sendThreshold (short unsigned int v);
 void handleVTorp (unsigned char *sbuf);
+struct youshort_spacket;
 void handleSelfShort (struct youshort_spacket *packet);
+struct youss_spacket;
 void handleSelfShip (struct youss_spacket *packet);
 void handleVPlayer (unsigned char *sbuf);
+struct mesg_s_spacket;
 void handleSMessage (struct mesg_s_spacket *packet);
+struct shortreply_spacket;
 void handleShortReply (struct shortreply_spacket *packet);
 void handleVTorpInfo (unsigned char *sbuf);
 void handleVPlanet (unsigned char *sbuf);
-resetWeaponInfo (void);
+void resetWeaponInfo (void);
 void sendShortReq (char state);
+struct warning_s_spacket;
 void handleSWarning (struct warning_s_spacket *packet);
-add_whydead (char *s,
-             int m);
+void add_whydead (char *s,
+                  int m);
 void handleVKills (unsigned char *sbuf);
 void handleVPhaser (unsigned char *sbuf);
+struct stats_s_spacket;
 void handle_s_Stats (struct stats_s_spacket *packet);
 void new_flags (unsigned int data,
                 int which);
@@ -1000,89 +1012,118 @@ void pnbtmacro (int c);
 /******************************************************************************/
 /***  socket.c
 /******************************************************************************/
-resetForce (void);
-checkForce (void);
+void resetForce (void);
+void checkForce (void);
 void setNoDelay (int fd);
-connectToServer (int port);
-callServer (int port,
-            char *server);
-isServerDead (void);
-socketPause (void);
-readFromServer (fd_set * readfds);
-dotimers (void);
+void connectToServer (int port);
+void callServer (int port,
+                 char *server);
+int isServerDead (void);
+void socketPause (void);
+int readFromServer (fd_set * readfds);
+void dotimers (void);
 int getvpsize (char *bufptr);
-doRead (int asock);
+int doRead (int asock);
+struct torp_spacket;
 void handleTorp (struct torp_spacket *packet);
+struct torp_info_spacket;
 void handleTorpInfo (struct torp_info_spacket *packet);
+struct status_spacket;
 void handleStatus (struct status_spacket *packet);
+struct you_spacket;
 void handleSelf (struct you_spacket *packet);
+struct player_spacket;
 void handlePlayer (struct player_spacket *packet);
+struct warning_spacket;
 void handleWarning (struct warning_spacket *packet);
-sendShortPacket (char type,
-                 char state);
+void sendShortPacket (char type,
+                      char state);
 void sendServerPacket (struct player_spacket *packet);
+struct planet_spacket;
 void handlePlanet (struct planet_spacket *packet);
+struct phaser_spacket;
 void handlePhaser (struct phaser_spacket *packet);
+struct mesg_spacket;
 void handleMessage (struct mesg_spacket *packet);
+struct queue_spacket;
 void handleQueue (struct queue_spacket *packet);
-sendTeamReq (int team,
-             int ship);
+void sendTeamReq (int team,
+                  int ship);
+struct pickok_spacket;
 void handlePickok (struct pickok_spacket *packet);
-sendLoginReq (char *name,
-              char *pass,
-              char *login,
-              char query);
+void sendLoginReq (char *name,
+                   char *pass,
+                   char *login,
+                   char query);
+struct login_spacket;
 void handleLogin (struct login_spacket *packet);
-sendTractorReq (char state,
-                char pnum);
-sendRepressReq (char state,
-                char pnum);
-sendDetMineReq (short int torp);
+void sendTractorReq (char state,
+                     char pnum);
+void sendRepressReq (char state,
+                     char pnum);
+void sendDetMineReq (short int torp);
+struct plasma_info_spacket;
 void handlePlasmaInfo (struct plasma_info_spacket *packet);
+struct flags_spacket;
 void handleFlags (struct flags_spacket *packet);
+struct plasma_spacket;
 void handlePlasma (struct plasma_spacket *packet);
+struct kills_spacket;
 void handleKills (struct kills_spacket *packet);
+struct pstatus_spacket;
 void handlePStatus (struct pstatus_spacket *packet);
+struct motd_spacket;
 void handleMotd (struct motd_spacket *packet);
-sendMessage (char *mes,
-             int group,
-             int indiv);
+void sendMessage (char *mes,
+                  int group,
+                  int indiv);
+struct mask_spacket;
 void handleMask (struct mask_spacket *packet);
-sendOptionsPacket (void);
+void sendOptionsPacket (void);
 void pickSocket (int old);
+struct badversion_spacket;
 void handleBadVersion (struct badversion_spacket *packet);
-gwrite (int fd,
-        char *buf,
-        register int bytes);
+long gwrite (int fd,
+             char *buf,
+             register int bytes);
+struct hostile_spacket;
 void handleHostile (struct hostile_spacket *packet);
+struct plyr_login_spacket;
 void handlePlyrLogin (struct plyr_login_spacket *packet,
                       int sock);
+struct stats_spacket;
 void handleStats (struct stats_spacket *packet);
+struct plyr_info_spacket;
 void handlePlyrInfo (struct plyr_info_spacket *packet);
-sendUpdatePacket (LONG speed);
+void sendUpdatePacket (LONG speed);
+struct planet_loc_spacket;
 void handlePlanetLoc (struct planet_loc_spacket *packet);
 void handleReserved (struct reserved_spacket *packet,
                      int sock);
+struct ship_cap_spacket;
 void handleShipCap (struct ship_cap_spacket *packet);
+struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
 #ifdef INCLUDE_SCAN
 void
 handleScan (packet)
      struct scan_spacket *packet;
 #endif
-     void sendUdpReq (int req);
-     void handleUdpReply (struct udp_reply_spacket *packet);
-openUdpConn (void);
+void sendUdpReq (int req);
+struct udp_reply_spacket;
+void handleUdpReply (struct udp_reply_spacket *packet);
+int openUdpConn (void);
 #ifdef UDP_PORTSWAP
-connUdpConn ();
+int connUdpConn ();
 #endif
-recvUdpConn (void);
-closeUdpConn (void);
+int recvUdpConn (void);
+int closeUdpConn (void);
 void printUdpInfo (void);
+struct sequence_spacket;
 void handleSequence (struct sequence_spacket *packet);
 void Log_Packet (char type, int act_size);
 void Log_OPacket (int tpe, int size);
-Dump_Packet_Log_Info (void);
+void Dump_Packet_Log_Info (void);
 char *strcpyp_return (register char *s1,
                       register char *s2,
                       register int length);
@@ -1151,16 +1192,16 @@ showToolsWin (void);
 /******************************************************************************/
 /***  udpopt.c
 /******************************************************************************/
-udpwindow (void);
-udprefresh (int i);
-     void udpaction (W_Event * data);
-udpdone (void);
+void udpwindow (void);
+void udprefresh (int i);
+void udpaction (W_Event * data);
+void udpdone (void);
 
 /******************************************************************************/
 /***  util.c
 /******************************************************************************/
-angdist (unsigned char x,
-         unsigned char y);
+int angdist (unsigned char x,
+             unsigned char y);
 struct obtype *gettarget (W_Window ww,
                            int x,
                            int y,
@@ -1168,60 +1209,60 @@ struct obtype *gettarget (W_Window ww,
 struct obtype *gettarget2 (int x,
                            int y,
                            int targtype);
-troop_capacity (void);
+short troop_capacity (void);
 void setObserverMode (int);
 
 /******************************************************************************/
 /***  war.c
 /******************************************************************************/
-     void fillwin (int menunum,
-                   char *string,
-                   int hostile,
-                   int warbits,
-                   int team);
-     void warrefresh (void);
-     void warwindow (void);
-     void waraction (W_Event * data);
+void fillwin (int menunum,
+              char *string,
+              int hostile,
+              int warbits,
+              int team);
+void warrefresh (void);
+void warwindow (void);
+void waraction (W_Event * data);
 
 /******************************************************************************/
 /***  warning.c
 /******************************************************************************/
-warning (char *text);
+void warning (char *text);
 
 /******************************************************************************/
 /***  winmain.c
 /******************************************************************************/
-     int main (int argc,
-               char *argv[]);
-     void WinMainCleanup (void);
-     int getpid ();
-     struct passwd *getpwuid ();
-     void sleep (int seconds);
-     double rint (double r);
-     void perror (const char *str);
+int main (int argc,
+          char *argv[]);
+void WinMainCleanup (void);
+int getpid ();
+struct passwd *getpwuid ();
+void sleep (int seconds);
+double rint (double r);
+void perror (const char *str);
 #ifdef NEW_SELECT
-     int PASCAL select (int nfds,
-                        fd_set * readfds,
-                        fd_set * writefds,
-                        fd_set * exceptfds,
-                        struct timeval *timeout);
+int PASCAL select (int nfds,
+                   fd_set * readfds,
+                   fd_set * writefds,
+                   fd_set * exceptfds,
+                   struct timeval *timeout);
 #endif
-     char *GetExeDir ();
-	 void HideConsoleWindow (void);
-	 BOOL CALLBACK EnumWindowsProc (HWND hwnd, LPARAM lparam);
+char *GetExeDir ();
+void HideConsoleWindow (void);
+BOOL CALLBACK EnumWindowsProc (HWND hwnd, LPARAM lparam);
 
 /******************************************************************************/
 /***  winsndlib.c
 /******************************************************************************/
-     int ParseSoundFile (char *fname,
-                         PCMWAVEFORMAT * header,
-                         DWORD * datalen,
-                         char **data);
-     struct sound *GetSound (char *name);
-     void ExitSound ();
-     int InitSound ();
-     void StopSound ();
-     int StartSound (char *name);
-     int SoundPlaying ();
+int ParseSoundFile (char *fname,
+                    PCMWAVEFORMAT * header,
+                    DWORD * datalen,
+                    char **data);
+struct sound *GetSound (char *name);
+void ExitSound ();
+int InitSound ();
+void StopSound ();
+int StartSound (char *name);
+int SoundPlaying ();
 
 #endif /* __INCLUDED_proto_h__ */

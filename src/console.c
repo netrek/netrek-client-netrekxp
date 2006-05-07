@@ -74,7 +74,7 @@ LineToConsole (char * format, ...)
     }
     else
     {
-    	tmp = (struct cons_buffer *) malloc (sizeof (struct cons_buffer));
+        tmp = (struct cons_buffer *) malloc (sizeof (struct cons_buffer));
         consTail = consTail->next;
         consTail = tmp;
         consTail->string = (char *) malloc (sizeof (char) * strlen (str) + 1);

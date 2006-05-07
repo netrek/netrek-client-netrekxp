@@ -211,7 +211,9 @@ db_bar (char *lab,
         int digits,
         int color)
 {
-    register int wt, wv, tw, tc;
+    register int wt, wv;
+    register int tc = 11;
+    register int tw = W_Textwidth * tc;
     char valstr[32];
 
     switch (digits)
@@ -271,7 +273,7 @@ db_flags (int fr)
 {
     static float old_kills = -1.0;
     static int old_torp = -1;
-    static unsigned int old_flags = -1;
+    static unsigned int old_flags = (unsigned int) -1;
     static int old_tourn = -1;
     char buf[16];
     struct player *plr;
@@ -283,24 +285,24 @@ db_flags (int fr)
 
     if (fr || me->p_flags != old_flags)
     {
-        buf[0] = (me->p_flags & PFSHIELD ? 'S' : ' ');
+        buf[0] = (char) (me->p_flags & PFSHIELD ? 'S' : ' ');
         if (me->p_flags & PFGREEN)
             buf[1] = 'G';
         else if (me->p_flags & PFYELLOW)
             buf[1] = 'Y';
         else
             buf[1] = 'R';
-        buf[2] = (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
-        buf[3] = (me->p_flags & PFREPAIR ? 'R' : ' ');
-        buf[4] = (me->p_flags & PFBOMB ? 'B' : ' ');
-        buf[5] = (me->p_flags & PFORBIT ? 'O' : ' ');
+        buf[2] = (char) (me->p_flags & (PFPLLOCK | PFPLOCK) ? 'L' : ' ');
+        buf[3] = (char) (me->p_flags & PFREPAIR ? 'R' : ' ');
+        buf[4] = (char) (me->p_flags & PFBOMB ? 'B' : ' ');
+        buf[5] = (char) (me->p_flags & PFORBIT ? 'O' : ' ');
         if (me->p_ship.s_type == STARBASE)
-            buf[6] = (me->p_flags & PFDOCKOK ? 'D' : ' ');
+            buf[6] = (char) (me->p_flags & PFDOCKOK ? 'D' : ' ');
         else
-            buf[6] = (me->p_flags & PFDOCK ? 'D' : ' ');
-        buf[7] = (me->p_flags & PFCLOAK ? 'C' : ' ');
-        buf[8] = (me->p_flags & PFWEP ? 'W' : ' ');
-        buf[9] = (me->p_flags & PFENG ? 'E' : ' ');
+            buf[6] = (char) (me->p_flags & PFDOCK ? 'D' : ' ');
+        buf[7] = (char) (me->p_flags & PFCLOAK ? 'C' : ' ');
+        buf[8] = (char) (me->p_flags & PFWEP ? 'W' : ' ');
+        buf[9] = (char) (me->p_flags & PFENG ? 'E' : ' ');
         if (me->p_flags & PFPRESS)
             buf[10] = 'P';
         else if (me->p_flags & PFTRACT)
@@ -352,7 +354,7 @@ db_flags (int fr)
         {
             W_WriteText (tstatw, 346, 30, textColor, "Torps:", 6,
                          W_RegularFont);
-            buf[0] = plr->p_ntorp % 10 + '0';
+            buf[0] = (char) (plr->p_ntorp % 10 + '0');
             W_WriteText (tstatw, 386, 30, textColor, buf, 1, W_RegularFont);
         }
         else

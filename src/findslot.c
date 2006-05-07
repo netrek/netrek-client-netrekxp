@@ -52,11 +52,11 @@ mapWaitWin (W_Window waitWin)
 /***  mapWaitQuit()                                                         ***/
 /******************************************************************************/
 static void
-mapWaitQuit (W_Window qwin)
+mapWaitQuit (W_Window waitqWin)
 {
     char *s = "Quit";
 
-    W_WriteText (qwin, 10, 15, textColor, s, strlen (s), W_RegularFont);
+    W_WriteText (waitqWin, 10, 15, textColor, s, strlen (s), W_RegularFont);
 }
 
 /******************************************************************************/
@@ -139,7 +139,7 @@ findslot (void)
                             foreColor);
     countWin = W_MakeWindow ("count", WAITWIDTH / 3, WAITTITLE, WAITWIDTH / 3,
                              WAITHEIGHT - WAITTITLE, waitWin, 1, foreColor);
-    qwin = W_MakeWindow ("waitquit", 0, WAITTITLE, WAITWIDTH / 3,
+    waitqWin = W_MakeWindow ("waitquit", 0, WAITTITLE, WAITWIDTH / 3,
                          WAITHEIGHT - WAITTITLE, waitWin, 1, foreColor);
     motdButtonWin = W_MakeWindow ("motdbutton", 2 * WAITWIDTH / 3, WAITTITLE,
                                   WAITWIDTH / 3, WAITHEIGHT - WAITTITLE,
@@ -147,7 +147,7 @@ findslot (void)
     W_MapWindow (waitWin);
     W_MapWindow (countWin);
     W_MapWindow (motdButtonWin);
-    W_MapWindow (qwin);
+    W_MapWindow (waitqWin);
     if (showMotd)
     {
         motdWin = W_MakeWindow ("waitmotd", 1, WAITWIDTH + 1, WINSIDE,
@@ -222,7 +222,7 @@ findslot (void)
                     }
                     showMotd = !showMotd;
                 }
-                else if (event.Window == qwin)
+                else if (event.Window == waitqWin)
                 {
 
 #if defined(SOUND)
@@ -245,9 +245,9 @@ findslot (void)
                 {
                     showMotdWin (motdWin, WaitMotdLine);
                 }
-                else if (event.Window == qwin)
+                else if (event.Window == waitqWin)
                 {
-                    mapWaitQuit (qwin);
+                    mapWaitQuit (waitqWin);
                 }
                 else if (event.Window == countWin)
                 {

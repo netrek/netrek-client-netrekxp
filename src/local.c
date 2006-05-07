@@ -190,7 +190,7 @@ DrawStars()
 
 
 static void
-redrawStarSector (sectorx, sectory)
+redrawStarSector (int sectorx, int sectory)
 {
     register int i, dx, dy, dxx, dyy;
     register int xbase = sectorx * fullview;
@@ -266,8 +266,11 @@ redrawStarSector (sectorx, sectory)
 
                 dx = scaleLocal (dx);
                 dy = scaleLocal (dy);
+#ifndef DOUBLE_BUFFERING
                 W_CacheLine (w, dx, dy, dx - dxx, dy - dyy, s->s_color);
-                //W_CacheLineDB (localSDB, dx, dy, dx - dxx, dy - dyy, s->s_color);
+#else
+                W_CacheLineDB (localSDB, dx, dy, dx - dxx, dy - dyy, s->s_color);
+#endif
 
                 clearline[0][clearlcount] = dx;
                 clearline[1][clearlcount] = dy;
@@ -287,8 +290,11 @@ redrawStarSector (sectorx, sectory)
 
         dx = scaleLocal (dx);
         dy = scaleLocal (dy);
+#ifndef DOUBLE_BUFFERING
         W_CachePoint (w, dx, dy, s->s_color);
-        //W_CachePointDB (localSDB, dx, dy, s->s_color);
+#else
+        W_CachePointDB (localSDB, dx, dy, s->s_color);
+#endif
 
         clearline[0][clearlcount] = dx;
         clearline[1][clearlcount] = dy;
@@ -349,13 +355,15 @@ DrawPlanets (void)
         dx = dx / SCALE + WINSIDE / 2;
         dy = dy / SCALE + WINSIDE / 2;
 
-
+#ifndef DOUBLE_BUFFERING
         W_WriteBitmap (dx - (BMP_PLANET_WIDTH / 2),
                        dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
                        planetColor (l));
-        /*W_WriteBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+#else
+        W_WriteBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
                          dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
-                         planetColor (l));*/
+                         planetColor (l));
+#endif
 
         if (showIND && ((l->pl_info & me->p_team)
 #ifdef RECORDGAME
@@ -363,32 +371,38 @@ DrawPlanets (void)
 #endif
             ) && (l->pl_owner == NOBODY))
         {
+#ifndef DOUBLE_BUFFERING
             W_CacheLine (w, dx - (BMP_PLANET_WIDTH / 2),
                          dy - (BMP_PLANET_HEIGHT / 2),
                          dx + (BMP_PLANET_WIDTH / 2 - 1),
                          dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
-            /*W_CacheLineDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
-                           dy - (BMP_PLANET_HEIGHT / 2),
-                           dx + (BMP_PLANET_WIDTH / 2 - 1),
-                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);*/
             W_CacheLine (w, dx + (BMP_PLANET_WIDTH / 2 - 1),
                          dy - (BMP_PLANET_HEIGHT / 2),
                          dx - (BMP_PLANET_WIDTH / 2),
                          dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
-            /*W_CacheLineDB (localSDB, dx + (BMP_PLANET_WIDTH / 2 - 1),
+#else
+            W_CacheLineDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                           dy - (BMP_PLANET_HEIGHT / 2),
+                           dx + (BMP_PLANET_WIDTH / 2 - 1),
+                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
+            W_CacheLineDB (localSDB, dx + (BMP_PLANET_WIDTH / 2 - 1),
                            dy - (BMP_PLANET_HEIGHT / 2),
                            dx - (BMP_PLANET_WIDTH / 2),
-                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);*/
+                           dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
+#endif
         }
 
         if (showPlanetNames)
         {
+#ifndef DOUBLE_BUFFERING
             W_MaskText (w, dx - (BMP_PLANET_WIDTH / 2),
                         dy + (BMP_PLANET_HEIGHT / 2), planetColor (l),
                         l->pl_name, l->pl_namelen, planetFont (l));
-            /*W_MaskTextDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+#else
+            W_MaskTextDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
                           dy + (BMP_PLANET_HEIGHT / 2), planetColor (l),
-                          l->pl_name, l->pl_namelen, planetFont (l));*/
+                          l->pl_name, l->pl_namelen, planetFont (l));
+#endif
             clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2);
             clearzone[1][clearcount] = dy + (BMP_PLANET_HEIGHT / 2);
             clearzone[2][clearcount] = W_Textwidth * l->pl_namelen;
@@ -473,42 +487,40 @@ DrawShips (void)
        /* Have to use me->p_flags because server doesn't send us twarp flag info
         on other players.  Current Vanilla does not let observer change players
         if the player they are observing is transwarping. */
-	if (twarpflag != (me->p_flags & PFTWARP))
-	{
-	    /* change in warp state */
-	    warpchange = 1;
+        if (twarpflag != (me->p_flags & PFTWARP))
+        {
+            /* change in warp state */
+            warpchange = 1;
             twarpflag = (me->p_flags & PFTWARP);
         }
         
         if (myPlayer(j) || isObsLockPlayer(j))
-        {     
-                if (warpchange && (j->p_flags & PFTWARP))
-	        {   
-                    
-	    	    if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
-		    {
-		        Mix_HaltGroup(3);
-	                Play_Sound(ENTER_WARP_WAV);
-	            }
-	            else
-	                Play_Sound(ENTER_WARP_SOUND);
+        {
+            if (warpchange && (j->p_flags & PFTWARP))
+            {
+            	if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	    	{
+	    	    Mix_HaltGroup(3);
+	            Play_Sound(ENTER_WARP_WAV);
+	        }
+	        else
+	            Play_Sound(ENTER_WARP_SOUND);
+	                
+	        warpchange = 0;
+	    }
+	    if (warpchange && !(j->p_flags & PFTWARP))
+	    {
+	    	if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	    	{
+	    	    Mix_HaltGroup(3);
+	    	    Play_Sound(EXIT_WARP_WAV);
+	    	}
+	        else
+	            Play_Sound(EXIT_WARP_SOUND);
 	                
 	            warpchange = 0;
-	
-	        }
-	        if (warpchange && !(j->p_flags & PFTWARP))
-	        { 
-	     	    if (newSound) // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
-		    {
-		        Mix_HaltGroup(3);
-	                Play_Sound(EXIT_WARP_WAV);
-	            }
-	            else
-	                Play_Sound(EXIT_WARP_SOUND);
-	                
-	            warpchange = 0;
-	        }
-        }
+	    }
+	}
 #endif
 
         if (j->p_flags & PFOBSERV)
@@ -538,7 +550,7 @@ DrawShips (void)
         {
             if (j->p_cloakphase < (CLOAK_PHASES - 1))
             {
-            	
+
 #ifdef SOUND
                 if (j->p_cloakphase == 0)
                 {
@@ -580,7 +592,7 @@ DrawShips (void)
         {
             if (j->p_cloakphase)
             {
-            	
+
 #ifdef SOUND
                 // To avoid twarp cloak sounds as the twarper/observer
                 if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
@@ -607,7 +619,7 @@ DrawShips (void)
                                 Play_Sound_Loc(UNCLOAK_WAV, angle, distance);
                         }
                         else    // Kill any channels with CLOAKED_WAV on them (group 1)
-		            Mix_HaltGroup(1);
+                            Mix_HaltGroup(1);
                     }
                     else
                     {
@@ -621,7 +633,7 @@ DrawShips (void)
                     }
                 }            
 #endif
-            	
+
                 j->p_cloakphase--;
             }
         }
@@ -634,10 +646,13 @@ DrawShips (void)
 #endif
                 )
             {
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon, myColor);
-                /*W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
-                                 dy - (cloak_height / 2), cloakicon, myColor);*/
+#else
+                W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
+                                 dy - (cloak_height / 2), cloakicon, myColor);
+#endif
 
                 clearzone[0][clearcount] = dx - (shield_width / 2);
                 clearzone[1][clearcount] = dy - (shield_height / 2);
@@ -804,30 +819,50 @@ DrawShips (void)
             
             if (colorClient != 4)
             {
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (j->p_ship.s_width / 2),
-                           dy - (j->p_ship.s_height / 2),
-                           ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
-                           playerColor (j));
+                               dy - (j->p_ship.s_height / 2),
+                               ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
+                               playerColor (j));
+#else
+                W_WriteBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
+                                 dy - (j->p_ship.s_height / 2),
+                                 ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
+                                 playerColor (j));
+#endif
             }
             else
-            { 
+            {
+#ifndef DOUBLE_BUFFERING
                 W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2),
-                           dy - (j->p_ship.s_height / 2),
-                           (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
-                           (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
-                           j->p_dir,
-                           ship_bitsHR[j->p_ship.s_type],
-                           playerColor (j));                
+                                    dy - (j->p_ship.s_height / 2),
+                                    (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
+                                    (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                                    j->p_dir,
+                                    ship_bitsHR[j->p_ship.s_type],
+                                    playerColor (j));
+#else
+                W_WriteScaleBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
+                                      dy - (j->p_ship.s_height / 2),
+                                      (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
+                                      (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                                      j->p_dir,
+                                      ship_bitsHR[j->p_ship.s_type],
+                                      playerColor (j));
+#endif
             }
-                              
+
             if (j->p_cloakphase > 0)
             {
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon,
                                playerColor (j));
-                /*W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
+#else
+                W_WriteBitmapDB (localSDB, dx - (cloak_width / 2),
                                  dy - (cloak_height / 2), cloakicon,
-                                 playerColor (j));*/
+                                 playerColor (j));
+#endif
                 if (!myPlayer (j))      /* if myplayer draw the
                                          * shield */
                     continue;
@@ -841,10 +876,17 @@ DrawShips (void)
 	    {
 	        int     seq_n = emph_player_seq_n[j->p_no] % emph_player_seql_frames;
 
+#ifndef DOUBLE_BUFFERING
 	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
 			       dy - (emph_player_seql_height / 2),
 			       emph_player_seql[seq_n],
 			       W_White);
+#else
+	        W_WriteBitmapDB (localSDB, dx - (emph_player_seql_width / 2),
+			         dy - (emph_player_seql_height / 2),
+			         emph_player_seql[seq_n],
+			         W_White);
+#endif
 	    }
 #endif
 
@@ -856,9 +898,9 @@ DrawShips (void)
                     if (newSound)
                     {
                         // Kill any channels with SHIELD_UP/DOWN_WAV on them (group 4)
-			Mix_HaltGroup(4);
-		        Play_Sound(SHIELD_DOWN_WAV);
-		    }
+                        Mix_HaltGroup(4);
+                        Play_Sound(SHIELD_DOWN_WAV);
+                    }
                     else
                         Play_Sound(SHIELD_DOWN_SOUND);
                 }
@@ -867,9 +909,9 @@ DrawShips (void)
                     if (newSound)
                     {
                         // Kill any channels with SHIELD_UP/DOWN_WAV on them (group 4)
-			Mix_HaltGroup(4);
-			Play_Sound(SHIELD_UP_WAV);
-		    }
+                        Mix_HaltGroup(4);
+                        Play_Sound(SHIELD_UP_WAV);
+                    }
                     else
                         Play_Sound(SHIELD_UP_SOUND);
                 }
@@ -928,17 +970,23 @@ DrawShips (void)
                 }
 
 #ifdef VSHIELD_BITMAPS
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (shield_width / 2),
                                dy - (shield_height / 2), shield[shieldnum],
                                color);
-                /*W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
-                                 dy - (shield_height / 2), shield[shieldnum],
-                                 color);*/
 #else
+                W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
+                                 dy - (shield_height / 2), shield[shieldnum],
+                                 color);
+#endif /* DOUBLE_BUFFERING */
+#else
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (shield_width / 2),
                                dy - (shield_height / 2), shield, color);
-                /*W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
-                                 dy - (shield_height / 2), shield, color);*/
+#else
+                W_WriteBitmapDB (localSDB, dx - (shield_width / 2),
+                                 dy - (shield_height / 2), shield, color);
+#endif /* DOUBLE_BUFFERING */
 #endif
             }
             if (j->p_flags & PFCLOAK)   /* when cloaked stop here */
@@ -985,26 +1033,29 @@ DrawShips (void)
                         if (j->p_speed < 10)
                         {
                             idbuf[1] = ',';
-                            idbuf[2] = j->p_speed + '0';
+                            idbuf[2] = (char) (j->p_speed + '0');
                             idbuf[3] = '\0';
                             buflen = 3;
                         }
                         else
                         {
                             idbuf[1] = ',';
-                            idbuf[2] = j->p_speed / 10 + '0';
-                            idbuf[3] = j->p_speed % 10 + '0';
+                            idbuf[2] = (char) (j->p_speed / 10 + '0');
+                            idbuf[3] = (char) (j->p_speed % 10 + '0');
                             idbuf[4] = '\0';
                             buflen = 4;
                         }
                     }
                 }
+#ifndef DOUBLE_BUFFERING
                 W_MaskText (w, dx + (j->p_ship.s_width / 2),
                             dy - (j->p_ship.s_height / 2), color,
                             idbuf, buflen, shipFont (j));
-                /*W_MaskTextDB (localSDB, dx + (j->p_ship.s_width / 2),
+#else
+                W_MaskTextDB (localSDB, dx + (j->p_ship.s_width / 2),
                               dy - (j->p_ship.s_height / 2), color,
-                              idbuf, buflen, shipFont (j));*/
+                              idbuf, buflen, shipFont (j));
+#endif
 
                 clearzone[0][clearcount] = dx + (j->p_ship.s_width / 2);
                 clearzone[1][clearcount] = dy - (j->p_ship.s_height / 2);
@@ -1019,7 +1070,7 @@ DrawShips (void)
             int i;
 
             i = j->p_explode;
-            
+
 #ifdef SOUND
             if (i == 1)
             {
@@ -1082,12 +1133,15 @@ DrawShips (void)
 
                 if (j->p_ship.s_type == STARBASE)
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_SBEXPL_WIDTH / 2),
                                    dy - (BMP_SBEXPL_HEIGHT / 2), sbexpview[i],
                                    playerColor (j));
-                    /*W_WriteBitmapDB (localSDB, dx - (BMP_SBEXPL_WIDTH / 2),
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_SBEXPL_WIDTH / 2),
                                      dy - (BMP_SBEXPL_HEIGHT / 2), sbexpview[i],
-                                     playerColor (j));*/
+                                     playerColor (j));
+#endif
                     clearzone[0][clearcount] = dx - (BMP_SBEXPL_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_SBEXPL_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_SBEXPL_WIDTH;
@@ -1095,12 +1149,15 @@ DrawShips (void)
                 }
                 else
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_SHIPEXPL_WIDTH / 2),
                                    dy - (BMP_SHIPEXPL_HEIGHT / 2), expview[i],
                                    playerColor (j));
-                    /*W_WriteBitmapDB (localSDB, dx - (BMP_SHIPEXPL_WIDTH / 2),
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_SHIPEXPL_WIDTH / 2),
                                      dy - (BMP_SHIPEXPL_HEIGHT / 2), expview[i],
-                                     playerColor (j));*/
+                                     playerColor (j));
+#endif
                     clearzone[0][clearcount] = dx - (BMP_SHIPEXPL_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_SHIPEXPL_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_SHIPEXPL_WIDTH;
@@ -1116,7 +1173,7 @@ DrawShips (void)
 
         if (php->ph_status != PHFREE)
         {
-        	
+
 #ifdef SOUND
             if (!sound_phaser)
             {           
@@ -1267,7 +1324,11 @@ DrawShips (void)
                             px = new_dx;
                             py = new_dy;
                         }
+#ifndef DOUBLE_BUFFERING
                         W_CacheLine (w, px, py, tx, ty, col);
+#else
+                        W_CacheLineDB (localSDB, px, py, tx, ty, col);
+#endif
                     }
                     else
                     {
@@ -1282,34 +1343,55 @@ DrawShips (void)
                                 py = new_dy;
                             }
                             if (highlightFriendlyPhasers)
-                            	W_CacheLine (w, px, py, tx, ty, foreColor);
+#ifndef DOUBLE_BUFFERING
+                                W_CacheLine (w, px, py, tx, ty, foreColor);
+#else
+                                W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#endif
                             else
                             {
 	                        if ((php->ph_fuse % 2) == 1)
-	                            W_CacheLine (w, px, py, tx, ty, foreColor);
+#ifndef DOUBLE_BUFFERING
+                                    W_CacheLine (w, px, py, tx, ty, foreColor);
+#else
+                                    W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#endif
 	                        else
-	                            W_CacheLine (w, px, py, tx, ty,
-	                                     shipCol[remap[j->p_team]]);
+#ifndef DOUBLE_BUFFERING
+                                    W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#else
+                                    W_CacheLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#endif
                             }
                         }
                         else
-                            W_CacheLine (w, px, py, tx, ty,
-                                         shipCol[remap[j->p_team]]);
+#ifndef DOUBLE_BUFFERING
+                            W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#else
+                            W_CacheLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#endif
                     }
 #else
                     if (highlightFriendlyPhasers && (php->ph_status == PHHIT))
+#ifndef DOUBLE_BUFFERING
                         W_CacheLine (w, px, py, tx, ty, foreColor);
-                        //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#else
+                        W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#endif
                     else
                     {
                         if ((php->ph_fuse % 2) == 1)
+#ifndef DOUBLE_BUFFERING
                             W_CacheLine (w, px, py, tx, ty, foreColor);
-                            //W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#else
+                            W_CacheLineDB (localSDB, px, py, tx, ty, foreColor);
+#endif
                         else
-                            W_CacheLine (w, px, py, tx, ty,
-                                         shipCol[remap[j->p_team]]);
-                            /*W_CacheLineDB (localSDB, px, py, tx, ty,
-                                           shipCol[remap[j->p_team]]);*/
+#ifndef DOUBLE_BUFFERING
+                            W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#else
+                            W_CacheLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#endif
                     }
 #endif
                     php->ph_fuse++;
@@ -1338,7 +1420,7 @@ DrawShips (void)
                         else
 #endif
                         {
-                            dir = NORMALIZE (php->ph_dir + 64);
+                            dir = (unsigned char) (NORMALIZE (php->ph_dir + 64));
                         }
 
                         wx = (int) (px + enemyPhasers * Cos[dir]);
@@ -1346,10 +1428,13 @@ DrawShips (void)
                         lx = (int) (px - enemyPhasers * Cos[dir]);
                         ly = (int) (py - enemyPhasers * Sin[dir]);
 
+#ifndef DOUBLE_BUFFERING
                         W_MakePhaserLine (w, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
-                        //W_MakePhaserLineDB (localSDB, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
                         W_MakePhaserLine (w, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
-                        //W_MakePhaserLineDB (localSDB, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
+#else
+                        W_MakePhaserLineDB (localSDB, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
+                        W_MakePhaserLineDB (localSDB, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
+#endif
 
                         php->ph_fuse++;
 
@@ -1367,8 +1452,11 @@ DrawShips (void)
                     }
                     else
                     {
+#ifndef DOUBLE_BUFFERING
                         W_MakePhaserLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
-                        //W_MakePhaserLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#else
+                        W_MakePhaserLineDB (localSDB, px, py, tx, ty, shipCol[remap[j->p_team]]);
+#endif
 
                         php->ph_fuse++;
 
@@ -1443,17 +1531,23 @@ DrawShips (void)
                     ly[1] = (int) (py - (Sin[dir] * (target_width / 2)));
                     if (j->p_flags & PFPRESS)
                     {
+#ifndef DOUBLE_BUFFERING
                         W_MakeTractLine (w, dx, dy, lx[0], ly[0], W_Yellow);
-                        //W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Yellow);
                         W_MakeTractLine (w, dx, dy, lx[1], ly[1], W_Yellow);
-                        //W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Yellow);
+#else
+                        W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Yellow);
+                        W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Yellow);
+#endif
                     }
                     else
                     {
+#ifndef DOUBLE_BUFFERING
                         W_MakeTractLine (w, dx, dy, lx[0], ly[0], W_Green);
-                        //W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Green);
                         W_MakeTractLine (w, dx, dy, lx[1], ly[1], W_Green);
-                        //W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Green);
+#else
+                        W_MakeTractLineDB (localSDB, dx, dy, lx[0], ly[0], W_Green);
+                        W_MakeTractLineDB (localSDB, dx, dy, lx[1], ly[1], W_Green);
+#endif
                     }
 
                     /*
@@ -1594,7 +1688,7 @@ DrawTorps (void)
             dx = dx / SCALE + WINSIDE / 2;
             dy = dy / SCALE + WINSIDE / 2;
 
-  
+
             if (k->t_status == TEXPLODE)
             {
 
@@ -1666,9 +1760,15 @@ DrawTorps (void)
                             torpTeam = 0;
                         }
                     }
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_CTORPDET_WIDTH / 2),
                                    dy - (BMP_CTORPDET_HEIGHT / 2),
                                    cloudC[torpTeam][k->t_fuse], torpColor (k));
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_CTORPDET_WIDTH / 2),
+                                     dy - (BMP_CTORPDET_HEIGHT / 2),
+                                     cloudC[torpTeam][k->t_fuse], torpColor (k));
+#endif
                     clearzone[0][clearcount] = dx - (BMP_CTORPDET_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_CTORPDET_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_CTORPDET_WIDTH;
@@ -1677,9 +1777,15 @@ DrawTorps (void)
                 }
                 else
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
                                    dy - (BMP_TORPDET_HEIGHT / 2),
                                    cloud[k->t_fuse], torpColor (k));
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_TORPDET_WIDTH / 2),
+                                     dy - (BMP_TORPDET_HEIGHT / 2),
+                                     cloud[k->t_fuse], torpColor (k));
+#endif
                     clearzone[0][clearcount] = dx - (BMP_TORPDET_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_TORPDET_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_TORPDET_WIDTH;
@@ -1750,10 +1856,13 @@ DrawTorps (void)
                          * torpColor(k)); */
         
                         /* XFIX */
+#ifndef DOUBLE_BUFFERING
                         W_WriteBitmap (dx - (etorp_width / 2),
                                        dy - (etorp_height / 2), etorp, torpColor (k));
-                        /*W_WriteBitmapDB (localSDB, dx - (etorp_width / 2),
-                                         dy - (etorp_height / 2), etorp, torpColor (k));*/
+#else
+                        W_WriteBitmapDB (localSDB, dx - (etorp_width / 2),
+                                         dy - (etorp_height / 2), etorp, torpColor (k));
+#endif
                         clearzone[0][clearcount] = dx - (etorp_width / 2);
                         clearzone[1][clearcount] = dy - (etorp_height / 2);
                         clearzone[2][clearcount] = etorp_width;
@@ -1762,11 +1871,13 @@ DrawTorps (void)
                     }
                     else
                     {
+#ifndef DOUBLE_BUFFERING
                         W_WriteBitmap (dx - (mtorp_width / 2),
                                        dy - (mtorp_height / 2), mtorp, torpColor (k));
-                        /*W_WriteBitmapDB (localSDB, dx - (mtorp_width / 2),
-                                         dy - (mtorp_height / 2), mtorp, torpColor (k));*/
-        
+#else
+                        W_WriteBitmapDB (localSDB, dx - (mtorp_width / 2),
+                                         dy - (mtorp_height / 2), mtorp, torpColor (k));
+#endif
                         clearzone[0][clearcount] = dx - (mtorp_width / 2);
                         clearzone[1][clearcount] = dy - (mtorp_height / 2);
                         clearzone[2][clearcount] = mtorp_width;
@@ -1871,7 +1982,7 @@ DrawPlasmaTorps (void)
             {
                 pt->pt_fuse = BMP_TORPDET_FRAMES - 1;
             }
-            
+
 #ifdef SOUND
             if (pt->pt_fuse == BMP_TORPDET_FRAMES - 1)
             {
@@ -1928,11 +2039,17 @@ DrawPlasmaTorps (void)
                         ptorpTeam = 0;
                     }
                 }
-    
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (BMP_CPLASMATORPDET_WIDTH / 2),
                                dy - (BMP_CPLASMATORPDET_HEIGHT / 2),
                                plcloudC[ptorpTeam][pt->pt_fuse],
                                plasmatorpColor (pt));
+#else
+                W_WriteBitmapDB (localSDB, dx - (BMP_CPLASMATORPDET_WIDTH / 2),
+                                 dy - (BMP_CPLASMATORPDET_HEIGHT / 2),
+                                 plcloudC[ptorpTeam][pt->pt_fuse],
+                                 plasmatorpColor (pt));
+#endif
                 clearzone[0][clearcount] = dx - (BMP_CPLASMATORPDET_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_CPLASMATORPDET_HEIGHT / 2);
                 clearzone[2][clearcount] = BMP_CPLASMATORPDET_WIDTH;
@@ -1941,9 +2058,15 @@ DrawPlasmaTorps (void)
             }
             else
             {
+#ifndef DOUBLE_BUFFERING
                 W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
                                dy - (BMP_PLASMATORPDET_HEIGHT / 2),
                                plasmacloud[pt->pt_fuse], plasmatorpColor (pt));
+#else
+                W_WriteBitmapDB (localSDB, dx - (BMP_PLASMATORPDET_WIDTH / 2),
+                                 dy - (BMP_PLASMATORPDET_HEIGHT / 2),
+                                 plasmacloud[pt->pt_fuse], plasmatorpColor (pt));
+#endif
                 clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
                 clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
@@ -1988,17 +2111,31 @@ DrawPlasmaTorps (void)
                                                        p_team & (me->p_hostile | me->
                                                                  p_swar))))
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
                                    dy - (BMP_CPLASMATORP_HEIGHT / 2),
                                    plasmaC[ptorpTeam][pt->pt_fuse],
                                    plasmatorpColor (pt));
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_CPLASMATORP_WIDTH / 2),
+                                     dy - (BMP_CPLASMATORP_HEIGHT / 2),
+                                     plasmaC[ptorpTeam][pt->pt_fuse],
+                                     plasmatorpColor (pt));
+#endif
                 }
                 else
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
                                    dy - (BMP_CPLASMATORP_HEIGHT / 2),
                                    mplasmaC[ptorpTeam][pt->pt_fuse],
                                    plasmatorpColor (pt));
+#else
+                    W_WriteBitmapDB (localSDB, dx - (BMP_CPLASMATORP_WIDTH / 2),
+                                     dy - (BMP_CPLASMATORP_HEIGHT / 2),
+                                     mplasmaC[ptorpTeam][pt->pt_fuse],
+                                     plasmatorpColor (pt));
+#endif
                 }
                 clearzone[0][clearcount] = dx - (BMP_CPLASMATORP_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_CPLASMATORP_HEIGHT / 2);
@@ -2014,9 +2151,15 @@ DrawPlasmaTorps (void)
                                                        p_team & (me->p_hostile | me->
                                                                  p_swar))))
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (eplasmatorp_width / 2),
                                    dy - (eplasmatorp_height / 2),
                                    eplasmatorp, plasmatorpColor (pt));
+#else
+                    W_WriteBitmapDB (localSDB, dx - (eplasmatorp_width / 2),
+                                     dy - (eplasmatorp_height / 2),
+                                     eplasmatorp, plasmatorpColor (pt));
+#endif
                     clearzone[0][clearcount] = dx - (eplasmatorp_width / 2);
                     clearzone[1][clearcount] = dy - (eplasmatorp_height / 2);
                     clearzone[2][clearcount] = eplasmatorp_width;
@@ -2025,10 +2168,15 @@ DrawPlasmaTorps (void)
                 }
                 else
                 {
+#ifndef DOUBLE_BUFFERING
                     W_WriteBitmap (dx - (mplasmatorp_width / 2),
                                    dy - (mplasmatorp_height / 2),
                                    mplasmatorp, plasmatorpColor (pt));
-        
+#else
+                    W_WriteBitmapDB (localSDB, dx - (mplasmatorp_width / 2),
+                                     dy - (mplasmatorp_height / 2),
+                                     mplasmatorp, plasmatorpColor (pt));
+#endif
                     clearzone[0][clearcount] = dx - (mplasmatorp_width / 2);
                     clearzone[1][clearcount] = dy - (mplasmatorp_height / 2);
                     clearzone[2][clearcount] = mplasmatorp_width;
@@ -2111,8 +2259,11 @@ DrawMisc (void)
             else
                 continue;
 
+#ifndef DOUBLE_BUFFERING
             W_CacheLine (w, sx, sy, ex, ey, sl->color);
-            //W_CacheLineDB (localSDB, sx, sy, ex, ey, sl->color);
+#else
+            W_CacheLineDB (localSDB, sx, sy, ex, ey, sl->color);
+#endif
             clearline[0][clearlcount] = sx;
             clearline[1][clearlcount] = sy;
             clearline[2][clearlcount] = ex;
@@ -2133,8 +2284,11 @@ DrawMisc (void)
         if (ey > WINSIDE - 1)
             ey = WINSIDE - 1;
         /* XFIX */
+#ifndef DOUBLE_BUFFERING
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
-        //W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
+#else
+        W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
+#endif
         clearline[0][clearlcount] = dx;
         clearline[1][clearlcount] = sy;
         clearline[2][clearlcount] = dx;
@@ -2152,8 +2306,11 @@ DrawMisc (void)
         if (ey > WINSIDE - 1)
             ey = WINSIDE - 1;
         /* XFIX */
+#ifndef DOUBLE_BUFFERING
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
-        //W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
+#else
+        W_CacheLineDB (localSDB, dx, sy, dx, ey, warningColor);
+#endif
         clearline[0][clearlcount] = dx;
         clearline[1][clearlcount] = sy;
         clearline[2][clearlcount] = dx;
@@ -2171,8 +2328,11 @@ DrawMisc (void)
         if (ex > WINSIDE - 1)
             ex = WINSIDE - 1;
         /* XFIX */
+#ifndef DOUBLE_BUFFERING
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
-        //W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
+#else
+        W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
+#endif
         clearline[0][clearlcount] = sx;
         clearline[1][clearlcount] = dy;
         clearline[2][clearlcount] = ex;
@@ -2190,8 +2350,11 @@ DrawMisc (void)
         if (ex > WINSIDE - 1)
             ex = WINSIDE - 1;
         /* XFIX */
+#ifndef DOUBLE_BUFFERING
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
-        //W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
+#else
+        W_CacheLineDB (localSDB, sx, dy, ex, dy, warningColor);
+#endif
         clearline[0][clearlcount] = sx;
         clearline[1][clearlcount] = dy;
         clearline[2][clearlcount] = ex;
@@ -2210,16 +2373,19 @@ DrawMisc (void)
         case PFGREEN:
             if (extraAlertBorder)
             {
+#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, gColor);
-                //W_ChangeBorderDB (localSDB, gColor);
                 W_ChangeBorder (mapw, gColor);
-                //W_ChangeBorderDB (mapSDB, gColor);
+#else
+                W_ChangeBorderDB (localSDB, gColor);
+                W_ChangeBorderDB (mapSDB, gColor);
+#endif
             }
             W_ChangeBorder (baseWin, gColor);
 
 #if defined(SOUND)
             if (newSound) // Kill any channels with WARNING_WAV or RED_ALERT_WAV (group 2)
-		Mix_HaltGroup(2);
+                Mix_HaltGroup(2);
             else
             {
                 Abort_Sound(WARNING_SOUND);
@@ -2232,10 +2398,13 @@ DrawMisc (void)
         case PFYELLOW:
             if (extraAlertBorder)
             {
+#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, yColor);
-                //W_ChangeBorderDB (localSDB, yColor);
                 W_ChangeBorder (mapw, yColor);
-                //W_ChangeBorderDB (mapSDB, yColor);
+#else
+                W_ChangeBorderDB (localSDB, yColor);
+                W_ChangeBorderDB (mapSDB, yColor);
+#endif
             }
             W_ChangeBorder (baseWin, yColor);
 
@@ -2258,10 +2427,13 @@ DrawMisc (void)
         case PFRED:
             if (extraAlertBorder)
             {
+#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, rColor);
-                //W_ChangeBorderDB (localSDB, rColor);
                 W_ChangeBorder (mapw, rColor);
-                //W_ChangeBorderDB (localSDB, rColor);
+#else
+                W_ChangeBorderDB (localSDB, rColor);
+                W_ChangeBorderDB (mapSDB, rColor);
+#endif
             }
             W_ChangeBorder (baseWin, rColor);
             
@@ -2368,8 +2540,11 @@ DrawMisc (void)
         }
         if (tri_x != -1)
         {
+#ifndef DOUBLE_BUFFERING
             W_WriteTriangle (w, tri_x, tri_y, 4, facing, foreColor);
-            //W_WriteTriangleDB (localSDB, tri_x, tri_y, 4, facing, foreColor);
+#else
+            W_WriteTriangleDB (localSDB, tri_x, tri_y, 4, facing, foreColor);
+#endif
             clearzone[0][clearcount] = tri_x - tri_size - 1;
             clearzone[1][clearcount] = tri_y - 1 + (facing ? 0 : -tri_size);
             clearzone[2][clearcount] = tri_size * 2 + 2;
@@ -2386,7 +2561,9 @@ local (void)
    Draw out the 'tactical' map
 */
 {
-    //W_Win2Mem (localSDB);
+#ifdef DOUBLE_BUFFERING
+    W_Win2Mem (localSDB);
+#endif
 
     clearLocal ();
 
@@ -2405,7 +2582,9 @@ local (void)
     weaponUpdate = 0;
     DrawMisc ();
 
-    //W_Mem2Win (localSDB);
+#ifdef DOUBLE_BUFFERING
+    W_Mem2Win (localSDB);
+#endif
 }
 
 
@@ -2419,8 +2598,11 @@ clearLocal (void)
 {
     if (W_FastClear)
     {
+#ifndef DOUBLE_BUFFERING
         W_ClearWindow (w);
-        //W_ClearWindowDB (localSDB);
+#else
+        W_ClearWindowDB (localSDB);
+#endif
         clearcount = 0;
         clearlcount = 0;
         tractcurrent = tracthead;
@@ -2428,35 +2610,44 @@ clearLocal (void)
     else
     {
         // Much more efficient way of clearing -- X programmers take note!
+#ifndef DOUBLE_BUFFERING
         W_ClearAreas (w, clearzone[0], clearzone[1], clearzone[2],
                       clearzone[3], clearcount);
-        /*W_ClearAreasDB (localSDB, clearzone[0], clearzone[1], clearzone[2],
-                      clearzone[3], clearcount);*/
+#else
+        W_ClearAreasDB (localSDB, clearzone[0], clearzone[1], clearzone[2],
+                      clearzone[3], clearcount);
+#endif
         clearcount = 0;
 
       /* erase the tractor lines [BDyess] */
         for (tractrunner = tracthead; tractrunner != tractcurrent;
              tractrunner = tractrunner->next)
         {
+#ifndef DOUBLE_BUFFERING
             W_MakeTractLine (w, tractrunner->sx, tractrunner->sy,
                              tractrunner->d1x, tractrunner->d1y,
                              backColor);
-            /*W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
-                               tractrunner->d1x, tractrunner->d1y,
-                               backColor);*/
             W_MakeTractLine (w, tractrunner->sx, tractrunner->sy,
                              tractrunner->d2x, tractrunner->d2y,
                              backColor);
-            /*W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
+#else
+            W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
+                               tractrunner->d1x, tractrunner->d1y,
+                               backColor);
+            W_MakeTractLineDB (localSDB, tractrunner->sx, tractrunner->sy,
                                tractrunner->d2x, tractrunner->d2y,
-                               backColor);*/
+                               backColor);
+#endif
         }
         tractcurrent = tracthead;
 
+#ifndef DOUBLE_BUFFERING
         W_MakeLines (w, clearline[0], clearline[1], clearline[2],
                      clearline[3], clearlcount, backColor);
-        /*W_MakeLinesDB (localSDB, clearline[0], clearline[1], clearline[2],
-                       clearline[3], clearlcount, backColor);*/
+#else
+        W_MakeLinesDB (localSDB, clearline[0], clearline[1], clearline[2],
+                       clearline[3], clearlcount, backColor);
+#endif
         clearlcount = 0;
     }
 }

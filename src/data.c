@@ -348,7 +348,7 @@ W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
     warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi, messwk,
     playerw, playerw2, planetw, rankw, optionWin = 0, reviewWin;
 W_Window udpWin, phaserwin, hintWin;
-W_Window waitWin, qwin, countWin, motdButtonWin, motdWin;
+W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
 #ifdef SHORT_PACKETS
 W_Window spWin = NULL;
@@ -412,57 +412,57 @@ struct dmacro_list dist_prefered[NUM_DIST];
  * dist_type */
 /* the character specification is ignored now, kept here anyway for reference */
 struct dmacro_list dist_defaults[] = {
-    {'X', "no zero", "this should never get looked at"},
+    {(unsigned char) ('X'), "no zero", "this should never get looked at"},
 /* ^t */
-    {'\xd4', "taking", " %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}\0"},
+    {(unsigned char) ('\xd4'), "taking", " %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}\0"},
 /* ^o */
-    {'\xcf', "ogg", " %T%c->%O Help Ogg %p at %l\0"},
+    {(unsigned char) ('\xcf'), "ogg", " %T%c->%O Help Ogg %p at %l\0"},
 /* ^b */
-    {'\xc2', "bomb", " %T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}\0"},
+    {(unsigned char) ('\xc2'), "bomb", " %T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}\0"},
 /* ^c */
-    {'\xc3', "space_control", " %T%c->%O Help Control at %L\0"},
+    {(unsigned char) ('\xc3'), "space_control", " %T%c->%O Help Control at %L\0"},
 /* ^1 */
-    {'\x91', "save_planet", " %T%c->%O Emergency at %L!!!!\0"},
+    {(unsigned char) ('\x91'), "save_planet", " %T%c->%O Emergency at %L!!!!\0"},
 /* ^2 */
-    {'\x92', "base_ogg", " %T%c->%O Sync with --]> %g <[-- OGG ogg OGG base!!\0"},
+    {(unsigned char) ('\x92'), "base_ogg", " %T%c->%O Sync with --]> %g <[-- OGG ogg OGG base!!\0"},
 /* ^3 */
-    {'\x93', "help1", " %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.\0"},
+    {(unsigned char) ('\x93'), "help1", " %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.\0"},
 /* ^4 */
-    {'\x94', "help2", " %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.\0"},
+    {(unsigned char) ('\x94'), "help2", " %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.\0"},
 /* ^e */
-    {'\xc5', "escorting", " %T%c->%O ESCORTING %g (%d%%D %s%%S %f%%F)\0"},
+    {(unsigned char) ('\xc5'), "escorting", " %T%c->%O ESCORTING %g (%d%%D %s%%S %f%%F)\0"},
 /* ^p */
-    {'\xd0', "ogging", " %T%c->%O Ogging %h\0"},
+    {(unsigned char) ('\xd0'), "ogging", " %T%c->%O Ogging %h\0"},
 /* ^m */
-    {'\xcd', "bombing", " %T%c->%O Bombing %l @ %n\0"},
+    {(unsigned char) ('\xcd'), "bombing", " %T%c->%O Bombing %l @ %n\0"},
 /* ^l */
-    {'\xcc', "controlling", " %T%c->%O Controlling at %l\0"},
+    {(unsigned char) ('\xcc'), "controlling", " %T%c->%O Controlling at %l\0"},
 /* ^5 */
-    {'\x95', "asw", " %T%c->%O Anti-bombing %p near %b.\0"},
+    {(unsigned char) ('\x95'), "asw", " %T%c->%O Anti-bombing %p near %b.\0"},
 /* ^6 */
-    {'\x96', "asbomb", " %T%c->%O DON'T BOMB %l. Let me bomb it (%S)\0"},
+    {(unsigned char) ('\x96'), "asbomb", " %T%c->%O DON'T BOMB %l. Let me bomb it (%S)\0"},
 /* ^7 */
-    {'\x97', "doing1", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)\0"},
+    {(unsigned char) ('\x97'), "doing1", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)\0"},
 /* ^8 */
-    {'\x98', "doing2", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)\0"},
+    {(unsigned char) ('\x98'), "doing2", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)\0"},
 /* ^f */
-    {'\xc6', "free_beer", " %T%c->%O %p is free beer\0"},
+    {(unsigned char) ('\xc6'), "free_beer", " %T%c->%O %p is free beer\0"},
 /* ^n */
-    {'\xce', "no_gas", " %T%c->%O %p @ %l has no gas\0"},
+    {(unsigned char) ('\xce'), "no_gas", " %T%c->%O %p @ %l has no gas\0"},
 /* ^h */
-    {'\xc8', "crippled", " %T%c->%O %p @ %l crippled\0"},
+    {(unsigned char) ('\xc8'), "crippled", " %T%c->%O %p @ %l crippled\0"},
 /* ^9 */
-    {'\x99', "pickup", " %T%c->%O %p++ @ %l\0"},
+    {(unsigned char) ('\x99'), "pickup", " %T%c->%O %p++ @ %l\0"},
 /* ^0 */
-    {'\x90', "pop", " %T%c->%O %l%?%n>-1%{ @ %n%}!\0"},
+    {(unsigned char) ('\x90'), "pop", " %T%c->%O %l%?%n>-1%{ @ %n%}!\0"},
 /* F */
-    {'F', "carrying", " %T%c->%O %?%S=SB%{Your Starbase is c%!C%}arrying %?%a>0%{%a%!NO%} arm%?%a=1%{y%!ies%}.\0"},
+    {(unsigned char) ('F'), "carrying", " %T%c->%O %?%S=SB%{Your Starbase is c%!C%}arrying %?%a>0%{%a%!NO%} arm%?%a=1%{y%!ies%}.\0"},
 /* ^@ */
-    {'\xa0', "other1", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)\0"},
+    {(unsigned char) ('\xa0'), "other1", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)\0"},
 /* ^# */
-    {'\x83', "other2", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)\0"},
+    {(unsigned char) ('\x83'), "other2", " %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)\0"},
 /* E */
-    {'E', "help", " %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!\0"},
+    {(unsigned char) ('E'), "help", " %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!\0"},
     {'\0', '\0', '\0'},
 };
 
@@ -724,9 +724,10 @@ int viewBox = 1;
 
 struct stringlist *defaults = NULL;
 
-/* DoubleBuffering */
+#ifdef DOUBLE_BUFFERING
 SDBUFFER * localSDB = NULL;
 SDBUFFER * mapSDB = NULL;
+#endif
 
 int disableWinkey = 1;  /* disable WinKey + ContextKey by default */
 

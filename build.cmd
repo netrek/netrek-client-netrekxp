@@ -1,15 +1,21 @@
-SET RSAKey=\netrek_files\rsa\NetrekXP-Mod-RSA-Key-Win32.secret
-Set Compiler=BCC
-Set InstCWD=\netrek_files
-rem Set Compiler=VCC
+set RSAKey="\netrek_files\rsa\NetrekXP-2006-RSA-Key-Win32.secret"
+set InstCWD="\netrek_files"
+set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
+rem set Compiler=VCC
+set Compiler=BCC
 
 @echo off
 Set MyCWD=%cd%
 if /I "%1" == "clean" goto :clean
+if /I "%1" == "cleanrsa" goto :cleanrsa
 if /I "%1" == "dist" goto :dist
+if /I "%1" == "build" goto :build
+if /I "%1" == "pics" goto :pics
 
 mkdir %InstCWD%
 mkdir %InstCWD%\netrek
+
+:pics
 
 pushd resources\ships\color\fed
 echo Making resources\ships\color\fed...
@@ -341,6 +347,20 @@ pushd resources\misclib\color
 %MyCWD%\tools\imagemagick\montage -colors 256 -mode concatenate -tile 1x5 shexpl0.bmp shexpl1.bmp shexpl2.bmp shexpl3.bmp shexpl4.bmp shexpl.bmp
 popd
 
+if /I "%1" == "pics" goto :end
+
+:build
+
+pushd resources
+pushd htmlhelp
+%HelpCompiler% netrek.hhp
+popd
+popd
+
+pushd src
+%MyCWD%\tools\mkkey -k %RSAKEY%
+popd
+
 if /I "%Compiler%" == "BCC" goto :CompilerBCC
 if /I "%Compiler%" == "VCC" goto :CompilerVCC
 
@@ -348,28 +368,28 @@ echo You must set which compiler you have at the top of this batch file.
 goto :end
 
 :CompilerVCC
-pushd src
-%MyCWD%\tools\mkkey -nt -k %RSAKEY%
+pushd src\cursors
+cscript %MyCWD%\tools\vcmake.vbs curslib.dsw "Win32 Release"
 popd
 
-rem pushd src\cursors
-rem cscript %MyCWD%\tools\vcmake.vbs curslib.dsw "Win32 Release"
-rem popd
+pushd src\winkey
+cscript %MyCWD%\tools\vcmake.vbs winkey.dsw "Win32 Release"
+popd
 
-rem pushd src\winkey
-rem cscript %MyCWD%\tools\vcmake.vbs winkey.dsw "Win32 Release"
-rem popd
-
-rem cscript %MyCWD%\tools\vcmake.vbs clientr.dsw "Win32 Release"
+cscript %MyCWD%\tools\vcmake.vbs clientr.dsw "Win32 Release"
 
 pushd %InstCWD%\netrek
 %MyCWD%\tools\stampver -v%MyCWD%\src\stampver.inf netrek.exe
 popd
+
 goto :dist
 
 :CompilerBCC
 pushd src
 pushd cursors
+make
+popd
+pushd winkey
 make
 popd
 make
@@ -379,6 +399,8 @@ popd
 goto :dist
 
 :dist
+
+copy resources\htmlhelp\netrek.chm %InstCWD%\netrek
 
 mkdir %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\color\fed\fedship.bmp %InstCWD%\netrek\bitmaps\shiplib
@@ -459,12 +481,15 @@ copy resources\docs\*.txt %InstCWD%\netrek\docs
 mkdir %InstCWD%\netrek\sounds
 copy resources\sounds\*.wav %InstCWD%\netrek\sounds
 
-if /I "%Compiler%" == "BCC" copy src\netrek.exe %InstCWD%\netrek
 if /I "%Compiler%" == "BCC" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmaps
+if /I "%Compiler%" == "BCC" copy src\winkey\winkey.dll %InstCWD%\netrek\bitmaps
+if /I "%Compiler%" == "BCC" copy src\netrek.exe %InstCWD%\netrek
 
 goto end
 
 :clean
+del resources\htmlhelp\netrek.chm
+
 del resources\ships\color\fed\fedship.bmp resources\ships\color\fed\fed_??.bmp
 del resources\ships\color\ind\indship.bmp resources\ships\color\ind\ind_??.bmp
 del resources\ships\color\kli\kliship.bmp resources\ships\color\kli\kli_??.bmp
@@ -510,12 +535,13 @@ del resources\misclib\color\shexpl.bmp
 
 if /I "%Compiler%" == "BCC" goto :CleanBCC
 if /I "%Compiler%" == "VCC" goto :CleanVCC
+
 echo You must set which compiler you have at the top of this batch file.
+
 goto :end
 
 :CleanVCC
 pushd src
-del rsa*.c
 pushd cursors
 del *.ncb
 del *.opt
@@ -532,13 +558,22 @@ goto :end
 
 :CleanBCC
 pushd src
-del *.obj *.res netrek.exe netrek.tds netrek.map
+make clean
 pushd cursors
-del curslib.ilf curslib.ilc curslib.ild curslib.ils curslib.tds curslib.dll
+make clean
 popd
 pushd winkey
-del winkey.ilf winkey.ilc winkey.ild winkey.ils winkey.tds winkey.dll
+make clean
 popd
 popd
+
+goto :end
+
+:cleanrsa
+pushd src
+del rsa*.c
+popd
+
+goto :end
 
 :end

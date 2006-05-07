@@ -48,6 +48,15 @@ int MaxMotdLine = 0;
 #define STATSIZE        (MESSAGESIZE * 2 + BORDER)
 #define YOFF            -25
 
+/* Local function prototypes */
+void loadbitmaps (void);
+void loadbitmaps1 (void);
+void loadbitmapsT (void);
+void loadbitmapsM (void);
+void loadbitmapsG (void);
+void loadbitmapsHR (void);
+void loadweaponsC (void);
+
 /******************************************************************************/
 /***   loadbitmaps(), loadbitmaps1(), loadbitmapsT(), loadbitmapsG(),
        loadbitmapsM()
@@ -577,6 +586,7 @@ handleMessageWindowButton (W_Event * event)
 /******************************************************************************/
 /***  newwin()
 /******************************************************************************/
+void
 newwin (char *hostmon,
         char *progname)
 {
@@ -587,11 +597,17 @@ newwin (char *hostmon,
     baseWin = W_MakeWindow ("netrek", 0, 0, 1024, 768, NULL, BORDER, gColor);
 
     w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin, THICKBORDER, foreColor);
+
+#ifdef DOUBLE_BUFFERING
     localSDB = W_InitSDB (w);
+#endif
 
     mapw = W_MakeWindow ("map", WINSIDE + 6, 0, WINSIDE, WINSIDE, baseWin,
                          THICKBORDER, foreColor);
+
+#ifdef DOUBLE_BUFFERING
     mapSDB = W_InitSDB (mapw);
+#endif
 
     tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 3,
                             STATSIZE + 2, baseWin, BORDER, foreColor);
@@ -795,6 +811,7 @@ newwin (char *hostmon,
 /******************************************************************************/
 /***  newsoundwin() - Need to map it after reset_defaults, so pulled out of newwin
 /******************************************************************************/
+void
 newsoundwin (char *hostmon,
         char *progname)
 {
@@ -819,6 +836,7 @@ newsoundwin (char *hostmon,
 /******************************************************************************/
 /***  mapAll()
 /******************************************************************************/
+void
 mapAll (void)
 {
     initinput ();
@@ -881,6 +899,7 @@ mapAll (void)
 /******************************************************************************/
 /***  savebitmaps()
 /******************************************************************************/
+void
 savebitmaps (void)
 {
     int i, k;
@@ -1455,6 +1474,7 @@ entrywindow (int *team,
 /***  teamRequest()
 /***   Attempt to pick specified team & ship
 /******************************************************************************/
+int
 teamRequest (int team,
              int ship)
 {
@@ -1498,6 +1518,7 @@ teamRequest (int team,
 /******************************************************************************/
 /***  numShips()
 /******************************************************************************/
+int
 numShips (int owner)
 {
     int i, num = 0;
@@ -1513,6 +1534,7 @@ numShips (int owner)
 /******************************************************************************/
 /***  realNumShips()
 /******************************************************************************/
+int
 realNumShips (int owner)
 {
     int i, num = 0;
@@ -1528,6 +1550,7 @@ realNumShips (int owner)
 /******************************************************************************/
 /***  deadTeam()
 /******************************************************************************/
+int
 deadTeam (int owner)
 /* The team is dead if it has no planets and cannot coup it's home planet */
 {
@@ -1552,6 +1575,7 @@ deadTeam (int owner)
 /******************************************************************************/
 /***  checkBold()
 /******************************************************************************/
+int
 checkBold (char *line)
 /* Determine if that line should be highlighted on sign-on screen */
 /* Which is done when it is the players own score being displayed */
@@ -1602,6 +1626,7 @@ static int first = 1;
 /******************************************************************************/
 /***  showMotdWin()
 /******************************************************************************/
+void
 showMotdWin (W_Window motdwin, int atline)
 {
     int i, length, top, center;
@@ -1628,7 +1653,7 @@ showMotdWin (W_Window motdwin, int atline)
         data = motddata;
         while (data != NULL)
         {
-            data->bold = checkBold (data->data);
+            data->bold = (char) (checkBold (data->data));
             data = data->next;
         }
     }
@@ -1768,6 +1793,7 @@ newMotdLine (char *line)
 /******************************************************************************/
 /***  getResources()
 /******************************************************************************/
+void
 getResources (char *prog)
 {
     getColorDefs ();
@@ -1803,6 +1829,7 @@ redrawTeam (W_Window win,
 /******************************************************************************/
 /***  redrawQuit()
 /******************************************************************************/
+void
 redrawQuit (void)
 {
     W_WriteText (qwin, 5, 5, textColor, "Quit NetrekXP", 13, W_RegularFont);
@@ -1820,6 +1847,7 @@ redrawQuit (void)
 /******************************************************************************/
 /***  showTimeLeft()
 /******************************************************************************/
+void
 showTimeLeft (time_t time, time_t max)
 {
     char buf[BUFSIZ], *cp;

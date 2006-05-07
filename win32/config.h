@@ -126,6 +126,9 @@
 /*      RACE_COLORS             - additional bitplane for race colors           */
 #define RACE_COLORS
 
+/*      DOUBLE_BUFFERING        - paint using double buffering to remove flicker (not working) */
+#undef  DOUBLE_BUFFERING
+
 #define PLIST1 
 #define PLIST 
 #define CONTROL_KEY

@@ -124,9 +124,9 @@ initPlanets (void)
             for (y = startY; y <= endY; y++)
             {
                 if (roughMap[x][y] == -1)
-                    roughMap[x][y] = k;
+                    roughMap[x][y] = (char) k;
                 else
-                    roughMap2[x][y] = k;
+                    roughMap2[x][y] = (char) k;
             }
         }
     }
@@ -301,18 +301,21 @@ DrawPlanets ()
             ody = pl_update[l->pl_no].plu_y * WINSIDE / GWIDTH;
 
             /* XFIX */
+#ifndef DOUBLE_BUFFERING
             W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                          ody - (BMP_MPLANET_HEIGHT / 2),
                          BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT);
-            /*W_ClearAreaDB (mapSDB, odx - (BMP_MPLANET_WIDTH / 2),
-                           ody - (BMP_MPLANET_HEIGHT / 2),
-                           BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT);*/
             W_WriteText (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                          ody + (BMP_MPLANET_HEIGHT / 2),
                          backColor, l->pl_name, 3, planetFont (l));
-            /*W_WriteTextDB (mapSDB, odx - (BMP_MPLANET_WIDTH / 2),
+#else
+            W_ClearAreaDB (mapSDB, odx - (BMP_MPLANET_WIDTH / 2),
+                           ody - (BMP_MPLANET_HEIGHT / 2),
+                           BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT);
+            W_WriteTextDB (mapSDB, odx - (BMP_MPLANET_WIDTH / 2),
                            ody + (BMP_MPLANET_HEIGHT / 2),
-                           backColor, l->pl_name, 3, planetFont (l));*/
+                           backColor, l->pl_name, 3, planetFont (l));
+#endif
             pl_update[l->pl_no].plu_update = 0;
         }
         else
@@ -320,12 +323,15 @@ DrawPlanets ()
             /* Clear the planet normally */
 
             /* XFIX */
+#ifndef DOUBLE_BUFFERING
             W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),
                          dy - (BMP_MPLANET_HEIGHT / 2 + 4),
                          BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);
-            /*W_ClearAreaDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2 + 4),
+#else
+            W_ClearAreaDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2 + 4),
                            dy - (BMP_MPLANET_HEIGHT / 2 + 4),
-                           BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);*/
+                           BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);
+#endif
             l->pl_flags &= ~PLCLEAR;
         }
 
@@ -337,14 +343,23 @@ DrawPlanets ()
 	{
 	    int     seq_n = emph_planet_seq_n[l->pl_no] % emph_planet_seq_frames;
 
+#ifndef DOUBLE_BUFFERING
 	    W_OverlayBitmap(dx - (emph_planet_seq_width / 2 + 1),
 			    dy - (emph_planet_seq_height / 2),
 			    emph_planet_seq[seq_n],
 			    W_White);
 
 	    W_WriteBitmap(dx - (BMP_MPLANET_WIDTH / 2), dy - (BMP_MPLANET_HEIGHT / 2),
-			    planetmBitmap(l), planetColor(l));
+			  planetmBitmap(l), planetColor(l));
+#else
+	    W_OverlayBitmapDB(mapSDB, dx - (emph_planet_seq_width / 2 + 1),
+			      dy - (emph_planet_seq_height / 2),
+			      emph_planet_seq[seq_n],
+			      W_White);
 
+	    W_WriteBitmapDB(localSDB, dx - (BMP_MPLANET_WIDTH / 2), dy - (BMP_MPLANET_HEIGHT / 2),
+			    planetmBitmap(l), planetColor(l));
+#endif
 	    emph_planet_seq_n[l->pl_no] -= 1;
 	    l->pl_flags |= PLREDRAW;		 /* Leave redraw on until * * 
 						  * done highlighting */
@@ -354,12 +369,15 @@ DrawPlanets ()
         else
 	{
 #endif
+#ifndef DOUBLE_BUFFERING
         W_OverlayBitmap (dx - (BMP_MPLANET_WIDTH / 2),
                          dy - (BMP_MPLANET_HEIGHT / 2), planetmBitmap (l),
                          planetColor (l));
-        /*W_OverlayBitmapDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
+#else
+        W_OverlayBitmapDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                            dy - (BMP_MPLANET_HEIGHT / 2), planetmBitmap (l),
-                           planetColor (l));*/
+                           planetColor (l));
+#endif
 #ifdef BEEPLITE
 	}
 #endif
@@ -368,34 +386,43 @@ DrawPlanets ()
         {
             if (agriCAPS)
             {
-                agri_name[0] = toupper (l->pl_name[0]);
-                agri_name[1] = toupper (l->pl_name[1]);
-                agri_name[2] = toupper (l->pl_name[2]);
+                agri_name[0] = (char) (toupper (l->pl_name[0]));
+                agri_name[1] = (char) (toupper (l->pl_name[1]));
+                agri_name[2] = (char) (toupper (l->pl_name[2]));
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
                             dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
                             agri_name, 3, planetFont (l));
-                /*W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
+#else
+                W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                                dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
-                               agri_name, 3, planetFont (l));*/
+                               agri_name, 3, planetFont (l));
+#endif
             }
             else
             {
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
                             dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
                             l->pl_name, 3, planetFont (l));
-                /*W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
+#else
+                W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                                dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
-                               l->pl_name, 3, planetFont (l));*/
+                               l->pl_name, 3, planetFont (l));
+#endif
             }
         }
         else
         {
+#ifndef DOUBLE_BUFFERING
             W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
                         dy + (BMP_MPLANET_HEIGHT / 2), planetColor (l),
                         l->pl_name, 3, planetFont (l));
-            /*W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
+#else
+            W_WriteTextDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                            dy + (BMP_MPLANET_HEIGHT / 2), planetColor (l),
-                           l->pl_name, 3, planetFont (l));*/
+                           l->pl_name, 3, planetFont (l));
+#endif
         }
 
         if (showIND && ((l->pl_info & me->p_team)
@@ -404,35 +431,41 @@ DrawPlanets ()
 #endif
             ) && (l->pl_owner == NOBODY))
         {
+#ifndef DOUBLE_BUFFERING
             W_MakeLine (mapw, dx + (BMP_MPLANET_WIDTH / 2 - 1),
                         dy + (BMP_MPLANET_HEIGHT / 2 - 1),
                         dx - (BMP_MPLANET_WIDTH / 2),
                         dy - (BMP_MPLANET_HEIGHT / 2), W_White);
-            /*W_MakeLineDB (mapSDB, dx + (BMP_MPLANET_WIDTH / 2 - 1),
-                          dy + (BMP_MPLANET_HEIGHT / 2 - 1),
-                          dx - (BMP_MPLANET_WIDTH / 2),
-                          dy - (BMP_MPLANET_HEIGHT / 2), W_White);*/
             W_MakeLine (mapw, dx - (BMP_MPLANET_WIDTH / 2),
                         dy + (BMP_MPLANET_HEIGHT / 2 - 1),
                         dx + (BMP_MPLANET_WIDTH / 2 - 1),
                         dy - (BMP_MPLANET_HEIGHT / 2), W_White);
-            /*W_MakeLineDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
+#else
+            W_MakeLineDB (mapSDB, dx + (BMP_MPLANET_WIDTH / 2 - 1),
+                          dy + (BMP_MPLANET_HEIGHT / 2 - 1),
+                          dx - (BMP_MPLANET_WIDTH / 2),
+                          dy - (BMP_MPLANET_HEIGHT / 2), W_White);
+            W_MakeLineDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                           dy + (BMP_MPLANET_HEIGHT / 2 - 1),
                           dx + (BMP_MPLANET_WIDTH / 2 - 1),
-                          dy - (BMP_MPLANET_HEIGHT / 2), W_White);*/
+                          dy - (BMP_MPLANET_HEIGHT / 2), W_White);
+#endif
         }
 
         if (showPlanetOwner)
         {
-            ch = ((l->pl_info & me->p_team)
+            ch = (char) (((l->pl_info & me->p_team)
 #ifdef RECORDGAME
                   || playback
 #endif
-                )? tolower (teamlet[l->pl_owner]) : '?';
+                )? tolower (teamlet[l->pl_owner]) : '?');
+#ifndef DOUBLE_BUFFERING
             W_WriteText (mapw, dx + (BMP_MPLANET_WIDTH / 2) + 2,
                          dy - 6, planetColor (l), &ch, 1, planetFont (l));
-            /*W_WriteTextDB (mapSDB, dx + (BMP_MPLANET_WIDTH / 2) + 2,
-                           dy - 6, planetColor (l), &ch, 1, planetFont (l));*/
+#else
+            W_WriteTextDB (mapSDB, dx + (BMP_MPLANET_WIDTH / 2) + 2,
+                           dy - 6, planetColor (l), &ch, 1, planetFont (l));
+#endif
         }
     }
 }
@@ -444,15 +477,15 @@ void
 DrawGalaxyHockeyLines (void)
 {
     register struct s_line *sl;
-    const int HALF_WINSIDE = WINSIDE / 2;
 
     for (sl = map_hockey_lines + NUM_HOCKEY_LINES - 1; sl >= map_hockey_lines;
          --sl)
     {
-        W_CacheLine (mapw, sl->begin_x, sl->begin_y,
-                     sl->end_x, sl->end_y, sl->color);
-        /*W_CacheLineDB (mapSDB, sl->begin_x, sl->begin_y,
-                       sl->end_x, sl->end_y, sl->color);*/
+#ifndef DOUBLE_BUFFERING
+        W_CacheLine (mapw, sl->begin_x, sl->begin_y, sl->end_x, sl->end_y, sl->color);
+#else
+        W_CacheLineDB (mapSDB, sl->begin_x, sl->begin_y, sl->end_x, sl->end_y, sl->color);
+#endif
 
     }
 }
@@ -466,7 +499,7 @@ DrawGalaxyHockeyScore (void)
 	int ori_light = FED;
 	char kli_score_line[5];
 	char ori_score_line[5];
-    int ori_offset, kli_offset;
+	int ori_offset, kli_offset;
 
 	int i;
 
@@ -497,31 +530,34 @@ DrawGalaxyHockeyScore (void)
 	/* Now we have scores, so let's draw them */
 	sprintf (ori_score_line, "%2d", ori_score);
 	sprintf (kli_score_line, "%-2d", kli_score);
+	
+	/* If we rotate galaxy 180 degrees the scoreboard flips */
+	if (rotate == 2)
+	{
+        	ori_offset = 8;
+        	kli_offset = 3;
+        }
+        else
+        {
+        	ori_offset = 3;
+        	kli_offset = 8;
+        }
 
-    /* If we rotate galaxy 180 degrees the scoreboard flips */
-    if (rotate == 2)
-    {
-        ori_offset = 8;
-        kli_offset = 3;
-    }
-    else
-    {
-        ori_offset = 3;
-        kli_offset = 8;
-    }
-
+#ifndef DOUBLE_BUFFERING
 	W_WriteText (mapw, ori_offset * W_Textwidth, 1 * W_Textheight, W_Ori, 
 				ori_score_line, strlen (ori_score_line), W_RegularFont);
-	/*W_WriteTextDB (mapSDB, ori_offset * W_Textwidth, 1 * W_Textheight, W_Ori, 
-				   ori_score_line, strlen (ori_score_line), W_RegularFont);*/
 	W_WriteText (mapw, 6 * W_Textwidth, 1 * W_Textheight, W_White, 
 				":", 1, W_RegularFont);
-	/*W_WriteTextDB (mapSDB, 6 * W_Textwidth, 1 * W_Textheight, W_White, 
-				   ":", 1, W_RegularFont);*/
 	W_WriteText (mapw, kli_offset * W_Textwidth, 1 * W_Textheight, W_Kli, 
 				kli_score_line, strlen (kli_score_line), W_RegularFont);
-	/*W_WriteTextDB (mapSDB, kli_offset * W_Textwidth, 1 * W_Textheight, W_Kli, 
-				   kli_score_line, strlen (kli_score_line), W_RegularFont);*/
+#else
+	W_WriteTextDB (mapSDB, ori_offset * W_Textwidth, 1 * W_Textheight, W_Ori, 
+				   ori_score_line, strlen (ori_score_line), W_RegularFont);
+	W_WriteTextDB (mapSDB, 6 * W_Textwidth, 1 * W_Textheight, W_White, 
+				   ":", 1, W_RegularFont);
+	W_WriteTextDB (mapSDB, kli_offset * W_Textwidth, 1 * W_Textheight, W_Kli, 
+				   kli_score_line, strlen (kli_score_line), W_RegularFont);
+#endif
 
 }
 #endif /* HOCKEY_LINES */
@@ -554,8 +590,9 @@ map (void)
     int view = WINSIDE * SCALE / 2;
     int mvx, mvy;
 
-    /* DoubleBuffering */
-    //W_Win2Mem (mapSDB);
+#ifdef DOUBLE_BUFFERING
+    W_Win2Mem (mapSDB);
+#endif
 
     dx = (me->p_x) / (GWIDTH / WINSIDE);
     dy = (me->p_y) / (GWIDTH / WINSIDE);
@@ -574,8 +611,11 @@ map (void)
             return;
         }
 
+#ifndef DOUBLE_BUFFERING
         W_ClearWindow (mapw);
-        //W_ClearWindowDB (mapSDB);
+#else
+        W_ClearWindowDB (mapSDB);
+#endif
         clearlock = 0;
         clearviewbox = 0;
         viewboxcleared = 0;
@@ -597,10 +637,13 @@ map (void)
         if (clearlock)
         {
             clearlock = 0;
+#ifndef DOUBLE_BUFFERING
             W_WriteTriangle (mapw, clearlmark[0], clearlmark[1],
                              clearlmark[2], clearlmark[3], backColor);
-            /*W_WriteTriangleDB (mapSDB, clearlmark[0], clearlmark[1],
-                               clearlmark[2], clearlmark[3], backColor);*/
+#else
+            W_WriteTriangleDB (mapSDB, clearlmark[0], clearlmark[1],
+                               clearlmark[2], clearlmark[3], backColor);
+#endif
         }
 
         if (clearviewbox)
@@ -608,17 +651,29 @@ map (void)
             clearviewbox = 0;
             /* clear old dots - placed here for less flicker */
             if (viewx + viewdist < WINSIDE && viewy + viewdist < WINSIDE)
-                  W_MakePoint (mapw, viewx + viewdist, viewy + viewdist, backColor);
-                   
+#ifndef DOUBLE_BUFFERING
+                W_MakePoint (mapw, viewx + viewdist, viewy + viewdist, backColor);
+#else
+                W_MakePointDB (mapSDB, viewx + viewdist, viewy + viewdist, backColor);
+#endif
             if (viewx + viewdist < WINSIDE && viewy - viewdist > 0)
-                  W_MakePoint (mapw, viewx + viewdist, viewy - viewdist, backColor);
-
+#ifndef DOUBLE_BUFFERING
+                W_MakePoint (mapw, viewx + viewdist, viewy - viewdist, backColor);
+#else
+                W_MakePointDB (mapSDB, viewx + viewdist, viewy - viewdist, backColor);
+#endif
             if (viewx - viewdist > 0 && viewy + viewdist < WINSIDE)
-                  W_MakePoint (mapw, viewx - viewdist, viewy + viewdist, backColor);
-
+#ifndef DOUBLE_BUFFERING
+                W_MakePoint (mapw, viewx - viewdist, viewy + viewdist, backColor);
+#else
+                W_MakePointDB (mapSDB, viewx - viewdist, viewy + viewdist, backColor);
+#endif
             if (viewx - viewdist > 0 && viewy - viewdist > 0)
-                  W_MakePoint (mapw, viewx - viewdist, viewy - viewdist, backColor);
-
+#ifndef DOUBLE_BUFFERING
+                W_MakePoint (mapw, viewx - viewdist, viewy - viewdist, backColor);
+#else
+                W_MakePointDB (mapSDB, viewx - viewdist, viewy - viewdist, backColor);
+#endif
 
             /* redraw any planets they overwrote */
             mvx = viewx * (GWIDTH / WINSIDE); /* correct from view scale */
@@ -642,10 +697,13 @@ map (void)
                 if (mclearzone[2][i])
                 {
                     /* XFIX */
+#ifndef DOUBLE_BUFFERING
                     W_ClearArea (mapw, mclearzone[0][i], mclearzone[1][i],
                                  mclearzone[2][i], mclearzone[3][i]);
-                    /*W_ClearAreaDB (mapSDB, mclearzone[0][i], mclearzone[1][i],
-                                   mclearzone[2][i], mclearzone[3][i]);*/
+#else
+                    W_ClearAreaDB (mapSDB, mclearzone[0][i], mclearzone[1][i],
+                                   mclearzone[2][i], mclearzone[3][i]);
+#endif
 
                     /* Redraw the hole just left next update */
                     checkRedraw (mclearzone[4][i], mclearzone[5][i]);
@@ -685,25 +743,29 @@ map (void)
         {
             /* draw the new points */
             if (dx + viewdist < WINSIDE && dy + viewdist < WINSIDE)
+#ifndef DOUBLE_BUFFERING
                 W_MakePoint (mapw, dx + viewdist, dy + viewdist, W_White);
-                /*W_MakeLine (mapw, dx + viewdist, dy + viewdist,
-                            dx - viewdist, dy + viewdist, W_White);*/
-                //W_MakePointDB (mapSDB, dx + viewdist, dy + viewdist, W_White);
+#else
+                W_MakePointDB (mapSDB, dx + viewdist, dy + viewdist, W_White);
+#endif
             if (dx + viewdist < WINSIDE && dy - viewdist > 0)
+#ifndef DOUBLE_BUFFERING
                 W_MakePoint (mapw, dx + viewdist, dy - viewdist, W_White);
-                /*W_MakeLine (mapw, dx + viewdist, dy - viewdist,
-                            dx + viewdist, dy + viewdist, W_White);*/
-                //W_MakePointDB (mapSDB, dx + viewdist, dy - viewdist, W_White);
+#else
+                W_MakePointDB (mapSDB, dx + viewdist, dy - viewdist, W_White);
+#endif
             if (dx - viewdist > 0 && dy + viewdist < WINSIDE)
+#ifndef DOUBLE_BUFFERING
                 W_MakePoint (mapw, dx - viewdist, dy + viewdist, W_White);
-                /*W_MakeLine (mapw, dx - viewdist, dy + viewdist,
-                            dx - viewdist, dy - viewdist, W_White);*/
-                //W_MakePointDB (mapSDB, dx - viewdist, dy + viewdist, W_White);
+#else
+                W_MakePointDB (mapSDB, dx - viewdist, dy + viewdist, W_White);
+#endif
             if (dx - viewdist > 0 && dy - viewdist > 0)
+#ifndef DOUBLE_BUFFERING
                 W_MakePoint (mapw, dx - viewdist, dy - viewdist, W_White);
-                /*W_MakeLine (mapw, dx - viewdist, dy - viewdist,
-                            dx + viewdist, dy - viewdist, W_White);*/
-                //W_MakePointDB (mapSDB, dx - viewdist, dy - viewdist, W_White);
+#else
+                W_MakePointDB (mapSDB, dx - viewdist, dy - viewdist, W_White);
+#endif
 
             viewx = dx;         /* store the points for later */
             viewy = dy;         /* clearing */
@@ -712,16 +774,16 @@ map (void)
     }
 
 #ifdef HOCKEY_LINES
-	if (hockey_mode ())
-	{
+    if (hockey_mode ())
+    {
         /* Draw Hockey Lines */
-		if (showHockeyLinesMap)
-			DrawGalaxyHockeyLines ();
+	if (showHockeyLinesMap)
+	    DrawGalaxyHockeyLines ();
 
         /* Draw Hockey Score */
         if (showHockeyScore)
-			DrawGalaxyHockeyScore ();
-	}
+	    DrawGalaxyHockeyScore ();
+    }
 #endif /* HOCKEY_LINES */
 
     /* Draw ships */
@@ -749,36 +811,48 @@ map (void)
         if (j->p_flags & PFCLOAK)
         {
             if (omitTeamLetter)
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - (W_Textwidth / 2),
                              dy - W_Textheight / 2, unColor, cloakChars,
                              1, W_RegularFont);
-                /*W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
+#else
+                W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
                                dy - W_Textheight / 2, unColor, cloakChars,
-                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);*/
+                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);
+#endif
             else
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - W_Textwidth,
                              dy - W_Textheight / 2, unColor, cloakChars,
                              (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);
-                /*W_WriteTextDB (mapSDB, dx - W_Textwidth,
+#else
+                W_WriteTextDB (mapSDB, dx - W_Textwidth,
                                dy - W_Textheight / 2, unColor, cloakChars,
-                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);*/
+                               (cloakChars[1] == '\0' ? 1 : 2), W_RegularFont);
+#endif
         }
         else
         {
             if (omitTeamLetter)
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - (W_Textwidth / 2),
                              dy - W_Textheight / 2, playerColor (j),
                              (j->p_mapchars)+1, 1, shipFont (j));
-                /*W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
+#else
+                W_WriteTextDB (mapSDB, dx - (W_Textwidth / 2),
                                dy - W_Textheight / 2, playerColor (j),
-                               (j->p_mapchars)+1, 1, shipFont (j));*/
+                               (j->p_mapchars)+1, 1, shipFont (j));
+#endif
             else
+#ifndef DOUBLE_BUFFERING
                 W_WriteText (mapw, dx - W_Textwidth,
                              dy - W_Textheight / 2, playerColor (j),
                              j->p_mapchars, 2, shipFont (j));
-                /*W_WriteTextDB (mapSDB, dx - W_Textwidth,
+#else
+                W_WriteTextDB (mapSDB, dx - W_Textwidth,
                                dy - W_Textheight / 2, playerColor (j),
-                               j->p_mapchars, 2, shipFont (j));*/
+                               j->p_mapchars, 2, shipFont (j));
+#endif
         }
 
 #ifdef BEEPLITE
@@ -787,10 +861,17 @@ map (void)
 	{
 	    int     seq_n = emph_player_seq_n[i] % emph_player_seq_frames;
 
+#ifndef DOUBLE_BUFFERING
 	    W_WriteBitmap(dx - (emph_player_seq_width / 2 - 1),
 			  dy - (emph_player_seq_height / 2 + 1),
 			  emph_player_seq[seq_n],
 			  W_White);
+#else
+	    W_WriteBitmapDB(localSDB, dx - (emph_player_seq_width / 2 - 1),
+			    dy - (emph_player_seq_height / 2 + 1),
+			    emph_player_seq[seq_n],
+			    W_White);
+#endif
 	    emph_player_seq_n[i] -= 1;
 	    mclearzone[0][i] = dx - (emph_player_seq_width / 2 - 1);
 	    mclearzone[1][i] = dy - (emph_player_seq_height / 2 + 1);
@@ -830,8 +911,11 @@ map (void)
         {
             dx = j->p_x * WINSIDE / GWIDTH;
             dy = j->p_y * WINSIDE / GWIDTH;
+#ifndef DOUBLE_BUFFERING
             W_WriteTriangle (mapw, dx, dy + 6, 4, 1, foreColor);
-            //W_WriteTriangleDB (mapSDB, dx, dy + 6, 4, 1, foreColor);
+#else
+            W_WriteTriangleDB (mapSDB, dx, dy + 6, 4, 1, foreColor);
+#endif
 
             clearlmark[0] = dx;
             clearlmark[1] = dy + 6;
@@ -846,10 +930,11 @@ map (void)
 
         dx = l->pl_x * WINSIDE / GWIDTH;
         dy = l->pl_y * WINSIDE / GWIDTH;
-        W_WriteTriangle (mapw, dx, dy - (BMP_MPLANET_HEIGHT) / 2 - 4,
-                         4, 0, foreColor);
-        /*W_WriteTriangleDB (mapSDB, dx, dy - (BMP_MPLANET_HEIGHT) / 2 - 4,
-                           4, 0, foreColor);*/
+#ifndef DOUBLE_BUFFERING
+        W_WriteTriangle (mapw, dx, dy - (BMP_MPLANET_HEIGHT) / 2 - 4, 4, 0, foreColor);
+#else
+        W_WriteTriangleDB (mapSDB, dx, dy - (BMP_MPLANET_HEIGHT) / 2 - 4, 4, 0, foreColor);
+#endif
 
         clearlmark[0] = dx;
         clearlmark[1] = dy - (BMP_MPLANET_HEIGHT) / 2 - 4;
@@ -858,6 +943,7 @@ map (void)
         clearlock = 1;
     }
 
-    /* DoubleBuffering */
-    //W_Mem2Win (mapSDB);
+#ifdef DOUBLE_BUFFERING
+    W_Mem2Win (mapSDB);
+#endif
 }

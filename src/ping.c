@@ -59,6 +59,7 @@ handlePing (struct ping_spacket *packet)        /* SP_PING */
         updatePStats ();
 }
 
+void
 startPing (void)
 {
     static struct ping_cpacket packet;
@@ -75,6 +76,7 @@ startPing (void)
     }
 }
 
+void
 stopPing (void)
 {
     static struct ping_cpacket packet;
@@ -91,7 +93,7 @@ stopPing (void)
     }
 }
 
-
+void
 sendServerPingResponse (int number)     /* CP_PING_RESPONSE */
 {
     struct ping_cpacket packet;

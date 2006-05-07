@@ -49,7 +49,7 @@ showdocs (int atline)
     struct list *data;
     int count;
     char buf[128];
-    W_Font font;
+    W_Font font = W_RegularFont;
 
     if (!docwin)
         docwin = W_MakeWindow ("DocWin", 0, 181, 500, 500, 0, 2, foreColor);
@@ -226,7 +226,7 @@ showxtrekrc (int atline)
     struct list *data;
     int count;
     char buf[128];
-    W_Font font;
+    W_Font font = W_RegularFont;
 
     if (!xtrekrcwin)
         xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, 500, 500, 0, 2,

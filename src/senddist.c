@@ -38,51 +38,51 @@ loaddistress (enum dist_type i,
 
     dist = (struct distress *) malloc (sizeof (struct distress));
 
-    dist->sender = me->p_no;
-    dist->dam = (100 * me->p_damage) / me->p_ship.s_maxdamage;
-    dist->shld = (100 * me->p_shield) / me->p_ship.s_maxshield;
-    dist->arms = me->p_armies;
-    dist->fuelp = (100 * me->p_fuel) / me->p_ship.s_maxfuel;
-    dist->wtmp = (100 * me->p_wtemp) / me->p_ship.s_maxwpntemp;
+    dist->sender = (unsigned char) (me->p_no);
+    dist->dam = (unsigned char) ((100 * me->p_damage) / me->p_ship.s_maxdamage);
+    dist->shld = (unsigned char) ((100 * me->p_shield) / me->p_ship.s_maxshield);
+    dist->arms = (unsigned char) (me->p_armies);
+    dist->fuelp = (unsigned char) ((100 * me->p_fuel) / me->p_ship.s_maxfuel);
+    dist->wtmp = (unsigned char) ((100 * me->p_wtemp) / me->p_ship.s_maxwpntemp);
     /* wtmp can be more than 100% - dont let it wrap */
     if (dist->wtmp > 0x7f)
     {
         dist->wtmp = 0x7f;
     }
-    dist->etmp = (100 * me->p_etemp) / me->p_ship.s_maxegntemp;
+    dist->etmp = (unsigned char) ((100 * me->p_etemp) / me->p_ship.s_maxegntemp);
     /* so.. call me paranoid -jmn */
-    dist->sts = (me->p_flags & 0xff) | 0x80;
-    dist->wtmpflag = ((me->p_flags & PFWEP) > 0) ? 1 : 0;
-    dist->etempflag = ((me->p_flags & PFENG) > 0) ? 1 : 0;
-    dist->cloakflag = ((me->p_flags & PFCLOAK) > 0) ? 1 : 0;
+    dist->sts = (unsigned char) ((me->p_flags & 0xff) | 0x80);
+    dist->wtmpflag = (unsigned char) (((me->p_flags & PFWEP) > 0) ? 1 : 0);
+    dist->etempflag = (unsigned char) (((me->p_flags & PFENG) > 0) ? 1 : 0);
+    dist->cloakflag = (unsigned char) (((me->p_flags & PFCLOAK) > 0) ? 1 : 0);
 
-    dist->distype = i;
+    dist->distype = (unsigned char) i;
     if (dist->distype > generic || dist->distype < take)
         dist->distype = generic;
 
     target = gettarget2 (me->p_x, me->p_y, TARG_PLANET);
-    dist->close_pl = target->o_num;
+    dist->close_pl = (unsigned char) (target->o_num);
 
     target = gettarget (data->Window, data->x, data->y, TARG_PLANET);
-    dist->tclose_pl = target->o_num;
+    dist->tclose_pl = (unsigned char) (target->o_num);
 
     target = gettarget2 (me->p_x, me->p_y, TARG_ENEMY);
-    dist->close_en = target->o_num;
+    dist->close_en = (unsigned char) (target->o_num);
 
     target = gettarget (data->Window, data->x, data->y, TARG_ENEMY);
-    dist->tclose_en = target->o_num;
+    dist->tclose_en = (unsigned char) (target->o_num);
 
     target = gettarget2 (me->p_x, me->p_y, TARG_FRIEND);
-    dist->close_fr = target->o_num;
+    dist->close_fr = (unsigned char) (target->o_num);
 
     target = gettarget (data->Window, data->x, data->y, TARG_FRIEND);
-    dist->tclose_fr = target->o_num;
+    dist->tclose_fr = (unsigned char) (target->o_num);
 
     target = gettarget2 (me->p_x, me->p_y, TARG_PLAYER);
-    dist->close_j = target->o_num;
+    dist->close_j = (unsigned char) (target->o_num);
 
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
-    dist->tclose_j = target->o_num;
+    dist->tclose_j = (unsigned char) (target->o_num);
 
     /* lets make sure these aren't something stupid */
     dist->cclist[0] = 0x80;
@@ -153,6 +153,7 @@ emergency (enum dist_type i, W_Event * data)
  * newmacro syntax into an actual message. * This is about as inefficient as
  * they come, but how often is the player * going to send a macro?? *  6/3/93
  * - jn */
+int
 pmacro (int mnum,
         char who,
         W_Event * data)

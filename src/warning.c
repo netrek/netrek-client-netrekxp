@@ -24,13 +24,15 @@
 /* * The warning in text will be printed in the warning window. * The message
  * will last WARNTIME/10 seconds unless another message * comes through and
  * overwrites it. */
+void
 warning (char *text)
 {
     int doPhaser;
     time_t curtime;
     struct tm *tm;
     char newtext[128];
-    char newtext2[128];
+    char tmptext[128]; // addition to fix sprintf bug when compiling with bcc32
+
     if (warncount > 0)
     {
         /* XFIX */
@@ -62,10 +64,11 @@ warning (char *text)
         time (&curtime);
         tm = localtime (&curtime);
 #ifdef PHASER_STATS
-        sprintf (newtext2, "%.100s %02d:%02d:%02d",
-                 (doPhaser && phaserStats) ? newtext : text, tm->tm_hour,
+        strcpy (tmptext, newtext);
+        sprintf (newtext, "%.100s %02d:%02d:%02d",
+                 (doPhaser && phaserStats) ? tmptext : text, tm->tm_hour,
 #else
-        sprintf (newtext2, "%.100s %02d:%02d:%02d", text, tm->tm_hour,
+        sprintf (newtext, "%.100s %02d:%02d:%02d", text, tm->tm_hour,
 #endif
                  tm->tm_min, tm->tm_sec);
         warncount = (warncount > 100) ? 109 : warncount + 9;
@@ -74,14 +77,14 @@ warning (char *text)
         {
             if (logFile != NULL)
             {
-                fprintf (logFile, "%s\n", newtext2);
+                fprintf (logFile, "%s\n", newtext);
                 fflush (logFile);
             }
             else
-                puts (newtext2);
+                puts (newtext);
         }
 
         if (doPhaser)
-            W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext2, warncount, 0);
+            W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext, warncount, 0);
     }
 }

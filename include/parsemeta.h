@@ -47,6 +47,9 @@ void metainput (void);
  *  would read in the default server and then call it up before I can
  *  select a server.
  */
+ 
+int metablock(char *host);
+/* Block connections to known servers not willing to handle default logins */
 
 
 #endif /* defined META */

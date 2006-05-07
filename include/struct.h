@@ -312,7 +312,7 @@ struct torp
     int t_x;
     int t_y;
     short t_fuse;               /* Life left in current state */
-    short t_updateFuse; /* Updates before torp will expire */
+    unsigned char t_updateFuse; /* Updates before torp will expire */
     unsigned char t_dir;        /* direction */
 };
 
@@ -665,7 +665,7 @@ struct stringlist
     struct stringlist *next;
 };
 
-/* DoubleBuffering */
+#ifdef DOUBLE_BUFFERING
 typedef struct _sdbuffer
 {
     W_Window window;    /* window for current buffer */
@@ -675,6 +675,7 @@ typedef struct _sdbuffer
     HBITMAP mem_bmp;    /* memory to handle bitmap */
     HBITMAP old_bmp;    /* saved bitmap */
 }SDBUFFER;
+#endif
 
 // Linked list for console buffer
 struct cons_buffer

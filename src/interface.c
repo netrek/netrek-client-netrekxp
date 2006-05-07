@@ -236,14 +236,14 @@ run_clock (time_t curtime)
         return;
 
     tm = localtime (&curtime);
-    timebuf[0] = tm->tm_hour / 10 + '0';
-    timebuf[1] = (tm->tm_hour % 10) + '0';
+    timebuf[0] = (char) (tm->tm_hour / 10 + '0');
+    timebuf[1] = (char) ((tm->tm_hour % 10) + '0');
     timebuf[2] = ':';
-    timebuf[3] = tm->tm_min / 10 + '0';
-    timebuf[4] = (tm->tm_min % 10) + '0';
+    timebuf[3] = (char) (tm->tm_min / 10 + '0');
+    timebuf[4] = (char) ((tm->tm_min % 10) + '0');
     timebuf[5] = ':';
-    timebuf[6] = tm->tm_sec / 10 + '0';
-    timebuf[7] = (tm->tm_sec % 10) + '0';
+    timebuf[6] = (char) (tm->tm_sec / 10 + '0');
+    timebuf[7] = (char) ((tm->tm_sec % 10) + '0');
 #else
     sprintf (timebuf, "%02d:%02d:%02d", tm->tm_hour, tm->tm_min, tm->tm_sec);
 #endif

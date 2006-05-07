@@ -21,15 +21,16 @@
 #include "proto.h"
 
 /* * Provide the angular distance between two angles. */
+int
 angdist (unsigned char x,
          unsigned char y)
 {
     register unsigned char res;
 
     if (x > y)
-        res = x - y;
+        res = (unsigned char) (x - y);
     else
-        res = y - x;
+        res = (unsigned char) (y - x);
     if (res > 128)
         return (256 - (int) res);
     return ((int) res);
@@ -151,14 +152,15 @@ gettarget2 (int x,
     }
 }
 
+short
 troop_capacity (void)
 {
     if (me->p_ship.s_type == ASSAULT)
-        return (((me->p_kills * 3) > me->p_ship.s_maxarmies) ?
-                me->p_ship.s_maxarmies : (int) (me->p_kills * 3));
+        return (short) ((((me->p_kills * 3) > me->p_ship.s_maxarmies) ?
+                me->p_ship.s_maxarmies : (short) (me->p_kills * 3)));
     else if (me->p_ship.s_type != STARBASE)
-        return (((me->p_kills * 2) > me->p_ship.s_maxarmies) ?
-                me->p_ship.s_maxarmies : (int) (me->p_kills * 2));
+        return (short) ((((me->p_kills * 2) > me->p_ship.s_maxarmies) ?
+                me->p_ship.s_maxarmies : (short) (me->p_kills * 2)));
     else
         return me->p_ship.s_maxarmies;
 }

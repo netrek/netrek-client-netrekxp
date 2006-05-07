@@ -316,7 +316,7 @@ lockPlanetOrBase (W_Window ww,
     register struct planet *k;
     int g_x, g_y;
     double dist, closedist;
-    register int targtyp, targnum;
+    register int targtyp = 0, targnum = -1;
 
     if (ww == mapw)
     {
@@ -364,12 +364,12 @@ lockPlanetOrBase (W_Window ww,
     if (targtyp == PLAYERTYPE)
     {
         sendPlaylockReq (targnum);
-        me->p_playerl = targnum;
+        me->p_playerl = (short) targnum;
     }
     else
     {
         sendPlanlockReq (targnum);
-        me->p_planet = targnum;
+        me->p_planet = (short) targnum;
     }
 
 }
@@ -390,7 +390,7 @@ getctrlkey (unsigned char **s)
 
         /* check for '^' key being specified with "^^" */
         if (*str != '^')
-            c = *str + 96;
+            c = (unsigned char) (*str + 96);
         else
             c = *str;
     }
@@ -412,7 +412,7 @@ getkeyfromctrl (unsigned char c)
     if (c == '^' || (c >= 32 && c <= 127))
         return c;
     else
-        return (c - 96);
+        return (unsigned char) (c - 96);
 }
 
 
@@ -474,7 +474,7 @@ initkeymap (void)
 
             if (*str >= 32 && *str < MAXASCII)
             {
-                c1 = getctrlkey (&str) - 32;
+                c1 = (unsigned char) (getctrlkey (&str) - 32);
                 c2 = getctrlkey (&str);
                 mystats->st_keymap[c1] = c2;
             }
@@ -1412,7 +1412,7 @@ mkeyaction (W_Event * data)
     {
         if (key >= 32 && key < 176)
         {
-            int offset;
+            int offset = 0;
 
             switch (data->modifier)
             {
@@ -1551,7 +1551,7 @@ buttonaction (W_Event * data)
            message_on ();
            data->key = 'A';
            smessage (data->key);
-	    return;
+           return;
 	}
         return;
     }
@@ -1600,17 +1600,17 @@ buttonaction (W_Event * data)
 
     if (data->key == W_RBUTTON)
     {
-        course = getcourse (data->Window, data->x, data->y);
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
         set_course (course);
     }
     else if (data->key == W_LBUTTON)
     {
-        course = getcourse (data->Window, data->x, data->y);
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
         sendTorpReq (course);
     }
     else if (data->key == W_MBUTTON)
     {
-        course = getcourse (data->Window, data->x, data->y);
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
         sendPhaserReq (course);
     }
     else if (data->key == W_XBUTTON1)
@@ -1628,7 +1628,7 @@ buttonaction (W_Event * data)
             sendPlasmaReq (course);
         }
 #else
-        course = getcourse (data->Window, data->x, data->y);
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
         sendPlasmaReq (course);
 #endif /* AUTOKEY */
     }
@@ -1743,7 +1743,7 @@ buttonaction (W_Event * data)
             target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 		    if (target->o_num == -1)
 			    return;
-            me->p_tractor = target->o_num;
+            me->p_tractor = (short) (target->o_num);
             sendTractorReq (1, (char) (target->o_num));
         }
     }
@@ -1762,7 +1762,7 @@ buttonaction (W_Event * data)
             target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 		    if (target->o_num == -1)
 			    return;
-            me->p_tractor = target->o_num;
+            me->p_tractor = (short) (target->o_num);
             sendRepressReq (1, (char) (target->o_num));
         }
     }
@@ -1786,19 +1786,19 @@ buttonaction (W_Event * data)
                     players[target->o_num].p_y != -10000)
                 {
                     sendPlaylockReq (target->o_num);
-                    me->p_playerl = target->o_num;
+                    me->p_playerl = (short) (target->o_num);
                 }
             }
             else
             {
                 sendPlaylockReq (target->o_num);
-                me->p_playerl = target->o_num;
+                me->p_playerl = (short) (target->o_num);
             }
         }
         else
         {                           /* It's a planet */
             sendPlanlockReq (target->o_num);
-            me->p_planet = target->o_num;
+            me->p_planet = (short) (target->o_num);
         }
     }
     else if (data->key == W_XBUTTON2_4)
@@ -2776,7 +2776,7 @@ Key84 (W_Event * data)
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 	if (target->o_num == -1)
 		return;
-    me->p_tractor = target->o_num;
+    me->p_tractor = (short) (target->o_num);
     if (key == 'T')
     {
         sendTractorReq (1, (char) (target->o_num));
@@ -2892,7 +2892,7 @@ Key94 (W_Event * data)
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 	if (target->o_num == -1)
 		return;
-    me->p_tractor = target->o_num;
+    me->p_tractor = (short) (target->o_num);
     sendRepressReq (1, (char) (target->o_num));
 }
 
@@ -2907,7 +2907,7 @@ Key95 (W_Event * data)
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 	if (target->o_num == -1)
 		return;
-    me->p_tractor = target->o_num;
+    me->p_tractor = (short) (target->o_num);
     sendTractorReq (1, (char) (target->o_num));
 }
 
@@ -3021,7 +3021,7 @@ Key102 (W_Event * data)
         sendPlasmaReq (course);
     }
 #else
-    course = getcourse (data->Window, data->x, data->y);
+    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     sendPlasmaReq (course);
 #endif /* AUTOKEY */
 
@@ -3097,7 +3097,7 @@ Key107 (W_Event * data)
 {
     unsigned char course;
 
-    course = getcourse (data->Window, data->x, data->y);
+    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     set_course (course);
     me->p_flags &= ~(PFPLOCK | PFPLLOCK);
 }
@@ -3126,19 +3126,19 @@ Key108 (W_Event * data)
                 players[target->o_num].p_y != -10000)
             {
                 sendPlaylockReq (target->o_num);
-                me->p_playerl = target->o_num;
+                me->p_playerl = (short) (target->o_num);
             }
         }
         else
         {
             sendPlaylockReq (target->o_num);
-            me->p_playerl = target->o_num;
+            me->p_playerl = (short) (target->o_num);
         }
     }
     else
     {                           /* It's a planet */
         sendPlanlockReq (target->o_num);
-        me->p_planet = target->o_num;
+        me->p_planet = (short) (target->o_num);
     }
 }
 
@@ -3203,7 +3203,7 @@ Key112 (W_Event * data)
         sendPhaserReq (course);
     }
 #else
-    course = getcourse (data->Window, data->x, data->y);
+    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     sendPhaserReq (course);
 #endif /* AUTOKEY */
 
@@ -3264,7 +3264,7 @@ Key116 (W_Event * data)
         sendTorpReq (course);
     }
 #else
-    course = getcourse (data->Window, data->x, data->y);
+    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     sendTorpReq (course);
 #endif /* AUTOKEY */
 }
@@ -3336,7 +3336,7 @@ Key121 (W_Event * data)
     target = gettarget (data->Window, data->x, data->y, TARG_PLAYER);
 	if (target->o_num == -1)
 		return;
-    me->p_tractor = target->o_num;
+    me->p_tractor = (short) (target->o_num);
     if (key == 'T')
     {
         sendTractorReq (1, (char) (target->o_num));

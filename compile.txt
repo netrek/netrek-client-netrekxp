@@ -1,22 +1,48 @@
 This source tree was tested with MS Visual C++ 6.0 and Borland C Builder 5.5
 
-- Edit build.cmd to set following variables:
+I'd like however to discourage you from using Borland's compiler unless you know how
+to debug its binaries. The output is also slower even though speed optimizations
+are used.
+
+Step 1:
+--------
+Edit build.cmd to set following variables:
 
 RSAKey = path to your RSA-KEY.secret file
-Compiler = VCC or BCC (default BCC)
+Compiler = VCC or BCC (default VCC)
 InstCWD = path to folder to copy files to (default \netrek_files)
+HelpCompiler = path to hhc.exe from Microsoft's HTML Help Workshop (available from microsoft.com)
 
-- Edit clientr.dsp and change \netrek_files to be same as InstCWD (only if using VCC)
+Step 2:
+--------
+If you're building with MS Visual C++:
+
+- Edit clientr.dsp and change \netrek_files to be same as InstCWD
 - Edit src\cursors\curslib.dsp and change \netrek_files to be same as InstCWD
-  (again only necessary if using VCC)
-- Get SDL.dll and SDL_mixer.dll from the SDL website (you will need these to
-  run the client, they must be in the installer package)
-After compilation under BCC, there will be one folder under InstCWD - netrek.
-Netrek contains the ready to distribute netrek client tree.
-After compilation under VCC, there will be an additional directory called 
-tmp which can be deleted.
+- Edit src\winkey\winkey.dsp and change \netrek_files to be same as InstCWD
 
+If you're building with Borland C Builder:
 
+Make sure you have configuration set correctly for the builder itself.
+Follow setup instructions from builder readme file to create proper configuration
+files. Otherwise the compiler and linker won't find the correct paths.
+
+Step 3:
+--------
+Open command prompt in the source tree directory and run build.cmd
+
+If everything is correct and working then after a couple of minutes you will have compiled
+a working client under InstCWD\netrek.
+If you were compiling with Visual C++ you will also have a InstCWD\tmp folder containing
+lots of objects.  Just delete it.
+
+Step 4:
+-------
+Get SDL.dll and SDL_mixer.dll from the SDL website (you will need these to run the client,
+they must be in the installer package)
+
+Other Notes:
+------------
 Additional instructions for compiling with Microsoft Visual C++ 2005 Express Edition,
 aka Microsoft Visual Studio 2005
 
@@ -27,6 +53,7 @@ then run the build script from DOS prompt.  I (Bill) have commented out the buil
 that used cscript to compile the source since that command doesn't work with Visual
 Studio.
 
+That's pretty much all.
 
 Stas Pirogov (keyos@keyos.org)
 

@@ -324,7 +324,7 @@ extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
     war, warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi,
     messwk, planetw, rankw, playerw, playerw2, optionWin, reviewWin;
 extern W_Window udpWin, phaserwin, hintWin;
-extern W_Window waitWin, qwin, countWin, motdButtonWin, motdWin;
+extern W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
 #ifdef SHORT_PACKETS
 extern W_Window spWin;
@@ -620,9 +620,10 @@ extern int viewBox;     /* show local window box on map */
 
 extern struct stringlist * defaults; /* pointer to defaults list */
 
-/* DoubleBufering */
+#ifdef DOUBLE_BUFFERING
 extern SDBUFFER * localSDB;    /* double buffer for local window */
 extern SDBUFFER * mapSDB;      /* double buffer for map window */
+#endif
 
 extern int disableWinkey;   /* disable WinKey + ContextKey during the game */
 

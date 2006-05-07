@@ -463,6 +463,7 @@ RefreshOptions (void)
 }
 
 /* blank out option line 'i' */
+void
 OptionClear (int i)
 {
     char *blanktext = "                                               ";
@@ -549,7 +550,7 @@ optionrefresh (register struct option *op)
     }
 
     if (islower (buf[0]))
-        buf[0] = toupper (buf[0]);
+        buf[0] = (char) (toupper (buf[0]));
 
     if (op->op_num == 0)
         W_WriteText (optionWin, 0, op->op_num, W_Yellow, buf, strlen (buf), 0);
@@ -923,6 +924,7 @@ optionaction (W_Event * data)
 
 /* find the menu in the menus linked list that matches the one in the *
  * argument */
+void
 SetMenuPage (int pagenum)
 {
     int i = 1;
@@ -935,6 +937,7 @@ SetMenuPage (int pagenum)
     W_ResizeMenuToNumItems (optionWin, CurrentMenu->numopt);
 }
 
+void
 optiondone (void)
 {
     char *str;

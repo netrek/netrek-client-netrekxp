@@ -955,7 +955,7 @@ cowmain (char *server,
             if (getteam[i] == me->p_mapchars[0])
                 break;
 
-        me->p_team = i;
+        me->p_team = (short) i;
 
         if (me->p_damage > me->p_ship.s_maxdamage)
         {

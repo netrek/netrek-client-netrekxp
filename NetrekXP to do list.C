@@ -11,10 +11,9 @@ new-be-nice!!
 Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
-2) Get mkkey working.
 3) torp_other and plasma_other not working right due to lack of torp fuse info
 4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did -
-server not sending right info.
+server not sending right info - short packets!
 4a) observer sound messes up when someone flips shields at warp 0, again a server problem
 4b) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
 server side problem, both for the not being able to lock back onto your team, and
@@ -23,6 +22,7 @@ the shield packet not being sent)
 any state at all (head to default which is error message).
 
 Things to do:
+0) Eventually add the SDL dll files to the source.
 1) Add warning hull.
 2) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
@@ -39,17 +39,11 @@ flip to.  Also, closing hint window has same effect
 closeable by shift right click.
 6) With new scaling function, implement Defcom's new bitmaps
 6a) Issue with flickering.
-6b) Issue with 0 degree messing up bitmap.
-
-Might be done:
-1) mouse scroll in message windows gets the up/down coord wrong when main title
-bar is turned on.
-2) CRASH BUG! Resize main window and try to do mouse scroll, it will crash client.
-3) Disable window move stuff still broken.
-4) save_options keymap: not saving right
-5) if waiting on queue and get in, quit clock missing
-6) right click on all_review window, get message "obsolete!"
-7) winkey working with BCC
+6b) Border issue
+6c) The new smooth turning only working on self, not obs or others - short packets!
+6d) Not working with BCC
+7) right click on all_review window, get message "obsolete!"
+8) login not read in before metaserver info (for metablocking purposes)
 
 Stas's list:
 - color coded playerlist.

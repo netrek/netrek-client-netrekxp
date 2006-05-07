@@ -334,6 +334,7 @@ static short fSpeed, fDirection, fShield, fOrbit, fRepair, fBeamup, fBeamdown,
     fTractor, fRepress;
 
 /* reset all the "force command" variables */
+void
 resetForce (void)
 {
     fSpeed = fDirection = fShield = fOrbit = fRepair = fBeamup = fBeamdown =
@@ -388,6 +389,7 @@ resetForce (void)
         }                                                       \
 }
 
+void
 checkForce (void)
 {
     struct speed_cpacket speedReq;
@@ -428,6 +430,7 @@ setNoDelay (int fd)
     }
 }
 
+void
 connectToServer (int port)
 {
     int s;
@@ -541,6 +544,7 @@ connectToServer (int port)
 }
 
 
+void
 callServer (int port,
             char *server)
 {
@@ -647,11 +651,13 @@ callServer (int port,
     pickSocket (port);          /* new socket != port */
 }
 
+int
 isServerDead (void)
 {
     return (serverDead);
 }
 
+void
 socketPause (void)
 {
     struct timeval timeout;
@@ -668,6 +674,7 @@ socketPause (void)
     select (max_fd, &readfds, 0, 0, &timeout);
 }
 
+int
 readFromServer (fd_set * readfds)
 {
     int retval = 0;
@@ -738,6 +745,7 @@ readFromServer (fd_set * readfds)
     return (retval != 0);       /* convert to 1/0 */
 }
 
+void
 dotimers (void)
 {
     /* if switching comm mode, decrement timeout counter */
@@ -849,11 +857,7 @@ getvpsize (char *bufptr)
     return size;
 }
 
-
-
-
-
-
+int
 doRead (int asock)
 {
     struct timeval timeout;
@@ -1225,7 +1229,7 @@ handleSelf (struct you_spacket *packet)
 
 #ifdef INCLUDE_VISTRACT
     if (packet->tractor & 0x40)
-        me->p_tractor = (short) packet->tractor & (~0x40);      /* ATM - visible
+        me->p_tractor = (short) ((short) packet->tractor & (~0x40));      /* ATM - visible
                                                                  * tractors */
 
 #endif
@@ -1311,6 +1315,7 @@ handleWarning (struct warning_spacket *packet)
     warning (packet->mesg);
 }
 
+void
 sendShortPacket (char type,
                  char state)
 {
@@ -1326,34 +1331,34 @@ sendShortPacket (char type,
         switch (type)
         {
         case CP_SPEED:
-            fSpeed = state | 0x100;
+            fSpeed = (short) (state | 0x100);
             break;
         case CP_DIRECTION:
-            fDirection = state | 0x100;
+            fDirection = (short) (state | 0x100);
             break;
         case CP_SHIELD:
-            fShield = state | 0xa00;
+            fShield = (short) (state | 0xa00);
             break;
         case CP_ORBIT:
-            fOrbit = state | 0xa00;
+            fOrbit = (short) (state | 0xa00);
             break;
         case CP_REPAIR:
-            fRepair = state | 0xa00;
+            fRepair = (short) (state | 0xa00);
             break;
         case CP_CLOAK:
-            fCloak = state | 0xa00;
+            fCloak = (short) (state | 0xa00);
             break;
         case CP_BOMB:
-            fBomb = state | 0xa00;
+            fBomb = (short) (state | 0xa00);
             break;
         case CP_DOCKPERM:
-            fDockperm = state | 0xa00;
+            fDockperm = (short) (state | 0xa00);
             break;
         case CP_PLAYLOCK:
-            fPlayLock = state | 0xa00;
+            fPlayLock = (short) (state | 0xa00);
             break;
         case CP_PLANLOCK:
-            fPlanLock = state | 0xa00;
+            fPlanLock = (short) (state | 0xa00);
             break;
         case CP_BEAM:
             if (state == 1)
@@ -1369,10 +1374,10 @@ sendShortPacket (char type,
             switch (type)
             {
             case CP_PHASER:
-                fPhaser = state | 0x100;
+                fPhaser = (short) (state | 0x100);
                 break;
             case CP_PLASMA:
-                fPlasma = state | 0x100;
+                fPlasma = (short) (state | 0x100);
                 break;
             }
         }
@@ -1609,14 +1614,15 @@ handleQueue (struct queue_spacket *packet)
     queuePos = ntohs (packet->pos);
 }
 
+void
 sendTeamReq (int team,
              int ship)
 {
     struct outfit_cpacket outfitReq;
 
     outfitReq.type = CP_OUTFIT;
-    outfitReq.team = team;
-    outfitReq.ship = ship;
+    outfitReq.team = (char) team;
+    outfitReq.ship = (char) ship;
     sendServerPacket ((struct player_spacket *) &outfitReq);
 }
 
@@ -1626,6 +1632,7 @@ handlePickok (struct pickok_spacket *packet)
     pickOk = packet->state;
 }
 
+void
 sendLoginReq (char *name,
               char *pass,
               char *login,
@@ -1656,6 +1663,7 @@ handleLogin (struct login_spacket *packet)
     }
 }
 
+void
 sendTractorReq (char state,
                 char pnum)
 {
@@ -1667,11 +1675,12 @@ sendTractorReq (char state,
     sendServerPacket ((struct player_spacket *) &tractorReq);
 
     if (state)
-        fTractor = pnum | 0x40;
+        fTractor = (short) (pnum | 0x40);
     else
         fTractor = 0;
 }
 
+void
 sendRepressReq (char state,
                 char pnum)
 {
@@ -1683,11 +1692,12 @@ sendRepressReq (char state,
     sendServerPacket ((struct player_spacket *) &repressReq);
 
     if (state)
-        fRepress = pnum | 0x40;
+        fRepress = (short) (pnum | 0x40);
     else
         fRepress = 0;
 }
 
+void
 sendDetMineReq (short int torp)
 {
     struct det_mytorp_cpacket detReq;
@@ -1795,7 +1805,7 @@ handleFlags (struct flags_spacket *packet)
 
 #ifdef INCLUDE_VISTRACT
     if (packet->tractor & 0x40)
-        players[packet->pnum].p_tractor = (short) packet->tractor & (~0x40);    /* ATM - visible
+        players[packet->pnum].p_tractor = (short) ((short) packet->tractor & (~0x40));    /* ATM - visible
                                                                                  * tractors */
     else
 #endif /* INCLUDE_VISTRACT */
@@ -1884,6 +1894,7 @@ handleMotd (struct motd_spacket *packet)
     newMotdLine (packet->line);
 }
 
+void
 sendMessage (char *mes,
              int group,
              int indiv)
@@ -1908,8 +1919,8 @@ sendMessage (char *mes,
 #endif
 
         mesPacket.type = CP_MESSAGE;
-    mesPacket.group = group;
-    mesPacket.indiv = indiv;
+    mesPacket.group = (char) group;
+    mesPacket.indiv = (char) indiv;
     STRNCPY (mesPacket.mesg, mes, 80);
     sendServerPacket ((struct player_spacket *) &mesPacket);
 }
@@ -1921,6 +1932,7 @@ handleMask (struct mask_spacket *packet)
     tournMask = packet->mask;
 }
 
+void
 sendOptionsPacket (void)
 {
     struct options_cpacket optPacket;
@@ -1981,6 +1993,7 @@ handleBadVersion (struct badversion_spacket *packet)
     terminate (1);
 }
 
+long
 gwrite (int fd, char *buf, register int bytes)
 {
     LONG orig = bytes;
@@ -2184,6 +2197,7 @@ handlePlyrInfo (struct plyr_info_spacket *packet)
     redrawPlayer[packet->pnum] = 1;
 }
 
+void
 sendUpdatePacket (LONG speed)
 {
     struct updates_cpacket packet;
@@ -2413,12 +2427,12 @@ sendUdpReq (int req)
     struct udp_req_cpacket packet;
 
     packet.type = CP_UDP_REQ;
-    packet.request = req;
+    packet.request = (char) req;
 
     if (req >= COMM_MODE)
     {
         packet.request = COMM_MODE;
-        packet.connmode = req - COMM_MODE;
+        packet.connmode = (char) (req - COMM_MODE);
         sendServerPacket ((struct player_spacket *) &packet);
         return;
     }
@@ -2466,7 +2480,7 @@ sendUdpReq (int req)
     }
     /* send the request */
     packet.type = CP_UDP_REQ;
-    packet.request = req;
+    packet.request = (char) req;
     packet.port = htonl (udpLocalPort);
 
 #ifdef GATEWAY
@@ -2636,6 +2650,7 @@ handleUdpReply (struct udp_reply_spacket *packet)
 }
 
 #define MAX_PORT_RETRY  10
+int
 openUdpConn (void)
 {
     struct sockaddr_in addr;
@@ -2730,6 +2745,7 @@ openUdpConn (void)
 }
 
 #ifdef UDP_PORTSWAP
+int
 connUdpConn ()
 {
     struct sockaddr_in addr;
@@ -2753,6 +2769,7 @@ connUdpConn ()
 
 #endif
 
+int
 recvUdpConn (void)
 {
     fd_set readfds;
@@ -2830,6 +2847,7 @@ recvUdpConn (void)
     return (0);
 }
 
+int
 closeUdpConn (void)
 {
     V_UDPDIAG (("Closing UDP socket\n"));
@@ -3066,6 +3084,7 @@ Log_OPacket (int tpe,
 }
 
 /* print out out the cool information on packet logging */
+void
 Dump_Packet_Log_Info (void)
 {
     int i;

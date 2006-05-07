@@ -168,6 +168,15 @@ open_port (char *host,
     return (sock);
 }
 
+int
+metablock (char *host)
+/* Block connections to known servers not willing to handle default logins */
+{
+    if ( ((!strcmp(login, "new-be-nice") || !strcmp(login, "netrek-player")) && (strstr(host,".tamu.edu") != NULL))
+       || (strstr(host,".tamu.edu") != NULL) )
+        return 1;
+    return 0;
+}
 
 static void
 parseInput (char *in,
@@ -233,7 +242,7 @@ parseInput (char *in,
             if (!rtn)           /* use a zero to mark end of buffer */
                 return;
 
-            *(point++) = rtn;
+            *(point++) = (char) rtn;
         }
         while (rtn != EOF && rtn != '\n');
 
@@ -296,11 +305,11 @@ parseInput (char *in,
 #ifdef METAPING
 		/* Initialize the ping rtt fields */
 		for (i = 0; i < RTT_AVG_BUFLEN; ++i )
-			slist->pkt_rtt[i] = -1;
+			slist->pkt_rtt[i] = (unsigned long) -1;
 #endif
 
-        /* Don't list Paradise Servers or *.tamu.edu */
-        if (slist->typeflag != 'P' && strstr(slist->address,".tamu.edu") == NULL)
+        /* Don't list servers we cannot use */
+        if (slist->typeflag != 'P' && !metablock(slist->address))
         {
 
 #ifdef DEBUG
@@ -329,7 +338,7 @@ ReadFromMeta (int statusLevel)
     char tmpFileName[PATH_MAX];
     char *sockbuf, *buf;
     int bufleft = BUF - 1;
-    int len;
+    int len = 0;
     int sock = 0;
     int i = 0;
 
@@ -583,8 +592,7 @@ metarefresh (int i)
 
     slist = serverlist + i;
     
-    // Don't list *.tamu.edu
-    if (strstr(slist->address,".tamu.edu") != NULL)
+    if (metablock(slist->address))
         return;
         
 #ifdef METAPING
@@ -644,38 +652,38 @@ metarefresh (int i)
     }
 
 #ifdef METAPING
-    if (metaPing)
-    {
-	/* Print out the lag statistics */
-	for (idx = 0; idx < RTT_AVG_BUFLEN; ++idx)
+	if (metaPing)
 	{
-		if (serverlist[i].pkt_rtt[idx] != -3 &&
-		    serverlist[i].pkt_rtt[idx] != -2 &&
-		    serverlist[i].pkt_rtt[idx] != -1)      // dont count these non-values
+		/* Print out the lag statistics */
+		for (idx = 0; idx < RTT_AVG_BUFLEN; ++idx)
 		{
-			//printf ("i=%d  idx=%d  replies=%d  rtt=%ld  lag=%ld\n", i , idx, replies, serverlist[i].pkt_rtt[idx], lag);
-		    lag += serverlist[i].pkt_rtt[idx];
-		    replies++;
+			if (serverlist[i].pkt_rtt[idx] != -3 &&
+			    serverlist[i].pkt_rtt[idx] != -2 &&
+			    serverlist[i].pkt_rtt[idx] != -1)      // dont count these non-values
+			{
+				//printf ("i=%d  idx=%d  replies=%d  rtt=%ld  lag=%ld\n", i , idx, replies, serverlist[i].pkt_rtt[idx], lag);
+			    lag += serverlist[i].pkt_rtt[idx];
+			    replies++;
+			}
 		}
-	}
     
-	//printf("i=%d  replies=%ld  idx=%ld   rtt=%ld  %s\n", i, replies,
-	//	   ((serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN),
-	//	   serverlist[i].pkt_rtt[(serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN],
-	//	   serverlist[i].address);
+		//printf("i=%d  replies=%ld  idx=%ld   rtt=%ld  %s\n", i, replies,
+		//	   ((serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN),
+		//	   serverlist[i].pkt_rtt[(serverlist[i].cur_idx + RTT_AVG_BUFLEN - 1) % RTT_AVG_BUFLEN],
+		//	   serverlist[i].address);
 
-	if (replies > 0)
-	{
-		lag = lag / replies;
-		if (lag < 1000) sprintf (buf + strlen (buf), " %3ldms", lag);
-		else strcat(buf, " >1sec");
+		if (replies > 0)
+		{
+			lag = lag / replies;
+			if (lag < 1000) sprintf (buf + strlen (buf), " %3ldms", lag);
+			else strcat(buf, " >1sec");
+		}
+		else if (replies == 0 && serverlist[i].pkt_rtt[0] == -2)
+			strcat(buf, " Unknw"); // Unknown host
+		else if (replies == 0 && serverlist[i].pkt_rtt[0] == -3)
+			strcat(buf, " TmOut"); // TimeOut
+		else strcat(buf, "      ");
 	}
-	else if (replies == 0 && serverlist[i].pkt_rtt[0] == -2)
-		strcat(buf, " Unknw"); // Unknown host
-	else if (replies == 0 && serverlist[i].pkt_rtt[0] == -3)
-		strcat(buf, " TmOut"); // TimeOut
-	else strcat(buf, "      ");
-    }
 #endif
 
     W_WriteText (metaWin, 0, i, color, buf, strlen (buf), 0);
@@ -818,7 +826,7 @@ metainput (void)
 #ifdef METAPING
 	DWORD IDThread; 
 
-	metaPing_procId = _getpid() & 0xFFFF;
+	metaPing_procId = (unsigned short) (_getpid() & 0xFFFF);
 
 	if (metaPing)
 	{
@@ -958,7 +966,7 @@ u_short metaPing_in_cksum(u_short *addr, int len)
 	 */
 	sum = (sum >> 16) + (sum & 0xffff);	/* add hi 16 to low 16 */
 	sum += (sum >> 16);			/* add carry */
-	answer = ~sum;				/* truncate to 16 bits */
+	answer = (unsigned short) (~sum);				/* truncate to 16 bits */
 	return (answer);
 }
 
@@ -1087,7 +1095,7 @@ DWORD WINAPI metaPing_thread(void)
 	if (rawSocket == SOCKET_ERROR) 
 	{
 		metaPing_ReportError("socket()");
-		return -1;
+		return (unsigned long) -1;
 	}
 
     while (!thread_ready)
@@ -1106,12 +1114,12 @@ DWORD WINAPI metaPing_thread(void)
 				// Send ICMP echo request
 				//printf("\nPinging %s [%s]", serverlist[i].address, inet_ntoa(saDest.sin_addr));
 				if (metaPing_sendEchoRequest(rawSocket, &saDest, idx) == SOCKET_ERROR)
-					serverlist[i].pkt_rtt[idx] = -1;	// Error
+					serverlist[i].pkt_rtt[idx] = (unsigned long) -1;	// Error
 				else
-					serverlist[i].pkt_rtt[idx] = -3;	// Waiting for ping reply
+					serverlist[i].pkt_rtt[idx] = (unsigned long) -3;	// Waiting for ping reply
 			}
 			else if (serverlist[i].ip_addr == INADDR_NONE)
-				serverlist[i].pkt_rtt[idx] = -2;		// Unknown Host
+				serverlist[i].pkt_rtt[idx] = (unsigned long) -2;		// Unknown Host
 		}
 
 		// Listen for about one second between for possible replies
@@ -1149,7 +1157,7 @@ DWORD WINAPI metaPing_thread(void)
 		for (i = 0; i < num_servers; ++i) metarefresh(i);
 
 		// Proceed to the next cycle of ping samples
-		idx = (idx + 1) % RTT_AVG_BUFLEN;
+		idx = (unsigned short) ((idx + 1) % RTT_AVG_BUFLEN);
 	}
 
 	if (closesocket(rawSocket) == SOCKET_ERROR)

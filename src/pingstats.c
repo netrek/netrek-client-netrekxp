@@ -88,11 +88,13 @@ extern int ping_lag;            /* delay in ms of last ping */
 extern int ping_av;             /* average rt */
 extern int ping_sd;             /* standard deviation */
 
+int
 pStatsHeight (void)
 {
     return STAT_HEIGHT;
 }
 
+int
 pStatsWidth (void)
 {
     return STAT_WIDTH;
@@ -164,6 +166,7 @@ redrawPStats (void)
     }
 }
 
+void
 updatePStats (void)
 {
     int i, value, diff, old_x, new_x;
