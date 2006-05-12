@@ -1436,7 +1436,7 @@ W_FillArea (W_Window window,
     r.left = max (x, border);
     r.right = min (x + width, win->ClipRect.right);
     if (r.right < r.left)
-        return;                 //Horizantal extents do not overlap
+        return;                 //Horizontal extents do not overlap
     r.top = max (y, border);
     r.bottom = min (y + height, win->ClipRect.bottom);
     if (r.bottom < r.top)
@@ -1479,7 +1479,7 @@ W_ClearArea (W_Window window,
     r.left = max (x, border);
     r.right = min (x + width, win->ClipRect.right);
     if (r.right < r.left)
-        return;                 //Horizantal extents do not overlap
+        return;                 //Horizontal extents do not overlap
     r.top = max (y, border);
     r.bottom = min (y + height, win->ClipRect.bottom);
     if (r.bottom < r.top)
@@ -1554,7 +1554,7 @@ W_ClearAreas (W_Window window,
         r.left = max (x, border);
         r.right = min (x + width, win->ClipRect.right);
         if (r.right < r.left)
-            continue;           //Horizantal extents do not overlap
+            continue;           //Horizontal extents do not overlap
         r.top = max (y, border);
         r.bottom = min (y + height, win->ClipRect.bottom);
         if (r.bottom < r.top)
@@ -3303,7 +3303,7 @@ W_WriteText (W_Window window,
         r.left = max (x, border);
         r.right = min (x + ext.cx, win->ClipRect.right);
         if (r.right < r.left)
-            return;             //Horizantal extents do not overlap
+            return;             //Horizontal extents do not overlap
         r.top = max (y, border);
         r.bottom = min (y + ext.cy, win->ClipRect.bottom);
         if (r.bottom < r.top)
@@ -5318,7 +5318,7 @@ W_FillAreaDB (SDBUFFER * sdb, int x, int y, int width, int height, int color)
     r.left = max (x, border);
     r.right = min (x + width, win->ClipRect.right);
     if (r.right < r.left)
-        return;                 //Horizantal extents do not overlap
+        return;                 //Horizontal extents do not overlap
     r.top = max (y, border);
     r.bottom = min (y + height, win->ClipRect.bottom);
     if (r.bottom < r.top)
@@ -5355,7 +5355,7 @@ W_ClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height)
     r.left = max (x, border);
     r.right = min (x + width, win->ClipRect.right);
     if (r.right < r.left)
-        return;                 //Horizantal extents do not overlap
+        return;                 //Horizontal extents do not overlap
     r.top = max (y, border);
     r.bottom = min (y + height, win->ClipRect.bottom);
     if (r.bottom < r.top)
@@ -5418,7 +5418,7 @@ W_ClearAreasDB (SDBUFFER * sdb, int *xs, int *ys, int *widths, int *heights, int
         r.left = max (x, border);
         r.right = min (x + width, win->ClipRect.right);
         if (r.right < r.left)
-            continue;           //Horizantal extents do not overlap
+            continue;           //Horizontal extents do not overlap
         r.top = max (y, border);
         r.bottom = min (y + height, win->ClipRect.bottom);
         if (r.bottom < r.top)
@@ -5750,7 +5750,7 @@ W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, 
         r.left = max (x, border);
         r.right = min (x + ext.cx, win->ClipRect.right);
         if (r.right < r.left)
-            return;             //Horizantal extents do not overlap
+            return;             //Horizontal extents do not overlap
         r.top = max (y, border);
         r.bottom = min (y + ext.cy, win->ClipRect.bottom);
         if (r.bottom < r.top)
@@ -5850,14 +5850,13 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     register struct Icon *bitmap = (struct Icon *) icon;
     register int borderx, bordery, width, height;
     register int srcx, srcy;
-    HDC hdc;
     HBITMAP newbmp;
     XFORM xForm;
     double radians;
     float cosine, sine, Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
     float xscale, yscale;
     float eDx, eDy;
-
+    
     //Fast (I hope) rectangle intersection, don't overwrite our borders
     srcx = bitmap->x;
     srcy = bitmap->y;
@@ -5868,15 +5867,12 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
 
     width = bitmap->width;
     height = bitmap->height;
-    
-//    hdc = GetDC (bitmap->hwnd);
-//    newbmp = CreateCompatibleBitmap ( hdc, width, height );
+
     newbmp = CreateCompatibleBitmap ( sdb->mem_dc, width, height );
 
     if (NetrekPalette)
     {
-   // 	SelectPalette (hdc, NetrekPalette, FALSE);
-     //   RealizePalette (hdc);
+
         SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
         RealizePalette (sdb->mem_dc);
     }
@@ -5888,8 +5884,6 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
-  //  SetBkColor (hdc, colortable[color].rgb);
-  //  SetTextColor (hdc, colortable[BLACK].rgb);
     SetBkColor (sdb->mem_dc, colortable[color].rgb);
     SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
     
@@ -5916,9 +5910,9 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
 
     eDx = x + xscale - cosine*(xscale) + sine*(yscale);
     eDy = y + yscale - cosine*(yscale) - sine*(xscale);
-  //  SetGraphicsMode(hdc,GM_ADVANCED);
-  //  SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
 
+  //  SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
+    
     xForm.eM11=cosine/SCALEX;
     xForm.eM12=sine/SCALEX;
     xForm.eM21=-sine/SCALEY;
@@ -5926,13 +5920,11 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     xForm.eDx = eDx;
     xForm.eDy = eDy;
     
-   // SetWorldTransform(hdc,&xForm);
+    SetStretchBltMode(sdb->mem_dc, COLORONCOLOR);
    // SetWorldTransform(sdb->mem_dc,&xForm);
- //   BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-    //BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-   BitBlt (sdb->mem_dc, x, y, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
- //   StretchBlt(sdb->mem_dc, x, y, (int)(width/SCALEX), (int)(height/SCALEY), GlobalMemDC2, 0, 0, width, height, SRCCOPY);
-//    ReleaseDC (bitmap->hwnd, hdc);
+   // BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+   // BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+    StretchBlt(sdb->mem_dc, x, y, (int)(width/SCALEX), (int)(height/SCALEY), GlobalMemDC2, 0, 0, width, height, SRCPAINT);
     DeleteObject (newbmp);
 }
 

@@ -1,4 +1,5 @@
 Version TBA:
+- double buffering now in (to reduce flicker)
 - added link to genocide.netrek.org newbie manual to replace broken link
 - fix to background star jumpiness with short packets off
 - fixed a bunch of stray pixels in mono color and tinted GA bitmaps

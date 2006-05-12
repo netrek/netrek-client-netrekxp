@@ -127,7 +127,7 @@
 #define RACE_COLORS
 
 /*      DOUBLE_BUFFERING        - paint using double buffering to remove flicker */
-//#define DOUBLE_BUFFERING
+#define DOUBLE_BUFFERING
 
 #define PLIST1 
 #define PLIST 
