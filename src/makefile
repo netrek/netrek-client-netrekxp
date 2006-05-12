@@ -24,7 +24,7 @@ ldebug = -Gn -w-dup
 !ENDIF
 
 # Libs
-#LIBOPTS = /L..\Win32\lib\BCC /Tpe
+LIBOPTS = /L..\Win32\lib\BCC /Tpe
 
 LIBS = SDL.LIB SDL_mixer.LIB SDLmain.LIB CW32mt.LIB IMPORT32.LIB user32.lib gdi32.lib wsock32.lib kernel32.lib shell32.lib winmm.lib mpr.lib $(GMPLIB)
 

@@ -20,7 +20,7 @@
 ################################################################################
 */
 
-#define CBUGS "Send bugs/suggestion to: keyos@keyos.org"
+#define CBUGS "Send bugs/suggestion to: williamb@its.caltech.edu"
 
 /* 
 ################################################################################
@@ -126,8 +126,8 @@
 /*      RACE_COLORS             - additional bitplane for race colors           */
 #define RACE_COLORS
 
-/*      DOUBLE_BUFFERING        - paint using double buffering to remove flicker (not working) */
-#undef  DOUBLE_BUFFERING
+/*      DOUBLE_BUFFERING        - paint using double buffering to remove flicker */
+//#define DOUBLE_BUFFERING
 
 #define PLIST1 
 #define PLIST 

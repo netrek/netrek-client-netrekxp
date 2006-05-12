@@ -71,7 +71,7 @@ showreadme (void)
 
     static char *README[] = {
         "",
-        "Netrek XP Mod - the better netrek eXPerience!",
+        "Netrek XP 2006 - the better netrek eXPerience!",
         "",
         "",
         "",
@@ -79,11 +79,11 @@ showreadme (void)
         "      No one takes responsibility for lost INL games etc.",
         "      Use at your own risk! If you don't like it, don't use it.",
         "",
-        "Comments, suggestions, bugreports to: keyos@keyos.org",
+        "Comments, suggestions, bugreports to: williamb@its.caltech.edu",
         "",
         "Include version and architecture info in bug reports",
         "",
-        "Patches to: keyos@keyos.org",
+        "Patches to: williamb@its.caltech.edu",
         "",
     };
     int i, length;

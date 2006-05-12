@@ -15,14 +15,13 @@ away, etc).  Don't think this is fixable.
 4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did -
 server not sending right info - short packets!
 4a) observer sound messes up when someone flips shields at warp 0, again a server problem
-4b) Locking onto iggy caues the observer sound to mess up for shields up/down (this is
-server side problem, both for the not being able to lock back onto your team, and
-the shield packet not being sent)
+4b) Locking onto robot cause the observer sound to mess up for shields up/down (this is
+server side problem, for the shield packet not being sent)
 5) KWINNER called to all players at genocide, not KGENOCIDE, and observers don't get
-any state at all (head to default which is error message).
+any state at all (head to default which is error message) - short packets!
+6) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
 
 Things to do:
-0) Eventually add the SDL dll files to the source.
 1) Add warning hull.
 2) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
@@ -41,8 +40,9 @@ closeable by shift right click.
 6a) Issue with flickering.
 6b) Border issue
 6c) The new smooth turning only working on self, not obs or others - short packets!
-6d) Not working with BCC
 7) login not read in before metaserver info (for metablocking purposes)
+8) Border issue on galaxy map - not using right border width for draw purposes
+10) double buffering not working with new bitmaps
 
 Stas's list:
 - color coded playerlist.

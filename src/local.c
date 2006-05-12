@@ -65,7 +65,7 @@ struct _star {
 
 static void redrawStarSector(int sectorx, int sectory);
 
-#define scaleLocal(pt)           ((pt) / SCALE + (WINSIDE/2))
+#define scaleLocal(pt)           ((pt) + (WINSIDE/2))
 
 int fullview = WINSIDE * SCALE;
 int view = WINSIDE * SCALE / 2;
@@ -259,8 +259,8 @@ redrawStarSector (int sectorx, int sectory)
             dyy = (int) (Sin[mydir] * streaklength);
             for (i = 0, s = star_sector; i < 16; i++, s++)
             {
-                dx = (s->s_x + xbase) - me->p_x;
-                dy = (s->s_y + ybase) - me->p_y;
+                dx = (s->s_x + xbase)/SCALE - me->p_x/SCALE;
+                dy = (s->s_y + ybase)/SCALE - me->p_y/SCALE;
                 if (ABS(dx) > (view) || ABS(dy) > (view))
                     continue;
 
@@ -283,8 +283,11 @@ redrawStarSector (int sectorx, int sectory)
     }
     for (i = 0, s = star_sector; i < 16; i++, s++)
     {
-        dx = (s->s_x + xbase) - me->p_x;
-        dy = (s->s_y + ybase) - me->p_y;
+    	int px, py;
+    	px = me->p_x % 40;
+    	py = me->p_y % 40;
+        dx = (s->s_x + xbase)/SCALE - me->p_x/SCALE;
+        dy = (s->s_y + ybase)/SCALE - me->p_y/SCALE;
         if (ABS(dx) > (view) || ABS(dy) > (view))
             continue;
 
@@ -1829,15 +1832,28 @@ DrawTorps (void)
                     if (j != me && ((k->t_war & me->p_team) ||
                                         (j->p_team & (me->p_hostile | me->p_swar))))
                     {
+#ifndef DOUBLE_BUFFERING
                         W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
                                        dy - (BMP_CTORP_HEIGHT / 2),
                                        torpC[torpTeam][k->t_fuse], torpColor (k));
+#else
+                        W_WriteBitmapDB (localSDB, dx - (BMP_CTORP_WIDTH / 2),
+                                         dy - (BMP_CTORP_HEIGHT / 2),
+                                         torpC[torpTeam][k->t_fuse], torpColor (k));
+#endif
+
                     }
                     else
                     {
+#ifndef DOUBLE_BUFFERING
                         W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
                                        dy - (BMP_CTORP_HEIGHT / 2),
                                        mtorpC[torpTeam][k->t_fuse], torpColor (k));
+#else
+                        W_WriteBitmapDB (localSDB, dx - (BMP_CTORP_WIDTH / 2),
+                                         dy - (BMP_CTORP_HEIGHT / 2),
+                                         mtorpC[torpTeam][k->t_fuse], torpColor (k));
+#endif
                     }
                     
                     clearzone[0][clearcount] = dx - (BMP_CTORP_WIDTH / 2);

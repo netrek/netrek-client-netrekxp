@@ -357,7 +357,7 @@ DrawPlanets ()
 			      emph_planet_seq[seq_n],
 			      W_White);
 
-	    W_WriteBitmapDB(localSDB, dx - (BMP_MPLANET_WIDTH / 2), dy - (BMP_MPLANET_HEIGHT / 2),
+	    W_WriteBitmapDB(mapSDB, dx - (BMP_MPLANET_WIDTH / 2), dy - (BMP_MPLANET_HEIGHT / 2),
 			    planetmBitmap(l), planetColor(l));
 #endif
 	    emph_planet_seq_n[l->pl_no] -= 1;
@@ -867,7 +867,7 @@ map (void)
 			  emph_player_seq[seq_n],
 			  W_White);
 #else
-	    W_WriteBitmapDB(localSDB, dx - (emph_player_seq_width / 2 - 1),
+	    W_WriteBitmapDB(mapSDB, dx - (emph_player_seq_width / 2 - 1),
 			    dy - (emph_player_seq_height / 2 + 1),
 			    emph_player_seq[seq_n],
 			    W_White);

@@ -1526,7 +1526,7 @@ handleSWarning (struct warning_s_spacket *packet)
             }
             if (why_dead)
             {
-				add_whydead (msg.mesg, karg5);
+		add_whydead (msg.mesg, karg5);
                 karg5 = 0;
             }
 #endif

@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <string.h>
 #include <richedit.h>
+#include <math.h>
 
 #include "copyright2.h"
 #include "config.h"
@@ -38,6 +39,7 @@
 #include "cursors.h"
 #include "proto.h"
 #include "resource.h"
+#include "math.h"
 
 #undef WHITE
 #undef BLACK
@@ -5255,7 +5257,7 @@ W_InitSDB (W_Window window)
 
     GetClientRect (win->hwnd, &(sdb->wr));
 
-    sdb->win_dc = GetWindowDC (win->hwnd);
+    sdb->win_dc = GetDC (win->hwnd);
     if (sdb->win_dc == NULL)
         return NULL;
 
@@ -5848,6 +5850,7 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     register struct Icon *bitmap = (struct Icon *) icon;
     register int borderx, bordery, width, height;
     register int srcx, srcy;
+    HDC hdc;
     HBITMAP newbmp;
     XFORM xForm;
     double radians;
@@ -5866,10 +5869,14 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     width = bitmap->width;
     height = bitmap->height;
     
+//    hdc = GetDC (bitmap->hwnd);
+//    newbmp = CreateCompatibleBitmap ( hdc, width, height );
     newbmp = CreateCompatibleBitmap ( sdb->mem_dc, width, height );
 
     if (NetrekPalette)
     {
+   // 	SelectPalette (hdc, NetrekPalette, FALSE);
+     //   RealizePalette (hdc);
         SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
         RealizePalette (sdb->mem_dc);
     }
@@ -5881,6 +5888,8 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+  //  SetBkColor (hdc, colortable[color].rgb);
+  //  SetTextColor (hdc, colortable[BLACK].rgb);
     SetBkColor (sdb->mem_dc, colortable[color].rgb);
     SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
     
@@ -5907,7 +5916,8 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
 
     eDx = x + xscale - cosine*(xscale) + sine*(yscale);
     eDy = y + yscale - cosine*(yscale) - sine*(xscale);
-    SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
+  //  SetGraphicsMode(hdc,GM_ADVANCED);
+  //  SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
 
     xForm.eM11=cosine/SCALEX;
     xForm.eM12=sine/SCALEX;
@@ -5915,10 +5925,14 @@ W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
     xForm.eM22=cosine/SCALEY;
     xForm.eDx = eDx;
     xForm.eDy = eDy;
- 
-    SetWorldTransform(sdb->mem_dc,&xForm);
-    BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-
+    
+   // SetWorldTransform(hdc,&xForm);
+   // SetWorldTransform(sdb->mem_dc,&xForm);
+ //   BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+    //BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+   BitBlt (sdb->mem_dc, x, y, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
+ //   StretchBlt(sdb->mem_dc, x, y, (int)(width/SCALEX), (int)(height/SCALEY), GlobalMemDC2, 0, 0, width, height, SRCCOPY);
+//    ReleaseDC (bitmap->hwnd, hdc);
     DeleteObject (newbmp);
 }
 

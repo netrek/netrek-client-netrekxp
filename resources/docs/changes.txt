@@ -1,8 +1,11 @@
 Version TBA:
+- added link to genocide.netrek.org newbie manual to replace broken link
+- fix to background star jumpiness with short packets off
+- fixed a bunch of stray pixels in mono color and tinted GA bitmaps
 - fixed some playerlist bugs, and increased playerlist window from 21 to 32 lines
 - *.tamu.edu removed from metaserver listing, and direct connect via -h servername
-  also removed.  This is due to the policy of blocking all players with the default
-  login that comes with the client.
+  also removed, for those with default logins.  This is due to the policy of blocking
+  all players with the default login that comes with the client.
 - added new scaling/rotation function that allows us to use higher resolution bitmaps.
   The new bitmap set (made by Defcom) are stored in 80x80 pixel blocks (rather than 20x20
   for all other bitmap sets).  In addition, only 1 bitmap per ship is needed rather than

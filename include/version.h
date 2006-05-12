@@ -2,5 +2,5 @@
 
 /* store the version info here */
 
-static char mvers[] = "4.4.0.4";
-static char version[] = "Netrek XP Mod";
+static char mvers[] = "1.0";
+static char version[] = "Netrek XP 2006";

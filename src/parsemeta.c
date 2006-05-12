@@ -799,7 +799,7 @@ metaaction (W_Event * data)
 		if (x >= 0 && x <= 19)			/* Netrek Home Page */
 			ShellExecute (NULL, "open", "http://www.netrek.org", NULL, NULL, SW_SHOWNORMAL);
 		else if (x >= 21 && x <= 35)	/* Newbie Manual */
-			ShellExecute (NULL, "open", "http://www.netrek.org/cow/current/newbie.html", NULL, NULL, SW_SHOWNORMAL);
+			ShellExecute (NULL, "open", "http://genocide.netrek.org/beginner/newbie.php", NULL, NULL, SW_SHOWNORMAL);
 		else if (x >= 37 && x <= 43)	/* Forums */
 			ShellExecute (NULL, "open", "http://groups-beta.google.com/group/rec.games.netrek", NULL, NULL, SW_SHOWNORMAL);
 		else if (x >= 45 && x <= 49)	/* FAQ */

@@ -36,11 +36,6 @@ a working client under InstCWD\netrek.
 If you were compiling with Visual C++ you will also have a InstCWD\tmp folder containing
 lots of objects.  Just delete it.
 
-Step 4:
--------
-Get SDL.dll and SDL_mixer.dll from the SDL website (you will need these to run the client,
-they must be in the installer package)
-
 Other Notes:
 ------------
 Additional instructions for compiling with Microsoft Visual C++ 2005 Express Edition,
