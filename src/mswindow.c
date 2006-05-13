@@ -1375,7 +1375,7 @@ W_ChangeBorder (W_Window window,
 
     win->BorderColor = color;
 
-    hdc = GetDC (win->hwnd);    //Turn off boder clipping
+    hdc = GetDC (win->hwnd);    //Turn off border clipping
     if (NetrekPalette)
     {
         SelectPalette (hdc, NetrekPalette, FALSE);
@@ -5755,9 +5755,10 @@ W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, 
         r.bottom = min (y + ext.cy, win->ClipRect.bottom);
         if (r.bottom < r.top)
             return;             //Vertical extents do not overlap
-
+            
         ExtTextOut (sdb->mem_dc, x, y, ETO_CLIPPED | ETO_OPAQUE, &r, str, len, NULL);
         break;
+
 
     default:
         LineToConsole ("Unknown window type in W_WriteText");
