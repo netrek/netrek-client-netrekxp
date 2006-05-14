@@ -459,6 +459,9 @@ copy resources\planlibm\bronco\mplan.bmp %InstCWD%\netrek\bitmaps\planlibm
 copy resources\planlibm\rabbit\mplanR.bmp %InstCWD%\netrek\bitmaps\planlibm
 copy resources\planlibm\moo\mplanM.bmp %InstCWD%\netrek\bitmaps\planlibm
 
+mkdir %InstCWD%\netrek\bitmaps\planlibm\color
+copy resources\planlibm\color\*.bmp %InstCWD%\netrek\bitmaps\planlibm\color
+
 mkdir %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\sbexplM.bmp %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\shexplM.bmp %InstCWD%\netrek\bitmaps\misclib

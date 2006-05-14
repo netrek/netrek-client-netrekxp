@@ -129,3 +129,27 @@
 
 #define PLANET_VIEWS 9
 #define MPLANET_VIEWS 9
+
+// Color planets
+
+// Homeworlds
+#define BMP_EARTH 1
+#define BMP_ROMULUS 2
+#define BMP_ORION 3
+#define BMP_KLINGUS 4
+
+// Agris
+#define BMP_AGRI1 5
+#define BMP_AGRI2 6
+
+// Regular planets
+#define BMP_ROCK1 7
+#define BMP_ROCK2 8
+
+// Untouched planet
+#define BMP_PLANET_UNKNOWN 9
+
+#define BMP_CPLANET_WIDTH 120
+#define BMP_CPLANET_HEIGHT 120
+
+

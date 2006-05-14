@@ -344,10 +344,21 @@ struct save_options save_options[] = {
     },
     {"planetBitmap", &planetBitmap, RC_INT,
         {
-            "Type of planet bitmaps",
+            "Type of planet bitmaps on local map",
             "0 - Bronco (default)",
             "1 - Moo",
             "2 - Rabbitear",
+            "3 - New color",
+            NULL
+        }
+    },
+    {"planetBitmapGalaxy", &planetBitmapGalaxy, RC_INT,
+        {
+            "Type of planet bitmaps on galactic map",
+            "0 - Bronco (default)",
+            "1 - Moo",
+            "2 - Rabbitear",
+            "3 - New color",
             NULL
         }
     },

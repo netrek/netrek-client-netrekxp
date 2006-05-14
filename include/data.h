@@ -219,6 +219,7 @@ extern int showTractorPressor;
 extern int showAllTractorPressor;
 extern int showLock;
 extern int planetBitmap;
+extern int planetBitmapGalaxy;
 extern int logging;
 extern int continueTractor;
 extern int tcounter;
@@ -300,7 +301,13 @@ extern W_Icon ship_bitmapsHR[5];
 extern W_Icon fed_bitmapsHR[NUM_TYPES],
     kli_bitmapsHR[NUM_TYPES], rom_bitmapsHR[NUM_TYPES],
     ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
-    
+
+// Planets
+extern W_Icon planet_unknown;
+extern W_Icon planet_bitmaps[8];
+extern W_Icon planet_earth[NUMTEAMS], planet_klingus[NUMTEAMS], planet_orion[NUMTEAMS],
+    planet_romulus[NUMTEAMS], planet_agri1[NUMTEAMS], planet_agri2[NUMTEAMS],
+    planet_rock1[NUMTEAMS], planet_rock2[NUMTEAMS];
 extern W_Icon base_planets;
 extern W_Icon base_mplanets;
 extern W_Icon bplanets[PLANET_VIEWS];

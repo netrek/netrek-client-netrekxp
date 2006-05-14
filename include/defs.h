@@ -124,10 +124,10 @@
 #define ROM 0x2
 #define KLI 0x4
 #define ORI 0x8
-#define IND 0x16
-#define ALLTEAM (FED|ROM|KLI|ORI|IND)
-#define MAXTEAM (IND)
-#define NUMTEAM 5
+#define ALLTEAM (FED|ROM|KLI|ORI)
+#define MAXTEAM (ORI)
+#define NUMTEAM 4               /* Used for player list */
+#define NUMTEAMS 5              /* Used for planet bitmap storage */
 /* * These are random configuration variables */
 #define VICTORY 3               /* Number of systems needed
                                  * to conquer the galaxy */

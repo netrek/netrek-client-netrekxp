@@ -144,12 +144,12 @@ static char *windowmovemess[] = { "Disable moving of internal windows",
 
 static char *plistmessagingmess[] = { "Disable player list messaging",
                                       "Enable player list messaging",
-									  ""
+                                      ""
 };
 
 static char *savebigmess[] = { "Save options without comments",
                                "Save options with comments",
-							   ""
+                               ""
 };
 
 static char *timermess[] = { "Timer shows nothing (off)",
@@ -160,12 +160,19 @@ static char *timermess[] = { "Timer shows nothing (off)",
                             ""
 };
 
-static char *planetbitmapmess[] = { "Show Bronco bitmaps on local",
-                                    "Show Moo bitmaps on local",
-                                    "Show Rabbitear bitmaps on local",
+static char *planetbitmapmess[] = { "Show Bronco bitmaps on local map",
+                                    "Show Moo bitmaps on local map",
+                                    "Show Rabbitear bitmaps on local map",
+                                    "Show New color bitmaps on local map",
                                     ""
 };
 
+static char *planetbitmapgalaxymess[] = { "Show Bronco bitmaps on galactic map",
+                                          "Show Moo bitmaps on galactic map",
+                                          "Show Rabbitear bitmaps on galactic map",
+                                          "Show New color bitmaps on galactic map",
+                                          ""
+};
 /* Only one of op_option, op_targetwin, and op_string should be defined. If
  * op_string is defined, op_size should be too and op_text is used without a
  * "Don't" prefix. if op_range is defined, there should be a %d in op_text
@@ -231,7 +238,9 @@ struct int_range messagehud_range = { 0, 2, 1 };
 
 struct int_range playerlistobserver_range = { 0, 4, 1 };
 
-struct int_range planetbitmaprange = { 0, 2, 1 };
+struct int_range planetbitmaprange = { 0, 3, 1 };
+
+struct int_range planetbitmapgalaxyrange = { 0, 3, 1 };
 
 int saveOpts = 1;    /* Temp flag to use for save options action */
 
@@ -268,6 +277,7 @@ struct option Planet_Menu[] = {
     {0, "Planet Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
+    {1, "", &planetBitmapGalaxy, 0, 0, 0, planetbitmapgalaxymess, &planetbitmapgalaxyrange},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
@@ -698,45 +708,70 @@ optionaction (W_Event * data)
         /* Let's see if this is our option changed */
         else if (op->op_option == &planetBitmap)
         {
-            char *Planlib;
-            char *MPlanlib;
-
-            for (i = 0; i < PLANET_VIEWS; i++)
-                free (bplanets[i]);
-            for (i = 0; i < MPLANET_VIEWS; i++)
-                free (bmplanets[i]);
-
-            switch (planetBitmap)
+            if (planetBitmap != 3) // Color planet bitmaps stay loaded at all times
             {
-            case 1:
-                Planlib = "bitmaps/planlibm/planM.bmp";
-                MPlanlib = "bitmaps/planlibm/mplanM.bmp";
-                break;
-            case 2:
-                Planlib = "bitmaps/planlibm/planR.bmp";
-                MPlanlib = "bitmaps/planlibm/mplanR.bmp";
-                break;
-            default:
-                Planlib = "bitmaps/planlibm/plan.bmp";
-                MPlanlib = "bitmaps/planlibm/mplan.bmp";
-                break;
-            }
-            base_planets = W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
-                                            BMP_PLANET000, w, LR_MONOCHROME);
-            base_mplanets = W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
-                                            BMP_MPLANET000, mapw, LR_MONOCHROME);
+                char *Planlib;
+    
+                for (i = 0; i < PLANET_VIEWS; i++)
+                    free (bplanets[i]);
 
-            for (i = 0; i < PLANET_VIEWS; i++)
-            {
-                bplanets[i] = W_PointBitmap2 (base_planets, 0, i, BMP_PLANET_WIDTH,
-                                                BMP_PLANET_HEIGHT);
-                bmplanets[i] = W_PointBitmap2 (base_mplanets, 0, i, BMP_MPLANET_WIDTH,
-                                                BMP_MPLANET_HEIGHT);
+                switch (planetBitmap)
+                {
+                case 1:
+                    Planlib = "bitmaps/planlibm/planM.bmp";
+                    break;
+                case 2:
+                    Planlib = "bitmaps/planlibm/planR.bmp";
+                    break;
+                default:
+                    Planlib = "bitmaps/planlibm/plan.bmp";
+                    break;
+                }
+                base_planets = W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
+                                                BMP_PLANET000, w, LR_MONOCHROME);
+  
+                for (i = 0; i < PLANET_VIEWS; i++)
+                {
+                    bplanets[i] = W_PointBitmap2 (base_planets, 0, i, BMP_PLANET_WIDTH,
+                                                    BMP_PLANET_HEIGHT);
+                }
             }
 
             redrawall = 1;
         }
+        else if (op->op_option == &planetBitmapGalaxy)
+        {
+            if (planetBitmapGalaxy != 3) // Color planet bitmaps stay loaded at all times
+            {
+                char *MPlanlib;
+    
+                for (i = 0; i < MPLANET_VIEWS; i++)
+                    free (bmplanets[i]);
+    
+                switch (planetBitmapGalaxy)
+                {
+                case 1:
+                    MPlanlib = "bitmaps/planlibm/mplanM.bmp";
+                    break;
+                case 2:
+                    MPlanlib = "bitmaps/planlibm/mplanR.bmp";
+                    break;
+                default:
+                    MPlanlib = "bitmaps/planlibm/mplan.bmp";
+                    break;
+                }
+                base_mplanets = W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
+                                                BMP_MPLANET000, mapw, LR_MONOCHROME);
+    
+                for (i = 0; i < PLANET_VIEWS; i++)
+                {
+                    bmplanets[i] = W_PointBitmap2 (base_mplanets, 0, i, BMP_MPLANET_WIDTH,
+                                                    BMP_MPLANET_HEIGHT);
+                }
+            }
 
+            redrawall = 1;
+        }
 #ifdef ROTATERACE
         else if (rotate != old_rotate)
         {

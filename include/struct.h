@@ -379,9 +379,10 @@ struct rsa_key
 #define PLCOUP 0x200            /* Coup has occured */
 #define PLCHEAP 0x400           /* Planet was taken from
                                  * undefended team */
+#define PLCORE 0x800		/* A core world planet */
 
 #ifdef BRMH
-#define PLCLEAR 0x800
+#define PLCLEAR 0x1000
 #endif
 
 struct planet

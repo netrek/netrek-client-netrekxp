@@ -18,6 +18,20 @@
  * the use of it.)
  * 
  * $Log: defwin.c,v $
+ * Revision 1.5  2006/05/14 02:14:54  modemhero
+ * New planet bitmaps!  Using Defcom's art.  Changeable via planets menu.
+ * New netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
+ * the choice to change map display planets too!  And have map and local planets use different
+ * bitmap sets
+ * Fixed bug where map window border wasn't being redrawn on death
+ * Shortpackets is now off by default.  In the current state of internet connectivity, most people
+ *  don't need the reduced packets, which don't send complete information and break certain features
+ *  such as which direction other players are moving, robot shields, observer geno messages,
+ *  shield/cloak status for warp 0 players, etc.
+ * Fix to problem with bottom and right borders in certain windows (like map) getting overwritten - thanks Stas!
+ * Client now recognizes planets that are flagged as "core", waiting on server patch to
+ * actually get this information and do something with it
+ *
  * Revision 1.4  2006/05/07 16:59:27  modemhero
  * Major features in this patch are:
  * Merge of Stas' latest source into client.
@@ -325,7 +339,7 @@ def_messages[] =
     ,
 #ifdef SHORT_PACKETS
     {
-        "tryShort", BOOL_DEF, "Try short packets at startup", &tryShort1,
+        "tryShort", BOOL_DEF, "Use short packets for communications", &tryShort1,
         {
             {0, NULL, ""},
             {0, NULL, NULL}
@@ -334,7 +348,7 @@ def_messages[] =
     ,
 #endif
     {
-        "tryUdp", BOOL_DEF, "Try UDP automatically", &tryUdp1,
+        "tryUdp", BOOL_DEF, "Use UDP for communications", &tryUdp1,
         {
             {0, NULL, ""},
             {0, NULL, NULL}

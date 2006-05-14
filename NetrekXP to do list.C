@@ -35,13 +35,11 @@ flip to.  Also, closing hint window has same effect
 - option server/servernick/servertype needs to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) With new scaling function, implement Defcom's new bitmaps
-6b) Border issue
-6c) The new smooth turning only working on self, not obs or others - short packets!
+6) Implement Defcom's new planet and ship bitmaps
+6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
+   is rotated, and where to center bitmap
+6b) The new smooth turning only working on self, not obs or others - short packets!
 7) login not read in before metaserver info (for metablocking purposes)
-8) Border issue on galaxy map - not using right border width for draw purposes, top and right
-borders get overwritten by 1 space.  It's an issue in COW too.
-10) double buffering not working with new bitmaps
 
 Stas's list:
 - color coded playerlist.

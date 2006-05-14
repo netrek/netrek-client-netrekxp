@@ -37,10 +37,7 @@ static char *teamstring[9] = { "", "and the Feds",
 void
 death (void)
 {
-    W_Window oldw;
     W_Event event;
-
-    oldw = w;
 
 #ifdef AUTOKEY
     if (autoKey)
@@ -53,7 +50,15 @@ death (void)
     if (oldalert != PFGREEN)
     {
         if (extraAlertBorder)
-            W_ChangeBorder (oldw, gColor);
+        {
+#ifndef DOUBLE_BUFFERING
+            W_ChangeBorder (w, gColor);
+            W_ChangeBorder (mapw, gColor);
+#else
+            W_ChangeBorderDB (localSDB, gColor);
+            W_ChangeBorderDB (mapSDB, gColor);
+#endif
+        }
         W_ChangeBorder (baseWin, gColor);
         oldalert = PFGREEN;
     }
@@ -193,7 +198,6 @@ death (void)
     W_WriteText (w, 50, 80, W_Cyan, deathmessage, strlen (deathmessage),
                  deathFont);
 
-    w = oldw;
 
     /* This is a good time to expire all the torps and phasors that
        we have missed the TFREE and PFREE packes for. */

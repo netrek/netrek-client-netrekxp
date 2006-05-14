@@ -129,10 +129,17 @@ phaserShrinkStyle:        (0-1) shrink own phasers using specific style
 
 phaserStats:              (on/off) show phaser statistics
 phaserWindow:		  (on/off) whether to show phaser window
-planetBitmap:             (0-2) what bitmaps to use for planets
+planetBitmap:             (0-3) what bitmaps to use for local planets
 # 0 - Bronco (default)
 # 1 - Moo
 # 2 - Rabbitear
+# 3 - New color
+
+planetBitmapGalaxy:       (0-3) what bitmaps to use for galaxy planets
+# 0 - Bronco (default)
+# 1 - Moo
+# 2 - Rabbitear
+# 3 - New color
 
 playerList:               (string) custom style of player list
 # ' ' - White Space

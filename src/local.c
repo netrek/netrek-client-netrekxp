@@ -259,8 +259,8 @@ redrawStarSector (int sectorx, int sectory)
             dyy = (int) (Sin[mydir] * streaklength);
             for (i = 0, s = star_sector; i < 16; i++, s++)
             {
-                dx = (s->s_x + xbase) - (me->p_x - (me->p_x % 40));
-                dy = (s->s_y + ybase) - (me->p_y - (me->p_y % 40));
+                dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
+                dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
                 if (ABS(dx) > (view) || ABS(dy) > (view))
                     continue;
 
@@ -283,8 +283,8 @@ redrawStarSector (int sectorx, int sectory)
     }
     for (i = 0, s = star_sector; i < 16; i++, s++)
     {
-        dx = (s->s_x + xbase) - (me->p_x - (me->p_x % 40));
-        dy = (s->s_y + ybase) - (me->p_y - (me->p_y % 40));
+        dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
+        dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
         if (ABS(dx) > (view) || ABS(dy) > (view))
             continue;
 
@@ -354,17 +354,45 @@ DrawPlanets (void)
 
         dx = dx / SCALE + WINSIDE / 2;
         dy = dy / SCALE + WINSIDE / 2;
-
+        
+        if (planetBitmap == 3)
+        {
 #ifndef DOUBLE_BUFFERING
-        W_WriteBitmap (dx - (BMP_PLANET_WIDTH / 2),
-                       dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
-                       planetColor (l));
+            W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2),
+                                dy - (BMP_PLANET_HEIGHT / 2),
+                                BMP_PLANET_WIDTH,
+                                BMP_PLANET_HEIGHT,
+                                BMP_CPLANET_WIDTH,
+			        BMP_CPLANET_HEIGHT,
+			        0,
+                                planetBitmapC (l),
+                                planetColor (l),
+                                w);
 #else
-        W_WriteBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
-                         dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
-                         planetColor (l));
+            W_WriteScaleBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                                  dy - (BMP_PLANET_HEIGHT / 2),
+                                  BMP_PLANET_WIDTH,
+                                  BMP_PLANET_HEIGHT,
+                                  BMP_CPLANET_WIDTH,
+		    	          BMP_CPLANET_HEIGHT,
+			          0,
+                                  planetBitmapC (l),
+                                  planetColor (l),
+                                  w);
 #endif
-
+        }
+        else
+        {
+#ifndef DOUBLE_BUFFERING
+            W_WriteBitmap (dx - (BMP_PLANET_WIDTH / 2),
+                           dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
+                           planetColor (l));
+#else
+            W_WriteBitmapDB (localSDB, dx - (BMP_PLANET_WIDTH / 2),
+                             dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
+                             planetColor (l));
+#endif
+        }
         if (showIND && ((l->pl_info & me->p_team)
 #ifdef RECORDGAME
                         || playback
@@ -836,19 +864,25 @@ DrawShips (void)
 #ifndef DOUBLE_BUFFERING
                 W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2),
                                     dy - (j->p_ship.s_height / 2),
-                                    (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
-                                    (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                                    j->p_ship.s_width,
+                                    j->p_ship.s_height,
+                                    BMP_SHIP_WIDTH_HR,
+                                    BMP_SHIP_HEIGHT_HR,
                                     j->p_dir,
                                     ship_bitsHR[j->p_ship.s_type],
-                                    playerColor (j));
+                                    playerColor (j),
+                                    w);
 #else
                 W_WriteScaleBitmapDB (localSDB, dx - (j->p_ship.s_width / 2),
                                       dy - (j->p_ship.s_height / 2),
-                                      (float)(BMP_SHIP_WIDTH_HR/j->p_ship.s_width),
-                                      (float)(BMP_SHIP_HEIGHT_HR/j->p_ship.s_height),
+                                      j->p_ship.s_width,
+                                      j->p_ship.s_height,
+                                      BMP_SHIP_WIDTH_HR,
+                                      BMP_SHIP_HEIGHT_HR,
                                       j->p_dir,
                                       ship_bitsHR[j->p_ship.s_type],
-                                      playerColor (j));
+                                      playerColor (j),
+                                      w);
 #endif
             }
 
@@ -1744,9 +1778,6 @@ DrawTorps (void)
                         case FED:
                             torpTeam = 1;
                             break;
-                        case IND:
-                            torpTeam = 2;
-                            break;
                         case KLI:
                             torpTeam = 3;
                             break;
@@ -1756,8 +1787,8 @@ DrawTorps (void)
                         case ROM:
                             torpTeam = 5;
                             break;
-                        default:
-                            torpTeam = 0;
+                        default: // IND
+                            torpTeam = 2;
                         }
                     }
 #ifndef DOUBLE_BUFFERING
@@ -1809,9 +1840,6 @@ DrawTorps (void)
                         case FED:
                             torpTeam = 1;
                             break;
-                        case IND:
-                            torpTeam = 2;
-                            break;
                         case KLI:
                             torpTeam = 3;
                             break;
@@ -1821,8 +1849,8 @@ DrawTorps (void)
                         case ROM:
                             torpTeam = 5;
                             break;
-                        default:
-                            torpTeam = 0;
+                        default: // IND
+                            torpTeam = 2;
                         }
                     }
                     
@@ -2036,9 +2064,6 @@ DrawPlasmaTorps (void)
                     case FED:
                         ptorpTeam = 1;
                         break;
-                    case IND:
-                        ptorpTeam = 2;
-                        break;
                     case KLI:
                         ptorpTeam = 3;
                         break;
@@ -2048,8 +2073,8 @@ DrawPlasmaTorps (void)
                     case ROM:
                         ptorpTeam = 5;
                         break;
-                    default:
-                        ptorpTeam = 0;
+                    default:  // IND
+                        ptorpTeam = 2;
                     }
                 }
 #ifndef DOUBLE_BUFFERING
@@ -2103,9 +2128,6 @@ DrawPlasmaTorps (void)
                     case FED:
                         ptorpTeam = 1;
                         break;
-                    case IND:
-                        ptorpTeam = 2;
-                        break;
                     case KLI:
                         ptorpTeam = 3;
                         break;
@@ -2115,8 +2137,8 @@ DrawPlasmaTorps (void)
                     case ROM:
                         ptorpTeam = 5;
                         break;
-                    default:
-                        ptorpTeam = 0;
+                    default: // IND
+                        ptorpTeam = 2;
                     }
                 }
                 if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||

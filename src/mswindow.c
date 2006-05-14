@@ -485,7 +485,27 @@ W_Cleanup (void)
     free (eplasmatorp);
     free (mplasmatorp);
 
-
+    for (i = 0; i < NUMTEAMS; i++)
+    {
+    	free (planet_earth[i]);
+    	free (planet_klingus[i]);
+    	free (planet_orion[i]);
+    	free (planet_romulus[i]);
+    	free (planet_agri1[i]);
+    	free (planet_agri2[i]);
+    	free (planet_rock1[i]);
+    	free (planet_rock2[i]);
+    }
+    free (planet_bitmaps[0]);
+    free (planet_bitmaps[1]);
+    free (planet_bitmaps[2]);
+    free (planet_bitmaps[3]);
+    free (planet_bitmaps[4]);
+    free (planet_bitmaps[5]);
+    free (planet_bitmaps[6]);
+    free (planet_bitmaps[7]);
+    free (planet_unknown);
+    
     for (i = 0; i < PLANET_VIEWS; i++)
         free (bplanets[i]);
     for (i = 0; i < MPLANET_VIEWS; i++)
@@ -1491,9 +1511,6 @@ W_ClearArea (W_Window window,
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
-    // FillRect doesn't do the edges (right and bottom) -SAC 
-    r.right++;
-    r.bottom++;
     FillRect (hdc, &r, colortable[W_Black].brush);
     ReleaseDC (win->hwnd, hdc);
 }
@@ -3838,48 +3855,74 @@ W_WriteBitmap (int x,
 void
 W_WriteScaleBitmap (int x,
                     int y,
-                    float SCALEX,
-                    float SCALEY,
+                    int destwidth,
+                    int destheight,
+                    int srcwidth,
+                    int srcheight,
                     unsigned char p_dir,
                     W_Icon icon,
-                    W_Color color)
+                    W_Color color,
+                    W_Window window)
 {
     register struct Icon *bitmap = (struct Icon *) icon;
-    register int borderx, bordery, width, height;
+    register int border;
     register int srcx, srcy;
     HDC hdc;
     HBITMAP newbmp;
     XFORM xForm;
+    int newwidth, newheight;
     double radians;
-    float cosine, sine, Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
-    float xscale, yscale;
-    float eDx, eDy;
+    float cosine, sine, xscale, yscale, eDx, eDy;
+    FNHEADER_VOID;
 
-    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    // First copy bitmap into new bitmap, and scale it.  This makes life
+    // easier for doing border intersection
     srcx = bitmap->x;
     srcy = bitmap->y;
-    borderx = bitmap->ClipRectAddr->left;
-    x += borderx;
-    bordery = bitmap->ClipRectAddr->top;
-    y += bordery;
-
-    width = bitmap->width;
-    height = bitmap->height;
     
-    hdc = GetDC (bitmap->hwnd);
-    newbmp = CreateCompatibleBitmap ( hdc, width, height );
+    hdc = GetDC (win->hwnd);
+    newbmp = CreateCompatibleBitmap ( hdc, destwidth, destheight );
+    
+    SelectObject (GlobalMemDC, bitmap->bm);
+    SelectObject (GlobalMemDC2, newbmp);
+    
+    // Copy selected section of main bitmap into newbmp before rotation
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+    
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    border = win->ClipRect.top;
+    
+    // Reset srcx and srcy as our new source bitmap starts at 0,0
+    srcx = 0;
+    srcy = 0;
+    x += border;
+    y += border;
+ 
+    if (x < border)
+    {
+        newwidth = destwidth - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((newwidth = win->ClipRect.right - x) > destwidth)
+        newwidth = destwidth;
+    if (y < border)
+    {
+        newheight = destheight - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((newheight = win->ClipRect.bottom - y) > destheight)
+        newheight = destheight;
 
     if (NetrekPalette)
     {
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
-    SelectObject (GlobalMemDC, bitmap->bm);
-    SelectObject (GlobalMemDC2, newbmp);
-    
-    // Copy selected section of main bitmap into newbmp before rotation
-    BitBlt (GlobalMemDC2, 0, 0, width, height, GlobalMemDC, srcx, srcy, SRCPAINT);
-    
+
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
     SetBkColor (hdc, colortable[color].rgb);
@@ -3887,40 +3930,39 @@ W_WriteScaleBitmap (int x,
     
     //Convert p_dir to radians 
     radians=(2*3.14159*p_dir*360/255)/360;
-    //Setworldtransform screws up at angle = 0, slight hack to fix
-    if (radians == 0.0)
-        radians = 0.0000001;
+
     cosine=(float)cos(radians);
     sine=(float)sin(radians);
     
     // Scale used to find bitmap center
-    xscale = (float)(width/SCALEX/2);
-    yscale = (float)(height/SCALEY/2);
-    
-    // Compute dimensions of the resulting bitmap
-    // First get the coordinates of the 3 corners other than origin
-    Point1x=(height*sine);
-    Point1y=(height*cosine);
-    Point2x=(width*cosine+height*sine);
-    Point2y=(height*cosine-width*sine);
-    Point3x=(width*cosine);
-    Point3y=-(width*sine);
+    xscale = (float)(newwidth/2);
+    yscale = (float)(newheight/2);
 
     eDx = x + xscale - cosine*(xscale) + sine*(yscale);
     eDy = y + yscale - cosine*(yscale) - sine*(xscale);
     SetGraphicsMode(hdc,GM_ADVANCED);
 
-    xForm.eM11=cosine/SCALEX;
-    xForm.eM12=sine/SCALEX;
-    xForm.eM21=-sine/SCALEY;
-    xForm.eM22=cosine/SCALEY;
+    xForm.eM11=cosine;
+    xForm.eM12=sine;
+    xForm.eM21=-sine;
+    xForm.eM22=cosine;
     xForm.eDx = eDx;
     xForm.eDy = eDy;
 
     SetWorldTransform(hdc,&xForm);
-    BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-          
-    ReleaseDC (bitmap->hwnd, hdc);
+    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+   
+    // Reset xForm
+    xForm.eM11 = (FLOAT) 1.0; 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = (FLOAT) 1.0; 
+    xForm.eDx  = (FLOAT) 0.0; 
+    xForm.eDy  = (FLOAT) 0.0; 
+
+    SetWorldTransform(hdc,&xForm); 
+    
+    ReleaseDC (win->hwnd, hdc);
     DeleteObject (newbmp);
 
 /*  Alternative method using PlgBlt, left in for reference purposes
@@ -4918,6 +4960,100 @@ W_OverlayBitmap (int x,
     ReleaseDC (bitmap->hwnd, hdc);
 }
 
+void
+W_OverlayScaleBitmap (int x,
+                      int y,
+                      int destwidth,
+                      int destheight,
+                      int srcwidth,
+                      int srcheight,
+                      W_Icon icon,
+                      W_Color color,
+                      W_Window window)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border;
+    register int srcx, srcy;
+    HDC hdc;
+    HBITMAP newbmp;
+    XFORM xForm;
+    int newwidth, newheight;
+    FNHEADER_VOID;
+
+    // First copy bitmap into new bitmap, and scale it.  This makes life
+    // easier for doing border intersection
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    
+    hdc = GetDC (win->hwnd);
+    newbmp = CreateCompatibleBitmap ( hdc, destwidth, destheight );
+    
+    SelectObject (GlobalMemDC, bitmap->bm);
+    SelectObject (GlobalMemDC2, newbmp);
+    
+    // Copy selected section of main bitmap into newbmp before rotation
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+  
+    // Copy selected section of main bitmap into newbmp before rotation
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+    
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    border = win->ClipRect.top;
+    
+    // Reset srcx and srcy as our new source bitmap starts at 0,0
+    srcx = 0;
+    srcy = 0;
+    x += border;
+    y += border;
+ 
+    if (x < border)
+    {
+        newwidth = destwidth - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((newwidth = win->ClipRect.right - x) > destwidth)
+        newwidth = destwidth;
+    if (y < border)
+    {
+        newheight = destheight - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((newheight = win->ClipRect.bottom - y) > destheight)
+        newheight = destheight;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (hdc, colortable[color].rgb);
+    SetTextColor (hdc, colortable[BLACK].rgb);
+
+    SetGraphicsMode(hdc,GM_ADVANCED);
+
+    xForm.eM11 = (FLOAT) 1.0; 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = (FLOAT) 1.0; 
+    xForm.eDx = (float)x;
+    xForm.eDy = (float)y;
+
+    SetWorldTransform(hdc,&xForm);
+    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, 0, 0, SRCPAINT);
+    
+    ReleaseDC (win->hwnd, hdc);
+    DeleteObject (newbmp);
+}
+
 #ifdef BEEPLITE
 void W_EraseTTSText(W_Window window, int last_tts_xpos, int tts_ypos, int last_tts_width)
 {
@@ -5366,9 +5502,6 @@ W_ClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height)
         SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
         RealizePalette (sdb->mem_dc);
     }
-    // FillRect doesn't do the edges (right and bottom) -SAC 
-    r.right++;
-    r.bottom++;
     FillRect (sdb->mem_dc, &r, colortable[W_Black].brush);
 }
 
@@ -5845,87 +5978,127 @@ W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
 
 
 void
-W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
-                    unsigned char p_dir, W_Icon icon, W_Color color)
+W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
+                      int srcwidth, int srcheight, unsigned char p_dir, W_Icon icon,
+                      W_Color color, W_Window window)
 {
     register struct Icon *bitmap = (struct Icon *) icon;
-    register int borderx, bordery, width, height;
+    register int border;
     register int srcx, srcy;
     HBITMAP newbmp;
     XFORM xForm;
+    int newwidth, newheight;
     double radians;
-    float cosine, sine, Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
-    float xscale, yscale;
-    float eDx, eDy;
-    
-    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    float Point1x, Point1y, Point2x, Point2y, Point3x, Point3y;
+    float minx, maxx, miny, maxy;
+    float cosine, sine, xscale, yscale, eDx, eDy;
+    FNHEADER_VOID;
+
+    // First copy bitmap into new bitmap, and scale it.  This makes life
+    // easier for doing border intersection
     srcx = bitmap->x;
     srcy = bitmap->y;
-    borderx = bitmap->ClipRectAddr->left;
-    x += borderx;
-    bordery = bitmap->ClipRectAddr->top;
-    y += bordery;
-
-    width = bitmap->width;
-    height = bitmap->height;
-
-    newbmp = CreateCompatibleBitmap ( sdb->mem_dc, width, height );
-
-    if (NetrekPalette)
-    {
-
-        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
-        RealizePalette (sdb->mem_dc);
-    }
+    
+    newbmp = CreateCompatibleBitmap ( sdb->mem_dc, destwidth, destheight );
+    
     SelectObject (GlobalMemDC, bitmap->bm);
     SelectObject (GlobalMemDC2, newbmp);
     
     // Copy selected section of main bitmap into newbmp before rotation
-    BitBlt (GlobalMemDC2, 0, 0, width, height, GlobalMemDC, srcx, srcy, SRCPAINT);
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
     
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    border = win->ClipRect.top;
+        
+    //Convert p_dir to radians 
+    radians=(2*3.14159*p_dir*360/255)/360;
+
+    // Calculate angle of rotation
+    cosine=(float)cos(radians);
+    sine=(float)sin(radians);
+    
+    // Reset srcx and srcy as our new source bitmap starts at 0,0
+    srcx = 0;
+    srcy = 0;
+    x += border;
+    y += border;
+ 
+    // Compute dimensions of the resulting bitmap
+    // First get the coordinates of the 3 corners other than origin
+    Point1x=(destheight*sine);
+    Point1y=(destheight*cosine);
+    Point2x=(destwidth*cosine+destheight*sine);
+    Point2y=(destheight*cosine-destwidth*sine);
+    Point3x=(destwidth*cosine);
+    Point3y=-(destwidth*sine);
+    
+    minx=min(0,min(Point1x,min(Point2x,Point3x))); 
+    miny=min(0,min(Point1y,min(Point2y,Point3y))); 
+    maxx=max(0,max(Point1x,max(Point2x,Point3x))); 
+    maxy=max(0,max(Point1y,max(Point2y,Point3y)));
+    
+    // Set the new destination height and width - needs work
+   // destwidth =(int)ceil(maxx-minx); 
+   // destheight =(int)ceil(maxy-miny);
+    
+    if (x < border)
+    {
+        newwidth = destwidth - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((newwidth = win->ClipRect.right - x) > destwidth)
+        newwidth = destwidth;
+    if (y < border)
+    {
+        newheight = destheight - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((newheight = win->ClipRect.bottom - y) > destheight)
+        newheight = destheight;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
     SetBkColor (sdb->mem_dc, colortable[color].rgb);
     SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
     
-    //Convert p_dir to radians 
-    radians=(2*3.14159*p_dir*360/255)/360;
-    //Setworldtransform screws up at angle = 0, slight hack to fix
-    if (radians == 0.0)
-        radians = 0.0000001;
-    cosine=(float)cos(radians);
-    sine=(float)sin(radians);
+    // Find bitmap center
+    xscale = (float)(newwidth/2);
+    yscale = (float)(newheight/2);
     
-    // Scale used to find bitmap center
-    xscale = (float)(width/SCALEX/2);
-    yscale = (float)(height/SCALEY/2);
-    
-    // Compute dimensions of the resulting bitmap
-    // First get the coordinates of the 3 corners other than origin
-    Point1x=(height*sine);
-    Point1y=(height*cosine);
-    Point2x=(width*cosine+height*sine);
-    Point2y=(height*cosine-width*sine);
-    Point3x=(width*cosine);
-    Point3y=-(width*sine);
-
     eDx = x + xscale - cosine*(xscale) + sine*(yscale);
     eDy = y + yscale - cosine*(yscale) - sine*(xscale);
+    SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
 
-  //  SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
-    
-    xForm.eM11=cosine/SCALEX;
-    xForm.eM12=sine/SCALEX;
-    xForm.eM21=-sine/SCALEY;
-    xForm.eM22=cosine/SCALEY;
+    xForm.eM11=cosine;
+    xForm.eM12=sine;
+    xForm.eM21=-sine;
+    xForm.eM22=cosine;
     xForm.eDx = eDx;
     xForm.eDy = eDy;
+
+    SetWorldTransform(sdb->mem_dc,&xForm);
+    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+   
+    // Reset xForm
+    xForm.eM11 = (FLOAT) 1.0; 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = (FLOAT) 1.0; 
+    xForm.eDx  = (FLOAT) 0.0; 
+    xForm.eDy  = (FLOAT) 0.0; 
+
+    SetWorldTransform(sdb->mem_dc,&xForm); 
     
-    SetStretchBltMode(sdb->mem_dc, COLORONCOLOR);
-   // SetWorldTransform(sdb->mem_dc,&xForm);
-   // BitBlt(hdc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-   // BitBlt(sdb->mem_dc, 0, 0, width, height, GlobalMemDC2, 0, 0, SRCPAINT);
-    StretchBlt(sdb->mem_dc, x, y, (int)(width/SCALEX), (int)(height/SCALEY), GlobalMemDC2, 0, 0, width, height, SRCPAINT);
     DeleteObject (newbmp);
 }
 
@@ -6036,6 +6209,100 @@ W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
 
     BitBlt (sdb->mem_dc, x, y,          //Copy the bitmap
             width, height, GlobalMemDC, srcx, srcy, SRCPAINT);  // <-- using OR mode
+}
+
+void
+W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
+                        int srcwidth, int srcheight, W_Icon icon, W_Color color, W_Window window)
+{
+    register struct Icon *bitmap = (struct Icon *) icon;
+    register int border;
+    register int srcx, srcy;
+    HBITMAP newbmp;
+    XFORM xForm;
+    int newwidth, newheight;
+    FNHEADER_VOID;
+
+    // First copy bitmap into new bitmap, and scale it.  This makes life
+    // easier for doing border intersection
+    srcx = bitmap->x;
+    srcy = bitmap->y;
+    
+    newbmp = CreateCompatibleBitmap ( sdb->mem_dc, destwidth, destheight );
+    
+    SelectObject (GlobalMemDC, bitmap->bm);
+    SelectObject (GlobalMemDC2, newbmp);
+    
+    // Copy selected section of main bitmap into newbmp before rotation
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+  
+    // Copy selected section of main bitmap into newbmp before rotation
+    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
+    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
+               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+    
+    //Fast (I hope) rectangle intersection, don't overwrite our borders
+    border = win->ClipRect.top;
+    
+    // Reset srcx and srcy as our new source bitmap starts at 0,0
+    srcx = 0;
+    srcy = 0;
+    x += border;
+    y += border;
+ 
+    if (x < border)
+    {
+        newwidth = destwidth - (border - x);
+        srcx += border - x;
+        x = border;
+    }
+    else if ((newwidth = win->ClipRect.right - x) > destwidth)
+        newwidth = destwidth;
+    if (y < border)
+    {
+        newheight = destheight - (border - y);
+        srcy += (border - y);
+        y = border;
+    }
+    else if ((newheight = win->ClipRect.bottom - y) > destheight)
+        newheight = destheight;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
+
+    //Set the color of the bitmap
+    //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
+    SetBkColor (sdb->mem_dc, colortable[color].rgb);
+    SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
+
+    SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
+
+    xForm.eM11 = (FLOAT) 1.0; 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = (FLOAT) 1.0; 
+    xForm.eDx = (float)x;
+    xForm.eDy = (float)y;
+
+    SetWorldTransform(sdb->mem_dc,&xForm);
+    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, 0, 0, SRCPAINT);
+   
+    // Reset xForm
+    xForm.eM11 = (FLOAT) 1.0; 
+    xForm.eM12 = (FLOAT) 0.0; 
+    xForm.eM21 = (FLOAT) 0.0; 
+    xForm.eM22 = (FLOAT) 1.0; 
+    xForm.eDx  = (FLOAT) 0.0; 
+    xForm.eDy  = (FLOAT) 0.0; 
+
+    SetWorldTransform(sdb->mem_dc,&xForm); 
+    
+    DeleteObject (newbmp);
 }
 #endif /* DOUBLE_BUFFERING */
 

@@ -443,7 +443,7 @@ void main2 (int argc,
 /******************************************************************************/
 void initPlanets (void);
 //inline static void checkRedraw(int x, int y);
-//inline static W_Icon planetmBitmap(register struct planet * p);
+extern inline W_Icon planetBitmapC(register struct planet * p);
 //static void DrawPlanets();
 void map (void);
 
@@ -627,11 +627,14 @@ void W_WriteBitmap (int x,
                     W_Color color);
 void W_WriteScaleBitmap (int x,
                          int y,
-                         float SCALEX,
-                         float SCALEY,
+                         int destwidth,
+                         int destheight,
+                         int srcwidth,
+                         int srcheight,
                          unsigned char p_dir,
                          W_Icon icon,
-                         W_Color color);
+                         W_Color color,
+                         W_Window window);
 void W_WriteBitmapGrey (int x,
                         int y,
                         W_Icon icon,
@@ -710,6 +713,15 @@ void W_OverlayBitmap (int x,
                       int y,
                       W_Icon icon,
                       W_Color color);
+void W_OverlayScaleBitmap (int x,
+                           int y,
+                           int destwidth,
+                           int destheight,
+                           int srcwidth,
+                           int srcheight,
+                           W_Icon icon,
+                           W_Color color,
+                           W_Window window);
 void W_EraseTTSText  (W_Window window,
 		      int last_tts_xpos,
 		      int tts_ypos,
@@ -758,10 +770,13 @@ void W_WriteTriangleDB (SDBUFFER * sdb, int x, int y, int s, int t, W_Color colo
 void W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
 void W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
 void W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
-void W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, float SCALEX, float SCALEY,
-                           unsigned char p_dir, W_Icon icon, W_Color color);
+void W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
+                           int srcwidth, int srcheight, unsigned char p_dir, W_Icon icon,
+                           W_Color color, W_Window window);
 void W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
 void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
+void W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
+                             int srcwidth, int srcheight, W_Icon icon, W_Color color, W_Window window);
 #endif
 
 /******************************************************************************/
