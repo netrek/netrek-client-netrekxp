@@ -482,7 +482,7 @@ DrawPlanets ()
 	}
         else
 	{
-#endif            
+#endif   // Beeplite end        
         if (planetBitmapGalaxy == 3)
         {
 #ifndef DOUBLE_BUFFERING
@@ -492,6 +492,7 @@ DrawPlanets ()
                                   BMP_MPLANET_HEIGHT,
                                   BMP_CPLANET_WIDTH,
 			          BMP_CPLANET_HEIGHT,
+			          0,
                                   planetBitmapC (l),
                                   planetColor (l),
                                   mapw);
@@ -502,6 +503,7 @@ DrawPlanets ()
                                     BMP_MPLANET_HEIGHT,
                                     BMP_CPLANET_WIDTH,
 			            BMP_CPLANET_HEIGHT,
+			            0,
                                     planetBitmapC (l),
                                     planetColor (l),
                                     mapw);

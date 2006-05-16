@@ -451,7 +451,8 @@ W_Cleanup (void)
 
     // Free other bitmaps
     free (clockpic);
-
+    free (clockhandpic);
+    
     for (j = 0; j < NUM_CTORP_TYPES; j++)
     {
         for (i = 0; i < BMP_TORPDET_FRAMES; i++)
@@ -4967,6 +4968,7 @@ W_OverlayScaleBitmap (int x,
                       int destheight,
                       int srcwidth,
                       int srcheight,
+                      int angle,
                       W_Icon icon,
                       W_Color color,
                       W_Window window)
@@ -4978,6 +4980,8 @@ W_OverlayScaleBitmap (int x,
     HBITMAP newbmp;
     XFORM xForm;
     int newwidth, newheight;
+    double radians;
+    float cosine, sine, xscale, yscale, eDx, eDy;
     FNHEADER_VOID;
 
     // First copy bitmap into new bitmap, and scale it.  This makes life
@@ -5038,17 +5042,40 @@ W_OverlayScaleBitmap (int x,
     SetBkColor (hdc, colortable[color].rgb);
     SetTextColor (hdc, colortable[BLACK].rgb);
 
+    //Convert angle to radians 
+    radians=(2*3.14159*angle/360);
+
+    cosine=(float)cos(radians);
+    sine=(float)sin(radians);
+    
+    // Scale used to find bitmap center
+    xscale = (float)(newwidth/2);
+    yscale = (float)(newheight/2);
+
+    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
     SetGraphicsMode(hdc,GM_ADVANCED);
 
+    xForm.eM11=cosine;
+    xForm.eM12=sine;
+    xForm.eM21=-sine;
+    xForm.eM22=cosine;
+    xForm.eDx = eDx;
+    xForm.eDy = eDy;
+
+    SetWorldTransform(hdc,&xForm);
+
+    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+
+    // Reset xForm
     xForm.eM11 = (FLOAT) 1.0; 
     xForm.eM12 = (FLOAT) 0.0; 
     xForm.eM21 = (FLOAT) 0.0; 
     xForm.eM22 = (FLOAT) 1.0; 
-    xForm.eDx = (float)x;
-    xForm.eDy = (float)y;
+    xForm.eDx  = (FLOAT) 0.0; 
+    xForm.eDy  = (FLOAT) 0.0; 
 
-    SetWorldTransform(hdc,&xForm);
-    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, 0, 0, SRCPAINT);
+    SetWorldTransform(hdc,&xForm); 
     
     ReleaseDC (win->hwnd, hdc);
     DeleteObject (newbmp);
@@ -6213,7 +6240,8 @@ W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color)
 
 void
 W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
-                        int srcwidth, int srcheight, W_Icon icon, W_Color color, W_Window window)
+                        int srcwidth, int srcheight, int angle,
+                        W_Icon icon, W_Color color, W_Window window)
 {
     register struct Icon *bitmap = (struct Icon *) icon;
     register int border;
@@ -6221,6 +6249,8 @@ W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int desthei
     HBITMAP newbmp;
     XFORM xForm;
     int newwidth, newheight;
+    double radians;
+    float cosine, sine, xscale, yscale, eDx, eDy;
     FNHEADER_VOID;
 
     // First copy bitmap into new bitmap, and scale it.  This makes life
@@ -6280,17 +6310,29 @@ W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int desthei
     SetBkColor (sdb->mem_dc, colortable[color].rgb);
     SetTextColor (sdb->mem_dc, colortable[BLACK].rgb);
 
+    //Convert angle to radians 
+    radians=(2*3.14159*angle/360);
+
+    cosine=(float)cos(radians);
+    sine=(float)sin(radians);
+    
+    // Scale used to find bitmap center
+    xscale = (float)(newwidth/2);
+    yscale = (float)(newheight/2);
+
+    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
     SetGraphicsMode(sdb->mem_dc,GM_ADVANCED);
 
-    xForm.eM11 = (FLOAT) 1.0; 
-    xForm.eM12 = (FLOAT) 0.0; 
-    xForm.eM21 = (FLOAT) 0.0; 
-    xForm.eM22 = (FLOAT) 1.0; 
-    xForm.eDx = (float)x;
-    xForm.eDy = (float)y;
+    xForm.eM11=cosine;
+    xForm.eM12=sine;
+    xForm.eM21=-sine;
+    xForm.eM22=cosine;
+    xForm.eDx = eDx;
+    xForm.eDy = eDy;
 
     SetWorldTransform(sdb->mem_dc,&xForm);
-    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, 0, 0, SRCPAINT);
+    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
    
     // Reset xForm
     xForm.eM11 = (FLOAT) 1.0; 
@@ -6301,7 +6343,7 @@ W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int desthei
     xForm.eDy  = (FLOAT) 0.0; 
 
     SetWorldTransform(sdb->mem_dc,&xForm); 
-    
+
     DeleteObject (newbmp);
 }
 #endif /* DOUBLE_BUFFERING */

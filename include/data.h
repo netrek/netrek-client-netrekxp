@@ -233,7 +233,7 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
-extern W_Icon stipple, clockpic, genopic;
+extern W_Icon stipple, clockpic, clockhandpic, genopic;
 
 extern W_Icon base_expview;
 extern W_Icon expview[BMP_SHIPEXPL_FRAMES];
@@ -644,7 +644,7 @@ extern int allowWheelActions;    /* allow mouse wheel actions */
 extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our richedit controls */
 
 extern int richText;    /* temporary variable to enable/disable rich text windows */
-
+extern int newQuit;
 extern int newSound;	/* Use new SDL sound interface */
 extern int newSoundAngles; /* Use SDL with angular 3D sound */
 #endif /* _h_data */

@@ -109,6 +109,7 @@ newPlist:                 (on/off) compatibility variable for player list
 # on - COW style
 # off - old style
 
+newQuit:                  (on/off) use new quit window
 newSound:                 (on/off) use layered, stereo sound   
 newSoundAngles:           (on/off) use 3D sound effects (only works if newSound is on)
 omitTeamLetter:           (on/off) omit team letter on galaxy

@@ -212,6 +212,7 @@ extern void W_OverlayScaleBitmap (int,
                                   int,
                                   int,
                                   int,
+                                  int,
                                   W_Icon,
                                   W_Color,
                                   W_Window);

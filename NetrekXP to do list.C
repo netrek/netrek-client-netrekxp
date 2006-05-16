@@ -11,14 +11,16 @@ new-be-nice!!
 Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
-3) torp_other and plasma_other not working right due to lack of torp fuse info
-4) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did -
-server not sending right info - short packets!
-4a) observer sound messes up when someone flips shields at warp 0, again a server problem
-4b) Locking onto robot cause the observer sound to mess up for shields up/down (this is
-server side problem, for the shield packet not being sent)
-5) Observers don't get any geno message at all (head to default which is error message) - short packets!
-6) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
+2) torp_other and plasma_other not working right due to lack of torp fuse info
+3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
+
+Things that go wrong when short packets are on:
+1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did
+2) observer sound messes up when someone flips shields at warp 0
+3) Locking onto robot cause the observer sound to mess up for shields up/down
+4) Observers don't get any geno message at all (head to default which is error message)
+5) The new smooth turning only working on self, not obs or others - short packets only
+send headings of 16 positions.
 
 Things to do:
 1) Add warning hull.
@@ -38,8 +40,13 @@ closeable by shift right click.
 6) Implement Defcom's new planet and ship bitmaps
 6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
    is rotated, and where to center bitmap
-6b) The new smooth turning only working on self, not obs or others - short packets!
 7) login not read in before metaserver info (for metablocking purposes)
+8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
+stays in same drawn state.  Only when short packets off and doublebuffering on.
+9) Use nebula pic
+10) fix clock
+10a) add msimg32.lib to borland compile -assuming can get clock to work and i use transparentblt
+11) need resources drawn somehow
 
 Stas's list:
 - color coded playerlist.

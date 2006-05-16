@@ -7,6 +7,7 @@ you can use the mouse wheel to scroll inside message windows.
 an observer can lock onto a cloaked teammate from the player list.
 macros can be sent using players from the player list as the target. Some default distresses can be sent this way too.
 you can change the dashboard clock to a timer through the Visuals Menu. The \ key is default for reseting the timer.
+short packets reduce the amount of information your client receives.  Unless you are playing on a terrible net connection, leave short packets off!
 when you are low on planets, you should let the more experienced players pick the armies. Those should not be wasted.
 when you are in doubt, you should ask a Commodore, Rear Adm. or Admiral for advice.
 when your team has lots of armies, you should not be afraid to pick them. They'll get bombed anyway.

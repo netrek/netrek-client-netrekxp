@@ -236,7 +236,7 @@ int macrocnt = 0;
 
 extern double Sin[], Cos[];
 
-W_Icon stipple, clockpic, genopic, icon;
+W_Icon stipple, clockpic, clockhandpic, genopic, icon;
 
 W_Color borderColor, backColor, textColor, myColor, warningColor, shipCol[5],
     rColor, yColor, gColor, unColor, foreColor;
@@ -747,6 +747,6 @@ int allowWheelActions = 1;   /* allow wheel actions */
 WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
 int richText = 0;   /* temporary variable to select rich text message windows */
-
+int newQuit = 1;
 int newSound = 1;   /* use new SDL sound */
 int newSoundAngles = 1; /* use new SDL sound with angular 3d component */

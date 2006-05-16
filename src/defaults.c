@@ -288,6 +288,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"newQuit", &newQuit, RC_BOOL,
+        {
+            "Use new quit window",
+            NULL
+        }
+    },
     {"newSound", &newSound, RC_BOOL,
         {
             "Use new layered, stereo sound",
@@ -1385,6 +1391,7 @@ resetdefaults (void)
         timerType = T_SHIP;
 
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
+    newQuit = booleanDefault ("newQuit", newQuit);
     newSound = booleanDefault ("newSound", newSound);
     newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);

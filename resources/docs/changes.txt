@@ -1,7 +1,8 @@
 Version TBA:
+- new netrekrc option, "newQuit (on/off)", to use new quit window
 - new netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
   the choice to change map display planets too!  And have map and local planets use different
-  bitmap sets
+  bitmap sets.
 - fixed bug where map window border wasn't being redrawn on death
 - shortpackets is now off by default.  In the current state of internet connectivity, most people
   don't need the reduced packets, which don't send complete information and break certain features
@@ -9,8 +10,8 @@ Version TBA:
   shield/cloak status for warp 0 players, etc.
 - fix to problem with bottom and right borders in certain windows (like map) getting overwritten
 - new planet bitmaps!  Using Defcom's art.  Changeable via planets menu.
-- client now recognizes planets that are flagged as "core", waiting on server patch to
-  actually get this information
+- client now recognizes planets that are flagged as "core": this shows up in planet list menu,
+  planet info, and core planets also use different bitmaps in the "New Color" bitmap set
 - redesigned color1 ori GA so it's not the same pic as base
 - double buffering now in (to reduce flicker)
 - added link to genocide.netrek.org newbie manual to replace broken link

@@ -719,6 +719,7 @@ void W_OverlayScaleBitmap (int x,
                            int destheight,
                            int srcwidth,
                            int srcheight,
+                           int angle,
                            W_Icon icon,
                            W_Color color,
                            W_Window window);
@@ -776,7 +777,8 @@ void W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int dest
 void W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
 void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
 void W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
-                             int srcwidth, int srcheight, W_Icon icon, W_Color color, W_Window window);
+                             int srcwidth, int srcheight, int angle,
+                             W_Icon icon, W_Color color, W_Window window);
 #endif
 
 /******************************************************************************/

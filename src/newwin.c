@@ -704,7 +704,7 @@ newwin (char *hostmon,
     W_SetWindowButtonHandler (messagew, handleMessageWindowButton);
 	W_SetWindowExposeHandler (messagew, DisplayMessage);
 
-    planetw = W_MakeTextWindow ("planet", 10, 10, 53, MAXPLANETS + 3, w, 2);
+    planetw = W_MakeTextWindow ("planet", 10, 10, 57, MAXPLANETS + 3, w, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
     rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
@@ -1196,11 +1196,23 @@ savebitmaps (void)
     stipple =
         W_StoreBitmap3 ("bitmaps/misclib/stipple.bmp", BMP_STIPPLE_WIDTH,
                         BMP_STIPPLE_HEIGHT, BMP_STIPPLE, w, LR_MONOCHROME);
-    clockpic =
-        W_StoreBitmap3 ("bitmaps/misclib/clock.bmp", BMP_CLOCK_WIDTH,
-                        BMP_CLOCK_HEIGHT, BMP_CLOCK, qwin, LR_MONOCHROME);
+    if (newQuit)
+    {
+        clockpic =
+            W_StoreBitmap3 ("bitmaps/misclib/color/clock.bmp", BMP_CCLOCK_WIDTH,
+                            BMP_CCLOCK_HEIGHT, BMP_CLOCK, qwin, LR_DEFAULTCOLOR);
+        clockhandpic =
+            W_StoreBitmap3 ("bitmaps/misclib/color/clockhand.bmp", BMP_CHAND_WIDTH,
+                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_DEFAULTCOLOR);               
+    }
+    else
+    {
+        clockpic =
+            W_StoreBitmap3 ("bitmaps/misclib/clock.bmp", BMP_CLOCK_WIDTH,
+                            BMP_CLOCK_HEIGHT, BMP_CLOCK, qwin, LR_MONOCHROME);
+    }
     genopic =
-        W_StoreBitmap3 ("bitmaps/misclib/genocide.bmp", WINSIDE,
+        W_StoreBitmap3 ("bitmaps/misclib/color/genocide.bmp", WINSIDE,
                         WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
                         
 }
@@ -1503,7 +1515,7 @@ entrywindow (int *team,
                     redrawTeam (teamWin[i], i, &lastplayercount[i]);
                     break;
                 }
-            if (event.Window == qwin)
+            if (event.Window == qwin && !newQuit)
             {
                 redrawQuit ();
             }
@@ -1924,9 +1936,6 @@ redrawQuit (void)
     W_WriteText (qwin, 5, 5, textColor, "Quit NetrekXP", 13, W_RegularFont);
 }
 
-
-#define CLOCK_WID       (BOXSIDE * 9 / 10)
-#define CLOCK_HEI       (BOXSIDE * 2 / 3)
 #define CLOCK_BDR       0
 #define CLOCK_X         (BOXSIDE / 2 - CLOCK_WID / 2)
 #define CLOCK_Y         (BOXSIDE / 2 - CLOCK_HEI / 2)
@@ -1939,9 +1948,23 @@ redrawQuit (void)
 void
 showTimeLeft (time_t time, time_t max)
 {
+    register struct player *j = me;
     char buf[BUFSIZ], *cp;
-    int cx, cy, ex, ey, tx, ty;
+    int cx, cy, tx, ty;
+    int ex = 0, ey = 0;
+    int CLOCK_WID, CLOCK_HEI;
+    int angle;
 
+    if (newQuit)
+    {
+    	CLOCK_WID = BOXSIDE;
+    	CLOCK_HEI = BOXSIDE;
+    }
+    else
+    {
+    	CLOCK_WID = (BOXSIDE * 9 / 10);
+    	CLOCK_HEI = (BOXSIDE * 2 / 3);
+    }
     if ((max - time) < 10 && time & 1)
     {
         W_Beep ();
@@ -1950,21 +1973,40 @@ showTimeLeft (time_t time, time_t max)
     W_ClearArea (qwin, CLOCK_X, CLOCK_Y, CLOCK_WID, CLOCK_HEI);
 
     cx = CLOCK_X + CLOCK_WID / 2;
-    cy = CLOCK_Y + (CLOCK_HEI - W_Textheight) / 2;
-    ex = cx - BMP_CLOCK_WIDTH / 2;
-    ey = cy - BMP_CLOCK_HEIGHT / 2;
-    W_WriteBitmap (ex, ey, clockpic, foreColor);
+    if (newQuit)
+    {
+        cy = CLOCK_Y + CLOCK_HEI / 2;
+        
+        angle = (int)(-360 * time / max);
+        W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor);
+        W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
+                              BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
+                              angle, clockhandpic, foreColor, qwin);
+        sprintf (buf, "%d", max - time);
+        tx = cx - W_Textwidth * strlen (buf) / 2;
+        ty = 2*(cy - W_Textheight / 2)/3;
+        W_WriteText (qwin, tx, ty, textColor, buf, strlen (buf), W_RegularFont);
 
-    ex = (int) (cx - BMP_CLOCK_WIDTH * sin (2 * XPI * time / max) / 2);
-    ey = (int) (cy - BMP_CLOCK_HEIGHT * cos (2 * XPI * time / max) / 2);
-    W_MakeLine (qwin, cx, cy, ex, ey, foreColor);
+        cp = "Quit NetrekXP";
+    }
+    else
+    {
+        cy = CLOCK_Y + (CLOCK_HEI - W_Textheight) / 2;
+        ex = cx - BMP_CLOCK_WIDTH / 2;
+        ey = cy - BMP_CLOCK_HEIGHT / 2;
+        W_WriteBitmap (ex, ey, clockpic, foreColor);
+        
+        ex = (int) (cx - BMP_CLOCK_WIDTH * sin (2 * XPI * time / max) / 2);
+        ey = (int) (cy - BMP_CLOCK_HEIGHT * cos (2 * XPI * time / max) / 2);
+        W_MakeLine (qwin, cx, cy, ex, ey, foreColor);
 
-    sprintf (buf, "%d", max - time);
-    tx = cx - W_Textwidth * strlen (buf) / 2;
-    ty = cy - W_Textheight / 2;
-    W_WriteText (qwin, tx, ty, textColor, buf, strlen (buf), W_RegularFont);
+        sprintf (buf, "%d", max - time);
+        tx = cx - W_Textwidth * strlen (buf) / 2;
+        ty = cy - W_Textheight / 2;
+        W_WriteText (qwin, tx, ty, textColor, buf, strlen (buf), W_RegularFont);
 
-    cp = "Auto Quit";
+        cp = "Auto Quit";
+    }
     tx = CLOCK_X + cx - W_Textwidth * strlen (cp) / 2;
     ty = CLOCK_Y + CLOCK_HEI - W_Textheight;
     W_WriteText (qwin, tx, ty, textColor, cp, strlen (cp), W_RegularFont);
