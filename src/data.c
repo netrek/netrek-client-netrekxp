@@ -79,8 +79,9 @@ int tryUdp1 = 1;
 struct plupdate pl_update[MAXPLANETS];
 char buttonmap[23] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
 int lastm = 0;
-int delay = 0;                  /* delay for decaring war */
-int rdelay = 0;                 /* delay for refitting */
+time_t delay = 0;                  /* time stamp for decaring war */
+time_t rdelay = 0;                 /* time stamp for refitting */
+time_t tdelay = 0;                 /* time stamp for T mode extension */
 int showPlanetNames = 1;
 int autoQuit = 60;
 int showStats = 0;

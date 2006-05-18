@@ -27,7 +27,7 @@
 void
 warning (char *text)
 {
-    int doPhaser;
+    int doPhaser, doRefit, doDeclare;
     time_t curtime;
     struct tm *tm;
     char newtext[128];
@@ -40,8 +40,14 @@ warning (char *text)
     }
 
     doPhaser = (strncmp (text, "Phaser burst", 12) == 0);
-
+    doRefit = (strncmp (text, "You are being transported", 25) == 0);
+    doDeclare = (strncmp (text, "Pausing ten seconds to re-program", 33) == 0);
     warncount = strlen (text);
+    
+    if (doRefit)
+       rdelay = time (0) + REFITTIME;
+    if (doDeclare)
+       delay = time (0) + DECLARETIME;
 #ifdef PHASER_STATS
     if (doPhaser && phaserStats)
     {

@@ -39,6 +39,7 @@ getshipdefaults ()
     shipvals[SCOUT].s_width = 20;       /* scout:  */
     shipvals[SCOUT].s_height = 20;      /* scout:  */
     shipvals[SCOUT].s_phaserfuse = 10;  /* scout:  */
+    shipvals[SCOUT].s_repair = 80;      /* scout:  */
 
     shipvals[DESTROYER].s_phaserdamage = 85;    /* destroyer: */
     shipvals[DESTROYER].s_torpspeed = 14;       /* destroyer: */
@@ -53,6 +54,7 @@ getshipdefaults ()
     shipvals[DESTROYER].s_height = 20;  /* destroyer: */
     shipvals[DESTROYER].s_type = DESTROYER;     /* destroyer: */
     shipvals[DESTROYER].s_phaserfuse = 10;      /* destroyer: */
+    shipvals[DESTROYER].s_repair = 100;         /* destroyer: */
 
     shipvals[BATTLESHIP].s_phaserdamage = 105;  /* battleship: */
     shipvals[BATTLESHIP].s_torpspeed = 12;      /* battleship: */
@@ -67,6 +69,7 @@ getshipdefaults ()
     shipvals[BATTLESHIP].s_height = 20; /* battleship: */
     shipvals[BATTLESHIP].s_type = BATTLESHIP;   /* battleship: */
     shipvals[BATTLESHIP].s_phaserfuse = 10;     /* battleship: */
+    shipvals[BATTLESHIP].s_repair = 125;        /* battleship: */
 
     shipvals[ASSAULT].s_phaserdamage = 80;      /* assault */
     shipvals[ASSAULT].s_torpspeed = 16; /* assault */
@@ -81,6 +84,7 @@ getshipdefaults ()
     shipvals[ASSAULT].s_height = 20;    /* assault */
     shipvals[ASSAULT].s_type = ASSAULT; /* assault */
     shipvals[ASSAULT].s_phaserfuse = 10; /* assault */
+    shipvals[ASSAULT].s_repair = 120;    /* assault */
 
     shipvals[STARBASE].s_phaserdamage = 120;    /* starbase */
     shipvals[STARBASE].s_torpspeed = 14;        /* starbase */
@@ -95,7 +99,8 @@ getshipdefaults ()
     shipvals[STARBASE].s_height = 20;   /* starbase */
     shipvals[STARBASE].s_type = STARBASE;       /* starbase */
     shipvals[STARBASE].s_phaserfuse = 4;        /* starbase */
-
+    shipvals[STARBASE].s_repair = 140;  /* starbase */
+    
     shipvals[ATT].s_phaserdamage = 10000;       /* att: */
     shipvals[ATT].s_torpspeed = 30;     /* att: */
     shipvals[ATT].s_maxspeed = 60;      /* att: */
@@ -109,6 +114,7 @@ getshipdefaults ()
     shipvals[ATT].s_height = 20;        /* att: */
     shipvals[ATT].s_type = ATT; /* att: */
     shipvals[ATT].s_phaserfuse = 1; /* att: */
+    shipvals[ATT].s_repair = 30000; /* att: */
 
     shipvals[SGALAXY].s_phaserdamage = 100;     /* galaxy: */
     shipvals[SGALAXY].s_torpspeed = 13; /* galaxy: */
@@ -123,6 +129,7 @@ getshipdefaults ()
     shipvals[SGALAXY].s_height = 20;    /* galaxy: */
     shipvals[SGALAXY].s_type = SGALAXY; /* galaxy: */
     shipvals[SGALAXY].s_phaserfuse = 10; /* galaxy: */
+    shipvals[SGALAXY].s_repair = 112;    /* galaxy: */
 
     shipvals[CRUISER].s_phaserdamage = 100;     /* cruiser: */
     shipvals[CRUISER].s_torpspeed = 12; /* cruiser: */
@@ -137,6 +144,7 @@ getshipdefaults ()
     shipvals[CRUISER].s_height = 20;    /* cruiser: */
     shipvals[CRUISER].s_type = CRUISER; /* cruiser: */
     shipvals[CRUISER].s_phaserfuse = 10; /* cruiser: */
+    shipvals[CRUISER].s_repair = 110;   /* cruiser: */
 }
 
 /******************************************************************************/

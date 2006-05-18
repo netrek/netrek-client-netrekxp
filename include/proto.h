@@ -67,6 +67,7 @@ void db_timer (int fr, int xloc, int yloc);
 void db_redraw_krp (int fr);
 void db_redraw_COW (int fr);
 void db_redraw (int fr);
+int repair_time (void);
 
 /******************************************************************************/
 /***  dashboard3.c                                                          ***/

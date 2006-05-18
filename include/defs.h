@@ -135,7 +135,15 @@
                                  * a warning on the screen */
 #define MESSTIME 30             /* Number of updates to have
                                  * a message on the screen */
-
+                                 
+/* These are server defined times */
+#define REFITTIME 5             /* Number of seconds it takes
+                                 * to refit */
+#define DECLARETIME 10          /* Number of seconds it takes
+                                 * to declare war */
+#define TOURNEXTENDTIME 15      /* Number of seconds after T-mode ends
+                                   in which it's still considered T-mode for
+                                   planet taking purposes */
 #define TARG_PLAYER	0x1     /* Flags for gettarget */
 #define TARG_PLANET	0x2
 #define TARG_CLOAK	0x4     /* Include cloaked ships in

@@ -38,6 +38,7 @@
 #define BAR_LENGTH 56
 
 #define SPACING 4
+
 /******************************************************************************/
 /***  timerString()                                                         ***/
 /******************************************************************************/
@@ -90,7 +91,10 @@ db_timer (int fr, int xloc, int yloc)
         switch (timerType)
         {
         case T_NONE:
-            W_ClearArea(tstatw, xloc, yloc, 12 * W_Textwidth, W_Textheight);
+            if (newDashboard)
+                W_ClearArea(tstatw, xloc, yloc, 12 * W_Textwidth, W_Textheight);
+            else
+                W_ClearArea(tstatw, xloc + 4 * W_Textwidth, yloc - W_Textheight, 8 * W_Textwidth, 2 * W_Textheight);
             strcpy(lasttimer, "        ");
             oldtime = now;
             break;
@@ -109,7 +113,10 @@ db_timer (int fr, int xloc, int yloc)
         }
         if(s) 
         {
-            W_WriteText(tstatw, xloc, yloc, textColor, s, 3, W_RegularFont);
+            if (newDashboard)
+                W_WriteText(tstatw, xloc, yloc, textColor, s, 3, W_RegularFont);
+            else
+                W_WriteText(tstatw, xloc + 4 * W_Textwidth, yloc - W_Textheight, textColor, s, 3, W_RegularFont);
         }
     }
     if (!timerType)
@@ -266,6 +273,88 @@ db_bar (char *lab,
 }
 
 /******************************************************************************/
+/***  db_special() - for showing prioritized timer info in dashboard        ***/
+/******************************************************************************/
+static void
+db_special (void)
+{
+    char buf[16];
+    struct player *plr;
+    int repairtime;
+
+    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+        plr = players + me->p_playerl;
+    else
+        plr = me;
+    
+    /* Start with low priority messages, clear as necessary for higher
+       priority ones */
+       
+    /* Default impulse text */
+    W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+    W_WriteText (tstatw, 38, 3, W_Yellow, "Impulse", 7, W_BoldFont);
+    
+    /* Transwarp text */
+    if (me->p_flags & PFTWARP)
+    {
+        W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+        W_WriteText (tstatw, 38, 3, W_White, "Twarp", 5, W_BoldFont);
+    }
+    /* Tournament extension text */
+    if (tdelay)
+    {
+        if (time (0) > tdelay)
+            tdelay = 0;
+	else
+	{
+	    W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 38, 3, W_Grey, "Tmod", 4, W_BoldFont);
+	    sprintf(buf, "%d", tdelay - time (0));
+	    W_WriteText (tstatw, 68, 3, textColor, buf, strlen (buf), W_RegularFont);
+	}
+    }
+    
+    /* Repair text */
+    if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
+    {
+        repairtime = repair_time();
+        W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+        W_WriteText (tstatw, 38, 3, W_Cyan, "Fix", 3, W_BoldFont);
+        sprintf(buf, "%d", repairtime);
+        W_WriteText (tstatw, 62, 3, textColor, buf, strlen (buf), W_RegularFont);
+    }
+    
+    /* Refit text */
+    if (rdelay)
+    {
+        if (time (0) > rdelay)
+            rdelay = 0;
+        else
+        {
+            W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 38, 3, W_Green, "Refit", 5, W_BoldFont);
+            sprintf(buf, "%d", rdelay - time (0));
+            W_WriteText (tstatw, 74, 3, textColor, buf, strlen (buf), W_RegularFont);
+        }
+    }
+    
+    /* Declare War text */
+    if (delay)
+    {
+        if (time (0) > delay)
+            delay = 0;
+        else
+        {
+            W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 38, 3, W_Red, "War", 3, W_BoldFont);
+            sprintf(buf, "%d", delay - time (0));
+            W_WriteText (tstatw, 62, 3, textColor, buf, strlen (buf), W_RegularFont);
+        }
+    }
+}
+
+
+/******************************************************************************/
 /***  db_flags()                                                            ***/
 /******************************************************************************/
 static void
@@ -274,7 +363,7 @@ db_flags (int fr)
     static float old_kills = -1.0;
     static int old_torp = -1;
     static unsigned int old_flags = (unsigned int) -1;
-    static int old_tourn = -1;
+    static int old_tourn = 0;
     char buf[16];
     struct player *plr;
 
@@ -315,19 +404,25 @@ db_flags (int fr)
             buf[11] = 'd';
         else
             buf[11] = ' ';
-
+            
         W_WriteText (tstatw, 2, 3, textColor, "Flags", 5, W_RegularFont);
         W_WriteText (tstatw, 2, 17, textColor, buf, 12, W_RegularFont);
         old_flags = me->p_flags;
     }
-
+    
     if (fr || status->tourn != old_tourn)
     {
         if (status->tourn)
+        {
             W_WriteText (tstatw, 74, 17, textColor, "T", 1, W_BoldFont);
+            tdelay = 0;
+        }
         else
+        {
+            if (status->tourn != old_tourn && !tdelay)
+                tdelay = time (0) + TOURNEXTENDTIME;
             W_WriteText (tstatw, 74, 17, textColor, " ", 1, W_BoldFont);
-
+        }
         old_tourn = status->tourn;
     }
 
@@ -391,6 +486,7 @@ db_redraw_krp (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
+    db_special ();
 
     /* TIMER */
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
@@ -550,6 +646,7 @@ db_redraw_COW (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
+    db_special ();
 
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
 
@@ -700,3 +797,59 @@ db_redraw (int fr)
         db_redraw_COW (fr);
     }
 }
+
+/******************************************************************************/
+/***  repair_time() - calculate time left till ship is fully repaired
+                      using server defined repair rates.  Only called when
+                      ship is at warp 0 and under repair                    ***/
+/******************************************************************************/
+int
+repair_time (void)
+{
+    int shieldtime = 0;
+    int hulltime = 0;
+    int shieldneeded, hullneeded;
+    float shieldrate = 0.0, hullrate = 0.0;
+    
+    /* 100 subshield or subdamage =  1 shield or hull repaired 
+       This routine is used by server every update (and 10 updates/sec) */
+    /* calculate shield repair rate */
+    if ((shieldneeded = (me->p_ship.s_maxshield - me->p_shield)) > 0)
+    {
+        me->p_subshield = me->p_ship.s_repair * 4;
+        if ((me->p_flags & PFORBIT)
+        && (planets[me->p_planet].pl_flags & PLREPAIR)
+        &&(!(planets[me->p_planet].pl_owner & (me->p_swar | me->p_hostile))))
+        {
+            me->p_subshield += me->p_ship.s_repair * 4;
+        }
+        if (me->p_flags & PFDOCK)
+        {
+    	    me->p_subshield += me->p_ship.s_repair * 6;
+        }
+        /* Calculate time needed to repair shields */
+        shieldrate = (float)(me->p_subshield)/(float)100.0;
+        shieldtime = (int)(shieldneeded/shieldrate);
+    }
+
+    /* calculate hull repair rate */
+    if (((hullneeded = me->p_damage) > 0) && !(me->p_flags & PFSHIELD))
+    {
+    	me->p_subdamage = me->p_ship.s_repair * 2;
+    	if ((me->p_flags & PFORBIT)
+    	&& (planets[me->p_planet].pl_flags & PLREPAIR)
+    	&& (!(planets[me->p_planet].pl_owner & (me->p_swar | me->p_hostile))))
+    	{
+    	    me->p_subdamage += me->p_ship.s_repair * 2;
+    	}
+    	if (me->p_flags & PFDOCK)
+    	{
+    	    me->p_subdamage += me->p_ship.s_repair * 3;
+    	}
+    	/* Calculate time needed to repair hull */
+    	hullrate = (float)(me->p_subdamage)/(float)100.0;
+        hulltime = (int)(hullneeded/hullrate);
+    }
+    
+    return MAX(shieldtime, hulltime);
+};

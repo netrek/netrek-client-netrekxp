@@ -185,6 +185,9 @@ stline (int flag)
         buf = buf2;
         oldbuf = buf1;
     }
+    /* TIMER */
+    db_timer (flag, WINSIDE - 12 * W_Textwidth, 27);
+    
     buf[0] = (char) (me->p_flags & PFSHIELD ? 'S' : ' ');
     if (me->p_flags & PFGREEN)
         buf[1] = 'G';

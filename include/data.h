@@ -60,8 +60,9 @@ extern int messMouseDelta;      /* To keep track of mouse movement delta        
 extern int lastcount;
 extern int mdisplayed;
 extern int lastm;
-extern int delay;
-extern int rdelay;
+extern time_t delay;
+extern time_t rdelay;
+extern time_t tdelay;
 extern int showPlanetNames;
 extern int warnShields;
 extern int showStats;

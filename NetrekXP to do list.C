@@ -13,6 +13,8 @@ Things not gonna happen, or server problems:
 away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
 3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
+4) Refit disallows ATT before it even gets to the shipallow check, should remove the
+first disallow.
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did
@@ -47,6 +49,7 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 10) fix clock
 10a) add msimg32.lib to borland compile -assuming can get clock to work and i use transparentblt
 11) need resources drawn somehow
+12) BUG: phaser stats don't work with short packets off
 
 Stas's list:
 - color coded playerlist.
@@ -74,7 +77,6 @@ Stas's list:
 - check geno/shift-q wrong behavior
 - resize documentation window
 - pasting multiline prints \r\n instead of splitting lines
-- add sortPlayersFirst
 - fix makedistress bug that creates 0 instead of empty string when macro starts with conditional
 
 Simple in-game, realtime variable checking:

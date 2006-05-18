@@ -241,13 +241,95 @@ db_bar (char *l,
 
 
 /******************************************************************************/
+/***  db_special() - for showing prioritized timer info in dashboard        ***/
+/******************************************************************************/
+static void
+db_special (void)
+{
+    char buf[16];
+    struct player *plr;
+    int repairtime;
+
+    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+        plr = players + me->p_playerl;
+    else
+        plr = me;
+    
+    /* Start with low priority messages, clear as necessary for higher
+       priority ones */
+       
+    /* Default impulse text */
+    W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+    W_WriteText (tstatw, 160, 32, W_Yellow, "Impulse", 7, W_BoldFont);
+    
+    /* Transwarp text */
+    if (me->p_flags & PFTWARP)
+    {
+        W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+        W_WriteText (tstatw, 160, 32, W_White, "Twarp", 5, W_BoldFont);
+    }
+    /* Tournament extension text */
+    if (tdelay)
+    {
+        if (time (0) > tdelay)
+            tdelay = 0;
+	else
+	{
+	    W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 160, 32, W_Grey, "Tmod", 4, W_BoldFont);
+	    sprintf(buf, "%d", tdelay - time (0));
+	    W_WriteText (tstatw, 190, 32, textColor, buf, strlen (buf), W_RegularFont);
+	}
+    }
+    
+    /* Repair text */
+    if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
+    {
+        repairtime = repair_time();
+        W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+        W_WriteText (tstatw, 160, 32, W_Cyan, "Fix", 3, W_BoldFont);
+        sprintf(buf, "%d", repairtime);
+        W_WriteText (tstatw, 184, 32, textColor, buf, strlen (buf), W_RegularFont);
+    }
+    
+    /* Refit text */
+    if (rdelay)
+    {
+        if (time (0) > rdelay)
+            rdelay = 0;
+        else
+        {
+            W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 160, 32, W_Green, "Refit", 5, W_BoldFont);
+            sprintf(buf, "%d", rdelay - time (0));
+            W_WriteText (tstatw, 196, 32, textColor, buf, strlen (buf), W_RegularFont);
+        }
+    }
+    
+    /* Declare War text */
+    if (delay)
+    {
+        if (time (0) > delay)
+            delay = 0;
+        else
+        {
+            W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
+            W_WriteText (tstatw, 160, 32, W_Red, "War", 3, W_BoldFont);
+            sprintf(buf, "%d", delay - time (0));
+            W_WriteText (tstatw, 184, 32, textColor, buf, strlen (buf), W_RegularFont);
+        }
+    }
+}
+
+
+/******************************************************************************/
 /***  db_flags()                                                            ***/
 /******************************************************************************/
 static void
 db_flags (int fr)
 {
     static unsigned int old_flags = (unsigned int) -1;
-    static unsigned char old_tourn = (unsigned char) -1;
+    static unsigned char old_tourn = (unsigned char) 0;
     char buf[13];
 
 
@@ -315,10 +397,13 @@ db_flags (int fr)
         if (status->tourn)
         {
             buf[12] = 't';
+            tdelay = 0;
         }
         else
         {
             buf[12] = ' ';
+            if (status->tourn != old_tourn && !tdelay)
+                tdelay = time (0) + TOURNEXTENDTIME;
         }
 
         W_WriteText (tstatw, 2, 32, W_White, buf, 13, W_RegularFont);
@@ -340,19 +425,28 @@ db_redraw_lab2 (int fr)
     static int old_wpn = -1, old_egn = -1;
     static int old_ful = -1;
     static float old_kills = -1;
+    static int old_torp = -1;
     int cur_max, cur_arm, label_len;
     char label[32];
     float kills; 
+    int torp;
         
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+    {
         kills = players[me->p_playerl].p_kills;
+        torp = players[me->p_playerl].p_ntorp;
+    }
     else
+    {
         kills = me->p_kills;
+        torp = me->p_ntorp;
+    }
 
     if (fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
+    db_special ();
 
     /* TIMER */
     db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
@@ -551,7 +645,30 @@ db_redraw_lab2 (int fr)
 
         old_kills = kills;
     }
-
+    
+    if (fr || (old_torp != torp))
+    {
+    	W_ClearArea (tstatw, 242, 32, 72, W_Textheight);
+    	
+        if (torp > 0)
+        {
+            label[0] = ' ';
+            label[1] = 'T';
+            label[2] = 'o';
+            label[3] = 'r';
+            label[4] = 'p';
+            label[5] = 's';
+            label[6] = ':';
+            label[7] = ' ';
+            label_len = 8 + db_itoa (&label[8], torp);
+            
+            W_WriteText (tstatw,
+                         242, 32,
+                         W_White, label, label_len, W_RegularFont);
+        }
+        old_torp = torp;
+    }
+    
     old_spd = me->p_speed;
     old_cur_max = cur_max;
     old_shl = me->p_shield;

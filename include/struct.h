@@ -174,6 +174,7 @@ struct ship
     short s_type;
     int s_torpspeed;
     int s_phaserfuse;
+    int s_repair;
 };
 
 struct stats

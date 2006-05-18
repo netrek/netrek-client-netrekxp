@@ -1,4 +1,13 @@
 Version TBA:
+- added timer/clock back to text dashboard
+- added torp count to LAB dashboard
+- added new status line to KRP, COW and LAB dashboard. In order of priority, it shows the following:
+  1) time left in declare war delay
+  2) time left in refit delay
+  3) time left to fully repair (if you are at warp 0 in repair mode)
+  4) time left in grace period after T mode drops to still take planets (15 second timer)
+  5) whether you are in transwarp
+  6) whether you are under impulse power (default)
 - new netrekrc option, "newQuit (on/off)", to use new quit window
 - new netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
   the choice to change map display planets too!  And have map and local planets use different
