@@ -275,82 +275,124 @@ db_bar (char *lab,
 /******************************************************************************/
 /***  db_special() - for showing prioritized timer info in dashboard        ***/
 /******************************************************************************/
-static void
-db_special (void)
+void
+db_special (int fr, int x, int y)
 {
-    char buf[16];
+    char buf[8];
+    char buf2[4];
+    char tmp[8];
     struct player *plr;
-    int repairtime;
-
+    int msgtype;
+    static char oldmsg[8];
+    static int oldmsgtype;
+    W_Color color;
+    int left, right, pos;
+    
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
         plr = players + me->p_playerl;
     else
         plr = me;
     
-    /* Start with low priority messages, clear as necessary for higher
-       priority ones */
+    /* Check if any delays expired */
+    if (delay && time (0) > delay)
+        delay = 0;
+    if (rdelay && time (0) > rdelay)
+        rdelay = 0;
+    if (tdelay && time (0) > tdelay)
+        tdelay = 0;
+        
+    /* Start with highest priority message, then go down in descending order
+       of importance */
        
-    /* Default impulse text */
-    W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-    W_WriteText (tstatw, 38, 3, W_Yellow, "Impulse", 7, W_BoldFont);
-    
-    /* Transwarp text */
-    if (me->p_flags & PFTWARP)
-    {
-        W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-        W_WriteText (tstatw, 38, 3, W_White, "Twarp", 5, W_BoldFont);
-    }
-    /* Tournament extension text */
-    if (tdelay)
-    {
-        if (time (0) > tdelay)
-            tdelay = 0;
-	else
-	{
-	    W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 38, 3, W_Grey, "Tmod", 4, W_BoldFont);
-	    sprintf(buf, "%d", tdelay - time (0));
-	    W_WriteText (tstatw, 68, 3, textColor, buf, strlen (buf), W_RegularFont);
-	}
-    }
-    
-    /* Repair text */
-    if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
-    {
-        repairtime = repair_time();
-        W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-        W_WriteText (tstatw, 38, 3, W_Cyan, "Fix", 3, W_BoldFont);
-        sprintf(buf, "%d", repairtime);
-        W_WriteText (tstatw, 62, 3, textColor, buf, strlen (buf), W_RegularFont);
-    }
-    
-    /* Refit text */
-    if (rdelay)
-    {
-        if (time (0) > rdelay)
-            rdelay = 0;
-        else
-        {
-            W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 38, 3, W_Green, "Refit", 5, W_BoldFont);
-            sprintf(buf, "%d", rdelay - time (0));
-            W_WriteText (tstatw, 74, 3, textColor, buf, strlen (buf), W_RegularFont);
-        }
-    }
-    
     /* Declare War text */
     if (delay)
     {
-        if (time (0) > delay)
-            delay = 0;
-        else
-        {
-            W_ClearArea (tstatw, 38, 3, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 38, 3, W_Red, "War", 3, W_BoldFont);
-            sprintf(buf, "%d", delay - time (0));
-            W_WriteText (tstatw, 62, 3, textColor, buf, strlen (buf), W_RegularFont);
-        }
+        sprintf (buf, "War ");
+        sprintf(buf2, "%d", delay - time (0));
+        strcat (buf, buf2);
+        msgtype = 0;
+        color = W_Red;
     }
+    /* Refit text */
+    else if (rdelay)
+    {
+        sprintf (buf, "Refit ");
+        sprintf(buf2, "%d", rdelay - time (0));
+        strcat (buf, buf2);
+        msgtype = 1;
+        color = W_Green;
+    }
+    /* Repair text */
+    else if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
+    {
+        sprintf (buf, "Fix ");
+        sprintf(buf2, "%d", repair_time());
+        strcat (buf, buf2);
+        msgtype = 2;
+        color = W_Cyan;
+    }
+    /* Tournament extension text */
+    else if (tdelay)
+    {
+        sprintf (buf, "Tmod ");
+        sprintf(buf2, "%d", tdelay - time (0));
+        strcat (buf, buf2);
+        msgtype = 3;
+        color = W_Grey;
+    }    
+    /* Transwarp text */
+    else if (me->p_flags & PFTWARP)
+    {
+        sprintf (buf, "Twarp");
+        msgtype = 4;
+        color = W_White;
+    }
+    /* Default impulse text */
+    else
+    {
+        sprintf (buf, "Impulse");
+        msgtype = 5;
+        color = W_Yellow;
+    }
+
+    if (fr || msgtype != oldmsgtype)
+    {
+    	W_ClearArea (tstatw, x, y, W_Textwidth * 8, W_Textheight);
+    	W_WriteText (tstatw, x, y, color, buf, strlen (buf), W_BoldFont);
+    }
+    else
+    {
+    	/*
+            Run through the string to find any differences.  Print any
+            continuous differences with one W_WriteText call.
+        */
+        left = 0;
+        right = -1;
+        pos = 0;
+        strcpy (tmp, buf);
+        while (pos < 7) 
+        {
+            if (tmp[pos] == oldmsg[pos]) 
+            {
+                if (left <= right)
+                    W_WriteText(tstatw, x + left * W_Textwidth, y, color,
+                                tmp + left, right - left + 1, W_BoldFont);
+                left = pos + 1;
+                right = pos;
+            } 
+            else
+                right++;
+            pos++;
+        }
+        if (left <= right)
+            W_WriteText(tstatw, x + left * W_Textwidth, y, color,
+                        tmp + left, right - left + 1, W_BoldFont);
+    }
+    
+    oldmsgtype = msgtype;
+    strcpy(oldmsg, buf);
+
+    return;
 }
 
 
@@ -486,7 +528,7 @@ db_redraw_krp (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special ();
+    db_special (fr, 38, 3);
 
     /* TIMER */
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
@@ -646,7 +688,7 @@ db_redraw_COW (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special ();
+    db_special (fr, 38, 3);
 
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
 

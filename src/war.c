@@ -130,6 +130,9 @@ waraction (W_Event * data)
         W_UnmapWindow (war);
         return;
         break;
+    default:
+        return;
+        break;
     }
 
     if (me->p_swar & enemyteam)

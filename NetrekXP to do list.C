@@ -13,8 +13,8 @@ Things not gonna happen, or server problems:
 away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
 3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
-4) Refit disallows ATT before it even gets to the shipallow check, should remove the
-first disallow.
+4) ATT not listed as valid ship even if it's in sysdef.
+5) in orbit.c, pftranswarp strangeness.
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did
@@ -46,10 +46,16 @@ closeable by shift right click.
 8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
 stays in same drawn state.  Only when short packets off and doublebuffering on.
 9) Use nebula pic
-10) fix clock
-10a) add msimg32.lib to borland compile -assuming can get clock to work and i use transparentblt
+10) fix clock - rewrite overlaybitmap calls to use SRCAND
+10a) rewrite all scalebitmap functions to use angle not p_dir
 11) need resources drawn somehow
-12) BUG: phaser stats don't work with short packets off
+12) BUG: phaser stats don't work with short packets off (server fix pending)
+    "Phaser missed!!!",         /* 37 */
+    "You destroyed the plasma torpedo!",        /* 38 */
+13) changing teams doesn't set delay to 0 for declare war , as it should (server fix pending)
+13a) intermittent problem with repair count and orbitting planet
+14) Bug with waraction..was being called even when clicking on border (broke function)
+..I added a default return to switch statement, but the underlying bug still remains.
 
 Stas's list:
 - color coded playerlist.

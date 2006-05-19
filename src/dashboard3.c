@@ -241,88 +241,6 @@ db_bar (char *l,
 
 
 /******************************************************************************/
-/***  db_special() - for showing prioritized timer info in dashboard        ***/
-/******************************************************************************/
-static void
-db_special (void)
-{
-    char buf[16];
-    struct player *plr;
-    int repairtime;
-
-    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
-        plr = players + me->p_playerl;
-    else
-        plr = me;
-    
-    /* Start with low priority messages, clear as necessary for higher
-       priority ones */
-       
-    /* Default impulse text */
-    W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-    W_WriteText (tstatw, 160, 32, W_Yellow, "Impulse", 7, W_BoldFont);
-    
-    /* Transwarp text */
-    if (me->p_flags & PFTWARP)
-    {
-        W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-        W_WriteText (tstatw, 160, 32, W_White, "Twarp", 5, W_BoldFont);
-    }
-    /* Tournament extension text */
-    if (tdelay)
-    {
-        if (time (0) > tdelay)
-            tdelay = 0;
-	else
-	{
-	    W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 160, 32, W_Grey, "Tmod", 4, W_BoldFont);
-	    sprintf(buf, "%d", tdelay - time (0));
-	    W_WriteText (tstatw, 190, 32, textColor, buf, strlen (buf), W_RegularFont);
-	}
-    }
-    
-    /* Repair text */
-    if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
-    {
-        repairtime = repair_time();
-        W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-        W_WriteText (tstatw, 160, 32, W_Cyan, "Fix", 3, W_BoldFont);
-        sprintf(buf, "%d", repairtime);
-        W_WriteText (tstatw, 184, 32, textColor, buf, strlen (buf), W_RegularFont);
-    }
-    
-    /* Refit text */
-    if (rdelay)
-    {
-        if (time (0) > rdelay)
-            rdelay = 0;
-        else
-        {
-            W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 160, 32, W_Green, "Refit", 5, W_BoldFont);
-            sprintf(buf, "%d", rdelay - time (0));
-            W_WriteText (tstatw, 196, 32, textColor, buf, strlen (buf), W_RegularFont);
-        }
-    }
-    
-    /* Declare War text */
-    if (delay)
-    {
-        if (time (0) > delay)
-            delay = 0;
-        else
-        {
-            W_ClearArea (tstatw, 160, 32, W_Textwidth * 8, W_Textheight);
-            W_WriteText (tstatw, 160, 32, W_Red, "War", 3, W_BoldFont);
-            sprintf(buf, "%d", delay - time (0));
-            W_WriteText (tstatw, 184, 32, textColor, buf, strlen (buf), W_RegularFont);
-        }
-    }
-}
-
-
-/******************************************************************************/
 /***  db_flags()                                                            ***/
 /******************************************************************************/
 static void
@@ -446,7 +364,7 @@ db_redraw_lab2 (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special ();
+    db_special (fr, 160, 32);
 
     /* TIMER */
     db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);

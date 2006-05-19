@@ -452,6 +452,7 @@ W_Cleanup (void)
     // Free other bitmaps
     free (clockpic);
     free (clockhandpic);
+    free (clockhandmask);
     
     for (j = 0; j < NUM_CTORP_TYPES; j++)
     {
@@ -5065,7 +5066,7 @@ W_OverlayScaleBitmap (int x,
 
     SetWorldTransform(hdc,&xForm);
 
-    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
 
     // Reset xForm
     xForm.eM11 = (FLOAT) 1.0; 

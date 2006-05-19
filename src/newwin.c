@@ -1203,7 +1203,10 @@ savebitmaps (void)
                             BMP_CCLOCK_HEIGHT, BMP_CLOCK, qwin, LR_DEFAULTCOLOR);
         clockhandpic =
             W_StoreBitmap3 ("bitmaps/misclib/color/clockhand.bmp", BMP_CHAND_WIDTH,
-                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_DEFAULTCOLOR);               
+                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_DEFAULTCOLOR);
+        clockhandmask =
+            W_StoreBitmap3 ("bitmaps/misclib/color/clockhandmask.bmp", BMP_CHAND_WIDTH,
+                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_MONOCHROME);                             
     }
     else
     {
@@ -1981,11 +1984,15 @@ showTimeLeft (time_t time, time_t max)
         W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor);
         W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
-                              angle, clockhandpic, foreColor, qwin);
+                              angle, clockhandmask, foreColor, qwin);
+        angle = (int)(255-time*255/max);
+        W_WriteScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
+                              BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
+                              (unsigned char)(angle), clockhandpic, foreColor, qwin);
         sprintf (buf, "%d", max - time);
         tx = cx - W_Textwidth * strlen (buf) / 2;
         ty = 2*(cy - W_Textheight / 2)/3;
-        W_WriteText (qwin, tx, ty, textColor, buf, strlen (buf), W_RegularFont);
+        W_MaskText (qwin, tx, ty, W_Black, buf, strlen (buf), W_RegularFont);
 
         cp = "Quit NetrekXP";
     }
