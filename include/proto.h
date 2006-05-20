@@ -447,6 +447,8 @@ void main2 (int argc,
 void initPlanets (void);
 //inline static void checkRedraw(int x, int y);
 extern inline W_Icon planetBitmapC(register struct planet * p);
+extern inline void planetResourcesC (SDBUFFER * sdb, register struct planet *p,
+                                     int destwidth, int destheight, int dx, int dy, W_Window window);
 //static void DrawPlanets();
 void map (void);
 

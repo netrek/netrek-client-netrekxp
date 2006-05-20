@@ -642,6 +642,20 @@ void loadplanetsC()
         W_StoreBitmap3 ("bitmaps/planlibm/color/unknown.bmp",
                         BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_UNKNOWN, w,
                         LR_DEFAULTCOLOR);
+    
+    /* Load the resource bitmaps */
+    army_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/army.bmp",
+                        BMP_ARMY_WIDTH, BMP_ARMY_HEIGHT, BMP_ARMYBMP, w,
+                        LR_DEFAULTCOLOR);
+    wrench_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/wrench.bmp",
+                        BMP_WRENCH_WIDTH, BMP_WRENCH_HEIGHT, BMP_WRENCHBMP, w,
+                        LR_DEFAULTCOLOR);
+    fuel_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/fuel.bmp",
+                        BMP_FUEL_WIDTH, BMP_FUEL_HEIGHT, BMP_FUELBMP, w,
+                        LR_DEFAULTCOLOR);
 }
 
 /******************************************************************************/

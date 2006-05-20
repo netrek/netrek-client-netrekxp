@@ -154,6 +154,16 @@
 // Untouched planet
 #define BMP_PLANET_UNKNOWN 9
 
+// Resources
+#define BMP_ARMYBMP 10
+#define BMP_ARMY_WIDTH 10
+#define BMP_ARMY_HEIGHT 30
+#define BMP_WRENCHBMP 11
+#define BMP_WRENCH_WIDTH 30
+#define BMP_WRENCH_HEIGHT 10
+#define BMP_FUELBMP 12
+#define BMP_FUEL_WIDTH 10
+#define BMP_FUEL_HEIGHT 30
 #define BMP_CPLANET_WIDTH 120
 #define BMP_CPLANET_HEIGHT 120
 

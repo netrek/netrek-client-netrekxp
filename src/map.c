@@ -253,7 +253,7 @@ planetmBitmap (register struct planet *p)
 }
 
 /******************************************************************************/
-/***  planetmBitmapC()
+/***  planetBitmapC()
 /******************************************************************************/
 extern inline W_Icon
 planetBitmapC (register struct planet *p)
@@ -330,6 +330,57 @@ planetBitmapC (register struct planet *p)
 }
 
 /******************************************************************************/
+/***  planetResourcesC()
+/******************************************************************************/		           
+extern inline void
+planetResourcesC (SDBUFFER * sdb, register struct planet *p, int destwidth, int destheight,
+                  int dx, int dy, W_Window window)
+/*
+ *  Draw the resources for a colorized planet.
+ */
+{   
+    if ((p->pl_info & me->p_team)
+#ifdef RECORDGAME
+        || playback
+#endif
+        )
+    {
+    	/* Select resources */
+        if (p->pl_armies > 4)
+            W_OverlayScaleBitmapDB(sdb, dx - 7 * destwidth / 8,
+	                           dy - (destheight / 2),
+	                           destwidth/3,
+                                   destheight,
+                                   BMP_ARMY_WIDTH,
+			           BMP_ARMY_HEIGHT,
+			           0,
+			           army_bitmap, planetColor(p),
+			           window);       
+        if (p->pl_flags & PLREPAIR)
+            W_OverlayScaleBitmapDB(sdb, dx - (destwidth / 2),
+	                           dy - (5 * destheight / 6),
+	                           destwidth,
+                                   destheight/3,
+                                   BMP_WRENCH_WIDTH,
+			           BMP_WRENCH_HEIGHT,
+			           0,
+			           wrench_bitmap, planetColor(p),
+			           window);
+        if (p->pl_flags & PLFUEL)
+            W_OverlayScaleBitmapDB(sdb, dx + 3 * destwidth / 5,
+	                           dy - (destheight / 2),
+	                           destwidth/3,
+                                   destheight,
+                                   BMP_FUEL_WIDTH,
+			           BMP_FUEL_HEIGHT,
+			           0,
+			           fuel_bitmap, planetColor(p),
+			           window);
+    }
+    return;
+}
+
+/******************************************************************************/
 /***  agriColor()
 /******************************************************************************/
 W_Color getAgriColor (struct planet *l)
@@ -401,13 +452,13 @@ DrawPlanets ()
 
             /* XFIX */
 #ifndef DOUBLE_BUFFERING
-            W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),
+            W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 8),
                          dy - (BMP_MPLANET_HEIGHT / 2 + 4),
                          BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);
 #else
-            W_ClearAreaDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2 + 4),
-                           dy - (BMP_MPLANET_HEIGHT / 2 + 4),
-                           BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);
+            W_ClearAreaDB (mapSDB, dx - 7 * BMP_MPLANET_WIDTH / 8,
+                           dy - (5 * BMP_MPLANET_HEIGHT / 6),
+                           7 * BMP_MPLANET_WIDTH / 4, 4 * BMP_MPLANET_HEIGHT / 3);
 #endif
             l->pl_flags &= ~PLCLEAR;
         }
@@ -437,6 +488,9 @@ DrawPlanets ()
 			           0,
 			           planetBitmapC(l), planetColor(l),
 			           mapw);
+			           
+                /* Draw planet resources */
+                planetResourcesC(mapSDB, l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);          
 #else
 	        W_OverlayBitmapDB(mapSDB, dx - (emph_planet_seq_width / 2 + 1),
 			          dy - (emph_planet_seq_height / 2),
@@ -451,7 +505,9 @@ DrawPlanets ()
 			             BMP_CPLANET_HEIGHT,
 			             0,
 			             planetBitmapC(l), planetColor(l),
-			             mapw);
+			             mapw);			             
+                /* Draw planet resources */
+                planetResourcesC(mapSDB, l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
 #endif
             }
             else
@@ -486,7 +542,20 @@ DrawPlanets ()
         if (planetBitmapGalaxy == 3)
         {
 #ifndef DOUBLE_BUFFERING
-            W_OverlayScaleBitmap (dx - (BMP_MPLANET_WIDTH / 2),
+            W_WriteScaleBitmap (dx - (BMP_MPLANET_WIDTH / 2),
+                                dy - (BMP_MPLANET_HEIGHT / 2),
+                                BMP_MPLANET_WIDTH,
+                                BMP_MPLANET_HEIGHT,
+                                BMP_CPLANET_WIDTH,
+			        BMP_CPLANET_HEIGHT,
+			        0,
+                                planetBitmapC (l),
+                                planetColor (l),
+                                mapw);                  
+            /* Draw planet resources */
+            planetResourcesC(mapSDB, l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
+#else
+            W_WriteScaleBitmapDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
                                   dy - (BMP_MPLANET_HEIGHT / 2),
                                   BMP_MPLANET_WIDTH,
                                   BMP_MPLANET_HEIGHT,
@@ -496,17 +565,8 @@ DrawPlanets ()
                                   planetBitmapC (l),
                                   planetColor (l),
                                   mapw);
-#else
-            W_OverlayScaleBitmapDB (mapSDB, dx - (BMP_MPLANET_WIDTH / 2),
-                                    dy - (BMP_MPLANET_HEIGHT / 2),
-                                    BMP_MPLANET_WIDTH,
-                                    BMP_MPLANET_HEIGHT,
-                                    BMP_CPLANET_WIDTH,
-			            BMP_CPLANET_HEIGHT,
-			            0,
-                                    planetBitmapC (l),
-                                    planetColor (l),
-                                    mapw);
+            /* Draw planet resources */
+            planetResourcesC(mapSDB, l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);	
 #endif
         }
         else

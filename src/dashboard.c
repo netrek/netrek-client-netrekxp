@@ -370,7 +370,7 @@ db_special (int fr, int x, int y)
         left = 0;
         right = -1;
         pos = 0;
-        strcpy (tmp, buf);
+        strncpy (tmp, buf, 7);
         while (pos < 7) 
         {
             if (tmp[pos] == oldmsg[pos]) 

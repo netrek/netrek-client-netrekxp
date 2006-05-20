@@ -312,7 +312,9 @@ W_Icon planet_bitmaps[8];
 W_Icon planet_earth[NUMTEAMS], planet_klingus[NUMTEAMS], planet_orion[NUMTEAMS],
     planet_romulus[NUMTEAMS], planet_agri1[NUMTEAMS], planet_agri2[NUMTEAMS],
     planet_rock1[NUMTEAMS], planet_rock2[NUMTEAMS];
-    
+W_Icon army_bitmap;
+W_Icon wrench_bitmap;
+W_Icon fuel_bitmap;
 W_Icon base_planets;
 W_Icon base_mplanets;
 W_Icon bplanets[PLANET_VIEWS];

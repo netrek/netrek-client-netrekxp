@@ -379,6 +379,8 @@ DrawPlanets (void)
                                   planetBitmapC (l),
                                   planetColor (l),
                                   w);
+             /* Draw planet resources */
+             planetResourcesC(localSDB, l, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT, dx, dy, w);
 #endif
         }
         else
@@ -438,10 +440,10 @@ DrawPlanets (void)
             clearcount++;
         }
 
-        clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2);
-        clearzone[1][clearcount] = dy - (BMP_PLANET_HEIGHT / 2);
-        clearzone[2][clearcount] = BMP_PLANET_WIDTH;
-        clearzone[3][clearcount] = BMP_PLANET_HEIGHT;
+        clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8);
+        clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6);
+        clearzone[2][clearcount] = 7 * BMP_PLANET_WIDTH / 4 + 1;
+        clearzone[3][clearcount] = 4 * BMP_PLANET_HEIGHT / 3 + 1;
         clearcount++;
     }
 }

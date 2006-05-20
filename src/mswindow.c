@@ -507,7 +507,11 @@ W_Cleanup (void)
     free (planet_bitmaps[6]);
     free (planet_bitmaps[7]);
     free (planet_unknown);
-    
+
+    free (army_bitmap);
+    free (wrench_bitmap);
+    free (fuel_bitmap);
+
     for (i = 0; i < PLANET_VIEWS; i++)
         free (bplanets[i]);
     for (i = 0; i < MPLANET_VIEWS; i++)
@@ -6263,11 +6267,6 @@ W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int desthei
     
     SelectObject (GlobalMemDC, bitmap->bm);
     SelectObject (GlobalMemDC2, newbmp);
-    
-    // Copy selected section of main bitmap into newbmp before rotation
-    SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
-    StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
-               srcx, srcy, srcwidth, srcheight, SRCPAINT);
   
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
@@ -6333,7 +6332,7 @@ W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int desthei
     xForm.eDy = eDy;
 
     SetWorldTransform(sdb->mem_dc,&xForm);
-    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+    BitBlt(sdb->mem_dc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCCOPY);
    
     // Reset xForm
     xForm.eM11 = (FLOAT) 1.0; 

@@ -48,7 +48,10 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 9) Use nebula pic
 10) fix clock - rewrite overlaybitmap calls to use SRCAND
 10a) rewrite all scalebitmap functions to use angle not p_dir
-11) need resources drawn somehow
+10b) rewrite all doublebuffering so it's rc option - eliminate all these double
+functions!!$!%^
+11) clean up code with resource drawing for overlay and refresh purposes
+11a) get new bitmaps for resources
 13) changing teams doesn't set delay to 0 for declare war , as it should (server fix pending)
 14) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
