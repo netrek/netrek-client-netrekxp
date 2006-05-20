@@ -18,6 +18,7 @@
 /******************************************************************************/
 
 #include <stdio.h>
+#include <math.h>
 
 #include "config.h"
 #include "copyright.h"
@@ -287,12 +288,12 @@ db_special (int fr, int x, int y)
     static int oldmsgtype;
     W_Color color;
     int left, right, pos;
-    
+
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
         plr = players + me->p_playerl;
     else
         plr = me;
-    
+
     /* Check if any delays expired */
     if (delay && time (0) > delay)
         delay = 0;
@@ -300,10 +301,10 @@ db_special (int fr, int x, int y)
         rdelay = 0;
     if (tdelay && time (0) > tdelay)
         tdelay = 0;
-        
+
     /* Start with highest priority message, then go down in descending order
        of importance */
-       
+
     /* Declare War text */
     if (delay)
     {
@@ -852,23 +853,29 @@ repair_time (void)
     int hulltime = 0;
     int shieldneeded, hullneeded;
     float shieldrate = 0.0, hullrate = 0.0;
-    
+    struct player *plr;
+
+    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+        plr = players + me->p_playerl;
+    else
+        plr = me;
+        
     /* 100 subshield or subdamage =  1 shield or hull repaired 
        This routine is used by server every update (and 10 updates/sec) */
     /* calculate shield repair rate */
     if ((shieldneeded = (me->p_ship.s_maxshield - me->p_shield)) > 0)
     {
         me->p_subshield = me->p_ship.s_repair * 4;
-        if ((me->p_flags & PFORBIT)
-        && (planets[me->p_planet].pl_flags & PLREPAIR)
-        &&(!(planets[me->p_planet].pl_owner & (me->p_swar | me->p_hostile))))
+        if (me->p_flags & PFORBIT)
         {
-            me->p_subshield += me->p_ship.s_repair * 4;
-        }
-        if (me->p_flags & PFDOCK)
-        {
-    	    me->p_subshield += me->p_ship.s_repair * 6;
-        }
+            /* Damn server doesn't send us p_planet info, have to calculate it ourselves! */
+            me->p_planet = get_closest_planet(me->p_x, me->p_y);
+            if ((planets[me->p_planet].pl_flags & PLREPAIR)
+            &&(!(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+                me->p_subshield += me->p_ship.s_repair * 4;
+            if (me->p_flags & PFDOCK)
+    	        me->p_subshield += me->p_ship.s_repair * 6;
+    	}
         /* Calculate time needed to repair shields */
         shieldrate = (float)(me->p_subshield)/(float)100.0;
         shieldtime = (int)(shieldneeded/shieldrate);
@@ -878,20 +885,44 @@ repair_time (void)
     if (((hullneeded = me->p_damage) > 0) && !(me->p_flags & PFSHIELD))
     {
     	me->p_subdamage = me->p_ship.s_repair * 2;
-    	if ((me->p_flags & PFORBIT)
-    	&& (planets[me->p_planet].pl_flags & PLREPAIR)
-    	&& (!(planets[me->p_planet].pl_owner & (me->p_swar | me->p_hostile))))
+    	if (me->p_flags & PFORBIT)
     	{
-    	    me->p_subdamage += me->p_ship.s_repair * 2;
+    	    /* Damn server doesn't send us p_planet info, have to calculate it ourselves! */
+            me->p_planet = get_closest_planet(me->p_x, me->p_y);
+    	    if ((planets[me->p_planet].pl_flags & PLREPAIR)
+    	    && (!(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+    	        me->p_subdamage += me->p_ship.s_repair * 2;
+    	    if (me->p_flags & PFDOCK)
+    	        me->p_subdamage += me->p_ship.s_repair * 3;
     	}
-    	if (me->p_flags & PFDOCK)
-    	{
-    	    me->p_subdamage += me->p_ship.s_repair * 3;
-    	}
-    	/* Calculate time needed to repair hull */
+	/* Calculate time needed to repair hull */
     	hullrate = (float)(me->p_subdamage)/(float)100.0;
         hulltime = (int)(hullneeded/hullrate);
     }
     
     return MAX(shieldtime, hulltime);
-};
+}
+
+/******************************************************************************/
+/***  get_closest_planet() - find closest planet to given location
+      Useful for determining which planet you are orbitting                 ***/
+/******************************************************************************/
+int get_closest_planet(int x, int y)
+{
+    register int i;
+    register struct planet *k;
+    double dist, closedist;
+    int target;
+
+    closedist = GWIDTH;
+    for (i = 0, k = &planets[i]; i < MAXPLANETS; i++, k++)
+    {
+        dist = hypot ((double) (x - k->pl_x), (double) (y - k->pl_y));
+        if (dist < closedist)
+        {
+                target = i;
+                closedist = dist;
+        }
+    }
+    return (short)(target);
+}

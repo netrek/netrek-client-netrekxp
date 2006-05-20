@@ -49,13 +49,11 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 10) fix clock - rewrite overlaybitmap calls to use SRCAND
 10a) rewrite all scalebitmap functions to use angle not p_dir
 11) need resources drawn somehow
-12) BUG: phaser stats don't work with short packets off (server fix pending)
-    "Phaser missed!!!",         /* 37 */
-    "You destroyed the plasma torpedo!",        /* 38 */
 13) changing teams doesn't set delay to 0 for declare war , as it should (server fix pending)
-13a) intermittent problem with repair count and orbitting planet
 14) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
+15a) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
+for an obs to know what the war decs are of the person he is observing
 
 Stas's list:
 - color coded playerlist.

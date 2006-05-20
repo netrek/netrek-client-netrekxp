@@ -69,6 +69,7 @@ void db_redraw_COW (int fr);
 void db_redraw (int fr);
 void db_special (int fr, int x, int y);
 int repair_time (void);
+int get_closest_planet(int x, int y);
 
 /******************************************************************************/
 /***  dashboard3.c                                                          ***/

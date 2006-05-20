@@ -48,7 +48,50 @@ warning (char *text)
        rdelay = time (0) + REFITTIME;
     if (doDeclare)
        delay = time (0) + DECLARETIME;
+       
 #ifdef PHASER_STATS
+    if (!recv_short)   /* Gotta parse phaser info for long packets here */
+    {
+        if (strncmp(text, "You destroyed the plasma", 24) == 0)       /* Plasma hit */
+        {
+            phaserStatTry++;
+            phaserStatHit++;
+            /* Record as an average damage hit so as not to skew overall average */
+            phaserStatDamage += phaserStatDamage / phaserStatTry;
+        }
+        if (strncmp(text, "Phaser missed", 13) == 0)        /* Miss */
+        {
+            phaserStatTry++;
+            if (phaserStats)
+            {
+            	/* Mung the message */
+                char phstatmsg[30];
+
+                sprintf (phstatmsg, "%s [%d%%]", text,
+                         phaserStatTry ? (phaserStatHit * 100) /
+                         phaserStatTry : 0);
+                strcpy (text, phstatmsg);
+                /* Update string length */
+                warncount = strlen (text);
+            }
+        }
+        if (doPhaser)     /* Parse out damage and record to average */
+        {
+            char *d;
+            register int damage;
+            d = &text[warncount];
+            /* find the last number in the string, should be damage */
+            while (!isdigit(*d) && d > text) 
+                d--;
+            while (d > text && isdigit(*d))
+               d--;
+            if (d > text)
+                damage = atoi(d);
+            phaserStatTry++;
+            phaserStatHit++;
+            phaserStatDamage += damage;
+        }
+    }
     if (doPhaser && phaserStats)
     {
         sprintf (newtext, "%s [%3d%%] [%2u]", text,
