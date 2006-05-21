@@ -196,6 +196,7 @@ static Window myroot;
        win = (Window *)window;\
        if (bitmap->hwnd != win->hwnd)\
        {\
+           LineToConsole("DBICON - mismatch windows\n");\
            hdc = GetDC (win->hwnd);\
            usebitmaphwnd = 0;\
        }\
@@ -547,6 +548,14 @@ W_Cleanup (void)
     	free (planet_agri2[i]);
     	free (planet_rock1[i]);
     	free (planet_rock2[i]);
+    	free (mplanet_earth[i]);
+    	free (mplanet_klingus[i]);
+    	free (mplanet_orion[i]);
+    	free (mplanet_romulus[i]);
+    	free (mplanet_agri1[i]);
+    	free (mplanet_agri2[i]);
+    	free (mplanet_rock1[i]);
+    	free (mplanet_rock2[i]);
     }
     free (planet_bitmaps[0]);
     free (planet_bitmaps[1]);
@@ -557,10 +566,22 @@ W_Cleanup (void)
     free (planet_bitmaps[6]);
     free (planet_bitmaps[7]);
     free (planet_unknown);
-
+    free (mplanet_bitmaps[0]);
+    free (mplanet_bitmaps[1]);
+    free (mplanet_bitmaps[2]);
+    free (mplanet_bitmaps[3]);
+    free (mplanet_bitmaps[4]);
+    free (mplanet_bitmaps[5]);
+    free (mplanet_bitmaps[6]);
+    free (mplanet_bitmaps[7]);
+    free (mplanet_unknown);
+    
     free (army_bitmap);
+    free (marmy_bitmap);
     free (wrench_bitmap);
+    free (mwrench_bitmap);
     free (fuel_bitmap);
+    free (mfuel_bitmap);
 
     for (i = 0; i < PLANET_VIEWS; i++)
         free (bplanets[i]);

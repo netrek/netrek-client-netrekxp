@@ -253,16 +253,16 @@ planetmBitmap (register struct planet *p)
 }
 
 /******************************************************************************/
-/***  planetBitmapC()
+/***  mplanetBitmapC()
 /******************************************************************************/
-extern inline W_Icon
-planetBitmapC (register struct planet *p)
+static inline W_Icon
+mplanetBitmapC (register struct planet *p)
 /*
- *  Choose the color bitmap for a planet.
+ *  Choose the map color bitmap for a planet.
  */
 {
     int i;
-    W_Icon (*planet_bits);
+    W_Icon (*mplanet_bits);
     
     if ((p->pl_info & me->p_team)
 #ifdef RECORDGAME
@@ -281,27 +281,27 @@ planetBitmapC (register struct planet *p)
     	if (p->pl_flags & PLHOME)
     	{
     	    if (!strcmp(p->pl_name, "Earth"))
-    	        planet_bits = planet_earth;
+    	        mplanet_bits = mplanet_earth;
     	    else if (!strcmp(p->pl_name, "Klingus"))
-    	        planet_bits = planet_klingus;
+    	        mplanet_bits = mplanet_klingus;
     	    else if (!strcmp(p->pl_name, "Romulus"))
-    	        planet_bits = planet_romulus;
+    	        mplanet_bits = mplanet_romulus;
     	    else if (!strcmp(p->pl_name, "Orion"))
-    	        planet_bits = planet_orion;
+    	        mplanet_bits = mplanet_orion;
     	    else // This should never be called
-    	        planet_bits = planet_rock1;
+    	        mplanet_bits = mplanet_rock1;
     	}
     	else if (p->pl_flags & PLCORE) // Not functional yet due to server
     	{
     	    if (p->pl_flags & PLAGRI)
-    	        planet_bits = planet_agri1;
+    	        mplanet_bits = mplanet_agri1;
     	    else
-    	        planet_bits = planet_rock1;
+    	        mplanet_bits = mplanet_rock1;
     	}
     	else if (p->pl_flags & PLAGRI)
-            planet_bits = planet_agri2;
+            mplanet_bits = mplanet_agri2;
         else
-            planet_bits = planet_rock2;
+            mplanet_bits = mplanet_rock2;
 
         switch (p->pl_owner)
         {
@@ -321,22 +321,22 @@ planetBitmapC (register struct planet *p)
             i = 1;
             break;
         }
-        return planet_bits[i];
+        return mplanet_bits[i];
     }
     else
     {
-        return planet_unknown;
+        return mplanet_unknown;
     }
 }
 
 /******************************************************************************/
-/***  planetResourcesC()
+/***  mplanetResourcesC()
 /******************************************************************************/		           
-extern inline void
-planetResourcesC (register struct planet *p, int destwidth, int destheight,
+static inline void
+mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                   int dx, int dy, W_Window window)
 /*
- *  Draw the resources for a colorized planet.
+ *  Draw the map resources for a colorized planet.
  */
 {   
     if ((p->pl_info & me->p_team)
@@ -354,7 +354,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                BMP_ARMY_WIDTH,
                                BMP_ARMY_HEIGHT,
                                0,
-                               army_bitmap, planetColor(p),
+                               marmy_bitmap, planetColor(p),
                                window);       
         if (p->pl_flags & PLREPAIR)
             W_WriteScaleBitmap(dx - (destwidth / 2),
@@ -364,7 +364,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                BMP_WRENCH_WIDTH,
                                BMP_WRENCH_HEIGHT,
                                0,
-                               wrench_bitmap, planetColor(p),
+                               mwrench_bitmap, planetColor(p),
                                window);
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + 3 * destwidth / 5,
@@ -374,7 +374,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                BMP_FUEL_WIDTH,
                                BMP_FUEL_HEIGHT,
                                0,
-                               fuel_bitmap, planetColor(p),
+                               mfuel_bitmap, planetColor(p),
                                window);
     }
     return;
@@ -481,11 +481,11 @@ DrawPlanets ()
                                    BMP_CPLANET_WIDTH,
 			           BMP_CPLANET_HEIGHT,
 			           0,
-			           planetBitmapC(l), planetColor(l),
+			           mplanetBitmapC(l), planetColor(l),
 			           mapw);
 			           
                 /* Draw planet resources */
-                planetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
+                mplanetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
             }
             else
             {
@@ -515,11 +515,11 @@ DrawPlanets ()
                                 BMP_CPLANET_WIDTH,
 			        BMP_CPLANET_HEIGHT,
 			        0,
-                                planetBitmapC (l),
+                                mplanetBitmapC (l),
                                 planetColor (l),
                                 mapw);                  
             /* Draw planet resources */
-            planetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
+            mplanetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
         }
         else
         {

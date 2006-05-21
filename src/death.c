@@ -57,6 +57,8 @@ death (void)
         }
         W_ChangeBorder (baseWin, gColor);
         oldalert = PFGREEN;
+        if (doubleBuffering)  /* Force a border refresh */
+            oldalert = 0;
     }
     if (W_IsMapped (statwin))
     {

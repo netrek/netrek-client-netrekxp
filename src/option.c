@@ -897,6 +897,7 @@ optionaction (W_Event * data)
             W_ClearWindow (w);
             W_ClearWindow (mapw);
             redrawall = 1;
+            oldalert = 0; /* Force a border refresh */
         }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();

@@ -26,7 +26,6 @@
 
 /* Local Variables */
 #define XPI     3.1415926
-static int playalert = 0;
 static int clearcount = 0;
 static int clearzone[4][(MAXTORP + 1) * MAXPLAYER +
                         (MAXPLASMA + 1) * MAXPLAYER + MAXPLANETS];
@@ -327,6 +326,133 @@ getPlanetBitmap (register struct planet *p)
     }
 }
 
+/******************************************************************************/
+/***  planetBitmapC()
+/******************************************************************************/
+static inline W_Icon
+planetBitmapC (register struct planet *p)
+/*
+ *  Choose the color bitmap for a planet.
+ */
+{
+    int i;
+    W_Icon (*planet_bits);
+    
+    if ((p->pl_info & me->p_team)
+#ifdef RECORDGAME
+        || playback
+#endif
+        )
+    {
+    	/* Logic for planet assignment:
+    	   1) Check if it's a homeworld.  If so, find which homeworld it is
+    	   2) Check if it's a core planet
+    	   2a) Check if it's agri
+    	   3) Check if it's agri
+    	   4) Default planet bitmap
+    	   5) Switch statement by owner to determine color
+        */
+    	if (p->pl_flags & PLHOME)
+    	{
+    	    if (!strcmp(p->pl_name, "Earth"))
+    	        planet_bits = planet_earth;
+    	    else if (!strcmp(p->pl_name, "Klingus"))
+    	        planet_bits = planet_klingus;
+    	    else if (!strcmp(p->pl_name, "Romulus"))
+    	        planet_bits = planet_romulus;
+    	    else if (!strcmp(p->pl_name, "Orion"))
+    	        planet_bits = planet_orion;
+    	    else // This should never be called
+    	        planet_bits = planet_rock1;
+    	}
+    	else if (p->pl_flags & PLCORE) // Not functional yet due to server
+    	{
+    	    if (p->pl_flags & PLAGRI)
+    	        planet_bits = planet_agri1;
+    	    else
+    	        planet_bits = planet_rock1;
+    	}
+    	else if (p->pl_flags & PLAGRI)
+            planet_bits = planet_agri2;
+        else
+            planet_bits = planet_rock2;
+
+        switch (p->pl_owner)
+        {
+        case FED:
+            i = 0;
+            break;
+        case KLI:
+            i = 2;
+            break;
+        case ORI:
+            i = 3;
+            break;
+        case ROM:
+            i = 4;
+            break;
+        default: // IND
+            i = 1;
+            break;
+        }
+        return planet_bits[i];
+    }
+    else
+    {
+        return planet_unknown;
+    }
+}
+
+/******************************************************************************/
+/***  planetResourcesC()
+/******************************************************************************/		           
+static inline void
+planetResourcesC (register struct planet *p, int destwidth, int destheight,
+                  int dx, int dy, W_Window window)
+/*
+ *  Draw the resources for a colorized planet.
+ */
+{   
+    if ((p->pl_info & me->p_team)
+#ifdef RECORDGAME
+        || playback
+#endif
+        )
+    {
+    	/* Select resources */
+        if (p->pl_armies > 4)
+            W_WriteScaleBitmap(dx - 7 * destwidth / 8,
+                               dy - (destheight / 2),
+                               destwidth/3,
+                               destheight,
+                               BMP_ARMY_WIDTH,
+                               BMP_ARMY_HEIGHT,
+                               0,
+                               army_bitmap, planetColor(p),
+                               window);       
+        if (p->pl_flags & PLREPAIR)
+            W_WriteScaleBitmap(dx - (destwidth / 2),
+                               dy - (5 * destheight / 6),
+                               destwidth,
+                               destheight/3,
+                               BMP_WRENCH_WIDTH,
+                               BMP_WRENCH_HEIGHT,
+                               0,
+                               wrench_bitmap, planetColor(p),
+                               window);
+        if (p->pl_flags & PLFUEL)
+            W_WriteScaleBitmap(dx + 3 * destwidth / 5,
+                               dy - (destheight / 2),
+                               destwidth/3,
+                               destheight,
+                               BMP_FUEL_WIDTH,
+                               BMP_FUEL_HEIGHT,
+                               0,
+                               fuel_bitmap, planetColor(p),
+                               window);
+    }
+    return;
+}
 
 static void
 DrawPlanets (void)
@@ -2148,25 +2274,27 @@ DrawMisc (void)
         clearlcount++;
     }
 
+    /* Change border color to signify alert status */
 
-    /* Decided to always redraw alert borders, was causing too many problems with
-       the infrequent draw rate - BB */
     if (oldalert != (me->p_flags & (PFGREEN | PFYELLOW | PFRED)))
-        playalert = 1;
-    oldalert = (me->p_flags & (PFGREEN | PFYELLOW | PFRED));
-    switch (oldalert)
     {
-    case PFGREEN:
-        if (extraAlertBorder)
+        oldalert = (me->p_flags & (PFGREEN | PFYELLOW | PFRED));
+        switch (oldalert)
         {
-            W_ChangeBorder (w, gColor);
-            W_ChangeBorder (mapw, gColor);
-        }
-        W_ChangeBorder (baseWin, gColor);
+        case PFGREEN:
+            if (extraAlertBorder)
+            {
+#ifndef DOUBLE_BUFFERING
+                W_ChangeBorder (w, gColor);
+                W_ChangeBorder (mapw, gColor);
+#else
+                W_ChangeBorderDB (localSDB, gColor);
+                W_ChangeBorderDB (mapSDB, gColor);
+#endif
+            }
+            W_ChangeBorder (baseWin, gColor);
 
 #if defined(SOUND)
-        if (playalert)
-        {
             if (newSound) // Kill any channels with WARNING_WAV or RED_ALERT_WAV (group 2)
                 Mix_HaltGroup(2);
             else
@@ -2174,20 +2302,25 @@ DrawMisc (void)
                 Abort_Sound(WARNING_SOUND);
                 Abort_Sound(RED_ALERT_SOUND);
             }
-        }   
+                
 #endif
-        break;
-    case PFYELLOW:
-        if (extraAlertBorder)
-        {
-            W_ChangeBorder (w, yColor);
-            W_ChangeBorder (mapw, yColor);
-        }
-        W_ChangeBorder (baseWin, yColor);
+
+            break;
+        case PFYELLOW:
+            if (extraAlertBorder)
+            {
+#ifndef DOUBLE_BUFFERING
+                W_ChangeBorder (w, yColor);
+                W_ChangeBorder (mapw, yColor);
+#else
+                W_ChangeBorderDB (localSDB, yColor);
+                W_ChangeBorderDB (mapSDB, yColor);
+#endif
+            }
+            W_ChangeBorder (baseWin, yColor);
 
 #if defined(SOUND)
-        if (playalert)
-        {
+
             if (newSound) // Kill any channels with RED_ALERT_WAV (group 2)
             {
             	Mix_HaltGroup(2);
@@ -2198,29 +2331,33 @@ DrawMisc (void)
             	Abort_Sound(RED_ALERT_SOUND);
                 Play_Sound(WARNING_SOUND);
             }
-        }
+
 #endif
-        break;
-    case PFRED:
-        if (extraAlertBorder)
-        {
-            W_ChangeBorder (w, rColor);
-            W_ChangeBorder (mapw, rColor);
-        }
-        W_ChangeBorder (baseWin, rColor);
-        
+
+            break;
+        case PFRED:
+            if (extraAlertBorder)
+            {
+#ifndef DOUBLE_BUFFERING
+                W_ChangeBorder (w, rColor);
+                W_ChangeBorder (mapw, rColor);
+#else
+                W_ChangeBorderDB (localSDB, rColor);
+                W_ChangeBorderDB (mapSDB, rColor);
+#endif
+            }
+            W_ChangeBorder (baseWin, rColor);
+            
 #if defined(SOUND)
-        if (playalert)
-        {
             if (newSound)
                 Play_Sound(RED_ALERT_WAV);
             else
                 Play_Sound(RED_ALERT_SOUND);
-        }
 #endif
-        break;
+
+            break;
+        }
     }
-    playalert = 0;
 
 #if defined(SOUND)
     if (newSound)

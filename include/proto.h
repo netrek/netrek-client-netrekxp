@@ -417,6 +417,9 @@ void run_clock (time_t curtime);
 /***  local.c
 /******************************************************************************/
 void initStars (void);
+static inline W_Icon planetBitmapC(register struct planet * p);
+static inline void planetResourcesC (register struct planet *p, int destwidth,
+                                     int destheight, int dx, int dy, W_Window window);
 //static void DrawPlanets(void);
 //static void DrawShips(void);
 //static void DrawTorps(void);
@@ -446,9 +449,9 @@ void main2 (int argc,
 /******************************************************************************/
 void initPlanets (void);
 //inline static void checkRedraw(int x, int y);
-extern inline W_Icon planetBitmapC(register struct planet * p);
-extern inline void planetResourcesC (register struct planet *p, int destwidth,
-                                     int destheight, int dx, int dy, W_Window window);
+static inline W_Icon mplanetBitmapC(register struct planet * p);
+static inline void mplanetResourcesC (register struct planet *p, int destwidth,
+                                      int destheight, int dx, int dy, W_Window window);
 //static void DrawPlanets();
 void map (void);
 

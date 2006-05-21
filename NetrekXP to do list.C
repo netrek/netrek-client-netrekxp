@@ -49,6 +49,7 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 ..I added a default return to switch statement, but the underlying bug still remains.
 12) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing
+13) Too long death message may overwrite rank message
 
 Stas's list:
 - color coded playerlist.

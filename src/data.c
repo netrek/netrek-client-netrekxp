@@ -309,14 +309,17 @@ W_Icon fed_bitmapsHR[NUM_TYPES],
     ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
 
 // Planets
-W_Icon planet_unknown;
-W_Icon planet_bitmaps[8];
+W_Icon planet_unknown, mplanet_unknown;
+W_Icon planet_bitmaps[8], mplanet_bitmaps[8];
 W_Icon planet_earth[NUMTEAMS], planet_klingus[NUMTEAMS], planet_orion[NUMTEAMS],
     planet_romulus[NUMTEAMS], planet_agri1[NUMTEAMS], planet_agri2[NUMTEAMS],
     planet_rock1[NUMTEAMS], planet_rock2[NUMTEAMS];
-W_Icon army_bitmap;
-W_Icon wrench_bitmap;
-W_Icon fuel_bitmap;
+W_Icon mplanet_earth[NUMTEAMS], mplanet_klingus[NUMTEAMS], mplanet_orion[NUMTEAMS],
+    mplanet_romulus[NUMTEAMS], mplanet_agri1[NUMTEAMS], mplanet_agri2[NUMTEAMS],
+    mplanet_rock1[NUMTEAMS], mplanet_rock2[NUMTEAMS];
+W_Icon army_bitmap, marmy_bitmap;
+W_Icon wrench_bitmap, mwrench_bitmap;
+W_Icon fuel_bitmap, mfuel_bitmap;
 W_Icon base_planets;
 W_Icon base_mplanets;
 W_Icon bplanets[PLANET_VIEWS];

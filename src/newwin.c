@@ -659,6 +659,98 @@ void loadplanetsC()
 }
 
 /******************************************************************************/
+/***  loadmplanetsC() - colorized map planets, using same bitmaps but more efficient
+                        drawing if we assign another set to map HWND
+/******************************************************************************/
+void loadmplanetsC()
+{    
+    int j;
+
+    /* Load the eight 5x1 mplanet bitmaps */
+    mplanet_bitmaps[0] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/earth.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_EARTH, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[1] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/klingus.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_KLINGUS, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[2] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/orion.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_ORION, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[3] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/romulus.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_ROMULUS, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[4] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/agri1.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_AGRI1, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[5] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/agri2.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_AGRI2, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[6] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/rock1.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_ROCK1, mapw,
+                        LR_DEFAULTCOLOR);
+    mplanet_bitmaps[7] =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/rock2.bmp",
+                        BMP_CPLANET_WIDTH * NUMTEAMS, BMP_CPLANET_HEIGHT, BMP_ROCK2, mapw,
+                        LR_DEFAULTCOLOR);  
+                                          
+    /* Make pointers to the bitmaps */
+    for (j = 0; j < NUMTEAMS; j++)
+    {
+    	mplanet_earth[j] =
+    	    W_PointBitmap2 (mplanet_bitmaps[0], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_klingus[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[1], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_orion[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[2], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_romulus[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[3], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_agri1[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[4], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_agri2[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[5], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_rock1[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[6], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    	mplanet_rock2[j]=
+    	    W_PointBitmap2 (mplanet_bitmaps[7], j, 0, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    }
+                        
+    /* Load the unknown planet bitmap */
+    mplanet_unknown =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/unknown.bmp",
+                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_UNKNOWN, mapw,
+                        LR_DEFAULTCOLOR);
+    
+    /* Load the resource bitmaps */
+    marmy_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/army.bmp",
+                        BMP_ARMY_WIDTH, BMP_ARMY_HEIGHT, BMP_ARMYBMP, mapw,
+                        LR_DEFAULTCOLOR);
+    mwrench_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/wrench.bmp",
+                        BMP_WRENCH_WIDTH, BMP_WRENCH_HEIGHT, BMP_WRENCHBMP, mapw,
+                        LR_DEFAULTCOLOR);
+    mfuel_bitmap =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/fuel.bmp",
+                        BMP_FUEL_WIDTH, BMP_FUEL_HEIGHT, BMP_FUELBMP, mapw,
+                        LR_DEFAULTCOLOR);
+}
+
+/******************************************************************************/
 /***  handleMessageWindowKeyDown()
 /******************************************************************************/
 static void
@@ -997,7 +1089,7 @@ savebitmaps (void)
     planetBitmap = intDefault ("planetBitmap", planetBitmap);
     planetBitmapGalaxy = intDefault ("planetBitmapGalaxy", planetBitmapGalaxy);
     loadplanetsC();  // Always load new color planet bitmaps..for now
-    
+    loadmplanetsC();
     switch (planetBitmap) // Case 3 = new color, but we never use Planlib
     {
     case 1:
