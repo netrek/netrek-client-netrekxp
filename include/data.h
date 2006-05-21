@@ -151,6 +151,8 @@ extern int shortversion;        /* Which version do we use? */
 
 #endif
 
+extern int ingame;              /* If player is in game - to distinguish between whether
+                                   to use double buffering on the local and map window */
 extern int ghoststart;
 extern int ghost_pno;
 extern int keepInfo;
@@ -631,10 +633,10 @@ extern int viewBox;     /* show local window box on map */
 
 extern struct stringlist * defaults; /* pointer to defaults list */
 
-#ifdef DOUBLE_BUFFERING
 extern SDBUFFER * localSDB;    /* double buffer for local window */
 extern SDBUFFER * mapSDB;      /* double buffer for map window */
-#endif
+
+extern int doubleBuffering; /* Use double buffering to draw map/local */
 
 extern int disableWinkey;   /* disable WinKey + ContextKey during the game */
 

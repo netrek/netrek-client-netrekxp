@@ -121,9 +121,9 @@ main2 (int argc,
             {
 
             case 'C':          /* character name */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
-                    (void) STRNCPY (pseudo, argv[i], sizeof (pseudo));
+                    (void) STRNCPY (pseudo, argv[i + 1], sizeof (argv[i + 1]));
                     i++;
                 }
                 else
@@ -131,9 +131,9 @@ main2 (int argc,
                 break;
 
             case 'A':          /* authorization password */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
-                    (void) STRNCPY (defpasswd, argv[i], sizeof (defpasswd));
+                    (void) STRNCPY (defpasswd, argv[i + 1], sizeof (argv[i + 1]));
                     i++;
                 }
                 else
@@ -151,7 +151,7 @@ main2 (int argc,
                 break;
 
             case 's':           /* listen socket number */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     xtrekPort = atoi (argv[i + 1]);
                     passive = 1;
@@ -166,7 +166,7 @@ main2 (int argc,
                 /* No break */
 
             case 'f':           /* record to cambot file */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     recordFileName = argv[i + 1];
                     i++;
@@ -176,7 +176,7 @@ main2 (int argc,
                 break;
 #endif
             case 'l':           /* log to file */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     logFileName = argv[i + 1];
                     i++;
@@ -186,7 +186,7 @@ main2 (int argc,
                 break;
 
             case 'p':           /* port to connect to */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     xtrekPort = atoi (argv[i + 1]);
                     i++;
@@ -196,7 +196,7 @@ main2 (int argc,
                 break;
 
             case 'd':
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     display_host = argv[i + 1];
                     i++;
@@ -253,7 +253,7 @@ main2 (int argc,
 #endif
 
             case 'h':           /* server to connect to */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     servertmp = argv[i + 1];
                     if (metablock(servertmp))
@@ -276,7 +276,7 @@ main2 (int argc,
 #ifdef GATEWAY
             case 'H':           /* gateway to connect through */
                 hset++;
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     netaddr = strToNetaddr (argv[i + 1];
                     i++;
@@ -286,7 +286,7 @@ main2 (int argc,
                 break;
 #endif
             case 'U':           /* local UDP port */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     if ((baseUdpLocalPort = atoi (argv[i + 1])) == 0)
                     {
@@ -305,7 +305,7 @@ main2 (int argc,
                 break;
 #endif
             case 'G':           /* try restarting previous session */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     ghoststart++;
                     ghost_pno = atoi (argv[i + 1]);
@@ -317,7 +317,7 @@ main2 (int argc,
                 break;
             
             case 't':           /* window title */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     title = argv[i + 1];
                     i++;
@@ -327,7 +327,7 @@ main2 (int argc,
                 break;
             
             case 'r':           /* defaults file */
-                if (i < argc)
+                if (i < argc && argv[i + 1])
                 {
                     deffile = argv[i + 1];
                     i++;
@@ -371,15 +371,16 @@ main2 (int argc,
 
     if (!usemeta && !servertmp)  /* no meta type was selected, pick metaserver */
         usemeta = 1;
-        
-    if (hideConsole)
-        FreeConsole ();
 
     if (usage || err)
     {
         printUsage (name);
+        if (hideConsole)
+            FreeConsole ();
         exit (err);
     }
+    if (hideConsole)
+        FreeConsole ();
 
 #ifdef GATEWAY
     if (!hset) use_trekhopd = 0;        /* allow use via normal connections */

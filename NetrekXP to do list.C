@@ -1,12 +1,10 @@
 List for the netrekrc/installer:
-
 1) Change recommendation on metaserver from off to on!
 2) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
 3) Default keymap/buttonamp is horrible.
 4) Add chance for player to input their default login name - tired of seeing
 new-be-nice!!
-
 
 Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
@@ -46,16 +44,10 @@ closeable by shift right click.
 8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
 stays in same drawn state.  Only when short packets off and doublebuffering on.
 9) Use nebula pic
-10) fix clock - rewrite overlaybitmap calls to use SRCAND
-10a) rewrite all scalebitmap functions to use angle not p_dir
-10b) rewrite all doublebuffering so it's rc option - eliminate all these double
-functions!!$!%^
-11) clean up code with resource drawing for overlay and refresh purposes
-11a) get new bitmaps for resources
-13) changing teams doesn't set delay to 0 for declare war , as it should (server fix pending)
-14) Bug with waraction..was being called even when clicking on border (broke function)
+10) get new bitmaps for resources - implement them with reasonable borders
+11) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
-15a) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
+12) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing
 
 Stas's list:

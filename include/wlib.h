@@ -126,14 +126,15 @@ extern void W_MaskText (W_Window window,
 extern void W_WriteBitmap (int x,
                            int y,
                            W_Icon bit,
-                           W_Color color);
+                           W_Color color,
+                           W_Window window);
 extern void W_WriteScaleBitmap (int x,
                                 int y,
                                 int destwidth,
                                 int destheight,
                                 int srcwidth,
                                 int srcheight,
-                                unsigned char p_dir,
+                                int angle,
                                 W_Icon icon,
                                 W_Color color,
                                 W_Window window);
@@ -205,7 +206,8 @@ extern void W_CacheClearArea (W_Window,
 extern void W_OverlayBitmap (int,
                              int,
                              W_Icon,
-                             W_Color);
+                             W_Color,
+                             W_Window);
 extern void W_OverlayScaleBitmap (int,
                                   int,
                                   int,

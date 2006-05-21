@@ -39,6 +39,7 @@ death (void)
 {
     W_Event event;
 
+    ingame = 0;
 #ifdef AUTOKEY
     if (autoKey)
         autoKeyAllOff ();
@@ -51,13 +52,8 @@ death (void)
     {
         if (extraAlertBorder)
         {
-#ifndef DOUBLE_BUFFERING
             W_ChangeBorder (w, gColor);
             W_ChangeBorder (mapw, gColor);
-#else
-            W_ChangeBorderDB (localSDB, gColor);
-            W_ChangeBorderDB (mapSDB, gColor);
-#endif
         }
         W_ChangeBorder (baseWin, gColor);
         oldalert = PFGREEN;
@@ -223,7 +219,8 @@ death (void)
     {                           /* Otherwise we aren't within a thread, so... */
         while (W_EventsPending ())
             W_NextEvent (&event);
-
+        
+        ingame = 0;
         longjmp (env, 0);
     }
 #endif /* Threaded */

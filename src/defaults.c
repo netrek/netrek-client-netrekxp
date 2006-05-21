@@ -130,6 +130,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"doubleBuffering", &doubleBuffering, RC_BOOL,
+        {
+            "Use double buffering to reduce screen flicker",
+            NULL
+        }
+    },
     {"dynamicBitmaps", &dynamicBitmaps, RC_BOOL,
     	{
     	    "Allow switching of ship bitmaps in game.  With this option disabled",
@@ -1390,6 +1396,7 @@ resetdefaults (void)
     if (timerType < T_NONE || timerType >= T_TOTAL)
         timerType = T_SHIP;
 
+    doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
     newSound = booleanDefault ("newSound", newSound);

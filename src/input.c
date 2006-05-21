@@ -692,7 +692,8 @@ input ()
 
     while (W_EventsPending ())
         W_NextEvent (&event);
-
+    
+    ingame = 0;
     longjmp (env, 0);
 }
 

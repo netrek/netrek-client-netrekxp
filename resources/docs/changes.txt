@@ -1,4 +1,17 @@
 Version TBA:
+- added observer support to show repair/declare war flags on dashboard.  Observers can also
+  now change lock if they are observing a transwarper (server side fix, but good to know).
+- changed alert borders so they always redraw instead of on an alert change - was causing lots
+  of problems with bitmaps at edge of screen, as well as with double buffering
+- readded the ability to see tractor/pressors if they go off screen (such as in the case of 
+  ATT tractors). 
+- added "doubleBuffering: (on)/off" to control whether to draw with double buffering (it's
+  recommended you do so if using the new planet and ship bitmaps).  Can be changed in game
+  through the options menu.
+- fixed the -c (report players on server) option so it doesn't crash the client
+- readded the ability to autologin by using -C name -A password.  No more extra typing :).
+- fixed a whole bunch of startup options (-C, -A, -h, -g, etc) that were crashing client if
+  not entered properly.  Also made it so it prints out option list on a misused option.
 - added timer/clock back to text dashboard
 - added torp count to LAB dashboard
 - added new status line to KRP, COW and LAB dashboard. In order of priority, it shows the following:

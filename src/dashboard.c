@@ -306,20 +306,26 @@ db_special (int fr, int x, int y)
        of importance */
 
     /* Declare War text */
-    if (delay)
+    if (me->p_flags & PFWAR)
     {
         sprintf (buf, "War ");
-        sprintf(buf2, "%d", delay - time (0));
-        strcat (buf, buf2);
+        if (delay)
+        {
+            sprintf(buf2, "%d", delay - time (0));
+            strcat (buf, buf2);
+        }
         msgtype = 0;
         color = W_Red;
     }
     /* Refit text */
-    else if (rdelay)
+    else if (me->p_flags & PFREFITTING)
     {
         sprintf (buf, "Refit ");
-        sprintf(buf2, "%d", rdelay - time (0));
-        strcat (buf, buf2);
+        if (rdelay)
+        {
+            sprintf(buf2, "%d", rdelay - time (0));
+            strcat (buf, buf2);
+        }
         msgtype = 1;
         color = W_Green;
     }

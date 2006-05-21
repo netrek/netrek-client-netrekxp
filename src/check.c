@@ -77,7 +77,6 @@ check (void)
     if (connect (sock, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
         perror ("connect");
-        close (sock);
         terminate (0);
     }
 
@@ -89,6 +88,5 @@ check (void)
     {
         perror ("read");
     }
-    close (sock);
     terminate (0);
 }

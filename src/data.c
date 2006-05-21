@@ -32,6 +32,8 @@ struct message *messages;
 struct mctl *mctl;
 struct memory universe;
 
+int ingame = 0;              /* If player is in game - to distinguish between whether
+                                   to use double buffering on the local and map window */
 int ghoststart = 0;             /* is this a ghostbust
                                  * restart? */
 int ghost_pno = 0;              /* is this a ghostbust
@@ -733,10 +735,10 @@ int viewBox = 1;
 
 struct stringlist *defaults = NULL;
 
-#ifdef DOUBLE_BUFFERING
 SDBUFFER * localSDB = NULL;
 SDBUFFER * mapSDB = NULL;
-#endif
+
+int doubleBuffering = 1; /* Use double buffering to draw map/local */
 
 int disableWinkey = 1;  /* disable WinKey + ContextKey by default */
 

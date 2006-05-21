@@ -555,7 +555,7 @@ cowmain (char *server,
     serverName = gateway;
 #endif
 
-    pseudo[0] = defpasswd[0] = '\0';
+//    pseudo[0] = defpasswd[0] = '\0';  /* Why was this ever put in? */
 
 #ifdef RECORDGAME
     if (recordFileName != NULL)
@@ -1082,7 +1082,7 @@ cowmain (char *server,
         Play_Sound(ENGINE_SOUND);
     }
 #endif
-
+    ingame = 1;
     /* Get input until the player quits or dies */
     input ();
 

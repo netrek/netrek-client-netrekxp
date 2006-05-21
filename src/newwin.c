@@ -690,16 +690,12 @@ newwin (char *hostmon,
 
     w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin, THICKBORDER, foreColor);
 
-#ifdef DOUBLE_BUFFERING
     localSDB = W_InitSDB (w);
-#endif
 
     mapw = W_MakeWindow ("map", WINSIDE + 6, 0, WINSIDE, WINSIDE, baseWin,
                          THICKBORDER, foreColor);
 
-#ifdef DOUBLE_BUFFERING
     mapSDB = W_InitSDB (mapw);
-#endif
 
     tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 3,
                             STATSIZE + 2, baseWin, BORDER, foreColor);
@@ -1995,14 +1991,13 @@ showTimeLeft (time_t time, time_t max)
         cy = CLOCK_Y + CLOCK_HEI / 2;
         
         angle = (int)(-360 * time / max);
-        W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor);
+        W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor, qwin);
         W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               angle, clockhandmask, foreColor, qwin);
-        angle = (int)(255-time*255/max);
         W_WriteScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
-                              (unsigned char)(angle), clockhandpic, foreColor, qwin);
+                              angle, clockhandpic, foreColor, qwin);
         sprintf (buf, "%d", max - time);
         tx = cx - W_Textwidth * strlen (buf) / 2;
         ty = 2*(cy - W_Textheight / 2)/3;
@@ -2015,7 +2010,7 @@ showTimeLeft (time_t time, time_t max)
         cy = CLOCK_Y + (CLOCK_HEI - W_Textheight) / 2;
         ex = cx - BMP_CLOCK_WIDTH / 2;
         ey = cy - BMP_CLOCK_HEIGHT / 2;
-        W_WriteBitmap (ex, ey, clockpic, foreColor);
+        W_WriteBitmap (ex, ey, clockpic, foreColor, qwin);
         
         ex = (int) (cx - BMP_CLOCK_WIDTH * sin (2 * XPI * time / max) / 2);
         ey = (int) (cy - BMP_CLOCK_HEIGHT * cos (2 * XPI * time / max) / 2);

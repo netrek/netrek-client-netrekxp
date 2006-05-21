@@ -37,6 +37,7 @@ continuousMouse:          (on/off) use continuous mouse mode
 continuousMouseFix:       (on/off) fix continuous mouse behavior
 disableWinkey             (on/off) disable Windows and Context keys
 documentation:            (path) path to documentation file
+doubleBuffering:          (on/off) use double buffering to reduce screen flicker
 dynamicBitmaps:           (on/off) allow switching of ship bitmaps in game
 enemyPhasers:             (1-10) enemy phaser line width
 extraAlertBorder:         (on/off) change window border on enemy approach

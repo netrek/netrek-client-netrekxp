@@ -387,6 +387,7 @@ struct option Visual_Menu[] = {
 #ifdef XTRA_MESSAGE_UI
     {1, "", &messageHUD, 0, 0, 0, messagehudmess, &messagehud_range},
 #endif
+    {1, "use double buffering", &doubleBuffering, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -890,6 +891,13 @@ optionaction (W_Event * data)
                 showHockeyScore = 0;
         }
 #endif
+        /* Let's see if this is our double buffering changed */
+        else if (op->op_option == &doubleBuffering)
+        {
+            W_ClearWindow (w);
+            W_ClearWindow (mapw);
+            redrawall = 1;
+        }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();
         else if (op->op_option == &sortPlayers)

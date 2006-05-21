@@ -447,8 +447,8 @@ void main2 (int argc,
 void initPlanets (void);
 //inline static void checkRedraw(int x, int y);
 extern inline W_Icon planetBitmapC(register struct planet * p);
-extern inline void planetResourcesC (SDBUFFER * sdb, register struct planet *p,
-                                     int destwidth, int destheight, int dx, int dy, W_Window window);
+extern inline void planetResourcesC (register struct planet *p, int destwidth,
+                                     int destheight, int dx, int dy, W_Window window);
 //static void DrawPlanets();
 void map (void);
 
@@ -629,21 +629,23 @@ W_Icon W_StoreBitmap3 (char *BMPfile,
 void W_WriteBitmap (int x,
                     int y,
                     W_Icon icon,
-                    W_Color color);
+                    W_Color color,
+                    W_Window window);
 void W_WriteScaleBitmap (int x,
                          int y,
                          int destwidth,
                          int destheight,
                          int srcwidth,
                          int srcheight,
-                         unsigned char p_dir,
+                         int angle,
                          W_Icon icon,
                          W_Color color,
                          W_Window window);
 void W_WriteBitmapGrey (int x,
                         int y,
                         W_Icon icon,
-                        W_Color color);
+                        W_Color color,
+                        W_Window window);
 void W_TileWindow (W_Window window,
                    W_Icon icon);
 void W_UnTileWindow (W_Window window);
@@ -717,7 +719,8 @@ void W_SetSensitive (Window * window,
 void W_OverlayBitmap (int x,
                       int y,
                       W_Icon icon,
-                      W_Color color);
+                      W_Color color,
+                      W_Window window);
 void W_OverlayScaleBitmap (int x,
                            int y,
                            int destwidth,
@@ -755,36 +758,11 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
                                   UINT msg,
                                   WPARAM wParam,
                                   LPARAM lParam);
-#ifdef DOUBLE_BUFFERING
+
 SDBUFFER * W_InitSDB (W_Window window);
+SDBUFFER * SDB_lookup (W_Window window);
 void W_Win2Mem (SDBUFFER * sdb);
 void W_Mem2Win (SDBUFFER * sdb);
-void W_ChangeBorderDB (SDBUFFER * sdb, W_Color color);
-void W_FillAreaDB (SDBUFFER * sdb, int x, int y, int width, int height, int color);
-void W_ClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height);
-void W_CacheClearAreaDB (SDBUFFER * sdb, int x, int y, int width, int height);
-void W_ClearAreasDB (SDBUFFER * sdb, int *xs, int *ys, int *widths, int *heights, int num);
-void W_ClearWindowDB (SDBUFFER * sdb);
-void W_MakeLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
-void W_CacheLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
-void W_MakePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color);
-void W_CachePointDB (SDBUFFER * sdb, int x0, int y0, W_Color color);
-void W_MakeLinesDB (SDBUFFER * sdb, int *x0, int *y0, int *x1, int *y1, int num, W_Color color);
-void W_MakeTractLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
-void W_MakePhaserLineDB (SDBUFFER * sdb, int x0, int y0, int x1, int y1, W_Color color);
-void W_WriteTriangleDB (SDBUFFER * sdb, int x, int y, int s, int t, W_Color color);
-void W_WriteTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
-void W_MaskTextDB (SDBUFFER * sdb, int x, int y, W_Color color, char *str, int len, W_Font font);
-void W_WriteBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
-void W_WriteScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
-                           int srcwidth, int srcheight, unsigned char p_dir, W_Icon icon,
-                           W_Color color, W_Window window);
-void W_WriteBitmapGreyDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
-void W_OverlayBitmapDB (SDBUFFER * sdb, int x, int y, W_Icon icon, W_Color color);
-void W_OverlayScaleBitmapDB (SDBUFFER * sdb, int x, int y, int destwidth, int destheight,
-                             int srcwidth, int srcheight, int angle,
-                             W_Icon icon, W_Color color, W_Window window);
-#endif
 
 /******************************************************************************/
 /***  newwin.c
