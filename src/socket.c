@@ -738,7 +738,11 @@ readFromServer (fd_set * readfds)
         chan = sock;
         if (commMode == COMM_TCP)
             drop_flag = 0;      /* just in case */
-        retval += doRead (sock);
+        /* Bug fix for unnecessary redraws with UDP on - reported by TP */
+        if (commMode == COMM_UDP)
+            doRead (sock);
+        else
+            retval += doRead (sock);
     }
 
     dotimers ();

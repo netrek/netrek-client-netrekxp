@@ -1,4 +1,7 @@
 Version TBA:
+- fixed longstanding bug with UDP where display was redrawn too frequently (once for udp redraw,
+and again anytime a TCP packet was sent, like with warning messages).
+- observer support for show speed on tactical
 - added "showArmy: (on)/off" to show army count of planet you are orbiting.  Can be changed
   in game via planets menu
 - added "detCircle: on/(off)" to show det circle on tactical.  Can be changed in game via

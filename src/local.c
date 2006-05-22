@@ -1135,7 +1135,7 @@ DrawShips (void)
                     buflen = 1;
                 }
 
-                if (j == me)
+                if (myPlayer(j) || isObsLockPlayer(j))
                 {
                     switch (me->p_flags & (PFGREEN | PFYELLOW | PFRED))
                     {
@@ -1422,7 +1422,7 @@ DrawShips (void)
                         }
                         ph_counter++;
                         ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
-                        if (ph_counter == (updatesPerSec - 1))
+                        if (ph_counter == (updatesPerSec - 1)*j->p_ship.s_phaserfuse/10)
                         {
                             ph_counter = 0;
                             ph_col = 0;

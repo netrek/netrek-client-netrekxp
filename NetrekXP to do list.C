@@ -53,14 +53,7 @@ for an obs to know what the war decs are of the person he is observing
 
 Bug fixes needed from Paradise:
 1) Make it so The login screen doesn't use 100% CPU anymore.
-2) Fix this major bug present in all netrek clients since UDP was added:
-The client will refresh all the windows and redraw the tactical every time it
-gets a packet.  This means every time you get a message from a player or a
-warning (like "bombing Ori: 5 armies left") the client does an extra refresh,
-because all these things are sent with TCP and come in an extra packet.  Turn
-on double buffering and the 20+ redraws per second you get when bombing or
-dropping start to make a difference.
-3) Get Jubilee phasers to work at all updates and ship phaser cycle settings
+2) Get Jubilee phasers to work at all updates and ship phaser cycle settings
 
 Stas's list:
 - color coded playerlist.
