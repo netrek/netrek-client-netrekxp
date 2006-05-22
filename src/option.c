@@ -29,7 +29,7 @@ int notdone;                    /* not done flag */
 static int old_rotate, old_rotate_deg;
 #endif
 
-static int lastUpdateSpeed = 5;
+static int lastUpdateSpeed = 10;
 static char newkeys[14];
 
 char *localmes[] = { "Show owner on local planets",
@@ -269,6 +269,7 @@ struct option Ship_Menu[] = {
     {1, "shrink their phasers by %d/16", &theirPhaserShrink, 0, 0, 0, NULL, &phaserShrinkRng},
     {1, "shrink phasers on a miss", &shrinkPhaserOnMiss, 0, 0, 0, NULL, NULL},
     {1, "report kills", &reportKills, 0, 0, 0, NULL, NULL},
+    {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -279,6 +280,7 @@ struct option Planet_Menu[] = {
     {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
     {1, "", &planetBitmapGalaxy, 0, 0, 0, planetbitmapgalaxymess, &planetbitmapgalaxyrange},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
+    {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
     {1, "show AGRI in caps on map", &agriCAPS, 0, 0, 0, NULL, NULL},
@@ -898,6 +900,11 @@ optionaction (W_Event * data)
             W_ClearWindow (mapw);
             redrawall = 1;
             oldalert = 0; /* Force a border refresh */
+        }
+        /* Let's see if this is we need to clear the det circle */
+        else if (op->op_option == &detCircle && detCircle == 0)
+        {
+            W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, backColor);
         }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();

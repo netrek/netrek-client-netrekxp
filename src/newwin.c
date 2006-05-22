@@ -1399,6 +1399,7 @@ entrywindow (int *team,
     {
         while (!W_EventsPending ())
         {
+            HANDLE handles[FD_SETSIZE];
             time_t elapsed;
             fd_set rfds;
             struct timeval tv;
@@ -1414,8 +1415,8 @@ entrywindow (int *team,
             FD_SET (sock, &rfds);
             if (udpSock >= 0)
                 FD_SET (udpSock, &rfds);
-            select (32, &rfds, 0, 0, &tv);      /* hmm,  32 might be too
-                                                 * small */
+           // WaitForMultipleObjects(32, handles, TRUE, INFINITE);
+            select (32, &rfds, 0, 0, &tv);      /* hmm, 32 might be too small */
 
             if (FD_ISSET (sock, &rfds) ||
                 (udpSock >= 0 && FD_ISSET (udpSock, &rfds)))

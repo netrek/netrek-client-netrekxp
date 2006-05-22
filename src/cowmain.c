@@ -1082,6 +1082,7 @@ cowmain (char *server,
         Play_Sound(ENGINE_SOUND);
     }
 #endif
+    promoted = 0;
     ingame = 1;
     /* Get input until the player quits or dies */
     input ();

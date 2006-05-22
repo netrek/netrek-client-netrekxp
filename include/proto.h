@@ -592,6 +592,11 @@ void W_MakePhaserLine (W_Window window,
                        int x1,
                        int y1,
                        W_Color color);
+void W_WriteCircle (W_Window window,
+                    int x,
+                    int y,
+                    int r,
+                    W_Color color);
 void W_WriteTriangle (W_Window window,
                       int x,
                       int y,

@@ -196,7 +196,7 @@ static Window myroot;
        win = (Window *)window;\
        if (bitmap->hwnd != win->hwnd)\
        {\
-           LineToConsole("DBICON - mismatch windows\n");\
+           LineToConsole("DBICONHEADER - bitmap and window mismatch\n");\
            hdc = GetDC (win->hwnd);\
            usebitmaphwnd = 0;\
        }\
@@ -3290,6 +3290,31 @@ W_MakePhaserLine (W_Window window,
     LineTo (hdc, x1 + border, y1 + border);
     SetPixel (hdc, x1 + border, y1 + border, colortable[color].rgb);
     
+    if (!sdb || !doubleBuffering || !ingame)
+        ReleaseDC (win->hwnd, hdc);
+}
+
+void W_WriteCircle (W_Window window,
+                    int x,
+                    int y,
+                    int r,
+                    W_Color color)
+{
+    DBHEADER_VOID;
+
+    x += win->border;
+    y += win->border;
+    
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+    SelectObject (hdc, colortable[color].pen);
+    SelectObject (hdc, GetStockObject (NULL_BRUSH));
+
+    Ellipse (hdc, x - r, y - r, x + r, y + r);
+
     if (!sdb || !doubleBuffering || !ingame)
         ReleaseDC (win->hwnd, hdc);
 }

@@ -35,7 +35,8 @@ colorWeapons:             (on/off) use colored bitmaps for torps and plasmas
 continueTractor:          (on/off) show tractors after lock
 continuousMouse:          (on/off) use continuous mouse mode
 continuousMouseFix:       (on/off) fix continuous mouse behavior
-disableWinkey             (on/off) disable Windows and Context keys
+detCircle:                (on/off) show det circle around your ship
+disableWinkey:            (on/off) disable Windows and Context keys
 documentation:            (path) path to documentation file
 doubleBuffering:          (on/off) use double buffering to reduce screen flicker
 dynamicBitmaps:           (on/off) allow switching of ship bitmaps in game
@@ -210,6 +211,7 @@ server:                   (address) default server
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands
 showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
+showArmy:                 (on/off) show army count of planet you are orbiting
 showHints:                (on/off) show hints window
 showHockeyLinesLocal:     (on/off) show hockey lines on tactical
 showHockeyLinesMap:       (on/off) show hockey lines on galactic

@@ -56,7 +56,7 @@
                                  * for 20 spaces */
 #define EXPDIST 350             /* At this range a torp will
                                  * explode */
-#define DETDIST 1600            /* At this range a player
+#define DETDIST 1700            /* At this range a player
                                  * can detonate a torp */
 
 #define PHASEDIST 6000          /* At this range a player
@@ -151,7 +151,6 @@
 #define TARG_SELF	0x8
 #define TARG_ENEMY      0x10
 #define TARG_FRIEND     0x20
-
 
 #define DEFAULT_PORT	2592
 

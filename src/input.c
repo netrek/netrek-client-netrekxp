@@ -303,6 +303,32 @@ key_handler_type key_handlers[MAXKEY] = {
 };
 
 /******************************************************************************/
+/***  lockBase() - for use with twarp key                                   ***/
+/******************************************************************************/
+static void
+lockBase (void)
+{
+    register int i;
+    register struct player *j;
+    register int targnum = -1;
+
+    for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+    {
+        if (j->p_status != PALIVE)
+            continue;
+        if (j == me)
+            continue;
+        if ((j->p_ship.s_type == STARBASE) && (j->p_team == me->p_team))
+            targnum = i;
+    }
+    if (targnum != -1)
+    {
+        sendPlaylockReq (targnum);
+        me->p_playerl = (short) targnum;
+    }
+}
+
+/******************************************************************************/
 /***  lockPlanetOrBase()                                                    ***/
 /******************************************************************************/
 static void
@@ -2197,6 +2223,8 @@ Key41 (W_Event * data)
 void
 Key42 (void)
 {
+    if (!(me->p_flags & PFPLOCK))
+        lockBase ();
     sendPractrReq ();
 }
 

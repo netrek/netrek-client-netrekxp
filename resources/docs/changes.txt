@@ -1,4 +1,13 @@
 Version TBA:
+- added "showArmy: (on)/off" to show army count of planet you are orbiting.  Can be changed
+  in game via planets menu
+- added "detCircle: on/(off)" to show det circle on tactical.  Can be changed in game via
+  ship menu
+- pushing transwarp key will automatically lock you onto your team's base, and send the practice
+  robot request that starts transwarp, if your team has a base, and if you aren't locked onto
+  any player already.  For games with multiple bases on the same team (i.e. chaos), you will
+  have to lock onto the base of your choice, otherwise it will send you to the first base on
+  your team's player list.  
 - added observer support to show repair/declare war flags on dashboard.  Observers can also
   now change lock if they are observing a transwarper (server side fix, but good to know).
 - readded the ability to see tractor/pressors if they go off screen (such as in the case of 

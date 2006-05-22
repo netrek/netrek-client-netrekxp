@@ -165,6 +165,8 @@ extern int colorClient;
 extern int dynamicBitmaps;
 extern int colorWeapons;
 extern int newDashboard, old_db;
+extern int detCircle;
+extern int showArmy;
 extern int niftyNewMessages;
 extern int fastQuit;
 extern char *shipnos;
@@ -363,6 +365,7 @@ extern LONG packets_sent;       /* # all packets sent to
 extern LONG packets_received;   /* # all packets received */
 extern W_Window pStats;
 
+extern char rankmessage[80];
 extern char deathmessage[80];
 extern char outmessage[];
 extern char *xdisplay_name;

@@ -30,6 +30,9 @@ static int clearcount = 0;
 static int clearzone[4][(MAXTORP + 1) * MAXPLAYER +
                         (MAXPLASMA + 1) * MAXPLAYER + MAXPLANETS];
 
+#ifdef JUBILEE_PHASERS
+static int ph_counter = 0;
+#endif
 static int clearlcount = 0;
 #ifdef HOCKEY_LINES
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
@@ -522,6 +525,43 @@ DrawPlanets (void)
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
         }
+        
+        if (showArmy && (me->p_flags & PFORBIT)
+        && (me->p_planet = get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+        {
+            char armbuf[4];
+            int armbuflen;
+            
+            if (l->pl_armies < 10)
+            {
+                armbuf[0] = (char) (l->pl_armies + '0');
+                armbuf[1] = '\0';
+                armbuflen = 2;
+            }
+            else if (l->pl_armies < 100)
+            {
+                armbuf[0] = (char) (l->pl_armies / 10 + '0');
+                armbuf[1] = (char) (l->pl_armies % 10 + '0');
+                armbuf[2] = '\0';
+                armbuflen = 3;
+            }
+            else
+            {
+                armbuf[0] = (char) (l->pl_armies / 100 + '0');
+                armbuf[1] = (char) (l->pl_armies / 10 + '0');
+                armbuf[2] = (char) (l->pl_armies % 10 + '0');
+                armbuf[3] = '\0';
+                armbuflen = 4;
+            }
+            W_MaskText (w, dx - (7 * BMP_PLANET_WIDTH / 8),
+                        dy - (5 * BMP_PLANET_HEIGHT / 6), planetColor (l),
+                        armbuf, armbuflen, planetFont (l));
+            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8);
+            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6);
+            clearzone[2][clearcount] = W_Textwidth * armbuflen;
+            clearzone[3][clearcount] = W_Textheight;
+            clearcount++;
+        }
         if (planetBitmap == 3) // Needs adjusting
         {
             clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8);
@@ -574,6 +614,11 @@ get_shrink_phaser_coords(int *rx, int *ry, int dx, int dy, int tx,
 
 }
 
+void
+DrawDetCircle()
+{
+    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);
+}  
 
 static void
 DrawShips (void)
@@ -583,7 +628,7 @@ DrawShips (void)
 
     char idbuf[10];
     int buflen = 1;
-    static W_Color ph_col;
+    static int ph_col = 0;
     const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
@@ -1356,24 +1401,33 @@ DrawShips (void)
                         switch (ph_col)
                         {
                         case 0:
+                        case 1:
                             col = W_Red;
                             break;
-                        case 1:
+                        case 2:
+                        case 3:
                             col = W_Green;
                             break;
-                        case 2:
+                        case 4:
+                        case 5:
                             col = W_Yellow;
                             break;
-                        case 3:
+                        case 6:
+                        case 7:
                             col = W_Cyan;
                             break;
                         default:
                             col = shipCol[remap[j->p_team]];
+                            break;
+                        }
+                        ph_counter++;
+                        ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
+                        if (ph_counter == (updatesPerSec - 1))
+                        {
+                            ph_counter = 0;
                             ph_col = 0;
                         }
-
-                        ph_col++;
-
+                        LineToConsole("Counter is %d, ph_col is %d\n", ph_counter, ph_col);
                         if (phaserShrinkStyle == 1)
                         {
                             get_shrink_phaser_coords(&new_dx, &new_dy,
@@ -2482,6 +2536,8 @@ local (void)
         DrawStars();
 
     DrawShips ();
+    if (detCircle)
+        DrawDetCircle();
     DrawTorps ();
     DrawPlasmaTorps ();
 

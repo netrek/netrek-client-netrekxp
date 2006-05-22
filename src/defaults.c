@@ -124,6 +124,12 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"detCircle", &detCircle, RC_BOOL,
+        {
+            "Show det circle around your ship",
+            NULL
+        }
+    },
     {"disableWinkey", &disableWinkey, RC_BOOL,
         {
             "Disable Windows and Context Keys",
@@ -486,6 +492,12 @@ struct save_options save_options[] = {
             "Show tractor/pressor for all players",
             "This option actually helps to turn the feature off",
             "Server god decides whether to enable it on server",
+            NULL
+        }
+    },
+    {"showArmy", &showArmy, RC_BOOL,
+        {
+            "Show army count of planet you are orbiting",
             NULL
         }
     },
@@ -1425,6 +1437,8 @@ resetdefaults (void)
     keepInfo = intDefault ("keepInfo", keepInfo);
     showPlanetOwner = booleanDefault ("showPlanetOwner", showPlanetOwner);
     newDashboard = intDefault ("newDashboard", newDashboard);
+    detCircle = booleanDefault ("detCircle", detCircle);
+    showArmy = booleanDefault ("showArmy", showArmy);
     updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     logging = booleanDefault ("logging", logging);

@@ -84,14 +84,10 @@ death (void)
 
     if (promoted)
     {
-        /* Use deathmessage as a buffer because it will be updated in
-           a moment anyway */
-
-        sprintf (deathmessage, "Congratulations, You have scummed up to %s",
+        sprintf (rankmessage, "Congratulations, You have scummed up to %s",
                  ranks[mystats->st_rank].name);
-        W_WriteText (w, 50, 100, W_Yellow, deathmessage,
-                     strlen (deathmessage), W_BoldFont);
-        promoted = 0;
+        W_WriteText (w, 50, 80, W_Yellow, rankmessage,
+                     strlen (rankmessage), W_BoldFont);
     }
 
 
@@ -193,7 +189,7 @@ death (void)
         break;
     }
 
-    W_WriteText (w, 50, 80, W_Cyan, deathmessage, strlen (deathmessage),
+    W_WriteText (w, 50, 60, W_Cyan, deathmessage, strlen (deathmessage),
                  deathFont);
 
 
@@ -237,6 +233,7 @@ updatedeath (void)
     if (deathFont != W_BoldFont)        /* Initialise deathFont */
         deathFont = W_RegularFont;
 
-    W_WriteText (w, 50, 80, W_Cyan, deathmessage, strlen (deathmessage),
-                 deathFont);
+    if (promoted)
+        W_WriteText (w, 50, 80, W_Yellow, rankmessage, strlen (rankmessage), W_BoldFont);
+    W_WriteText (w, 50, 60, W_Cyan, deathmessage, strlen (deathmessage), deathFont);
 }

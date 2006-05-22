@@ -347,9 +347,9 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
     {
     	/* Select resources */
         if (p->pl_armies > 4)
-            W_WriteScaleBitmap(dx - 7 * destwidth / 8,
+            W_WriteScaleBitmap(dx - 7 * destwidth / 8 - 1,
                                dy - (destheight / 2),
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_ARMY_WIDTH,
                                BMP_ARMY_HEIGHT,
@@ -360,16 +360,16 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
             W_WriteScaleBitmap(dx - (destwidth / 2),
                                dy - (5 * destheight / 6),
                                destwidth,
-                               destheight/3,
+                               destheight/3 + 1,
                                BMP_WRENCH_WIDTH,
                                BMP_WRENCH_HEIGHT,
                                0,
                                mwrench_bitmap, planetColor(p),
                                window);
         if (p->pl_flags & PLFUEL)
-            W_WriteScaleBitmap(dx + 3 * destwidth / 5,
+            W_WriteScaleBitmap(dx + 3 * destwidth / 5 - 1,
                                dy - (destheight / 2),
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_FUEL_WIDTH,
                                BMP_FUEL_HEIGHT,
@@ -432,7 +432,7 @@ DrawPlanets ()
             if (planetBitmapGalaxy == 3)  // Needs adjusting
                 W_ClearArea (mapw, odx - 7 * BMP_MPLANET_WIDTH / 8,
                              ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4, 4 * BMP_MPLANET_HEIGHT / 3);
+                             7 * BMP_MPLANET_WIDTH / 4 + 1, 4 * BMP_MPLANET_HEIGHT / 3 + 1);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),
@@ -450,7 +450,7 @@ DrawPlanets ()
             if (planetBitmapGalaxy == 3)  // Needs adjusting
                 W_ClearArea (mapw, dx - 7 * BMP_MPLANET_WIDTH / 8,
                              dy - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4, 4 * BMP_MPLANET_HEIGHT / 3);
+                             7 * BMP_MPLANET_WIDTH / 4 + 1, 4 * BMP_MPLANET_HEIGHT / 3 + 1);
 
             else
                 W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),

@@ -192,6 +192,11 @@ extern void W_MakePhaserLine (W_Window,
                               int,
                               int,
                               W_Color);
+extern void W_WriteCircle (W_Window,
+                           int,
+                           int,
+                           int,
+                           W_Color);
 extern void W_WriteTriangle (W_Window,
                              int,
                              int,
@@ -218,12 +223,6 @@ extern void W_OverlayScaleBitmap (int,
                                   W_Icon,
                                   W_Color,
                                   W_Window);
-extern void W_WriteTriangle (W_Window,
-                             int,
-                             int,
-                             int,
-                             int,
-                             W_Color);
 
 #define W_EV_EXPOSE	1
 #define W_EV_KEY	2

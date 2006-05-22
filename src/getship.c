@@ -113,7 +113,7 @@ getshipdefaults ()
     shipvals[ATT].s_width = 20; /* att: */
     shipvals[ATT].s_height = 20;        /* att: */
     shipvals[ATT].s_type = ATT; /* att: */
-    shipvals[ATT].s_phaserfuse = 1; /* att: */
+    shipvals[ATT].s_phaserfuse = 2; /* att: */
     shipvals[ATT].s_repair = 30000; /* att: */
 
     shipvals[SGALAXY].s_phaserdamage = 100;     /* galaxy: */
