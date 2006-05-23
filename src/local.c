@@ -614,12 +614,6 @@ get_shrink_phaser_coords(int *rx, int *ry, int dx, int dy, int tx,
 
 }
 
-void
-DrawDetCircle()
-{
-    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);
-}  
-
 static void
 DrawShips (void)
 {
@@ -1111,6 +1105,21 @@ DrawShips (void)
                                dy - (shield_height / 2), shield, color, w);
 #endif
             }
+            /* Det circle */
+            if (detCircle)
+            {
+            	if (myPlayer(j) || isObsLockPlayer(j))
+            	{
+                   W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);
+                   olddetcircle = 1;
+                }
+                else if (olddetcircle && (me->p_flags & PFOBSERV) && !(me->p_flags & PFPLOCK))
+                {
+                   W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, backColor);
+                   olddetcircle = 0;
+               }
+            }
+            
             if (j->p_flags & PFCLOAK)   /* when cloaked stop here */
                 continue;
 
@@ -2536,8 +2545,7 @@ local (void)
         DrawStars();
 
     DrawShips ();
-    if (detCircle)
-        DrawDetCircle();
+
     DrawTorps ();
     DrawPlasmaTorps ();
 

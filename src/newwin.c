@@ -1414,8 +1414,9 @@ entrywindow (int *team,
             FD_SET (sock, &rfds);
             if (udpSock >= 0)
                 FD_SET (udpSock, &rfds);
+            // For replacing select to cut down on cpu usage, but not working yet
             // HANDLE handles[FD_SETSIZE];
-           // WaitForMultipleObjects(32, handles, TRUE, INFINITE);
+            // WaitForMultipleObjects(32, handles, TRUE, INFINITE);
             select (32, &rfds, 0, 0, &tv);      /* hmm, 32 might be too small */
 
             if (FD_ISSET (sock, &rfds) ||

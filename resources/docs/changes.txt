@@ -1,4 +1,5 @@
 Version TBA:
+- fixed phaser stats reporting for long packets
 - fixed longstanding bug with UDP where display was redrawn too frequently (once for udp redraw,
 and again anytime a TCP packet was sent, like with warning messages).
 - observer support for show speed on tactical

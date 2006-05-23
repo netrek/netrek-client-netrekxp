@@ -905,6 +905,7 @@ optionaction (W_Event * data)
         else if (op->op_option == &detCircle && detCircle == 0)
         {
             W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, backColor);
+            olddetcircle = 0;
         }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();

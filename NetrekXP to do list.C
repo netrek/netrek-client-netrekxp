@@ -13,11 +13,12 @@ away, etc).  Don't think this is fixable.
 3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
 4) ATT not listed as valid ship even if it's in sysdef.
 5) in orbit.c, pftranswarp strangeness.
+6) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
+for an obs to know what the war decs are of the person he is observing
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did
 2) observer sound messes up when someone flips shields at warp 0
-3) Locking onto robot cause the observer sound to mess up for shields up/down
 4) Observers don't get any geno message at all (head to default which is error message)
 5) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
@@ -47,8 +48,6 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 10) get new bitmaps for resources - implement them with reasonable borders
 11) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
-12) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
-for an obs to know what the war decs are of the person he is observing
 14) cpu leak with double buffering?
 
 Bug fixes needed from Paradise:
