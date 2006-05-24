@@ -1,4 +1,9 @@
 Version TBA:
+- fixed bug with observers with short packets on which was causing incorrect drawing of local
+  map in the case of losing player/planet lock (most noticeable effect was a single background
+  star being drawn at all times, instead of the usual blank local).  This was actually both a
+  server side and client side fix, relating to an incorrect sign on the player position packet,
+  but I mention it here.
 - fixed phaser stats reporting for long packets
 - fixed longstanding bug with UDP where display was redrawn too frequently (once for udp redraw,
   and again anytime a TCP packet was sent, like with warning messages).

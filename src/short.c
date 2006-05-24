@@ -706,8 +706,8 @@ handleVPlayer (unsigned char *sbuf)
         {                       /* S_P2 */
             struct player_s2_spacket *pa2 = (struct player_s2_spacket *) sbuf;
 
-            x = SCALE * ntohs (pa2->x);
-            y = SCALE * ntohs (pa2->y);
+            x = SCALE * (short) ntohs (pa2->x);
+            y = SCALE * (short) ntohs (pa2->y);
             new_flags (ntohl (pa2->flags), 0);
         }
         else

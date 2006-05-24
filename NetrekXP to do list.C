@@ -17,10 +17,10 @@ away, etc).  Don't think this is fixable.
 for an obs to know what the war decs are of the person he is observing
 
 Things that go wrong when short packets are on:
-1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did
-2) observer sound messes up when someone flips shields at warp 0
-4) Observers don't get any geno message at all (head to default which is error message)
-5) The new smooth turning only working on self, not obs or others - short packets only
+1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
+there is no movement anywhere on map, and observer sound also messes up
+2) Observers don't get any geno message at all (head to default which is error message)
+3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
 
 Things to do:
@@ -41,9 +41,8 @@ closeable by shift right click.
 ***6) Implement Defcom's new planet and ship bitmaps
 ***6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
 ***   is rotated, and where to center bitmap
-***7) login not read in before metaserver info (for metablocking purposes)
-***8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
-***stays in same drawn state.  Only when short packets off and doublebuffering on.
+7) Workable windows installer would be nice
+8) Include good rc in source
 9) Use nebula pic
 10) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
 11) Bug with waraction..was being called even when clicking on border (broke function)
