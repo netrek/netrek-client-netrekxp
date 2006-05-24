@@ -38,21 +38,22 @@ flip to.  Also, closing hint window has same effect
 - option server/servernick/servertype needs to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) Implement Defcom's new planet and ship bitmaps
-6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
-   is rotated, and where to center bitmap
-7) login not read in before metaserver info (for metablocking purposes)
-8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
-stays in same drawn state.  Only when short packets off and doublebuffering on.
+***6) Implement Defcom's new planet and ship bitmaps
+***6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
+***   is rotated, and where to center bitmap
+***7) login not read in before metaserver info (for metablocking purposes)
+***8) BUG : Lock on someone as obs, then delock (or whey they die), screen doesn't go blank it
+***stays in same drawn state.  Only when short packets off and doublebuffering on.
 9) Use nebula pic
-10) get new bitmaps for resources - implement them with reasonable borders
+10) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
 11) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
 12) cpu leak with double buffering?
 
 Bug fixes needed from Paradise:
 1) Make it so The login screen doesn't use 100% CPU anymore.
-2) Get Jubilee phasers to work at all updates and ship phaser cycle settings
+2) Get Jubilee phasers to work at all updates and ship phaser cycle settings - and set
+   the jubilee counter to 0 when the phaser end packet is received.
 
 Stas's list:
 - color coded playerlist.

@@ -172,9 +172,8 @@ int
 metablock (char *host)
 /* Block connections to known servers not willing to handle default logins */
 {
-    if ( ((!strcmp(login, "new-be-nice") || !strcmp(login, "netrek-player")) && (strstr(host,".tamu.edu") != NULL))
-       || (strstr(host,".tamu.edu") != NULL) )
-        return 1;
+//    if ( ((!strcmp(login, "new-be-nice") || !strcmp(login, "netrek-player")) && (strstr(host,".antinewbie.server") != NULL))
+//        return 1;
     return 0;
 }
 

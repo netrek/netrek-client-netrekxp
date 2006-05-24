@@ -51,12 +51,6 @@ Version TBA:
 - fix to background star jumpiness with short packets off
 - fixed a bunch of stray pixels in mono color and tinted GA bitmaps
 - fixed some playerlist bugs, and increased playerlist window from 21 to 32 lines
-
-- *.tamu.edu removed from metaserver listing, and direct connect via -h servername
-  also removed, for those with default logins.  This is due to the policy of blocking
-  all players with the default login that comes with the client.
-
-
 - added pretty geno bitmap (no it's not Kathy Ireland, it's a color galaxy picture)
 - Added new plasma_kill sound (Fatality!) for when someone dies to plasma (note the
   sound fires based on kill messages, so if reportKills is off, you won't hear it)
