@@ -998,7 +998,7 @@ newsoundwin (char *hostmon,
     if (newSound)
     {
         soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 30,
-                        2, NULL, 2);
+                        3, NULL, 2);
         W_SetWindowKeyDownHandler(soundWin, sdlsoundaction);
         W_SetWindowButtonHandler(soundWin, sdlsoundaction);
         W_DefineArrowCursor(soundWin);

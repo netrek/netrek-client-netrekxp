@@ -1110,14 +1110,13 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                   W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);
-                   olddetcircle = 1;
+                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);         
+                    clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
+                    clearzone[1][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
+                    clearzone[2][clearcount] = 2*DETDIST/SCALE;
+                    clearzone[3][clearcount] = 2*DETDIST/SCALE;
+                    clearcount++;
                 }
-                else if (olddetcircle && (me->p_flags & PFOBSERV) && !(me->p_flags & PFPLOCK))
-                {
-                   W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, backColor);
-                   olddetcircle = 0;
-               }
             }
             
             if (j->p_flags & PFCLOAK)   /* when cloaked stop here */

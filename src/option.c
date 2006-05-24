@@ -901,12 +901,6 @@ optionaction (W_Event * data)
             redrawall = 1;
             oldalert = 0; /* Force a border refresh */
         }
-        /* Let's see if this is we need to clear the det circle */
-        else if (op->op_option == &detCircle && detCircle == 0)
-        {
-            W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, backColor);
-            olddetcircle = 0;
-        }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();
         else if (op->op_option == &sortPlayers)

@@ -357,7 +357,8 @@ extern void Abort_Sound (int type)
 #define SOUND_INIT    MESSAGE_SOUND + 2
 #define SOUND_DONE    MESSAGE_SOUND + 3
 
-#define SDL_SOUND_DONE 1
+#define SDL_SOUND_ANGLE 1
+#define SDL_SOUND_DONE 2
 
 static void soundrefresh (int i);
 static void sdlsoundrefresh (int i);
@@ -388,6 +389,11 @@ static void sdlsoundrefresh (int i)
     {
         sprintf (buf, "Sound is turned %s",
                  (sound_toggle == 1) ? "ON" : "OFF");
+    }
+    else if (i == SDL_SOUND_ANGLE)
+    {
+        sprintf (buf, "Angular sound is turned %s",
+                 (newSoundAngles) ? "ON" : "OFF");
     }
     else if (i == SDL_SOUND_DONE)
     {
@@ -514,7 +520,12 @@ void sdlsoundaction (W_Event * data)
     {
         if (sound_init)
             sound_toggle = (sound_toggle == 1) ? 0 : 1;
-        soundrefresh (SOUND_TOGGLE);
+        sdlsoundrefresh (SOUND_TOGGLE);
+    }
+    else if (i == SDL_SOUND_ANGLE)
+    {
+    	newSoundAngles = (newSoundAngles) ? 0 : 1;
+    	sdlsoundrefresh (SDL_SOUND_ANGLE);
     }
     else
     {

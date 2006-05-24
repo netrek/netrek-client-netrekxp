@@ -48,7 +48,7 @@ stays in same drawn state.  Only when short packets off and doublebuffering on.
 10) get new bitmaps for resources - implement them with reasonable borders
 11) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
-14) cpu leak with double buffering?
+12) cpu leak with double buffering?
 
 Bug fixes needed from Paradise:
 1) Make it so The login screen doesn't use 100% CPU anymore.

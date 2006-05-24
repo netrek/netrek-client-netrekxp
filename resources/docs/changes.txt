@@ -1,12 +1,12 @@
 Version TBA:
 - fixed phaser stats reporting for long packets
 - fixed longstanding bug with UDP where display was redrawn too frequently (once for udp redraw,
-and again anytime a TCP packet was sent, like with warning messages).
+  and again anytime a TCP packet was sent, like with warning messages).
 - observer support for show speed on tactical
 - added "showArmy: (on)/off" to show army count of planet you are orbiting.  Can be changed
-  in game via planets menu
+  in game via planets menu.
 - added "detCircle: on/(off)" to show det circle on tactical.  Can be changed in game via
-  ship menu
+  ship menu.
 - pushing transwarp key will automatically lock you onto your team's base, and send the practice
   robot request that starts transwarp, if your team has a base, and if you aren't locked onto
   any player already.  For games with multiple bases on the same team (i.e. chaos), you will
@@ -35,34 +35,32 @@ and again anytime a TCP packet was sent, like with warning messages).
 - new netrekrc option, "newQuit (on/off)", to use new quit window
 - new netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
   the choice to change map display planets too!  And have map and local planets use different
-  bitmap sets.
+  bitmap sets.  Can be changed via planets menu.
 - fixed bug where map window border wasn't being redrawn on death
-- shortpackets is now off by default.  In the current state of internet connectivity, most people
-  don't need the reduced packets, which don't send complete information and break certain features
-  such as which direction other players are moving, robot shields, observer geno messages,
-  shield/cloak status for warp 0 players, etc.
+- shortpackets is now "off" by default.  This may be changed at a later date, but for now,
+  they are off, mainly due to short packets only reporting ship heading to 16 positions, whereas
+  all bitmap sets in this client use 32 positions, or in the case of the new highres bitmaps,
+  256 positions.  Some other minor quibbles with short packets on is that observers do not
+  get geno messages, and shield/cloak status for warp 0 players are not sent by short packets.
 - fix to problem with bottom and right borders in certain windows (like map) getting overwritten
 - new planet bitmaps!  Using Defcom's art.  Changeable via planets menu.
 - client now recognizes planets that are flagged as "core": this shows up in planet list menu,
   planet info, and core planets also use different bitmaps in the "New Color" bitmap set
 - redesigned color1 ori GA so it's not the same pic as base
-- double buffering now in (to reduce flicker)
 - added link to genocide.netrek.org newbie manual to replace broken link
 - fix to background star jumpiness with short packets off
 - fixed a bunch of stray pixels in mono color and tinted GA bitmaps
 - fixed some playerlist bugs, and increased playerlist window from 21 to 32 lines
+
 - *.tamu.edu removed from metaserver listing, and direct connect via -h servername
   also removed, for those with default logins.  This is due to the policy of blocking
   all players with the default login that comes with the client.
-- added new scaling/rotation function that allows us to use higher resolution bitmaps.
-  The new bitmap set (made by Defcom) are stored in 80x80 pixel blocks (rather than 20x20
-  for all other bitmap sets).  In addition, only 1 bitmap per ship is needed rather than
-  32 for each ship position - the rotation is done on the fly by Windows.  To take 
-  advantage of the high res bitmap set, Windows 2000 or later is required.
+
+
 - added pretty geno bitmap (no it's not Kathy Ireland, it's a color galaxy picture)
 - Added new plasma_kill sound (Fatality!) for when someone dies to plasma (note the
-  sound fires based on kill messages, so if reportKills is off, you won't hear it).
-- fixed the reportKills option, it wasn't working, now it does.
+  sound fires based on kill messages, so if reportKills is off, you won't hear it)
+- fixed the reportKills option, it wasn't working, now it does
 - Added new value (choice 3) for playerListObserver so that observers appear
   at the bottom of the playerlist.  Options are:
    # What kind of players to list
@@ -82,13 +80,13 @@ and again anytime a TCP packet was sent, like with warning messages).
   torp/plasma size and color ratio, the addition of a separate color bitmap for your own
   weapons fire, and the addition of separate bitmaps for "friendly" and "enemy" weapons,
   so you can tell who is at peace with you visually by the shading of their weapons.
-  This option can be toggled in game from the Ships Menu.
+  This option can be toggled in game from the ships menu.
 - improved mono plasma explosion animation bitmaps
 - added a new Playerlist menu to the Options Menus, so the other menus are not as
-  cluttered, and all playerlist options are now on the same menu page.
+  cluttered, and all playerlist options are now on the same menu page
 - added "newSoundAngles: (on)/off" so one can choose to use SDL sound but lose the
   directionality component (sounds will still be toned down in volume with distance, but
-  there will be no 3d sound component)
+  there will be no 3d sound component).  Changeable via sound menu (if using SDL sound).
 - made it so cloak sounds don't play at your twarp flash event (happens at warp 15, 31, 46)
 - changed self destruct sound so it doesn't sound like enter ship sound
 - added 2 new message sounds (they can be called by beeplite)
@@ -101,7 +99,7 @@ and again anytime a TCP packet was sent, like with warning messages).
   made the red_alert sound file the red alert sound.
 - change to plasma_other sounds: uses closest other_plasma for sound location, as there is no
   good way to determine which torp on screen is most recent for sound purposes.
-- change to plasma_hit sounds: nothing special other than stereo effect
+- change to plasma_hit sounds: nothing special other than stereo effect.
 - change to phaser sounds: observers now hear phasers!  Also fixed it so observers locked
   onto a player hear self-phaser sounds rather than phaser_other sounds when that player
   fire phasers
@@ -116,53 +114,62 @@ and again anytime a TCP packet was sent, like with warning messages).
 - change to explosion sounds:  changed it so observers who are locked onto a player who blows
   up hear the self-explosion sound rather than the explosion_other sound.
 - added a minimum distance to have the angular/distance modulation of sound effects (so close
-  sounds will sound like they are right on top of you).
+  sounds will sound like they are right on top of you)
 - added sound reduction with distance and stereo effect based on angle, for sound events
   that occur on the tactical (weapons, explosions, cloaking, etc).  Current list includes
   cloak, uncloak, torp_other, torp_explosion, explosion_other, phaser_other, plasma_other,
-  plasma_hit
+  plasma_hit.
 - fire_plasma_other sound now works
 - added "newSound: (on)/off".  Allows one to choose not to use the new sound system.  Note
   that this option is not settable in game through options menu, only through the .netrekrc
   file.
 - SDL implementation - up to 16 sounds can play at once, with sound volume scaling with
   the distance of the sound event from your ship
-- continuousMouse and continuousMouseFix now default to on
+- continuousMouse and continuousMouseFix now default to "on"
 - fixed the mono fed sb bitmaps so they rotate more cleanly
-- updated NetrekXP manual (in docs folder), removed old cow manuals.
-- all greyscale and shaded old color starbase bitmaps now rotate.
-- the new color fed starbase bitmaps now rotate.
-- keeppeace default is now "on".
+- updated NetrekXP manual (in docs folder), removed old cow manuals
+- all greyscale and shaded old color starbase bitmaps now rotate
+- the new color fed starbase bitmaps now rotate
+- keeppeace default is now "on"
 - tidied up the save_options function, fixing some spacing errors, and putting the
   keymap/buttonmap on the top of the list due to its importance.  Also added the
   sounddir option.
-- fixed mainResizeable loading/saving from netrekrc.  Also made default setting = on.
+- fixed mainResizeable loading/saving (the option that allows you to resize the main
+  netrek window) from netrekrc.  Also made "on" the default setting.
 - rewrote TTS centering/refresh code so that text is properly centered and clears
   properly when the message expires.  Updated manual to reflect change of tts_pos
   variable to tts_ypos.
-- readded beeplite functionality.  Configuration options described in cow manual.
+- readded beeplite functionality.  Configuration options described in netrekxp manual.
   Basic rc options are useLite: on/off to turn beeplite on and off, and defLite: on/off
   to use the default settings.  The beeplite option is highly configurable, see manual
-  for details.  Can also be turned on via "Use RCD highlighting" on the Visual Menu.
-  Default is "on" for both useLite and defLite;
+  for details.  Can also be turned on via the Visual Menu. Default is "on" for both useLite
+  and defLite.
 - added preventative measures against loading bitmap files that might not exist - if
   bitmaps are missing, it defaults to the mono bitmaps
-- if dynamicBitmap is set to off, only the necessary bitmap files will load into
-  memory
 - cleaned up a lot of dead space sound at the end of sound files, most noticeably, the
   phaser sound
 - fixed a bug in the options menu that incorrectly reported whether the phaser window
   was mapped or not
 - phasering plasma now has less of an effect on phaser average damage statistics, it
   is counted as your average damage hit, rather than the previous way of counting it
-  as a 38 point phaser hit.
+  as a 38 point phaser hit
 - added "dynamicBitmap: (on)/off".  Enables dynamic bitmap switching from the options
-  menu
+  menu.  If dynamicBitmap is set to off, only the necessary bitmap files will load into
+  memory.
 - renumbered the ship bitmap sets for the colorClient option.  Choices are 0=mono,
-  1=new color graphics, 2=single color graphics, and 3=shaded single color graphics.
-  Default setting is still 1.  Settings 2 and 3 have the bonus effect of turning your
-  ship color to white (similar to COW) due to there being a greyscale bitmap library
-  with matching ship designs.
+  1=new color graphics, 2=single color graphics, 3=shaded single color graphics, and
+  4 = experimental high res graphics (the new 80x80 bitmaps).  Default setting is still 1.
+  Settings 2 and 3 have the bonus effect of turning your ship color to white (similar to COW)
+  due to there being a greyscale bitmap library with matching ship designs.
+- added a new ship bitmap set (made by Defcom).  These bitmaps are stored in 80x80 pixel
+  blocks (rather than 20x20 for all other bitmap sets).  In addition, only 1 bitmap per ship
+  is needed rather than 32 for each ship position - the rotation is done on the fly by Windows.
+  To take advantage of the high res bitmap set, Windows 2000 or later may be required, due to
+  needing a native Windows transform function to have your CPU do the bitmap rotation on
+  the fly.  The long term goal is to replace all client bitmaps with higher resolution versions,
+  to have the client scale/rotate as necessary, and to increase tactical size so we can
+  take advantage of the higher quality bitmap sets.
+- added new scaling/rotation function for displaying bitmaps.
 - fixed hightlightFriendlyPhaser option to work again: on for white phasers on hits,
   off for flicker between team color and white
 - added some more hints to the hint database

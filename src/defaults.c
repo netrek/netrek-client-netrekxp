@@ -776,7 +776,7 @@ initDefaults (char *deffile)
     int notdone;
     unsigned char c;
     char *str;
-	struct stringlist *sl;
+    struct stringlist *sl;
 
 #ifdef MULTILINE_MACROS
     unsigned char keysused[256];
@@ -1373,14 +1373,14 @@ findDefaults (char *deffile, char *file)
     if (findfile (NETREKRC, file))
         return 1;
 
-	if (findfile (NETREKRCTXT, file))
-		return 1;
+    if (findfile (NETREKRCTXT, file))
+        return 1;
 
     if (findfile (XTREKRC, file))
         return 1;
 
-	if (findfile (XTREKRCTXT, file))
-		return 1;
+    if (findfile (XTREKRCTXT, file))
+        return 1;
 
 #ifdef SYSTEM_DEFAULTFILE
     /* now try for a system default defaults file */
@@ -1401,8 +1401,8 @@ resetdefaults (void)
     char tmp[100];
     int i;
 
-	if (strlen (pigcall) == 0)
-		sprintf (pigcall, "Netrek XP Mod (%s) - the smarter netrek eXPerience!", mvers);
+    if (strlen (pigcall) == 0)
+        sprintf (pigcall, "Netrek XP 2006 (%s) - the smarter netrek eXPerience!", mvers);
 
     timerType = intDefault ("timerType", timerType);
     if (timerType < T_NONE || timerType >= T_TOTAL)
@@ -1415,7 +1415,7 @@ resetdefaults (void)
     newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
-	beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
+    beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
     viewBox = booleanDefault ("viewBox", viewBox);
     warpStreaks = booleanDefault ("warpStreaks", warpStreaks);
     showStars = booleanDefault ("showStars", showStars);
@@ -1538,7 +1538,7 @@ resetdefaults (void)
     agriCAPS = booleanDefault ("agriCAPS", agriCAPS);
     agriColor = intDefault ("agriColor", agriColor);
 
-	playerListMessaging = booleanDefault ("playerListMessaging", playerListMessaging);
+    playerListMessaging = booleanDefault ("playerListMessaging", playerListMessaging);
 
     highlightFriendlyPhasers = booleanDefault ("highlightFriendlyPhasers",
                                                highlightFriendlyPhasers);

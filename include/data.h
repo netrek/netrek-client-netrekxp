@@ -46,7 +46,6 @@ extern struct memory universe;
 extern struct planet pdata[];
 
 extern unsigned int oldalert;
-extern int olddetcircle;
 extern int remap[];
 extern int udcounter;
 extern char *title;
