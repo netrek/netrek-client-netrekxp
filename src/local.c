@@ -29,10 +29,6 @@
 static int clearcount = 0;
 static int clearzone[4][(MAXTORP + 1) * MAXPLAYER +
                         (MAXPLASMA + 1) * MAXPLAYER + MAXPLANETS];
-
-#ifdef JUBILEE_PHASERS
-static int ph_counter = 0;
-#endif
 static int clearlcount = 0;
 #ifdef HOCKEY_LINES
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
@@ -1281,6 +1277,13 @@ DrawShips (void)
 
         /* Now draw his phaser (if it exists) */
         php = &phasers[j->p_no];
+        
+        /* Reset colorful phasers here */
+#ifdef JUBILEE_PHASERS
+        if (j == me && colorfulPhasers 
+            && (php->ph_status == PHFREE || php->ph_updateFuse == 0))
+            ph_col = 0;
+#endif
 
         if (php->ph_status != PHFREE)
         {
@@ -1408,34 +1411,28 @@ DrawShips (void)
 
                         switch (ph_col)
                         {
-                        case 0:
                         case 1:
+                        case 2:
                             col = W_Red;
                             break;
-                        case 2:
                         case 3:
+                        case 4:
                             col = W_Green;
                             break;
-                        case 4:
                         case 5:
+                        case 6:
                             col = W_Yellow;
                             break;
-                        case 6:
                         case 7:
+                        case 8:
                             col = W_Cyan;
                             break;
                         default:
                             col = shipCol[remap[j->p_team]];
+                            ph_col = 0;
                             break;
                         }
-                        ph_counter++;
                         ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
-                        if (ph_counter == (updatesPerSec - 1)*j->p_ship.s_phaserfuse/10)
-                        {
-                            ph_counter = 0;
-                            ph_col = 0;
-                        }
-                        LineToConsole("Counter is %d, ph_col is %d\n", ph_counter, ph_col);
                         if (phaserShrinkStyle == 1)
                         {
                             get_shrink_phaser_coords(&new_dx, &new_dy,

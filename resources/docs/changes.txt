@@ -1,4 +1,6 @@
 Version TBA:
+- fixed colorful phasers to work as intended (cycle through 4 colors and then your team color).
+  This feature hasn't worked right since netrek moved to 10 updates/sec.
 - added a better default netrekrc file (my personal file), which has a better keymap, window
   placements, and macros than your average rc :).  Plus it has all the settable rc options
   listed.  The format of the netrekrc is nearly identical to that of the netrek.sav file

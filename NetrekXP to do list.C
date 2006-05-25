@@ -51,8 +51,6 @@ closeable by shift right click.
 
 Bug fixes needed from Paradise:
 1) Make it so The login screen doesn't use 100% CPU anymore.
-2) Get Jubilee phasers to work at all updates and ship phaser cycle settings - and set
-   the jubilee counter to 0 when the phaser end packet is received.
 
 Stas's list:
 - color coded playerlist.
