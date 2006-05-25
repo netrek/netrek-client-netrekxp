@@ -1,0 +1,827 @@
+# Default character name
+name: guest
+
+# Login name
+login: netrek_player
+
+# Key mapping
+keymap: Ppa%d_eyftg^jmnrpPrls3tfuwvDwsye d
+
+# Key to switch to macro mode
+# TAB, ESC could be used too
+macroKey: m
+
+# Show AGRI planet names in caps on map
+agriCAPS: on
+
+# Color of AGRI planet name on the map
+# 0 - owner race color
+# 1 - white
+# 2 - gray
+agriColor: 1
+
+# allow mouse wheel to produce action in non-scrollable windows
+allowWheelActions: on
+
+# Autoquit timer (default 60)
+autoQuit: 60
+
+# Base UDP local port
+baseUdpLocalPort: 0
+
+# Beep if received private message
+beepOnPrivateMessage: off
+
+# What type of ship bitmaps to use
+# 0 - mono
+# 1 - new color bitmaps (default)
+# 2 - old color bitmaps
+# 3 - shaded old color bitmaps
+# 4 - experimental high res bitmaps
+colorClient: 4
+
+# Display color phasers
+colorfulPhasers: on
+
+# Use colored bitmaps for torps and plasmas
+colorWeapons: on
+
+# Show tractor/pressor after lock
+continueTractor: on
+
+# Use mouse for continuous steering and firing
+continuousMouse: on
+
+# When in continuousMouse mode allow more than one button to be pressed
+# to generate more actions
+continuousMouseFix: on
+
+# Show det circle around your ship
+detCircle: on
+
+# Disable Windows and Context Keys
+disableWinkey: on
+
+# Use double buffering to reduce screen flicker
+doubleBuffering: on
+
+# Allow switching of ship bitmaps in game.  With this option disabled
+# not all bitmaps load into memory.  This option is thus not changeable
+# in game.  Do not attempt to edit your netrekrc to turn dynamic bitmaps
+# on and then reload the netrekrc with the & key - restart the client instead.
+dynamicBitmaps: on
+
+# Angle between enemy phaser lines
+# 1-10 range
+enemyPhasers: 1
+
+# Change window border on enemy approach
+extraAlertBorder: on
+
+# Number of colors the client will display
+# 0 - find best available color option (default)
+# 1 - 16 colors
+# 2 - 256 colors
+# 3 - true color
+forceDisplay: 1
+
+# Outdated option.  Will force display to 16 colors
+# (but only works if forceDisplay = 0).
+forceMono: off
+
+# Highlight friendly phasers
+highlightFriendlyPhasers: on
+
+# Ignore Caps Lock key state
+ignoreCaps: on
+
+# How many updates to keep info window on (default 15)
+keepInfo: 15
+
+# Keep peace with enemy team after death
+keepPeace: on
+
+# Log all messages to file. Requires "logfile" option
+logging: off
+
+# Make main window resizeable
+mainResizeable: on
+
+# Message hold threshold
+messageHoldThresh: 0
+
+# Output message to local window while typing
+# 0 - nowhere
+# 1 - top of the window
+# 2 - bottom of the window
+messageHUD: 0
+
+# Metaserver port
+metaPort: 3521
+
+# What servers to get from metaserver
+# 0 - with players
+# 1 - as above + with queue
+# 2 - as above + with nobody playing
+# 3 - as above + timed out servers (default)
+# 4 - as above + servers that metaserver could not connect to
+metaStatusLevel: 3
+
+# Use ICMP to ping the metaserver list
+metaPing: on
+
+# Mouse motion threshold
+motionThresh: 0
+
+# Use mouse buttons as Shift keys
+mouseAsShift: off
+
+# Paint dark scrollbars
+mungScrollbarColors: off
+
+# Type of dashboard
+# 0 - Text
+# 1 - COW
+# 2 - KRP (default)
+# 3 - LABs
+newDashboard: 1
+
+# Indent RCD messages
+newDistress: off
+
+# Use new quit window
+newQuit: on
+
+# Use new layered, stereo sound
+newSound: on
+
+# Use 3D sound effects (only works if newSound is on)
+newSoundAngles: off
+
+# Omit team letter on galaxy
+omitTeamLetter: off
+
+# Add space between teams in player list
+partitionPlist: off
+
+# Shrink our phaser by x/16 of its length
+# 0-16 range for COW style phaser shrink
+# 0-11 range for BRMH style phaser shrink
+phaserShrink: 0
+
+# Style of phaser srhinkage
+# 0 - COW style
+# 1 - BRMH style
+phaserShrinkStyle: 0
+
+# Log phaser statistics
+phaserStats: on
+
+# Show phaser window
+phaserWindow: off
+
+# Type of planet bitmaps on local map
+# 0 - Bronco (default)
+# 1 - Moo
+# 2 - Rabbitear
+# 3 - New color
+planetBitmap: 3
+
+# Type of planet bitmaps on galactic map
+# 0 - Bronco (default)
+# 1 - Moo
+# 2 - Rabbitear
+# 3 - New color
+planetBitmapGalaxy: 3
+
+# Suppose that players with letter greater than 'f' are observers
+playerListHack: off
+
+# Enable mouse clicks in player list to send messages
+playerListMessaging: on
+
+# What kind of players to list
+# 0 - all (default)
+# 1 - players
+# 2 - observers
+# 3 - players, then observers
+playerListObserver: 3
+
+# Predefined player list
+# 0 - use style from playerList
+# 1 - old style "nTRNKWLr O D d"
+# 2 - COW style "nTR N  K lrSd" (default)
+# 3 - kill watch style "nTK  RNlr Sd"
+# 4 - BRMH style "nTR N  K l M"
+playerListStyle: 4
+
+# Port to connect
+port: 2592
+
+# Use new UDP code
+portSwap: on
+
+# Number of updates before redraw
+redrawDelay: 0
+
+# Reject macros
+rejectMacro: off
+
+# Report kills
+reportKills: on
+
+# Save options with comments
+saveBig: on
+
+# Save macros to saveFile
+saveMacro: on
+
+# Save RCD to saveFile
+saveRCD: on
+
+# Save RCM to saveFile
+saveRCM: on
+
+# Shift+Mouse gives additional commands
+shiftedMouse: on
+
+# Show tractor/pressor for all players
+# This option actually helps to turn the feature off
+# Server god decides whether to enable it on server
+showAllTractorPressor: on
+
+# Show army count of planet you are orbiting
+showArmy: on
+
+# Show hints window
+showHints: off
+
+# Show hockey lines on map
+# Works only on hockey server
+showHockeyLinesMap: off
+
+# Show hockey lines on local
+# Works only on hockey server
+showHockeyLinesLocal: off
+
+# Show hockey score on the galaxy top left corner
+# Works only on hockey server
+showHockeyScore: on
+
+# Cross independent planets with X
+showIND: off
+
+# Where to show lock triangle
+# 0 - nowhere
+# 1 - map
+# 2 - local
+# 3 - both (default)
+showLock: 3
+
+# Show MOTD if waiting on queue
+showMotd: on
+
+# Show my speed on local
+showMySpeed: on
+
+# Show planet names on local
+showPlanetNames: on
+
+# Show planet owner on galaxy
+showPlanetOwner: off
+
+# Draw background stars
+showStars: on
+
+# Show statistics window
+showStats: off
+
+# Draw lines for tractor/pressor
+showTractorPressor: on
+
+# Shrink phasers if missed
+shrinkPhaserOnMiss: off
+
+# Put my team first in the player list
+sortMyTeamFirst: off
+
+# Sort players by team
+sortPlayers: on
+
+# Enable sound
+sound: on
+
+# Shrink enemy phaser by x/16 of its length
+# 1-16 range
+theirPhaserShrink: 0
+
+# Type of dashboard timer to show
+# 0 - don't show timer
+# 1 - show current time
+# 2 - show time on server
+# 3 - show time in ship
+# 4 - show user-set time
+timerType: 1
+
+# Distance between tractor/pressor dots
+tpDotDist: 10
+
+# Use short packets for communications
+tryShort: on
+
+# Use UDP for communications
+tryUdp: on
+
+# Type of incoming UDP traffic
+# 0 - TCP
+# 1 - simple UDP (default)
+# 2 - fat UDP
+udpClientReceive: 1
+
+# Type of outgoing UDP traffic
+# 0 - TCP
+# 1 - simple UDP (default)
+# 2 - enforced UDP (state)
+# 3 - enfotrced UDP (state & weapons)
+udpClientSend: 1
+
+# Print UDP debug information
+udpDebug: 0
+
+# Check sequence of UDP traffic
+udpSequenceCheck: on
+
+# How much updates to send/receive
+# 1-10 range
+updatesPerSec: 10
+
+# Use beeplite
+useLite: on
+
+# Use default beeplite settings
+defLite: on
+
+# Use RSA verification
+useRsa: on
+
+# Change shields color on ship damage
+varyShields: on
+
+# Show limits of tactical display on galaxy
+viewBox: on
+
+# Change shields color on enemy approach
+warnShields: off
+
+# Draw warp streaks while transwarping to starbase
+warpStreaks: on
+
+# Enable internal windows moving
+windowMove: on
+
+# Two characters to show cloaked player on map window
+cloakChars: ??
+
+# Sound directory
+sounddir: .\sounds
+
+# Metacache file
+metaCache: metacache
+
+# Custom style for player list
+# ' ' - White Space
+# 'b' - Armies Bombed
+# 'd' - Damage Inflicted (DI)
+# 'k' - Max Kills
+# 'l' - Login Name
+# 'n' - Ship Number# 'p' - Planets Taken
+# 'r' - Ratio
+# 's' - Speed
+# 'v' - Deaths per hour
+# 'w' - War staus
+# 'B' - Bombing
+# 'C' - Curt (short) rank
+# 'D' - Defense
+# 'H' - Hours Played
+# 'K' - Kills
+# 'L' - Losses
+# 'M' - Display, Host Machine
+# 'N' - Name
+# 'O' - Offense
+# 'P' - Planets
+# 'R' - Rank
+# 'S' - Total Rating (stats)
+# 'T' - Ship Type
+# 'V' - Kills per hour
+# 'W' - Wins
+playerList: nTR N  K l M
+
+## Window Options
+WaitMotd.mapped: on
+netrek.geometry:        1024x768
+local.parent:           netrek
+map.parent:             netrek
+
+help.parent:            netrek
+help.geometry:          500x25+0+525
+
+planet.parent:          netrek
+planet.geometry:        +660+0
+
+message.parent:         netrek
+message.geometry:       502x19+508+504
+message.mapped:         on
+
+warn.parent:            netrek
+warn.geometry:          502x18+508+523
+warn.mapped:            on
+
+tstat.parent:           netrek
+tstat.geometry:	        506x45+0+504
+tstat.mapped:		on
+
+review.parent:          netrek
+review.geometry:        82x20+508+542
+review.mapped:		off
+
+review_your.parent:     netrek
+review_your.geometry:   82x4+508+542
+review_your.mapped:     on
+
+review_team.parent:     netrek
+review_team.geometry:   82x6+508+591
+review_team.mapped:     on
+
+review_all.parent:      netrek
+review_all.geometry:    82x4+508+660
+review_all.mapped:      on
+
+review_phaser.parent:   netrek
+review_phaser.geometry: +510+710
+review_phaser.mapped:   off
+
+reportkills:            on
+review_kill.parent:     netrek
+review_kill.geometry:   82x4+508+708
+review_kill.mapped:     on
+review_kill.allow: 	KP
+
+player.parent:          netrek
+player.geometry:        +0+549
+player.mapped:          on
+
+udp.geometry:        	+0+0
+udp.mapped:          	off
+
+stats.parent:           netrek
+stats.geommac.s.%i:%y loss, %v ping, %V stddev
+stats geometry:         160x108+332+550      # puts the stats window further down
+stats.geometry:         160x94+842+500
+
+# Macros section
+# Also '?' can still not be used as a macro key. The following definitions will
+# work in a macro (where 'target x' = whatever x the mouse cursor is closest to
+# when the macro is sent):
+#
+#      Standard:
+#
+#      %a   armies carried by sender
+#      %d   sender damage percentage
+#      %s   sender shield percentage
+#      %f   sender fuel percentage
+#      %w   sender wtemp percentage
+#      %e   sender etemp percentage
+#      %t   team id character of target planet
+#      %T   team id character of sender team
+#      %c   sender id character
+#      %n   armies on target planet
+#      %E   1 if etemped, 0 if not
+#      %W   1 if wtemped, 0 if not
+#      %S   sender two character ship type
+#      %p   id character of target player
+#      %g   id char of target friendly player
+#      %h   id char of target enemy player
+#      %P   id character of player nearest sender
+#      %G   id char of friendly player nearest sender
+#      %H   id char of enemy player nearest sender
+#      %l   three character name of target planet
+#      %i   sender full player name (16 character max)
+#      %u   full name of target player (16 character max)
+#      %z   3 letter team id of target planet
+#      %b   planet nearest sender
+#      %o   three letter team name of sender
+#      %k   number of kills sender has
+#      %K   number of kills target player has
+#      %*   if this is encountered, the macro IS NOT PRINTED
+#      %(SPACE)  this is replaced by a space, mainly useful for starting a message
+#
+#
+#      FULLY CAPITALIZED:
+#
+#      %L   three character name of target planet
+#      %I   sender full player name (16 character max)
+#      %U   full name of target player (16 character max)
+#      %Z   3 letter team id of target planet
+#      %B   sender nearest planet
+#      %O   three letter team name of sender
+#
+#      Ping stats: (may differ slightly from server '!' ping stats)
+#
+#      %v   average ping stat round trip time
+#      %V   ping stat round trip standard deviation
+#      %y   percent total packet loss as calculated by server formula
+#
+#      Miscellanous:
+#
+#      %m   the last message you sent
+#      %M   the last message you sent in all caps
+#
+# As a further extension to NEWMACRO, a macro may now be sent to any of the following destinations:
+#      %i %I %c  send message to self
+#      %u %U %p  send message to player nearest mouse
+#      %t %z %Z  send message to team of player nearest mouse
+#      %g        send message to nearest friendly player to my ship
+#      %h        send message to nearest enemy player to my ship
+#
+#      with a syntax like
+#
+#      #useful for INL...
+#      mac.C.%i: CAPTAIN
+#      mac.N.%i: NEWGALAXY
+#      mac.S.%i: START
+#      mac.T.%i: %Z
+#
+#      mac.W.%t: SHUT UP, TWINKS!!
+#      mac.I.%u: %u: det when you escort!
+#      mac.O.%u: (%i) ogging
+#
+# What this does is allows you to send a macro to a player or team specified by your mouse
+# location instead of requiring a 3rd character to be input. Also, it allows you to send
+# message to yourself without having to actual sit there and figure out who you are (they
+# tried and failed back in the '60s).
+#
+# Further, tests may be done within the macro system, the syntax for these test is as follows.
+#
+#      %?   introduces a test
+#      =    equivalence
+#      >    greater
+#      <    less
+#
+# Expressions are evaluated on a character by character basis until the test is resolved.
+# The text of the test is then replaced in the macro by 1 or 0.
+#
+# Test are then fed to a syntax I call conditional text. The best way to demonstrate
+# how this works is example.
+#
+#      "1%{included if true%!included if false%}"
+#
+#      This would print:
+#
+#      "included if true"
+#
+#      whereas
+#
+#      "0%{included if true%!included if false%}"
+#
+#      would print:
+#
+#      "included if false"
+#
+# Combining the whole package, a very robust macroing system is quickly generated.
+# One can easily design or mimic Distress calls, including the variable NBT
+# distress of the BRM client and all the hardcoded message macroing built into my
+# own client but never released.
+#
+# Here are a few more samples to work from:
+#
+#      mac.F.T:   Help!  Carrying %a!!
+#      mac.f:     Help!  Carrying %a!!
+#      mac.c.T:   %p++ near %l
+#      mac.b.T:   %?%n>4%{bomb %l at %n%!bomb%}
+#      mac.d.T:   %E%{%!%W%{%!I'm fine.  How are you? %}%}%E%{ETEMPED!!!  %}
+#                 %W%{WTEMPED!!!  %}Carrying %?%a>0%{%a armies!%!NO armies.%}
+#      mac.a.T:   %E%{ETEMPED!!!  %}%W%{WTEMPED!!!  %}Carrying %?%a>0%{%a
+#                 armies! %!NO armies.%}
+#      mac.R.A:   I'm a %?%S=SB%{star base!%!twink!%}
+#      mac.K.A:   KissMy%S
+#      mac.t:     thanks
+#      mac.y:     yes
+#      mac.n:     no
+#      mac.B:     bye, getting hungry/sleep/horny
+#      mac.e.T:   need escort going to %l%?%a>0%{, carrying %a armies!%}
+#      mac.v.%t   %T%c PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
+
+# Keys that will trigger macro without going to macro mode
+singleMacro: EF
+
+macro.a.A:.          o                        Just         |    Squeal boy...
+macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
+macro.a.A:.       o  )/                       Wrong (tm)   |    hog!
+macro.a.A:.      //<<\\
+
+macro.P.A:%    \~~\    _ _             ,----------------------------------,
+macro.P.A:%     \**\___\/ \............| %u: Sucks to be you!
+macro.P.A:%   X*####*+~~\_\            '----------------------------------'
+macro.P.A:%    o/\  \
+macro.P.A:%       \__\
+
+macro.r.A:.        _
+macro.r.A:.       ( |
+macro.r.A:.     ___\ \
+macro.r.A:.    (__()  `-|
+macro.r.A:.    (___()   | %u r0xx0rz!
+
+macro.l.A:%   /##\ /##\          /##\ /##\         /##\ /##\
+macro.l.A:%   #########          #########         #########
+macro.l.A:%   `#######'          `#######'         `#######'
+macro.l.A:%     `\#/'              `\#/'             `\#/'
+
+macro.f.A:%          (~)-=_      %p:           _/~~~\~~~~~~) *******
+macro.f.A:%         <~~~]/`)      MAJOR         _-  )~)~~~  /+ + /*  ... moi??
+macro.f.A:%         (~~~]L/\     FUCKING         (_/~)     / < /@*
+macro.f.A:%          (~~] .       TWINK       -\___L~)     |~~~ |*
+macro.f.A:%           ~~\                           ~       \__/\
+
+macro.h.A:%               _____    ______    ______   _____  _____     /^/
+macro.h.A:%    /     /   /        /     /   /     /  /      /         / /
+macro.h.A:%   /_____/   /__      /_____/   /     /  /__    /_____    /_/
+macro.h.A:%  /     /   /        /   \     /     /  /            /   __
+macro.h.A:% /     /   /_____   /     \   /_____/  /_____  _____/   /_/
+
+macro.c.A:% ._   _  KILL   _    _   ^__^You loser, you couldn't fight your way
+macro.c.A:% | |_| |___ _ _| | _| |  (oo)\_______        out of a wet paper bag.
+macro.c.A:% |  _  / _ \ '_| |/ /_| (__)\       )\/\ %u: KILL HORKER
+macro.c.A:% |_| |_\___/_| |_|\_(_)     ||----W |<---------- Me  = cow of prey
+macro.c.A:% .MOooooooooooooooooo!      ||     ||.,#@,.  <-- You = piece of shit
+
+macro.C.A:% Nothing fucks        _____---=======---_____       . Yo: >>%p<<
+macro.C.A:% you up          _====____\   /.. ..\   /____====_    In Space no one
+macro.C.A:% like a      +  / /        ---\__O__/---        \ \   can hear you
+macro.C.A:% CA             \_\  .                          /_/ . Suck!
+
+macro.s.A:%           _            You
+macro.s.A:% Yo %p:   _(_).         Are
+macro.s.A:%        ( \ ,_\       Just
+macro.s.A:%       (_\/(_)/      PLAIN (tm)
+macro.s.A:%        \_| . \     STUPID!
+
+macro.B.A:% | |  ___     | |   ___    | |    ___   | |     ___  | |  Aww %p,
+macro.B.A:% |/|{~._.~}   |/| {~._.~}  |/|  {~._.~} |/|   {~._.~}|/|  do you need
+macro.B.A:% | | ( Y )    | |  ( Y )   | |   ( Y )  | |    ( Y ) | |  your teddy
+macro.B.A:% |/|()~*~()   |/| ()~*~()  |/|  ()~*~() |/|   ()~*~()|/|  to cry on?
+macro.B.A:% | |(_)-(_)   | | (_)-(_)  | |  (_)-(_) | |   (_)-(_)| |
+
+macro.G.A:%                         /''|I  Tons of Armies dropped on %L
+macro.G.A:%     __________________/____|I      .      .      .      .
+macro.G.A:%   /^:  o o |__o__o o       ,"'   <' '>  <' '>  <' '>  <' '>
+macro.G.A:%   `o_______<C__*==}==-__,-'===    '|'    '|'    '|'    '|'
+macro.G.A:%            |  ``` '''              0      0      0      0
+
+macro.Z.A:%   /-----\
+macro.Z.A:%   |\    |   The Klew meter (tm) is pointing at %u (%p)
+macro.Z.A:%   | \   |   And it reads zero!
+macro.Z.A:%   \__o__/
+
+macro.z.A:%  /-----\
+macro.z.A:%  |\   /|    The Klew meter (tm) is pointing at %u (%p)
+macro.z.A:%  | \ / |    Eh, it's broken!
+macro.z.A:%  \__o__/
+
+macro.A.A:%   /-----\
+macro.A.A:%   |    /|   The Klew meter (tm) is pointing at %u (%p)
+macro.A.A:%   |   / |   Man-Of-Klew pegs the meter!
+macro.A.A:%   \__o__/
+
+macro.R.A:%  %u (%p) is a
+macro.R.A:%        __              __ __
+macro.R.A:%       |__)/  \|\ ||\ ||_ |__)
+macro.R.A:%       | \ \__/| \|| \||__| \
+
+macro.%.A:%.                  oO)-.  o o O   (~~~~~~~~~~~~~)
+macro.%.A:%.   poor %p ->     /__  _\        ( Is something  )
+macro.%.A:%.                 \  \(  |       (  happening?   )
+macro.%.A:%.                  \__|\ |        (_____________)
+macro.%.A:%.                  '  '--'
+
+macro.D.A:.      (. .)   Behold the destroyer, a ship built light for speed
+macro.D.A:.     / VVVV\  and dodginess ... it is quick, and it buttorps very
+macro.D.A:.     @\^^^/@  well, yet its hull is so light, it is crushed like
+macro.D.A:.     _|   |_  an egg ... behold its beauty and dangerous allure!
+
+macro.$.A:%        Confucius says:          ,---.
+macro.$.A:% I sense fear and resentment.   C0-|| Y
+macro.$.A:%                             \  O  || |
+macro.$.A:%                                |   D J
+macro.$.A:%                               //./"""'
+
+macro.H.A:% ("`-''-/").___..--''"`-._
+macro.H.A:%   `6_ 6  )   `-.  (     ).`-.__.`)  %u: You're just a big
+macro.H.A:%   (_Y_.)'  ._   )  `._ `. ``-..-'
+macro.H.A:%  ..`--'_..-_/  /--'_.' ,'                  P U S S Y
+macro.H.A:%  (__),-''  (__),'  ((!.-'
+
+macro.T.A:%         o      _____             yo, %u:
+macro.T.A:%       .][__n_n_|DD[  ====_____    when the clue
+macro.T.A:%      >(________|__|_[_________]_   train rolls by try
+macro.T.A:%      _/oo OOOOO oo`  ooo   ooo      to hop on board!
+macro.T.A:%     -+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+macro.0.A:%                ***PUBLIC SERVICE ANNOUNCEMENT***
+macro.0.A:%  Hit shift O (that's O the letter, not zero) to bring up the netrek 
+macro.0.A:%  menus. You will be on page zero.  See the bar that says updates
+macro.0.A:%  per second? If it doesn't say 10 updates per second, you should
+macro.0.A:%  change it! Click on the box until it gets to 10 updates per second!
+
+macro.1.A:%                    |\__/,|   (`\
+macro.1.A:%           Mew! -   |o o  |__ _) )   I'm coming after you,
+macro.1.A:%  n n._           _.( T   )  `  /
+macro.1.A:%  <" _ }=-       ((_ `^--' /_<  \    %u (%p)!
+macro.1.A:%   '` "          `` `-'(((/  (((/
+
+macro.2.A:%     /\   /\  Intel reports that               I UNDERSTAND
+macro.2.A:%     \ \_/ /  %p is leaving %L         (. .)   OBERFUEHRER, AND
+macro.2.A:%      ('.')   with a shipment         |VVVV |  VOLUNTEER TO SINK
+macro.2.A:%     ()   ()  of vital gravy...       @| + |@  THE VITAL ENEMY
+macro.2.A:%     (_)-(_)                          _|  _|   GRAVY TRANSPORT!
+
+macro.3.A:%       __[`]__
+macro.3.A:%        (. .)            Don't mess with %u (%p)!
+macro.3.A:%       / VVVV `(=]==o
+macro.3.A:%      @ |___|`-@
+macro.3.A:%      *-U_  U_
+
+macro.4.A:%                                    /\   /\
+macro.4.A:%    (- <)   - I hate my team.       \ \_/ /  - Captain,
+macro.4.A:%   /VVVV \                           ('.')     I sense
+macro.4.A:%  @ ^^^^@~                          ()   ()    hostility.
+macro.4.A:%   _|  _|                           (_)-(_)
+
+macro.5.A:%    /~~/    Oh, My Pussy Hurts!  I Better Call: (952) 943-8700
+macro.5.A:%    ~//
+macro.5.A:%  __//      /~)  /~~/ /~)  /~/~/ /|  /|  / /|  / /~~~ /~~)
+macro.5.A:% /__/      /-<  /  / /~<    /   /~| / | / / | / /~~  /~~|
+macro.5.A:%    }_    /__/ /__/ /__/   /   /  |/  |/ /  |/ /___ /   \
+
+macro.6.A:.    @ (. .) @    .  '  . ___      %u (%p): 
+macro.6.A:.     \ VVVV/   .        (: .)     You are the weakest twink,
+macro.6.A:.     / ^^^^__|           ~~~             GOODBYE!!
+macro.6.A:.     \
+
+macro.7.A:%       o- - -  \o          __|      %u (%p):
+macro.7.A:%          o/   /|          vv`\     What's it feel like to be
+macro.7.A:%         /|     |              |     _
+macro.7.A:%          |    / \_            |    | \  _  ._  o  _   _|  | |
+macro.7.A:%         / \   |               |    |_/ (/_ | | | (/_ (_|  | |
+
+macro.8.A:%                         ___
+macro.8.A:%                  ::====(   )__   -  Lean over for that Sodomy,
+macro.8.A:%      o/__  <---     /~~~~~~~~~\             %u.
+macro.8.A:%      |  (\          \O.O.O.O.O/
+
+macro.9.A:%                            .     .   /\_.----.
+macro.9.A:%      All your base           .  :    \_/ /  / \
+macro.9.A:%      are belong to us!     <    <     / /  // /\          \o/
+macro.9.A:%                          .:>: .> >. :/*/:</>./.X__         |
+macro.9.A:% --------------------:--:--**#:-<<:^/^<**#**#**:._/--------/->---
+
+mac.e.T: Escorting %g (%d%%D %s%%S %f%%F)
+mac.V.A: %T%c  PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
+mac.x.T: (%T%c) My Fuel: %f%%
+
+mac.X.%p: My condition: %d%%D %s%%S %f%%F %a armies
+
+# Receiver configurable distress macros
+dist.^t.taking: %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
+dist.^o.ogg: %T%c->%O Help Ogg %p at %l
+dist.^b.bomb: %T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}
+dist.^c.space_control: %T%c->%O Help Control at %L
+dist.^1.save_planet: %T%c->%O Emergency at %L!!!!
+dist.^2.base_ogg: %T%c->%O Sync with --]> %g <[-- OGG ogg OGG base!!
+dist.^3.help1: %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.
+dist.^4.help2: %T%c->%O Help me! %d%% dam, %s%% shd, %f%% fuel %a armies.
+dist.^e.escorting: %T%c->%O ESCORTING %g (%d%%D %s%%S %f%%F)
+dist.^p.ogging: %T%c->%O Ogging %h
+dist.^m.bombing: %T%c->%O Bombing %l @ %n
+dist.^l.controlling: %T%c->%O Controlling at %l
+dist.^5.asw: %T%c->%O Anti-bombing %p near %b.
+dist.^6.asbomb: %T%c->%O DON'T BOMB %l. Let me bomb it (%S)
+dist.^7.doing1: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)
+dist.^8.doing2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l.  (%d%% dam, %s%% shd, %f%% fuel)
+dist.^f.free_beer: %T%c->%O %p is free beer
+dist.^n.no_gas: %T%c->%O %p @ %l has no gas
+dist.^h.crippled: %T%c->%O %p @ %l crippled
+dist.^9.pickup: %T%c->%O %p++ @ %l
+dist.^0.pop: %T%c->%O %l%?%n>-1%{ @ %n%}!
+dist.F.carrying: %T%c->%O %?%S=SB%{Your Starbase is c%!C%}arrying %?%a>0%{%a%!NO%} arm%?%a=1%{y%!ies%}.
+dist.^@.other1: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
+dist.^#.other2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
+dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!
+
+
+# Receiver configurable messages
+msg.kill: GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) was kill %?%d>0%{%k%!(NO CREDIT)%} for %u (%r%p) %?%w>0%{%W%!%}
+msg.planet: GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%} killed by %l (%z) %?%w>0%{%W%!%}
+msg.bomb: %N->%Z We are being attacked by %i (%T%c) who is %d%% damaged.
+msg.destroy: %N->%Z %N destroyed by %i (%T%c)
+msg.take: %N->%O %N taken by %i (%T%c)
+msg.ghostbust: GOD->ALL %i (%S) (%T%c) was kill %k for the GhostBusters

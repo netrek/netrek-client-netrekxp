@@ -226,6 +226,7 @@ int updatesPerSec = 10;
 char *metaServer[] = {"metaserver.us.netrek.org",
                       "metaserever2.us.netrek.org"};
 int metaPort = 3521;
+char *metaCache = NULL;
 #ifdef METAPING
 int metaPing = 1;				/*  ICMP ping the metaserverlist */
 #endif

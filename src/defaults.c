@@ -84,7 +84,7 @@ struct save_options save_options[] = {
             "0 - mono",
             "1 - new color bitmaps (default)",
             "2 - old color bitmaps",
-            "3 - shaded old color bitmaps"
+            "3 - shaded old color bitmaps",
             "4 - experimental high res bitmaps",
             NULL
         }
@@ -1819,6 +1819,28 @@ saveOptions ()
     sprintf (str, "Saving options to: %s", save_file);
     warning (str);
     
+    // Default character name
+    if (pseudo != NULL)
+    {
+	    if (saveBig)
+	        fputs ("# Default character name\n", fp);
+	    sprintf (str, "name: %s\n", pseudo);
+	    fputs (str, fp);
+	    if (saveBig)
+	        fputs ("\n", fp);
+    }
+    
+    // Login
+    if (login != NULL)
+    {
+	    if (saveBig)
+	        fputs ("# Login name\n", fp);
+	    sprintf (str, "login: %s\n", login);
+	    fputs (str, fp);
+	    if (saveBig)
+	        fputs ("\n", fp);
+    }
+    
     // Let's print buttonmap
     str[0] = '\0';
     str1[0] = '\0';
@@ -1956,6 +1978,17 @@ saveOptions ()
 	    if (saveBig)
 	        fputs ("# Sound directory\n", fp);
 	    sprintf (str, "sounddir: %s\n", sounddir);
+	    fputs (str, fp);
+	    if (saveBig)
+	        fputs ("\n", fp);
+    }
+    
+    // metacache
+    if (metaCache != NULL)
+    {
+	    if (saveBig)
+	        fputs ("# Metacache file\n", fp);
+	    sprintf (str, "metaCache: %s\n", metaCache);
 	    fputs (str, fp);
 	    if (saveBig)
 	        fputs ("\n", fp);

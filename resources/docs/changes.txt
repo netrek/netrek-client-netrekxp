@@ -1,4 +1,10 @@
 Version TBA:
+- added a better default netrekrc file (my personal file), which has a better keymap, window
+  placements, and macros than your average rc :).  Plus it has all the settable rc options
+  listed.  The format of the netrekrc is nearly identical to that of the netrek.sav file
+  that can be generated in game from the options menu.  Currently the only difference between
+  the two is lack of windows placements, custom review window settings, custom beeplite settings,
+  and custom server/servernick/servertype settings.
 - fixed bug with observers with short packets on which was causing incorrect drawing of local
   map in the case of losing player/planet lock (most noticeable effect was a single background
   star being drawn at all times, instead of the usual blank local).  This was actually both a

@@ -2,8 +2,7 @@ List for the netrekrc/installer:
 1) Change recommendation on metaserver from off to on!
 2) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
-3) Default keymap/buttonamp is horrible.
-4) Add chance for player to input their default login name - tired of seeing
+3) Add chance for player to input their default login name - tired of seeing
 new-be-nice!!
 
 Things not gonna happen, or server problems:
@@ -31,7 +30,6 @@ to save settings.  Text in windows should adjust to new window size.
 noticeable with viewbox disappearing at low speeds , depending on what length of menu you
 flip to.  Also, closing hint window has same effect
 4) Save options 
-- name/login/meta stuff needs to be saved
 - Default windows placements need to be saved
 - uselite options need to be saved
 - review window mapping needs to be saved
@@ -41,13 +39,15 @@ closeable by shift right click.
 ***6) Implement Defcom's new planet and ship bitmaps
 ***6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
 ***   is rotated, and where to center bitmap
+***6b) Bottom and right borders are 1 pixel too short with double buffering on
 7) Workable windows installer would be nice
-8) Include good rc in source
 9) Use nebula pic
 10) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
 11) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
-12) cpu leak with double buffering?
+12) Is there a cpu leak with double buffering?
+13) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
+(have it overwrite the planet/wrench/gas/army for example, not just combine colors).
 
 Bug fixes needed from Paradise:
 1) Make it so The login screen doesn't use 100% CPU anymore.

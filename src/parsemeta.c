@@ -332,7 +332,6 @@ ReadFromMeta (int statusLevel)
 /* Read from the meta-server.  Return TRUE on success and FALSE on failure. */
 {
     FILE *out;
-    char *cacheName;
     char cacheFileName[PATH_MAX];
     char tmpFileName[PATH_MAX];
     char *sockbuf, *buf;
@@ -387,11 +386,11 @@ ReadFromMeta (int statusLevel)
         return 0;
     }
 
-    cacheName = stringDefault ("metaCache");
-    if (cacheName && !findfile (cacheName, cacheFileName))
-        strcpy (cacheFileName, cacheName);      /* overwrite existing file if possible */
+    metaCache = stringDefault ("metaCache");
+    if (metaCache && !findfile (metaCache, cacheFileName))
+        strcpy (cacheFileName, metaCache);      /* overwrite existing file if possible */
 
-    if (cacheName)
+    if (metaCache)
     {
         len = strlen (cacheFileName);
         strcpy (tmpFileName, cacheFileName);
@@ -427,11 +426,11 @@ ReadFromMeta (int statusLevel)
 
         /* Can't rename file to existing name under NT */
 #ifdef _MSC_VER
-        _unlink (cacheName);
+        _unlink (metaCache);
 #else
-        unlink (cacheName);
+        unlink (metaCache);
 #endif
-        if (rename (tmpFileName, cacheName) == -1)
+        if (rename (tmpFileName, metaCache) == -1)
             perror ("Could not write to cache file");
     }
 
@@ -447,27 +446,26 @@ ReadFromCache (int statusLevel)
 /* Read from the cache.  Return TRUE on success and FALSE on failure. */
 {
     FILE *in;
-    char *cacheName;
     struct servers *slist;
     char *sockbuf, *buf;
     int bufleft = BUF - 1;
     int len;
     char cacheFileName[PATH_MAX];
 
-    cacheName = stringDefault ("metaCache");
+    metaCache = stringDefault ("metaCache");
 
-    if (!cacheName)
+    if (!metaCache)
     {
-        LineToConsole ("You must define the .xtrekrc variable `metaCache' in\n");
+        LineToConsole ("You must define the netrekrc variable `metaCache' in\n");
         LineToConsole ("order to use the `show known servers' option.\n");
         return 0;
     }
-    else if (!findfile (cacheName, cacheFileName)
+    else if (!findfile (metaCache, cacheFileName)
              || !(in = fopen (cacheFileName, "r")))
     {
         LineToConsole (
                  "The metaCache file `%s' is empty or not accessable.\n",
-                 cacheName);
+                 metaCache);
         return 0;
     }
 

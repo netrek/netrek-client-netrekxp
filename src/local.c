@@ -2538,7 +2538,7 @@ local (void)
     /* Keep redrawing for double buffered observers who get set out of normal gameplay bounds,
        whether due to locking onto an ineligible planet, or observing a player who dies -
        otherwise screen doesn't refresh*/
-    if (me->p_x < 0 && !doubleBuffering && !(me->p_flags & PFOBSERV))
+    if (me->p_x < 0 && !(doubleBuffering && (me->p_flags & PFOBSERV)))
         return;
 
     DrawPlanets ();

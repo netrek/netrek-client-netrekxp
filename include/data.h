@@ -106,6 +106,7 @@ extern char client_key_date[];
 #ifdef META
 extern char *metaServer[];
 extern int metaPort;
+extern char *metaCache;
 #ifdef METAPING
 extern int metaPing;
 #endif

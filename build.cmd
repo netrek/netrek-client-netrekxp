@@ -482,6 +482,7 @@ mkdir %InstCWD%\netrek\docs
 copy resources\docs\*.doc %InstCWD%\netrek\docs
 copy resources\docs\*.dat %InstCWD%\netrek\docs
 copy resources\docs\*.txt %InstCWD%\netrek\docs
+copy resources\docs\netrekrc %InstCWD%\netrek
 
 mkdir %InstCWD%\netrek\sounds
 copy resources\sounds\*.wav %InstCWD%\netrek\sounds
