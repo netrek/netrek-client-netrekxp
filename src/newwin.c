@@ -1400,30 +1400,12 @@ entrywindow (int *team,
         while (!W_EventsPending ())
         {
             time_t elapsed;
-            fd_set rfds;
-            struct timeval tv;
 
             me->p_ghostbuster = 0;
-            /* Since we don't have a socket to check on Win32
-               for windowing system events, we set the timeout to zero and
-               effectively poll. Yes, I could do the correct thing
-               and call WaitForMultipleObjects() etc. but I don't feel like it */
-            tv.tv_sec = 0;
-            tv.tv_usec = 0;
-            FD_ZERO (&rfds);
-            FD_SET (sock, &rfds);
-            if (udpSock >= 0)
-                FD_SET (udpSock, &rfds);
-            // For replacing select to cut down on cpu usage, but not working yet
-            // HANDLE handles[FD_SETSIZE];
-            // WaitForMultipleObjects(32, handles, TRUE, INFINITE);
-            select (32, &rfds, 0, 0, &tv);      /* hmm, 32 might be too small */
-
-            if (FD_ISSET (sock, &rfds) ||
-                (udpSock >= 0 && FD_ISSET (udpSock, &rfds)))
-            {
-                readFromServer (&rfds);
-            }
+            /* Select() causes infinite CPU usage, can't use WaitForMultipleObjects
+               due to UI working on same thread (no blocking), so a simple Sleep
+               is the best solution. */
+            Sleep(10);
             elapsed = time (0) - startTime;
             if (elapsed > (time_t)(autoQuit))
             {

@@ -1289,7 +1289,7 @@ handleSWarning (struct warning_s_spacket *packet)
     static int arg3, arg4;      /* Here are the arguments
                                  * for warnings with more
                                  * than 2 arguments */
-    static int karg3, karg4, karg5 = 0;
+    static int karg3, karg4, karg5, karg6 = 0;
 #ifndef RCM
     char killmess[20];
 #endif
@@ -1544,6 +1544,7 @@ handleSWarning (struct warning_s_spacket *packet)
         break;
     case KILLARGS2:
         karg5 = (unsigned char) packet->argument;
+        karg6 = (unsigned char) packet->argument2;
         break;
     case DMKILLP:
 
@@ -1553,12 +1554,14 @@ handleSWarning (struct warning_s_spacket *packet)
 
         {
             struct mesg_spacket msg;
+            unsigned char victim;
 
+            victim = (unsigned char) (((unsigned char) packet->argument) & 0x3f);
 #ifdef RCM
             dist.distype = rcm;
-            dist.sender = packet->argument;
-            dist.tclose_j = packet->argument;
-            dist.arms = '\0';
+            dist.sender = victim;
+            dist.tclose_j = victim;
+            dist.arms = karg6;
             dist.dam = '\0';
             dist.shld = '\0';
             dist.tclose_pl = packet->argument2;
@@ -1566,9 +1569,9 @@ handleSWarning (struct warning_s_spacket *packet)
             makedistress (&dist, msg.mesg, rcm_msg[2].macro);
 #else
             (void) sprintf (msg.mesg, "GOD->ALL %s (%c%c) killed by %s (%c)",
-                            players[packet->argument].p_name,
-                            teamlet[players[packet->argument].p_team],
-                            shipnos[packet->argument],
+                            players[victim].p_name,
+                            teamlet[players[victim].p_team],
+                            shipnos[victim],
                             planets[(unsigned char) packet->argument2].
                             pl_name,
                             teamlet[planets

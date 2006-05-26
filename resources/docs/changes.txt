@@ -1,4 +1,6 @@
 Version TBA:
+- team select screen no longer uses 99% cpu power
+- planet kill messages now show armies dooshed (if any)
 - fixed colorful phasers to work as intended (cycle through 4 colors and then your team color).
   This feature hasn't worked right since netrek moved to 10 updates/sec.
 - added a better default netrekrc file (my personal file), which has a better keymap, window

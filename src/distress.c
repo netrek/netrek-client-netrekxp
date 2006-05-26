@@ -869,7 +869,7 @@ makedistress (struct distress *dist,
                 break;
 #endif
 
-            case '*':          /* push %} into buf */
+            case '*':          /* push %* into buf */
             case '}':          /* push %} into buf */
             case '{':          /* push %{ into buf */
             case '!':          /* push %! into buf */

@@ -18,9 +18,12 @@ for an obs to know what the war decs are of the person he is observing
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
 there is no movement anywhere on map, and observer sound also messes up
-2) Observers don't get any geno message at all (head to default which is error message)
+2) Observers don't get any geno message at all (head to default which is error message) -
+actually, they do get the whydead, but it's somehow after they are sent to quit screen.
+When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
 3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
+4) Observers get wrong x,y pos upon observee death.
 
 Things to do:
 1) Add warning hull.
@@ -48,9 +51,7 @@ closeable by shift right click.
 12) Is there a cpu leak with double buffering?
 13) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-
-Bug fixes needed from Paradise:
-1) Make it so The login screen doesn't use 100% CPU anymore.
+14) Ask stas about addfontresource change in 4.4.0.4
 
 Stas's list:
 - color coded playerlist.
