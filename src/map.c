@@ -689,8 +689,13 @@ map (void)
     int view = WINSIDE * SCALE / 2;
     int mvx, mvy;
 
+#ifdef RECORDGAME
+    if (doubleBuffering && !inplayback)
+        W_Win2Mem (mapSDB);
+#else
     if (doubleBuffering)
         W_Win2Mem (mapSDB);
+#endif
 
     dx = (me->p_x) / (GWIDTH / WINSIDE);
     dy = (me->p_y) / (GWIDTH / WINSIDE);
@@ -954,6 +959,11 @@ map (void)
         clearlock = 1;
     }
 
+#ifdef RECORDGAME
+    if (doubleBuffering && !inplayback)
+        W_Mem2Win (mapSDB);
+#else
     if (doubleBuffering)
         W_Mem2Win (mapSDB);
+#endif
 }

@@ -156,6 +156,7 @@ unsigned long phaserStatDamage = 0;       /* Overall damage inflicted */
 FILE *recordFile = NULL;        /* recorder: slurp packets
                                  * here */
 int playback = 0;
+int inplayback = 0;
 #endif
 
 FILE *logFile = NULL;           /* log messages to this file */

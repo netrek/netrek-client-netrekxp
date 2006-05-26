@@ -63,25 +63,16 @@ Stas's list:
 ! after res if there cloaker around he will be seen briefly (speed 0 bug)
 - whydead dies when out of range (not confirmed)
 - add "reset to defaults" to options menu
-+ add installer
 - add bitmap themes option (change default bitmap naming and processing)
 - add shiftMouse, controlMouse on/off
-- add timestamps for messages (no place for timestamp)
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
-- add detCircle
 - add copy/paste possibility from message windows (richtext ?)
 - add clickable urls from message windows (richtext ?)
 + fix bug with undefined behavior in case of odd keymap/buttonmap/ckeymap length (partially fixed)
 - add "mKeyOnlyToStartMessages: on/off" to ignore keys [0-9][a-z][ATFOKRG] in message window when the messageon=0
 - scrollable player list
 - parse Announcer messages in hockey games
-- check geno/shift-q wrong behavior
 - resize documentation window
 - pasting multiline prints \r\n instead of splitting lines
 - fix makedistress bug that creates 0 instead of empty string when macro starts with conditional
-
-Simple in-game, realtime variable checking:
-   char text[120];
-   sprintf (text, "Variable has value %d.", variable);
-   W_MessageAllowedWindows (WAM_ALL, 0, 0, textColor, text, 120, 0);

@@ -69,6 +69,7 @@ extern int showStats;
 extern int showHints;
 #ifdef RECORDGAME
 extern FILE *recordFile;        /* recorder */
+extern int inplayback;
 extern int playback;
 #define PL_PAUSE 1
 #define PL_FORWARD 2

@@ -34,7 +34,7 @@ Table of Contents
  7.0  MACROs, RCD, RCM
  8.0  MetaServer Options
  9.0  Player List Options
- 10.0 Other Stuff (Beeplite, etc)
+ 10.0 Other Stuff (Beeplite, Cambot, etc)
 
 
 1.0  Overview
@@ -1118,4 +1118,28 @@ tts_font:               Font (large prefered)
 tts_max_len:            Max length of a message
 tts_time:               Time a TTS message is displayed
 tts_ypos:               y location of the TTS message
+
+10.1 Cambot
+
+Making the recordings:
+To make a recording, use the command: netrek -f cambot.pkt, where cambot.pkt is a file name of your choosing (where the playback will be saved).
+
+Playing the recordings:
+To view the recordings use the command: netrek -F cambot.pkt
+
+While in the recording the following commands can be used: (These keys are
+referenced after the netrekrc keymap.) 
+
+Lock Player(l) to lock onto a player.
+Lock Planet(;) to lock onto a planet.
+Speed keys(1-8) to change the speed of the recording.
+Speed 9, or #, or !, or @, or % for maximum playback speed.
+Speed 0 (0) for pause.
+The key ‘<’ doubles playback speed.
+The key ‘>’ halves playback speed.
+The key ‘R’ starts recording back at the beginning.
+
+The key '(' to reverse recording.
+The key ')' to return to normal play.
+Quit (q/Q) to quit
 

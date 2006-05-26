@@ -2527,9 +2527,13 @@ local (void)
    Draw out the 'tactical' map
 */
 {
+#ifdef RECORDGAME
+    if (doubleBuffering && !inplayback)
+        W_Win2Mem (localSDB);
+#else
     if (doubleBuffering)
         W_Win2Mem (localSDB);
-
+#endif
     clearLocal ();
 
     /* Keep redrawing for double buffered observers who get set out of normal gameplay bounds,
@@ -2550,9 +2554,14 @@ local (void)
 
     weaponUpdate = 0;
     DrawMisc ();
-
+ 
+#ifdef RECORDGAME
+    if (doubleBuffering && !inplayback)
+        W_Mem2Win (localSDB);
+#else
     if (doubleBuffering)
         W_Mem2Win (localSDB);
+#endif
 }
 
 

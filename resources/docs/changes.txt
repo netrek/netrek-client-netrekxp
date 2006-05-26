@@ -1,4 +1,5 @@
 Version TBA:
+- cambot works now with double buffering, and added cambot howto to the NetrekXP manual
 - team select screen no longer uses 99% cpu power
 - planet kill messages now show armies dooshed (if any)
 - fixed colorful phasers to work as intended (cycle through 4 colors and then your team color).
