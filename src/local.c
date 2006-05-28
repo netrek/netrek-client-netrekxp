@@ -2334,7 +2334,6 @@ DrawMisc (void)
     }
 
     /* Change border color to signify alert status */
-
     if (oldalert != (me->p_flags & (PFGREEN | PFYELLOW | PFRED)))
     {
         oldalert = (me->p_flags & (PFGREEN | PFYELLOW | PFRED));
@@ -2343,13 +2342,13 @@ DrawMisc (void)
         case PFGREEN:
             if (extraAlertBorder)
             {
-#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, gColor);
                 W_ChangeBorder (mapw, gColor);
-#else
-                W_ChangeBorderDB (localSDB, gColor);
-                W_ChangeBorderDB (mapSDB, gColor);
-#endif
+            }
+            else
+            {
+                W_ChangeBorder (w, W_White);
+                W_ChangeBorder (mapw, W_White);
             }
             W_ChangeBorder (baseWin, gColor);
 
@@ -2368,13 +2367,13 @@ DrawMisc (void)
         case PFYELLOW:
             if (extraAlertBorder)
             {
-#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, yColor);
                 W_ChangeBorder (mapw, yColor);
-#else
-                W_ChangeBorderDB (localSDB, yColor);
-                W_ChangeBorderDB (mapSDB, yColor);
-#endif
+            }
+            else
+            {
+                W_ChangeBorder (w, W_White);
+                W_ChangeBorder (mapw, W_White);
             }
             W_ChangeBorder (baseWin, yColor);
 
@@ -2397,13 +2396,13 @@ DrawMisc (void)
         case PFRED:
             if (extraAlertBorder)
             {
-#ifndef DOUBLE_BUFFERING
                 W_ChangeBorder (w, rColor);
                 W_ChangeBorder (mapw, rColor);
-#else
-                W_ChangeBorderDB (localSDB, rColor);
-                W_ChangeBorderDB (mapSDB, rColor);
-#endif
+            }
+            else
+            {
+                W_ChangeBorder (w, W_White);
+                W_ChangeBorder (mapw, W_White);
             }
             W_ChangeBorder (baseWin, rColor);
             

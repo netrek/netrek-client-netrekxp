@@ -1135,11 +1135,11 @@ Lock Planet(;) to lock onto a planet.
 Speed keys(1-8) to change the speed of the recording.
 Speed 9, or #, or !, or @, or % for maximum playback speed.
 Speed 0 (0) for pause.
-The key ‘<’ doubles playback speed.
-The key ‘>’ halves playback speed.
-The key ‘R’ starts recording back at the beginning.
+The key < doubles playback speed.
+The key > halves playback speed.
+The key R starts recording back at the beginning.
 
-The key '(' to reverse recording.
-The key ')' to return to normal play.
+The key ( reverses the recording.
+The key ) returns to normal play.
 Quit (q/Q) to quit
 

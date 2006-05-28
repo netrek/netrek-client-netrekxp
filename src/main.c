@@ -86,7 +86,7 @@ main2 (int argc,
 {
     int usage = 0;
     int err = 0;
-    int	hideConsole = 1;
+    int hideConsole = 1;
     char *name, *ptr;
     int i;
 

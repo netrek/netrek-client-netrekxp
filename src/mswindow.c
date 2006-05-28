@@ -1201,9 +1201,9 @@ newWindow (char *name,
         }
     }
 
-	/* Here we have name and parent, so let's set them */
-	strcpy (window->name, name);
-	window->parent = parentwin;
+    /* Here we have name and parent, so let's set them */
+    strcpy (window->name, name);
+    window->parent = parentwin;
 
     //Actually create the window
     //Hacked to allow negative create locations -SAC
@@ -1870,7 +1870,7 @@ NetrekWndProc (HWND hwnd,
     short wheel;
     struct Icon *icon;
     RECT r;
-	WORD lwParam;
+    WORD lwParam;
 #if defined(MOTION_MOUSE) || defined(XTRA_MESSAGE_UI)
     static POINTS prev_pos;
     static HWND LastPressHwnd;
@@ -2123,46 +2123,45 @@ NetrekWndProc (HWND hwnd,
 
         STORE_EVENT_MOUSE;
         LastPressHwnd = hwnd;
-
-		lwParam = LOWORD (wParam);
+        lwParam = LOWORD (wParam);
 
 #ifdef SHIFTED_MOUSE
         if (shiftedMouse)
         {
             if ((lwParam & MK_SHIFT) && (lwParam & MK_CONTROL))
-    		{
-	    		if (lwParam & MK_XBUTTON1)
-		    		EventQueue[EventTail].key = W_XBUTTON1_4;
-			    else if (lwParam & MK_XBUTTON2)
-				    EventQueue[EventTail].key = W_XBUTTON2_4;
-		    }
+            {
+            	if (lwParam & MK_XBUTTON1)
+            	    EventQueue[EventTail].key = W_XBUTTON1_4;
+            	else if (lwParam & MK_XBUTTON2)
+            	    EventQueue[EventTail].key = W_XBUTTON2_4;
+            }
             else if (lwParam & MK_SHIFT)
-	    	{
-		    	if (lwParam & MK_XBUTTON1)
-			    	EventQueue[EventTail].key = W_XBUTTON1_2;
-    			else if (lwParam & MK_XBUTTON2)
-	    			EventQueue[EventTail].key = W_XBUTTON2_2;
-		    }
+            {
+            	if (lwParam & MK_XBUTTON1)
+            	    EventQueue[EventTail].key = W_XBUTTON1_2;
+            	else if (lwParam & MK_XBUTTON2)
+            	    EventQueue[EventTail].key = W_XBUTTON2_2;
+            }
             else if (lwParam & MK_CONTROL)
-	    	{
-		    	if (lwParam & MK_XBUTTON1)
-			    	EventQueue[EventTail].key = W_XBUTTON1_3;
-    			else if (lwParam & MK_XBUTTON2)
-	    			EventQueue[EventTail].key = W_XBUTTON2_3;
-		    }
+            {
+            	if (lwParam & MK_XBUTTON1)
+            	    EventQueue[EventTail].key = W_XBUTTON1_3;
+            	else if (lwParam & MK_XBUTTON2)
+            	    EventQueue[EventTail].key = W_XBUTTON2_3;
+            }
             else
-    		{
-	    		if (lwParam & MK_XBUTTON1)
-		    		EventQueue[EventTail].key = W_XBUTTON1;
-			    else if (lwParam & MK_XBUTTON2)
-				    EventQueue[EventTail].key = W_XBUTTON2;
-    		}
+            {
+            	if (lwParam & MK_XBUTTON1)
+            	    EventQueue[EventTail].key = W_XBUTTON1;
+            	else if (lwParam & MK_XBUTTON2)
+            	    EventQueue[EventTail].key = W_XBUTTON2;
+            }
         }
         else
-       		if (lwParam & MK_XBUTTON1)
-	    		EventQueue[EventTail].key = W_XBUTTON1;
-		    else if (lwParam & MK_XBUTTON2)
-			    EventQueue[EventTail].key = W_XBUTTON2;
+            if (lwParam & MK_XBUTTON1)
+                EventQueue[EventTail].key = W_XBUTTON1;
+            else if (lwParam & MK_XBUTTON2)
+                EventQueue[EventTail].key = W_XBUTTON2;
 #else
         if (lwParam & MK_XBUTTON1)
             EventQueue[EventTail].key = W_XBUTTON1;
@@ -4002,71 +4001,122 @@ W_WriteScaleBitmap (int x,
     srcy = 0;
     x += border;
     y += border;
- 
-    if (x < border)
-    {
-        newwidth = destwidth - (border - x);
-        srcx += border - x;
-        x = border;
-    }
-    else if ((newwidth = (usebitmaphwnd ? bitmap->ClipRectAddr->right : win->ClipRect.right) - x) > destwidth)
-        newwidth = destwidth;
-    if (y < border)
-    {
-        newheight = destheight - (border - y);
-        srcy += (border - y);
-        y = border;
-    }
-    else if ((newheight = (usebitmaphwnd? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > destheight)
-        newheight = destheight;
-
+    
     if (NetrekPalette)
     {
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
-
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
     SetBkColor (hdc, colortable[color].rgb);
     SetTextColor (hdc, colortable[BLACK].rgb);
- 
-    //Convert angle to radians 
-    radians=(2*3.14159*angle/360);
 
-    cosine=(float)cos(radians);
-    sine=(float)sin(radians);
-    
-    // Scale used to find bitmap center
-    xscale = (float)(newwidth/2);
-    yscale = (float)(newheight/2);
+    if (angle != 0)
+    {
+        //Convert angle to radians 
+        radians=(2*3.14159*angle/360);
 
-    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
-    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
-    SetGraphicsMode(hdc,GM_ADVANCED);
+        cosine=(float)cos(radians);
+        sine=(float)sin(radians);
+        
+        /*  Can't get this to work
+         *  Feel free to try and fix it - BB
 
-    xForm.eM11=cosine;
-    xForm.eM12=sine;
-    xForm.eM21=-sine;
-    xForm.eM22=cosine;
-    xForm.eDx = eDx;
-    xForm.eDy = eDy;
+        int x1, x2, x3, y1, y2, y3, minx, maxx, miny, maxy, w, h;
 
-    SetWorldTransform(hdc,&xForm);
-    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
-   
-    // Reset xForm
-    xForm.eM11 = (FLOAT) 1.0; 
-    xForm.eM12 = (FLOAT) 0.0; 
-    xForm.eM21 = (FLOAT) 0.0; 
-    xForm.eM22 = (FLOAT) 1.0; 
-    xForm.eDx  = (FLOAT) 0.0; 
-    xForm.eDy  = (FLOAT) 0.0; 
+        // Time to find out the new width and height of the rotated bitmap!
+        // First get the coordinates of the 3 corners (assume 1 corner at 0,0)
+        x1 = (int)(destheight * sine);
+        y1 = (int)(destheight * cosine);
+        x2 = (int)(destwidth * cosine + destheight * sine);
+        y2 = (int)(destheight * cosine - destwidth * sine);
+        x3 = (int)(destwidth * cosine);
+        y3 = (int)(-destwidth * sine);
+        
+        minx = min(0,min(x1, min(x2,x3)));
+        miny = min(0,min(y1, min(y2,y3)));
+        maxx = max(0,max(x1, max(x2,x3)));
+        maxy = max(0,max(y1, max(y2,y3)));
+        
+        w = abs (maxx - minx);
+        h = abs (maxy - miny);
 
-    SetWorldTransform(hdc,&xForm); 
-    
+        // Calculate border constraints with rotated bitmap width/height
+        if (x < border)
+        {
+            newwidth = w - (border - x);
+            srcx += border - x;
+            x = border;
+        }
+        else if ((newwidth = (usebitmaphwnd ? bitmap->ClipRectAddr->right : win->ClipRect.right) - x) > w)
+            newwidth = w;
+        if (y < border)
+        {
+            newheight = h - (border - y);
+            srcy += (border - y);
+            y = border;
+        }
+        else if ((newheight = (usebitmaphwnd ? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > h)
+            newheight = h;
+        */
+        newwidth = destwidth;
+        newheight = destheight;
+
+        // Scale used to find bitmap center
+        xscale = (float)(destwidth/2);
+        yscale = (float)(destheight/2);
+
+        eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+        eDy = y + yscale - cosine*(yscale) - sine*(xscale);
+        SetGraphicsMode(hdc,GM_ADVANCED);
+
+        xForm.eM11=cosine;
+        xForm.eM12=sine;
+        xForm.eM21=-sine;
+        xForm.eM22=cosine;
+        xForm.eDx = eDx;
+        xForm.eDy = eDy;
+
+        SetWorldTransform(hdc,&xForm);
+        BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+
+        // Reset xForm
+        xForm.eM11 = (FLOAT) 1.0; 
+        xForm.eM12 = (FLOAT) 0.0; 
+        xForm.eM21 = (FLOAT) 0.0; 
+        xForm.eM22 = (FLOAT) 1.0; 
+        xForm.eDx  = (FLOAT) 0.0; 
+        xForm.eDy  = (FLOAT) 0.0; 
+
+        SetWorldTransform(hdc,&xForm); 
+        SetGraphicsMode(hdc,GM_COMPATIBLE);
+    }
+    else
+    {
+    	// Calculate border constraints with bitmap width/height
+        if (x < border)
+        {
+            newwidth = destwidth - (border - x);
+            srcx += border - x;
+            x = border;
+        }
+        else if ((newwidth = (usebitmaphwnd ? bitmap->ClipRectAddr->right : win->ClipRect.right) - x) > destwidth)
+            newwidth = destwidth;
+        if (y < border)
+        {
+            newheight = destheight - (border - y);
+            srcy += (border - y);
+            y = border;
+        }
+        else if ((newheight = (usebitmaphwnd? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > destheight)
+            newheight = destheight;
+
+        BitBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
+    }
+
     DeleteObject (newbmp);
-    
+
     if (!sdb || !doubleBuffering || !ingame)
     {
     	if (usebitmaphwnd)
@@ -5008,9 +5058,7 @@ W_SetSensitive (Window * window,
                 int b)
 {
     HDC hdc;
-
     FNHEADER_VOID;
-
 
     b;                          /* Makes compiler happy -SAC */
     if (win->type == WIN_SCROLL)
@@ -5114,12 +5162,12 @@ W_OverlayScaleBitmap (int x,
     
     SelectObject (GlobalMemDC, bitmap->bm);
     SelectObject (GlobalMemDC2, newbmp);
-  
+
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
     StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
                srcx, srcy, srcwidth, srcheight, SRCPAINT);
-    
+
     //Fast (I hope) rectangle intersection, don't overwrite our borders
     if (usebitmaphwnd)
         border = bitmap->ClipRectAddr->top;
@@ -5131,69 +5179,80 @@ W_OverlayScaleBitmap (int x,
     srcy = 0;
     x += border;
     y += border;
- 
-    if (x < border)
-    {
-        newwidth = destwidth - (border - x);
-        srcx += border - x;
-        x = border;
-    }
-    else if ((newwidth = (usebitmaphwnd ? bitmap->ClipRectAddr->right: win->ClipRect.right) - x) > destwidth)
-        newwidth = destwidth;
-    if (y < border)
-    {
-        newheight = destheight - (border - y);
-        srcy += (border - y);
-        y = border;
-    }
-    else if ((newheight = (usebitmaphwnd ? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > destheight)
-        newheight = destheight;
 
     if (NetrekPalette)
     {
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
-
     //Set the color of the bitmap
     //(oddly enough, 1-bit = bk color, 0-bit = text (fg) color)
     SetBkColor (hdc, colortable[color].rgb);
     SetTextColor (hdc, colortable[BLACK].rgb);
-
-    //Convert angle to radians 
-    radians=(2*3.14159*angle/360);
-
-    cosine=(float)cos(radians);
-    sine=(float)sin(radians);
     
-    // Scale used to find bitmap center
-    xscale = (float)(newwidth/2);
-    yscale = (float)(newheight/2);
+    if (angle != 0)
+    {
+        //Convert angle to radians 
+        radians=(2*3.14159*angle/360);
 
-    eDx = x + xscale - cosine*(xscale) + sine*(yscale);
-    eDy = y + yscale - cosine*(yscale) - sine*(xscale);
-    SetGraphicsMode(hdc,GM_ADVANCED);
+        cosine=(float)cos(radians);
+        sine=(float)sin(radians);
 
-    xForm.eM11=cosine;
-    xForm.eM12=sine;
-    xForm.eM21=-sine;
-    xForm.eM22=cosine;
-    xForm.eDx = eDx;
-    xForm.eDy = eDy;
+        newwidth = destwidth;
+        newheight = destheight;
 
-    SetWorldTransform(hdc,&xForm);
+        // Scale used to find bitmap center
+        xscale = (float)(destwidth/2);
+        yscale = (float)(destheight/2);
 
-    BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
+        eDx = x + xscale - cosine*(xscale) + sine*(yscale);
+        eDy = y + yscale - cosine*(yscale) - sine*(xscale);
+        SetGraphicsMode(hdc,GM_ADVANCED);
 
-    // Reset xForm
-    xForm.eM11 = (FLOAT) 1.0; 
-    xForm.eM12 = (FLOAT) 0.0; 
-    xForm.eM21 = (FLOAT) 0.0; 
-    xForm.eM22 = (FLOAT) 1.0; 
-    xForm.eDx  = (FLOAT) 0.0; 
-    xForm.eDy  = (FLOAT) 0.0; 
+        xForm.eM11=cosine;
+        xForm.eM12=sine;
+        xForm.eM21=-sine;
+        xForm.eM22=cosine;
+        xForm.eDx = eDx;
+        xForm.eDy = eDy;
 
-    SetWorldTransform(hdc,&xForm); 
+        SetWorldTransform(hdc,&xForm);
+
+        BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
+    
+        // Reset xForm
+        xForm.eM11 = (FLOAT) 1.0; 
+        xForm.eM12 = (FLOAT) 0.0; 
+        xForm.eM21 = (FLOAT) 0.0; 
+        xForm.eM22 = (FLOAT) 1.0; 
+        xForm.eDx  = (FLOAT) 0.0; 
+        xForm.eDy  = (FLOAT) 0.0; 
+
+        SetWorldTransform(hdc,&xForm); 
+        SetGraphicsMode(hdc,GM_COMPATIBLE);
+    }
+    else
+    {
+    	// Calculate border constraints with bitmap width/height
+        if (x < border)
+        {
+            newwidth = destwidth - (border - x);
+            srcx += border - x;
+            x = border;
+        }
+        else if ((newwidth = (usebitmaphwnd ? bitmap->ClipRectAddr->right : win->ClipRect.right) - x) > destwidth)
+            newwidth = destwidth;
+        if (y < border)
+        {
+            newheight = destheight - (border - y);
+            srcy += (border - y);
+            y = border;
+        }
+        else if ((newheight = (usebitmaphwnd? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > destheight)
+            newheight = destheight;
+
+        BitBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
+    }
 
     DeleteObject (newbmp);
     

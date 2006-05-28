@@ -39,10 +39,8 @@ flip to.  Also, closing hint window has same effect
 - option server/servernick/servertype needs to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-***6) Implement Defcom's new planet and ship bitmaps
-***6a) Border issue - quite complex problem, how to know the borders to obey after the bitmap
-***   is rotated, and where to center bitmap
-***6b) Bottom and right borders are 1 pixel too short with double buffering on
+6) Border issue - quite complex problem, how to know the borders to obey after the bitmap
+is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
 7) Workable windows installer would be nice
 9) Use nebula pic
 10) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
@@ -55,7 +53,6 @@ closeable by shift right click.
 
 Stas's list:
 - color coded playerlist.
-! change default playerListStlyle to 1 (nah, this won't happen)
 - check inl server for behavior
 + add option to parse netrekrc.txt and xtrekrc.txt files
 ! server: ita won't block RCDs (why not ?)
