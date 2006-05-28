@@ -598,9 +598,15 @@ extern int showMotd;
 
 extern char * saveFile;  /* file name to save options to */
 extern int saveBig;     /* save options with comments */
+extern int saveWindow;  /* save options with window placements */
 extern int saveMacro;   /* save options with macros */
 extern int saveRCD;     /* save options with RCD */
+#ifdef BEEPLITE
+extern int saveBeeplite; /* save options with Beeplite */
+#endif
+#ifdef RCM
 extern int saveRCM;     /* save options with RCM */
+#endif
 
 extern int tpDotDist;   /* distance between tractor/pressor dots */
 

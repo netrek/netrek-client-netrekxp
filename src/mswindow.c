@@ -1258,12 +1258,12 @@ W_MakeWindow (char *name,
               W_Color color)
 {
     Window *newwin;
-	int orig_x, orig_y, orig_width, orig_height;
+    int orig_x, orig_y, orig_width, orig_height;
 
-	orig_x = x;
-	orig_y = y;
-	orig_width = width;
-	orig_height = height;
+    orig_x = x;
+    orig_y = y;
+    orig_width = width;
+    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1276,12 +1276,12 @@ W_MakeWindow (char *name,
          newWindow (name, x, y, width, height, parent, border, color,
                     WIN_GRAPH)))
         return (0);
-
-	/* Set original coordinates, so we will be able to restore to them */
-	newwin->orig_x = orig_x;
-	newwin->orig_y = orig_y;
-	newwin->orig_width = orig_width;
-	newwin->orig_height = orig_height;
+        
+    /* Set original coordinates, so we will be able to restore to them */
+    newwin->orig_x = orig_x;
+    newwin->orig_y = orig_y;
+    newwin->orig_width = orig_width;
+    newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1306,12 +1306,12 @@ W_MakeTextWindow (char *name,
                   int border)
 {
     Window *newwin;
-	int orig_x, orig_y, orig_width, orig_height;
+    int orig_x, orig_y, orig_width, orig_height;
 
-	orig_x = x;
-	orig_y = y;
-	orig_width = width;
-	orig_height = height;
+    orig_x = x;
+    orig_y = y;
+    orig_width = width;
+    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1328,12 +1328,12 @@ W_MakeTextWindow (char *name,
     //Store the original textheight, width
     newwin->TextHeight = (short) height;
     newwin->TextWidth = (short) width;
-
-	/* Set original coordinates, so we will be able to restore to them */
-	newwin->orig_x = orig_x;
-	newwin->orig_y = orig_y;
-	newwin->orig_width = orig_width;
-	newwin->orig_height = orig_height;
+    
+    /* Set original coordinates, so we will be able to restore to them */
+    newwin->orig_x = orig_x;
+    newwin->orig_y = orig_y;
+    newwin->orig_width = orig_width;
+    newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1355,12 +1355,12 @@ W_MakeScrollingWindow (char *name,
                        int border)
 {
     Window *newwin;
-	int orig_x, orig_y, orig_width, orig_height;
+    int orig_x, orig_y, orig_width, orig_height;
 
-	orig_x = x;
-	orig_y = y;
-	orig_width = width;
-	orig_height = height;
+    orig_x = x;
+    orig_y = y;
+    orig_width = width;
+    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1378,12 +1378,12 @@ W_MakeScrollingWindow (char *name,
     //Store the original textheight, width
     newwin->TextHeight = (short) height;
     newwin->TextWidth = (short) width;
-
-	/* Set original coordinates, so we will be able to restore to them */
-	newwin->orig_x = orig_x;
-	newwin->orig_y = orig_y;
-	newwin->orig_width = orig_width;
-	newwin->orig_height = orig_height;
+    
+    /* Set original coordinates, so we will be able to restore to them */
+    newwin->orig_x = orig_x;
+    newwin->orig_y = orig_y;
+    newwin->orig_width = orig_width;
+    newwin->orig_height = orig_height;
 
     //Give it a scroll bar, and set the range (to zero, initially)
     SetWindowLongPtr (newwin->hwnd, GWL_STYLE,
@@ -1414,12 +1414,12 @@ W_MakeMenu (char *name,
     Window *newwin;
 
     int i;
-	int orig_x, orig_y, orig_width, orig_height;
+    int orig_x, orig_y, orig_width, orig_height;
 
-	orig_x = x;
-	orig_y = y;
-	orig_width = width;
-	orig_height = height;
+    orig_x = x;
+    orig_y = y;
+    orig_width = width;
+    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1447,12 +1447,12 @@ W_MakeMenu (char *name,
     newwin->items = items;
     newwin->NumItems = (short) height;
     newwin->TextHeight = (short) height;
-
-	/* Set original coordinates, so we will be able to restore to them */
-	newwin->orig_x = orig_x;
-	newwin->orig_y = orig_y;
-	newwin->orig_width = orig_width;
-	newwin->orig_height = orig_height;
+    
+    /* Set original coordinates, so we will be able to restore to them */
+    newwin->orig_x = orig_x;
+    newwin->orig_y = orig_y;
+    newwin->orig_width = orig_width;
+    newwin->orig_height = orig_height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))

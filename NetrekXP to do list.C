@@ -25,6 +25,13 @@ When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
 send headings of 16 positions.
 4) Observers get wrong x,y pos upon observee death.
 
+Things that are sorta fixed, but could use improvement:
+1) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
+2) Bug with waraction..was being called even when clicking on border (broke function)
+..I added a default return to switch statement, but the underlying bug still remains.
+3) Border issue - quite complex problem, how to know the borders to obey after the bitmap
+is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
+
 Things to do:
 1) Add warning hull.
 2) resizeable message windows.  Perhaps memory of window positions if you choose
@@ -32,24 +39,16 @@ to save settings.  Text in windows should adjust to new window size.
 3) flipping through options menus clears too large a path to the right on the galactic,
 noticeable with viewbox disappearing at low speeds , depending on what length of menu you
 flip to.  Also, closing hint window has same effect
-4) Save options 
-- Default windows placements need to be saved
-- uselite options need to be saved
-- review window mapping needs to be saved
-- option server/servernick/servertype needs to be saved
+4) Save options for observer/servernick/servertype need to be saved
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) Border issue - quite complex problem, how to know the borders to obey after the bitmap
-is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
-7) Workable windows installer would be nice
-9) Use nebula pic
-10) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
-11) Bug with waraction..was being called even when clicking on border (broke function)
-..I added a default return to switch statement, but the underlying bug still remains.
-12) Is there a cpu leak with double buffering?
-13) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
+6) Workable windows installer would be nice
+7) Use nebula pic
+8) Is there a cpu leak with double buffering?
+9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-14) Ask stas about addfontresource change in 4.4.0.4
+10) Ask stas about addfontresource change in 4.4.0.4
+11) In game volume adjustment not working with SDL.
 
 Stas's list:
 - color coded playerlist.

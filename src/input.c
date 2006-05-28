@@ -2547,7 +2547,7 @@ Key68 (void)
 void
 Key69 (W_Event * data)
 {
-    emergency (generic, data);
+    emergency (help, data);
 }
 
 /******************************************************************************/
@@ -3525,7 +3525,7 @@ Key146 (W_Event * data)
 void
 Key147 (W_Event * data)
 {
-    emergency (help3, data);
+    emergency (help1, data);
 }
 
 /******************************************************************************/
@@ -3534,7 +3534,7 @@ Key147 (W_Event * data)
 void
 Key148 (W_Event * data)
 {
-    emergency (help4, data);
+    emergency (help2, data);
 }
 
 /******************************************************************************/
@@ -3625,7 +3625,7 @@ Key150 (W_Event * data)
 void
 Key151 (W_Event * data)
 {
-    emergency (doing3, data);
+    emergency (doing1, data);
 }
 
 /******************************************************************************/
@@ -3634,7 +3634,7 @@ Key151 (W_Event * data)
 void
 Key152 (W_Event * data)
 {
-    emergency (doing4, data);
+    emergency (doing2, data);
 }
 
 /******************************************************************************/

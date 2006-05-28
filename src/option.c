@@ -398,8 +398,12 @@ struct option Save_Menu[] = {
     {0, "Save Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &saveBig, 0, 0, 0, savebigmess, NULL},
+    {1, "save window placements", &saveWindow, 0, 0, 0, NULL, NULL},
     {1, "save macros", &saveMacro, 0, 0, 0, NULL, NULL},
     {1, "save RCD", &saveRCD, 0, 0, 0, NULL, NULL},
+#ifdef BEEPLITE
+    {1, "save beeplite macros", &saveBeeplite, 0, 0, 0, NULL, NULL},
+#endif
 #ifdef RCM
     {1, "save RCM", &saveRCM, 0, 0, 0, NULL, NULL},
 #endif

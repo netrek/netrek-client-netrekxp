@@ -52,6 +52,7 @@ Table of Contents
               J. Mark Noworolski
               Tedd Hadley
               Heiko Wengler
+
               Andy McFadden
               Chris Guthrie
               Ed James
@@ -403,7 +404,7 @@ many clients will attempt to log you in automatically.
 
  Or you can specifiy just the position:
 
-     <window>.geometrey: +<xpos>+<ypos>
+     <window>.geometry: +<xpos>+<ypos>
 
  or just the size:
 
@@ -485,10 +486,9 @@ NOTES:
 
 Short Packets:
 
-Short packets are supported by COW.  These have been shown to substantially reduce the volume of traffic between the client and server, and will improve lag in many situations.  Not all
-servers support short packets yet, but that is changing rapidly.
+Short packets are supported by Netrek XP.  These have been shown to substantially reduce the volume of traffic between the client and server, and will improve lag in many situations.  All modern servers support short packets.
 
-COW has a short packet window which is brought up with the "`" key. In this window you can turn short packets on and off as well as configure it in various ways.
+Netrek XP has a short packet window which is brought up with the "`" key. In this window you can turn short packets on and off as well as configure it in various ways.
 
 Also in your netrek defaults file you can add the line
 
@@ -546,7 +546,7 @@ Below is a table giving the name of each distress, the key it is assigned to, an
 Note that except for E and F, these are all control keys.
 
 Key  Name	Default Distress Macro
-t    taking	%T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
+t    take	%T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
 o    ogg	%T%c->%O Help Ogg %p at %l
 b    bomb	%T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}
 c    space_control	%T%c->%O Help Control at %L
@@ -568,8 +568,9 @@ h    crippled	%T%c->%O %p @ %l crippled
 9    pickup	%T%c->%O %p++ @ %l
 0    pop	%T%c->%O %l%?%n>-1%{ @ %n%}!
 F    carrying	%T%c->%O %?%S=SB%{Your Starbase is c%!C%}arrying %?%a>0%{%a%!NO%} arm%?%a=1%{y%!ies%}.
-@    other2	%T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
-#    other3	%T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
+@    other1	%T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
+
+#    other2	%T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D, %s%%S, %f%%F)
 E    help	%T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!
 
 
@@ -582,7 +583,7 @@ about to die with %a of your team's armies!"
 
      2. Map AS bombing (asbomb) to '^A', don't change the message.
 
-     First try to seperate in your mind the two types of configurability
+     First try to separate in your mind the two types of configurability
 that are going on here.
 
      1) you are changing the key that sends the message
@@ -738,7 +739,6 @@ Standard:
 %l      three character name of target planet
 %N	full name of target planet
 %i	sender full player name (16 character max)
-
 %u	full name of target player (16 character max)
 %z	3 letter team id of target planet
 %b      3 char name of sender nearest planet
@@ -809,8 +809,7 @@ included if true
 0%{included if true%!included if false%}
 included if false
 
-Combining the whole package, a very robust macroing system is quickly generated.  One can easily design or mimic Distress calls, including the variable NBT distress of the COW client and all the
-hardcoded message macroing built into my own client but never released.
+Combining the whole package, a very robust macroing system is quickly generated.  One can easily design or mimic Distress calls, including the variable NBT distress of the COW client and all the hardcoded message macroing built into my own client but never released.
 
 Here are a few more samples to work from:
 
@@ -862,7 +861,7 @@ Finally during runtime you may change the actual destination by sending a messag
 
 	set [name of key] [destination id]
 
-to the shell ("!") tools. Of corse this may be done with macros as well.
+to the shell ("!") tools. Of course this may be done with macros as well.
 
 Examples:
 mac.^C.!:	set captain %g
@@ -1030,8 +1029,7 @@ To make life easier, the player list is sorted so that enemy and friendly teams 
 
      Local weenies cheat.  They talk to each other.  Those of us who have never met another netrek player are forced to rely heavily on the message window.
 
-     In order to even the playing field, the current feature was proposed. This feature causes certain types of RCD messages to beep or even highlite specific objects on the screen.  This is done via a
-macro-like interface which is highly configurable.  Further, bitmaps used to highlite can be substituted with your preferences.
+     In order to even the playing field, the current feature was proposed. This feature causes certain types of RCD messages to beep or even highlite specific objects on the screen.  This is done via a macro-like interface which is highly configurable.  Further, bitmaps used to highlite can be substituted with your preferences.
 
 1) Turning Beeping and Highliting on
 

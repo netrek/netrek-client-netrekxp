@@ -204,9 +204,11 @@ romshipTbmpfile:          (path) - shaded color bitmaps
 romshipMbmpfile:          (path) - mono bitmaps
 saveFile:                 (path) path to saved options file
 saveBig:                  (on/off) save options with remarks
+saveBeeplite:             (on/off) save beeplite macros to saveFile
 saveMacro:                (on/off) save macros to saveFile
 saveRCD:                  (on/off) save receiver configurable distresses to saveFile
 saveRCM:                  (on/off) save receiver configurable messages to saveFile
+saveWindow:               (on/off) save window placements to saveFile
 server:                   (address) default server
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands

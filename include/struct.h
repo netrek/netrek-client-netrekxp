@@ -44,13 +44,13 @@ enum dist_type
     take = 1, ogg, bomb, space_control,
     save_planet,
     base_ogg,
-    help3, help4,
+    help1, help2,
 
     /* doing series */
     escorting, ogging, bombing, controlling,
     asw,
     asbomb,
-    doing3, doing4,
+    doing1, doing2,
 
     /* other info series */
     free_beer,                  /* ie. player x is totally
@@ -64,7 +64,7 @@ enum dist_type
     other1, other2,
 
     /* just a generic distress call */
-    generic
+    help
 #ifdef RCM
         , rcm
 #endif

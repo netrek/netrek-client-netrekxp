@@ -789,27 +789,28 @@ newwin (char *hostmon,
 
     mapSDB = W_InitSDB (mapw);
 
-    tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 3,
+    tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 5,
                             STATSIZE + 2, baseWin, BORDER, foreColor);
 
     W_SetWindowExposeHandler (tstatw, redrawTstats);
-
-	warnw = W_MakeWindow ("warn", WINSIDE + 6, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
+    
+    warnw = W_MakeWindow ("warn", WINSIDE + 6, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
                            baseWin, BORDER, foreColor);
 
     W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
-
-	messagew = W_MakeWindow ("message", WINSIDE + 6, WINSIDE + 6,
+    
+    messagew = W_MakeWindow ("message", WINSIDE + 6, WINSIDE + 6,
                              WINSIDE + 4, MESSAGESIZE - 4, baseWin, BORDER,
                              foreColor);
+
     W_SetWindowKeyDownHandler (messagew, handleMessageWindowKeyDown);
     W_SetWindowButtonHandler (messagew, handleMessageWindowButton);
-	W_SetWindowExposeHandler (messagew, DisplayMessage);
+    W_SetWindowExposeHandler (messagew, DisplayMessage);
 
-    planetw = W_MakeTextWindow ("planet", 10, 10, 57, MAXPLANETS + 3, w, 2);
+    planetw = W_MakeTextWindow ("planet", WINSIDE + 160, 10, 57, MAXPLANETS + 3, baseWin, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
-    rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, w, 2);
+    rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, baseWin, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
     playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 32, baseWin, 2);
@@ -827,7 +828,7 @@ newwin (char *hostmon,
 #endif
         helpWin = W_MakeTextWindow ("help", 20,
                           YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
-                          160, 19, NULL, BORDER);
+                          160, 21, NULL, BORDER);
 
 #ifdef RECORDGAME
     if (playback)
@@ -888,9 +889,9 @@ newwin (char *hostmon,
         messwk = W_MakeScrollingWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
-        phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
+        phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + 6, YOFF + 
                                            WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                                           15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
+                                           15 * W_Textheight + 16, 81, 4, baseWin, BORDER);
         wam_windows[4] = phaserwin;
 
         reviewWin = W_MakeScrollingWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
@@ -980,7 +981,6 @@ newwin (char *hostmon,
 
     war = W_MakeMenu ("war", WINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin, WARBORDER);
     W_SetWindowButtonHandler (war, waraction);
-
     W_DefineArrowCursor (war);
 
     fillhint ();
@@ -1024,8 +1024,7 @@ mapAll (void)
     W_MapWindow (tstatw);
     W_MapWindow (warnw);
 #ifdef XTRA_MESSAGE_UI
-    /* Grr. checkMapped() defaults to off - not nice */
-    if (booleanDefault ("message.mapped", 1))
+    if (checkMappedPref ("message", 1))
 #endif
         W_MapWindow (messagew);
     W_MapWindow (w);
@@ -1040,12 +1039,6 @@ mapAll (void)
         W_MapWindow (rankw);
     if (checkMapped ("help"))
         W_MapWindow (helpWin);
-
-#ifdef META
-    if (checkMapped ("MetaServer List"))
-        metawindow ();
-#endif
-
     if (checkMapped ("review_all"))
         W_MapWindow (messwa);
     if (checkMapped ("review_team"))
@@ -1072,7 +1065,8 @@ mapAll (void)
     if (checkMapped ("network"))
         spwindow ();
 #endif
-
+    if (checkMapped ("stats"))
+        W_MapWindow (statwin);
 }
 
 

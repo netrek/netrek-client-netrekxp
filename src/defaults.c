@@ -451,6 +451,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"saveWindow", &saveWindow, RC_BOOL,
+        {
+            "Save window placements to saveFile",
+            NULL
+        }
+    },
     {"saveMacro", &saveMacro, RC_BOOL,
         {
             "Save macros to saveFile",
@@ -463,6 +469,14 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef BEEPLITE
+    {"saveBeeplite", &saveBeeplite, RC_BOOL,
+        {
+            "Save beeplite macros to saveFile",
+            NULL
+        }
+    },
+#endif
 #ifdef RCM
     {"saveRCM", &saveRCM, RC_BOOL,
         {
@@ -1008,7 +1022,7 @@ initDefaults (char *deffile)
 #ifdef BEEPLITE
         else if (strncasecmp(file, "lite.", 5) == 0)
 	{
-	    int     offset = 5;
+	    int offset = 5;
 	    char  **lt;
 
 	    if (file[6] == '.')
@@ -1107,76 +1121,76 @@ char *
 getdefault (char *str)
 {
     struct stringlist *sl;
-	char tmp[256];
-
-	/* We want to be able to have option.observer or option.serverNick in rc */
-	if (observerMode)
-	{
-		strcpy (tmp, str);
-		strcat (tmp, ".observer");
-
-		sl = defaults;
-		while (sl != NULL)
-		{
-			if (strcmpi (sl->string, tmp) == 0)
-				return (sl->value);
-			sl = sl->next;
-		}
-	}
-
-	if (serverNick)
-	{
-		strcpy (tmp, str);
-		strcat (tmp, ".");
-		strcat (tmp, serverNick);
-
-		sl = defaults;
-		while (sl != NULL)
-		{
-			if (strcmpi (sl->string, tmp) == 0)
-				return (sl->value);
-			sl = sl->next;
-		}
-	}
-
-	if (serverType != ST_UNKNOWN)
-	{
-		strcpy (tmp, str);
-		switch (serverType)
-		{
-		case ST_PARADISE:
-			strcat (tmp, ".paradise");
-			break;
-		case ST_BRONCO:
-			strcat (tmp, ".bronco");
-			break;
-		case ST_CHAOS:
-			strcat (tmp, ".chaos");
-			break;
-		case ST_INL:
-			strcat (tmp, ".inl");
-			break;
-		case ST_STURGEON:
-			strcat (tmp, ".sturgeon");
-			break;
-		case ST_HOCKEY:
-			strcat (tmp, ".hockey");
-			break;
-		case ST_DOGFIGHT:
-			strcat (tmp, ".dogfight");
-			break;
-		default:
-			strcat (tmp, ".unknown");
-		}
-
-		sl = defaults;
-		while (sl != NULL)
-		{
-			if (strcmpi (sl->string, tmp) == 0)
-				return (sl->value);
-			sl = sl->next;
-		}
-	}
+    char tmp[256];
+    
+    /* We want to be able to have option.observer or option.serverNick in rc */
+    if (observerMode)
+    {
+    	strcpy (tmp, str);
+    	strcat (tmp, ".observer");
+    
+    	sl = defaults;
+    	while (sl != NULL)
+    	{
+    	    if (strcmpi (sl->string, tmp) == 0)
+    	        return (sl->value);
+    	    sl = sl->next;
+    	}
+    }
+    
+    if (serverNick)
+    {
+    	strcpy (tmp, str);
+    	strcat (tmp, ".");
+    	strcat (tmp, serverNick);
+    
+    	sl = defaults;
+    	while (sl != NULL)
+    	{
+    	    if (strcmpi (sl->string, tmp) == 0)
+    	        return (sl->value);
+    	    sl = sl->next;
+    	}
+    }
+    
+    if (serverType != ST_UNKNOWN)
+    {
+    	strcpy (tmp, str);
+    	switch (serverType)
+    	{
+    	case ST_PARADISE:
+    	    strcat (tmp, ".paradise");
+    	    break;
+    	case ST_BRONCO:
+    	    strcat (tmp, ".bronco");
+    	    break;
+    	case ST_CHAOS:
+    	    strcat (tmp, ".chaos");
+    	    break;
+    	case ST_INL:
+    	    strcat (tmp, ".inl");
+    	    break;
+    	case ST_STURGEON:
+    	    strcat (tmp, ".sturgeon");
+    	    break;
+    	case ST_HOCKEY:
+    	    strcat (tmp, ".hockey");
+    	    break;
+    	case ST_DOGFIGHT:
+    	    strcat (tmp, ".dogfight");
+    	    break;
+    	default:
+    	    strcat (tmp, ".unknown");
+    	}
+    
+    	sl = defaults;
+    	while (sl != NULL)
+    	{
+    	    if (strcmpi (sl->string, tmp) == 0)
+    	        return (sl->value);
+    	    sl = sl->next;
+    	}
+    }
 
     sl = defaults;
     while (sl != NULL)
@@ -1205,8 +1219,8 @@ getServerNick (char *srvName)
     {
         if (strcmpi (sl->value, srvName) == 0)
         {
-			tmpServerNick = strtok (sl->string, ".");	/* Remove server. */
-			tmpServerNick = strtok (NULL, ".");			/* Get actual server nick */
+            tmpServerNick = strtok (sl->string, ".");	/* Remove server. */
+            tmpServerNick = strtok (NULL, ".");		/* Get actual server nick */
             return strdup (tmpServerNick);
         }
         sl = sl->next;
@@ -1222,31 +1236,31 @@ int
 getServerType (char *srvName)
 {
     struct stringlist *sl;
-	char tmpTypeStr[128];
-
-	sprintf (tmpTypeStr, "servertype.%s", srvName);
+    char tmpTypeStr[128];
+    
+    sprintf (tmpTypeStr, "servertype.%s", srvName);
 
     sl = defaults;
     while (sl != NULL)
     {
         if (strcmpi (sl->string, tmpTypeStr) == 0)
         {
-			if (strcmpi (sl->value, "paradise") == 0)
-				return ST_PARADISE;
-			else if (strcmpi (sl->value, "bronco") == 0)
-				return ST_BRONCO;
-			else if (strcmpi (sl->value, "chaos") == 0)
-				return ST_CHAOS;
-			else if (strcmpi (sl->value, "inl") == 0)
-				return ST_INL;
-			else if (strcmpi (sl->value, "sturgeon") == 0)
-				return ST_STURGEON;
-			else if (strcmpi (sl->value, "hockey") == 0)
-				return ST_HOCKEY;
-			else if (strcmpi (sl->value, "dogfight") == 0)
-				return ST_DOGFIGHT;
-			else
-				return ST_UNKNOWN;
+	    if (strcmpi (sl->value, "paradise") == 0)
+		return ST_PARADISE;
+	    else if (strcmpi (sl->value, "bronco") == 0)
+		return ST_BRONCO;
+	    else if (strcmpi (sl->value, "chaos") == 0)
+		return ST_CHAOS;
+	    else if (strcmpi (sl->value, "inl") == 0)
+		return ST_INL;
+	    else if (strcmpi (sl->value, "sturgeon") == 0)
+		return ST_STURGEON;
+	    else if (strcmpi (sl->value, "hockey") == 0)
+		return ST_HOCKEY;
+	    else if (strcmpi (sl->value, "dogfight") == 0)
+		return ST_DOGFIGHT;
+	    else
+		return ST_UNKNOWN;
         }
         sl = sl->next;
     }
@@ -1429,6 +1443,10 @@ resetdefaults (void)
     saveBig = booleanDefault ("saveBig", saveBig);
     saveMacro = booleanDefault ("saveMacro", saveMacro);
     saveRCD = booleanDefault ("saveRCD", saveRCD);
+    saveWindow = booleanDefault ("saveWindow", saveWindow);
+#ifdef RCM
+    saveBeeplite = booleanDefault ("saveBeeplite", saveBeeplite);
+#endif
 #ifdef RCM
     saveRCM = booleanDefault ("saveRCM", saveRCM);
 #endif
@@ -1643,6 +1661,7 @@ resetdefaults (void)
 	updateWindowsGeometry (planetw);
 	updateWindowsGeometry (rankw);
 	updateWindowsGeometry (playerw);
+	updateWindowsGeometry (playerw2);
 	updateWindowsGeometry (helpWin);
 	updateWindowsGeometry (messwa);
 	updateWindowsGeometry (messwt);
@@ -1665,7 +1684,8 @@ resetdefaults (void)
 	updateWindowsGeometry (defWin);
 #endif
 #ifdef DOC_WIN
-	updateWindowsGeometry (docwin);
+	updateWindowsGeometry (DocWin);
+	updateWindowsGeometry (xtrekrcWin);
 #endif
 	for (i = 0; i < 4; i++)
 		updateWindowsGeometry (teamWin[i]);
@@ -1822,23 +1842,23 @@ saveOptions ()
     // Default character name
     if (pseudo != NULL)
     {
-	    if (saveBig)
-	        fputs ("# Default character name\n", fp);
-	    sprintf (str, "name: %s\n", pseudo);
-	    fputs (str, fp);
-	    if (saveBig)
-	        fputs ("\n", fp);
+    	if (saveBig)
+    	    fputs ("# Default character name\n", fp);
+    	sprintf (str, "name: %s\n", pseudo);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
     }
     
     // Login
     if (login != NULL)
     {
-	    if (saveBig)
-	        fputs ("# Login name\n", fp);
-	    sprintf (str, "login: %s\n", login);
-	    fputs (str, fp);
-	    if (saveBig)
-	        fputs ("\n", fp);
+    	if (saveBig)
+    	    fputs ("# Login name\n", fp);
+    	sprintf (str, "login: %s\n", login);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
     }
     
     // Let's print buttonmap
@@ -1975,23 +1995,23 @@ saveOptions ()
     // sound directory
     if (sounddir != NULL)
     {
-	    if (saveBig)
-	        fputs ("# Sound directory\n", fp);
-	    sprintf (str, "sounddir: %s\n", sounddir);
-	    fputs (str, fp);
-	    if (saveBig)
-	        fputs ("\n", fp);
+    	if (saveBig)
+    	    fputs ("# Sound directory\n", fp);
+    	sprintf (str, "sounddir: %s\n", sounddir);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
     }
     
     // metacache
     if (metaCache != NULL)
     {
-	    if (saveBig)
-	        fputs ("# Metacache file\n", fp);
-	    sprintf (str, "metaCache: %s\n", metaCache);
-	    fputs (str, fp);
-	    if (saveBig)
-	        fputs ("\n", fp);
+    	if (saveBig)
+    	    fputs ("# Metacache file\n", fp);
+    	sprintf (str, "metaCache: %s\n", metaCache);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
     }
 
     // player list
@@ -2035,6 +2055,585 @@ saveOptions ()
     }
 
     fputs ("\n", fp);
+
+    // Window placements
+    if (saveWindow)
+    {
+    	char *adefault;
+    	
+    	if (saveBig)
+    	{
+    	    fputs ("# Window placements section\n", fp);
+    	    fputs ("\n", fp);
+    	}
+
+        // Main window - always mapped
+        if ((adefault = stringDefault ("netrek.parent")) != NULL)
+        {
+            sprintf (str, "netrek.parent:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("netrek.geometry")) != NULL)
+        {
+            sprintf (str, "netrek.geometry:        %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Local window - always mapped
+        if ((adefault = stringDefault ("local.parent")) != NULL)
+        {
+            sprintf (str, "local.parent:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("local.geometry")) != NULL)
+        {
+            sprintf (str, "local.geometry:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Map window - always mapped
+        if ((adefault = stringDefault ("map.parent")) != NULL)
+        {
+            sprintf (str, "map.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("map.geometry")) != NULL)
+        {
+            sprintf (str, "map.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Dashboard window - always mapped
+        if ((adefault = stringDefault ("tstat.parent")) != NULL)
+        {
+            sprintf (str, "tstat.parent:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("tstat.geometry")) != NULL)
+        {
+            sprintf (str, "tstat.geometry:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Warning window - always mapped
+        if ((adefault = stringDefault ("warn.parent")) != NULL)
+        {
+            sprintf (str, "warn.parent:            %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("warn.geometry")) != NULL)
+        {
+            sprintf (str, "warn.geometry:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Message window - preferred mapped
+        if ((adefault = stringDefault ("message.parent")) != NULL)
+        {
+            sprintf (str, "message.parent:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("message.geometry")) != NULL)
+        {
+            sprintf (str, "message.geometry:       %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("message.mapped", 1))
+            sprintf (str, "message.mapped:         on\n");
+        else
+            sprintf (str, "message.mapped:         off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Planet window
+        if ((adefault = stringDefault ("planet.parent")) != NULL)
+        {
+            sprintf (str, "planet.parent:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("planet.geometry")) != NULL)
+        {
+            sprintf (str, "planet.geometry:        %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("planet.mapped", 0))
+            sprintf (str, "planet.mapped:          on\n");
+        else
+            sprintf (str, "planet.mapped:          off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Rank window
+        if ((adefault = stringDefault ("rank.parent")) != NULL)
+        {
+            sprintf (str, "rank.parent:            %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("rank.geometry")) != NULL)
+        {
+            sprintf (str, "rank.geometry:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("rank.mapped", 0))
+            sprintf (str, "rank.mapped:            on\n");
+        else
+            sprintf (str, "rank.mapped:            off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Playerlist window - preferred mapped
+        if ((adefault = stringDefault ("player.parent")) != NULL)
+        {
+            sprintf (str, "player.parent:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("player.geometry")) != NULL)
+        {
+            sprintf (str, "player.geometry:        %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("player.mapped", 1))
+            sprintf (str, "player.mapped:          on\n");
+        else
+            sprintf (str, "player.mapped:          off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Alternate playerlist window
+        if ((adefault = stringDefault ("player2.parent")) != NULL)
+        {
+            sprintf (str, "player2.parent:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("player2.geometry")) != NULL)
+        {
+            sprintf (str, "player2.geometry:       %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("player2.mapped", 0))
+            sprintf (str, "player2.mapped:         on\n");
+        else
+            sprintf (str, "player2.mapped:         off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Help window
+        if ((adefault = stringDefault ("help.parent")) != NULL)
+        {
+            sprintf (str, "help.parent:            %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("help.geometry")) != NULL)
+        {
+            sprintf (str, "help.geometry:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("help.mapped", 0))
+            sprintf (str, "help.mapped:            on\n");
+        else
+            sprintf (str, "help.mapped:            off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+        
+        // Review all window
+        if ((adefault = stringDefault ("review_all.parent")) != NULL)
+        {
+            sprintf (str, "review_all.parent:      %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review_all.geometry")) != NULL)
+        {
+            sprintf (str, "review_all.geometry:    %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review_all.mapped", 0))
+            sprintf (str, "review_all.mapped:      on\n");
+        else
+            sprintf (str, "review_all.mapped:      off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review_all.allow")) != NULL)
+        {
+            sprintf (str, "review_all.allow:       %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+        
+        // Review team window
+        if ((adefault = stringDefault ("review_team.parent")) != NULL)
+        {
+            sprintf (str, "review_team.parent:     %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review_team.geometry")) != NULL)
+        {
+            sprintf (str, "review_team.geometry:   %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review_team.mapped", 0))
+            sprintf (str, "review_team.mapped:     on\n");
+        else
+            sprintf (str, "review_team.mapped:     off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review_team.allow")) != NULL)
+        {
+            sprintf (str, "review_team.allow:      %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+        
+        // Review your window
+        if ((adefault = stringDefault ("review_your.parent")) != NULL)
+        {
+            sprintf (str, "review_your.parent:     %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review_your.geometry")) != NULL)
+        {
+            sprintf (str, "review_your.geometry:   %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review_your.mapped", 0))
+            sprintf (str, "review_your.mapped:     on\n");
+        else
+            sprintf (str, "review_your.mapped:     off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review_your.allow")) != NULL)
+        {
+            sprintf (str, "review_your.allow:      %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Review kill window
+        if ((adefault = stringDefault ("review_kill.parent")) != NULL)
+        {
+            sprintf (str, "review_kill.parent:     %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review_kill.geometry")) != NULL)
+        {
+            sprintf (str, "review_kill.geometry:   %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review_kill.mapped", 0))
+            sprintf (str, "review_kill.mapped:     on\n");
+        else
+            sprintf (str, "review_kill.mapped:     off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review_kill.allow")) != NULL)
+        {
+            sprintf (str, "review_kill.allow:      %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+        
+        // Review phaser window
+        if ((adefault = stringDefault ("review_phaser.parent")) != NULL)
+        {
+            sprintf (str, "review_phaser.parent:   %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review_phaser.geometry")) != NULL)
+        {
+            sprintf (str, "review_phaser.geometry: %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review_phaser.mapped", 0))
+            sprintf (str, "review_phaser.mapped:   on\n");
+        else
+            sprintf (str, "review_phaser.mapped:   off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review_phaser.allow")) != NULL)
+        {
+            sprintf (str, "review_phaser.allow:    %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Review window - preferred mapped
+        if ((adefault = stringDefault ("review.parent")) != NULL)
+        {
+            sprintf (str, "review.parent:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("review.geometry")) != NULL)
+        {
+            sprintf (str, "review.geometry:        %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("review.mapped", 1))
+            sprintf (str, "review.mapped:          on\n");
+        else
+            sprintf (str, "review.mapped:          off\n");
+        fputs (str, fp);
+        if ((adefault = stringDefault ("review.allow")) != NULL)
+        {
+            sprintf (str, "review.allow:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Ping Stats window
+        if ((adefault = stringDefault ("pingStats.parent")) != NULL)
+        {
+            sprintf (str, "pingStats.parent:       %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("pingStats.geometry")) != NULL)
+        {
+            sprintf (str, "pingStats.geometry:     %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("pingStats.mapped", 0))
+            sprintf (str, "pingStats.mapped:       on\n");
+        else
+            sprintf (str, "pingStats.mapped:       off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // UDP window
+        if ((adefault = stringDefault ("UDP.parent")) != NULL)
+        {
+            sprintf (str, "UDP.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("UDP.geometry")) != NULL)
+        {
+            sprintf (str, "UDP.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("UDP.mapped", 0))
+            sprintf (str, "UDP.mapped:             on\n");
+        else
+            sprintf (str, "UDP.mapped:             off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+#ifdef SHORT_PACKETS
+        // Short packets window
+        if ((adefault = stringDefault ("network.parent")) != NULL)
+        {
+            sprintf (str, "network.parent:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("network.geometry")) != NULL)
+        {
+            sprintf (str, "network.geometry:       %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("network.mapped", 0))
+            sprintf (str, "network.mapped:         on\n");
+        else
+            sprintf (str, "network.mapped:         off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+#endif
+
+#ifdef TOOLS
+        // Tools window
+        if ((adefault = stringDefault ("tools.parent")) != NULL)
+        {
+            sprintf (str, "tools.parent:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("tools.geometry")) != NULL)
+        {
+            sprintf (str, "tools.geometry:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("tools.mapped", 0))
+            sprintf (str, "tools.mapped:           on\n");
+        else
+            sprintf (str, "tools.mapped:           off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+#endif
+
+#ifdef XTREKRC_HELP
+        // Xtrekrc help window
+        if ((adefault = stringDefault ("xtrekrc_help.parent")) != NULL)
+        {
+            sprintf (str, "xtrekrc_help.parent:    %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("xtrekrc_help.geometry")) != NULL)
+        {
+            sprintf (str, "xtrekrc_help.geometry:  %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("xtrekrc_help.mapped", 0))
+            sprintf (str, "xtrekrc_help.mapped:    on\n");
+        else
+            sprintf (str, "xtrekrc_help.mapped:    off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+#endif
+
+#ifdef DOC_WIN
+        // Documentation window
+        if ((adefault = stringDefault ("DocWin.parent")) != NULL)
+        {
+            sprintf (str, "DocWin.parent:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("DocWin.geometry")) != NULL)
+        {
+            sprintf (str, "DocWin.geometry:        %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("DocWin.mapped", 0))
+            sprintf (str, "DocWin.mapped:          on\n");
+        else
+            sprintf (str, "DocWin.mapped:          off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Xtrekrc window
+        if ((adefault = stringDefault ("xtrekrcWin.parent")) != NULL)
+        {
+            sprintf (str, "xtrekrcWin.parent:      %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("xtrekrcWin.geometry")) != NULL)
+        {
+            sprintf (str, "xtrekrcWin.geometry:    %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("xtrekrcWin.mapped", 0))
+            sprintf (str, "xtrekrcWin.mapped:      on\n");
+        else
+            sprintf (str, "xtrekrcWin.mapped:      off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+#endif
+
+        // Fed team window - always mapped
+        if ((adefault = stringDefault ("fed.parent")) != NULL)
+        {
+            sprintf (str, "fed.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("fed.geometry")) != NULL)
+        {
+            sprintf (str, "fed.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Kli team window - always mapped
+        if ((adefault = stringDefault ("kli.parent")) != NULL)
+        {
+            sprintf (str, "kli.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("kli.geometry")) != NULL)
+        {
+            sprintf (str, "kli.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Ori team window - always mapped
+        if ((adefault = stringDefault ("ori.parent")) != NULL)
+        {
+            sprintf (str, "ori.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("ori.geometry")) != NULL)
+        {
+            sprintf (str, "ori.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Rom team window - always mapped
+        if ((adefault = stringDefault ("rom.parent")) != NULL)
+        {
+            sprintf (str, "rom.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("rom.geometry")) != NULL)
+        {
+            sprintf (str, "rom.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Quit window - always mapped
+        if ((adefault = stringDefault ("quit.parent")) != NULL)
+        {
+            sprintf (str, "quit.parent:            %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("quit.geometry")) != NULL)
+        {
+            sprintf (str, "quit.geometry:          %s\n", adefault);
+            fputs (str, fp);
+        }
+        fputs ("\n", fp);
+
+        // Stats window
+        if ((adefault = stringDefault ("stats.parent")) != NULL)
+        {
+            sprintf (str, "stats.parent:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("stats.geometry")) != NULL)
+        {
+            sprintf (str, "stats.geometry:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("stats.mapped", 0))
+            sprintf (str, "stats.mapped:           on\n");
+        else
+            sprintf (str, "stats.mapped:           off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // War window
+        if ((adefault = stringDefault ("war.parent")) != NULL)
+        {
+            sprintf (str, "war.parent:             %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("war.geometry")) != NULL)
+        {
+            sprintf (str, "war.geometry:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("war.mapped", 0))
+            sprintf (str, "war.mapped:             on\n");
+        else
+            sprintf (str, "war.mapped:             off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Sound window
+        if ((adefault = stringDefault ("sound.parent")) != NULL)
+        {
+            sprintf (str, "sound.parent:           %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("sound.geometry")) != NULL)
+        {
+            sprintf (str, "sound.geometry:         %s\n", adefault);
+            fputs (str, fp);
+        }
+        if (booleanDefault ("sound.mapped", 0))
+            sprintf (str, "sound.mapped:           on\n");
+        else
+            sprintf (str, "sound.mapped:           off\n");
+        fputs (str, fp);
+        fputs ("\n", fp);
+        
+        if (saveBig)
+            fputs ("\n", fp);
+    }
 
     // macros
     if (saveMacro)
@@ -2347,7 +2946,6 @@ saveOptions ()
             strcat (str, ": ");
             strcat (str, dm->macro);
             strcat (str, "\n");
-
             fputs (str, fp);
         }
 
@@ -2356,6 +2954,36 @@ saveOptions ()
         if (saveBig)
             fputs ("\n", fp);
     }
+
+#ifdef BEEPLITE
+    // Beeplite macros
+    if (saveBeeplite)
+    {
+    	char **lt;
+        if (saveBig)
+            fputs ("# Beeplite macros\n", fp);
+
+        for (lt = &distlite[1], dm = &dist_prefered[1]; dm->name; lt++, dm++)
+        {
+            if (*lt != NULL)  // distlite array defined as NULL, so only save the ones
+                              // that have been set either through reading in netrekrc
+                              // or from defLite settings
+            {
+                strcpy (str, "lite.");
+                strcat (str, dm->name);
+                strcat (str, ": ");
+                strcat (str, *lt);
+                strcat (str, "\n");
+                fputs (str, fp);
+            }
+        }
+
+        fputs ("\n", fp);
+
+        if (saveBig)
+            fputs ("\n", fp);
+    }
+#endif
 
 #ifdef RCM
     // RCM macros

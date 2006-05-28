@@ -778,16 +778,16 @@ cowmain (char *server,
     }
 #endif
 
-	/* Now we want get serverNick */
-	if (serverName)
-		serverNick = getServerNick (serverName);
+    /* Now we want get serverNick */
+    if (serverName)
+	serverNick = getServerNick (serverName);
 
-	/* If we have nickname then we probably have type.serverNick defined */
-	if (serverType == ST_UNKNOWN && serverNick)
-		serverType = getServerType (serverNick);
+    /* If we have nickname then we probably have type.serverNick defined */
+    if (serverType == ST_UNKNOWN && serverNick)
+	serverType = getServerType (serverNick);
 
-	/* Set observer flag as soon as we know port number */
-	setObserverMode (xtrekPort);
+    /* Set observer flag as soon as we know port number */
+    setObserverMode (xtrekPort);
 
     resetdefaults ();
     savebitmaps ();

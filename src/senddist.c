@@ -57,8 +57,8 @@ loaddistress (enum dist_type i,
     dist->cloakflag = (unsigned char) (((me->p_flags & PFCLOAK) > 0) ? 1 : 0);
 
     dist->distype = (unsigned char) i;
-    if (dist->distype > generic || dist->distype < take)
-        dist->distype = generic;
+    if (dist->distype > help || dist->distype < take)
+        dist->distype = help;
 
     target = gettarget2 (me->p_x, me->p_y, TARG_PLANET);
     dist->close_pl = (unsigned char) (target->o_num);

@@ -52,8 +52,8 @@ void litedefaults(void)
       distlite[base_ogg] = "/g/m";
     if (distlite[pickup] == NULL)
       distlite[pickup] = "/p";
-    if (distlite[generic] == NULL)
-      distlite[generic] = "%?%S=SB%{/c%}";
+    if (distlite[help] == NULL)
+      distlite[help] = "%?%S=SB%{/c%}";
 }
 
 void liteplanet(struct planet *l)

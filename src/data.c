@@ -65,7 +65,7 @@ int remap[16] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
 int messpend = 0;
 #ifdef XTRA_MESSAGE_UI
 int messageHUD = 0;             /* Show message being typed on the local display           */
-int messageHoldThresh = 0;         /* Threshold value for putting a message on hold (squared) */
+int messageHoldThresh = 0;      /* Threshold value for putting a message on hold (squared) */
 int messMouseDelta = 0;         /* To keep track of mouse movement delta                   */
 #endif
 int lastcount = 0;
@@ -433,7 +433,7 @@ struct dmacro_list dist_prefered[NUM_DIST];
 struct dmacro_list dist_defaults[] = {
     {(unsigned char) ('X'), "no zero", "this should never get looked at"},
 /* ^t */
-    {(unsigned char) ('\xd4'), "taking", " %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}\0"},
+    {(unsigned char) ('\xd4'), "take", " %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}\0"},
 /* ^o */
     {(unsigned char) ('\xcf'), "ogg", " %T%c->%O Help Ogg %p at %l\0"},
 /* ^b */
@@ -700,9 +700,15 @@ int showMotd = 1;
 
 char *saveFile = NULL;
 int saveBig = 1;
+int saveWindow = 1;
 int saveMacro = 1;
 int saveRCD = 1;
+#ifdef BEEPLITE
+int saveBeeplite = 1;
+#endif
+#ifdef RCM
 int saveRCM = 1;
+#endif
 
 int tpDotDist = 10;
 

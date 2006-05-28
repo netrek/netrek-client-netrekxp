@@ -1,4 +1,13 @@
 Version TBA:
+- fixed some inconsistencies in how a few RCDs were named - "taking" renamed to "take",
+  "generic" renamed to "help", "help3 and help4" renamed to "help1 and help2", and
+  "doing3 and doing4" renamed to "doing1 and doing2"
+- added "saveWindow: (on)/off" and "saveBeeplite: (on)/off" to allow saving of window placments
+  and beeplite macros to the netrek.sav file.
+- save options now can save windows placements, review window .allow settings, and beeplite 
+  macros
+- changed some default window sizes/locations that were either too small (i.e. help window)
+  or in a bad spot (i.e. planet window)
 - cambot works now with double buffering, and added cambot howto to the NetrekXP manual
 - team select screen no longer uses 99% cpu power
 - planet kill messages now show armies dooshed (if any)
