@@ -52,8 +52,8 @@ int bytesused;
 /* Sound cache size */
 #define MAXBYTES (256*1024*10)
 
-int caps_vol = 0;   /* can control volume */
-int caps_lr = 0;    /* has separate volume control for each channel */
+static int caps_vol = 0;   /* can control volume */
+static int caps_lr = 0;    /* has separate volume control for each channel */
 
 /* Macro to create DWORD from HIWORD and LOWORD */
 #define MAKEDWORD(a, b)  ((DWORD) (((WORD) (a)) | ((DWORD) ((WORD) (b))) << 16)) 
@@ -315,7 +315,6 @@ StartSound (char *name)
     static PCMWAVEFORMAT lastfmt;
     struct sound *snd;
     DWORD err;
-    WAVEOUTCAPS caps;
 
 #ifdef DEBUG
     LineToConsole ("Request to play sound %s\n", name);
@@ -361,24 +360,7 @@ StartSound (char *name)
         waveOutPrepareHeader (hw, &snd->hdr, sizeof (WAVEHDR));
         waveOutWrite (hw, &snd->hdr, sizeof (WAVEHDR));
 
-        /* Now let's see whether our device supports volume control */
-        waveOutGetDevCaps (WAVE_MAPPER, &caps, sizeof (WAVEOUTCAPS));
-        if (caps.dwSupport & WAVECAPS_VOLUME)
-            caps_vol = 1;
-        if (caps.dwSupport & WAVECAPS_LRVOLUME)
-            caps_lr = 1;
-
-        /* Now let's see whether volume is balanced or not */
-        if (caps_lr)
-        {
-            DWORD curvol;
-            
-            waveOutGetVolume (hw, &curvol);
-
-            if (LOWORD(curvol) != HIWORD(curvol))
-                waveOutSetVolume (hw, MAKEDWORD(LOWORD(curvol), LOWORD(curvol)));
-        }
-
+        CheckVolumeSettings();
         return 0;
     }
     return -1;
@@ -449,4 +431,28 @@ ChangeVolume (int vol)
                 waveOutSetVolume (hw, MAKEDWORD(HIWORD(curvol), LOWORD(curvol) - 0x1111));
         break;
     }
+}
+
+void
+CheckVolumeSettings ()
+{
+    WAVEOUTCAPS caps;
+
+    /* Let's see whether our device supports volume control */
+    waveOutGetDevCaps (WAVE_MAPPER, &caps, sizeof (WAVEOUTCAPS));
+    if (caps.dwSupport & WAVECAPS_VOLUME)
+        caps_vol = 1;
+    if (caps.dwSupport & WAVECAPS_LRVOLUME)
+        caps_lr = 1;
+
+    /* Now let's see whether volume is balanced or not */
+    if (caps_lr)
+    {
+        DWORD curvol;
+        waveOutGetVolume (hw, &curvol);
+
+        if (LOWORD(curvol) != HIWORD(curvol))
+            waveOutSetVolume (hw, MAKEDWORD(LOWORD(curvol), LOWORD(curvol)));
+    }
+    return;
 }

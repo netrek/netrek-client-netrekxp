@@ -1272,5 +1272,5 @@ int InitSound ();
 void StopSound ();
 int StartSound (char *name);
 int SoundPlaying ();
-
+void CheckVolumeSettings ();
 #endif /* __INCLUDED_proto_h__ */

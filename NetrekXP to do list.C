@@ -47,8 +47,8 @@ closeable by shift right click.
 8) Is there a cpu leak with double buffering?
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-10) Ask stas about addfontresource change in 4.4.0.4
-11) In game volume adjustment not working with SDL.
+10) Ask stas about addfontresource change in 4.4.0.4 - causing problems with win 98 machines.
+11) Get square planet bitmaps from defcom so I can turn them into mapped rotating globes.
 
 Stas's list:
 - color coded playerlist.

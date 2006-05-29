@@ -186,6 +186,8 @@ extern void Init_Sound (void)
 		    LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
       	    }
       	    sound_toggle = 1;
+      	    /* See if volume is adjustable */
+      	    CheckVolumeSettings ();
       	    /* Default of 8 channels not enough */
        	    Mix_AllocateChannels(16);
         }
