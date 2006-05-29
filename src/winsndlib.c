@@ -359,8 +359,6 @@ StartSound (char *name)
 #endif
         waveOutPrepareHeader (hw, &snd->hdr, sizeof (WAVEHDR));
         waveOutWrite (hw, &snd->hdr, sizeof (WAVEHDR));
-
-        CheckVolumeSettings();
         return 0;
     }
     return -1;

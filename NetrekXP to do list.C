@@ -13,7 +13,8 @@ away, etc).  Don't think this is fixable.
 4) ATT not listed as valid ship even if it's in sysdef.
 5) in orbit.c, pftranswarp strangeness.
 6) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
-for an obs to know what the war decs are of the person he is observing
+for an obs to know what the war decs are of the person he is observing. Best solution
+is to just have server send repair time and planet orbit info.
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
@@ -23,7 +24,6 @@ actually, they do get the whydead, but it's somehow after they are sent to quit 
 When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
 3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
-4) Observers get wrong x,y pos upon observee death.
 
 Things that are sorta fixed, but could use improvement:
 1) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
@@ -47,13 +47,12 @@ closeable by shift right click.
 8) Is there a cpu leak with double buffering?
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-10) Ask stas about addfontresource change in 4.4.0.4 - causing problems with win 98 machines.
+10) Addfontresource change in 4.4.0.4 - causing problems with win 98 machines.
 11) Get square planet bitmaps from defcom so I can turn them into mapped rotating globes.
 
 Stas's list:
 - color coded playerlist.
-- check inl server for behavior
-+ add option to parse netrekrc.txt and xtrekrc.txt files
+- check inl server for behavior (observers and tractor/pressor packets)
 ! server: ita won't block RCDs (why not ?)
 - add usage on metaserver window (well, what would you write there ?)
 ! after res if there cloaker around he will be seen briefly (speed 0 bug)
@@ -65,10 +64,8 @@ Stas's list:
 - add msg.phaser to enable formatting of phaser messages
 - add copy/paste possibility from message windows (richtext ?)
 - add clickable urls from message windows (richtext ?)
-+ fix bug with undefined behavior in case of odd keymap/buttonmap/ckeymap length (partially fixed)
 - add "mKeyOnlyToStartMessages: on/off" to ignore keys [0-9][a-z][ATFOKRG] in message window when the messageon=0
 - scrollable player list
 - parse Announcer messages in hockey games
 - resize documentation window
 - pasting multiline prints \r\n instead of splitting lines
-- fix makedistress bug that creates 0 instead of empty string when macro starts with conditional

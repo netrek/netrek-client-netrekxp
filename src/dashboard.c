@@ -855,6 +855,7 @@ db_redraw (int fr)
 int
 repair_time (void)
 {
+    int obs = 0;
     int shieldtime = 0;
     int hulltime = 0;
     int shieldneeded, hullneeded;
@@ -862,7 +863,10 @@ repair_time (void)
     struct player *plr;
 
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+    {
         plr = players + me->p_playerl;
+        obs = 1;
+    }
     else
         plr = me;
         
@@ -875,9 +879,12 @@ repair_time (void)
         if (me->p_flags & PFORBIT)
         {
             /* Damn server doesn't send us p_planet info, have to calculate it ourselves! */
+            /* And since observers don't get war flags, assume that if ship is orbiting a repair
+    	       planet in repair mode, the planet is friendly - best we can do until server
+    	       sends us more info */
             me->p_planet = get_closest_planet(me->p_x, me->p_y);
             if ((planets[me->p_planet].pl_flags & PLREPAIR)
-            &&(!(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+            &&(obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
                 me->p_subshield += me->p_ship.s_repair * 4;
             if (me->p_flags & PFDOCK)
     	        me->p_subshield += me->p_ship.s_repair * 6;
@@ -894,9 +901,12 @@ repair_time (void)
     	if (me->p_flags & PFORBIT)
     	{
     	    /* Damn server doesn't send us p_planet info, have to calculate it ourselves! */
+    	    /* And since observers don't get war flags, assume that if ship is orbiting a repair
+    	       planet in repair mode, the planet is friendly - best we can do until server
+    	       sends us more info */
             me->p_planet = get_closest_planet(me->p_x, me->p_y);
     	    if ((planets[me->p_planet].pl_flags & PLREPAIR)
-    	    && (!(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+    	    && (obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
     	        me->p_subdamage += me->p_ship.s_repair * 2;
     	    if (me->p_flags & PFDOCK)
     	        me->p_subdamage += me->p_ship.s_repair * 3;

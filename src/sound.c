@@ -202,6 +202,8 @@ extern void Init_Sound (void)
             {
                 sound_init = 1;
                 sound_toggle = 1;
+                /* See if volume is adjustable */
+                CheckVolumeSettings ();
             }
 
             strcpy (sound_prefix, sounddir);
