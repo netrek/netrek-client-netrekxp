@@ -17,13 +17,10 @@ Version TBA:
   placements, and macros than your average rc :).  Plus it has all the settable rc options
   listed.  The format of the netrekrc is nearly identical to that of the netrek.sav file
   that can be generated in game from the options menu.  Currently the only difference between
-  the two is lack of windows placements, custom review window settings, custom beeplite settings,
-  and custom server/servernick/servertype settings.
+  the two is custom pbserver/servernick/servertype settings.
 - fixed bug with observers with short packets on which was causing incorrect drawing of local
   map in the case of losing player/planet lock (most noticeable effect was a single background
-  star being drawn at all times, instead of the usual blank local).  This was actually both a
-  server side and client side fix, relating to an incorrect sign on the player position packet,
-  but I mention it here.
+  star being drawn at all times, instead of the usual blank local).
 - fixed phaser stats reporting for long packets
 - fixed longstanding bug with UDP where display was redrawn too frequently (once for udp redraw,
   and again anytime a TCP packet was sent, like with warning messages).
