@@ -848,11 +848,11 @@ newwin (char *hostmon,
     /* Message windows */
     if (richText)
     {
-        messwa = W_MakeScrollingRichTextWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
+        messwa = W_MakeScrollingRichTextWindow ("review_all", 506, 658, 81, 5, baseWin, BORDER);
         wam_windows[0] = messwa;
         W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
 
-        messwt = W_MakeScrollingRichTextWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
+        messwt = W_MakeScrollingRichTextWindow ("review_team", 506, 579, 81, 7, baseWin, BORDER);
         wam_windows[1] = messwt;
         W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
    
@@ -860,7 +860,7 @@ newwin (char *hostmon,
         wam_windows[2] = messwi;
         W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
     
-        messwk = W_MakeScrollingRichTextWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
+        messwk = W_MakeScrollingRichTextWindow ("review_kill", 506, 717, 81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
         phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
@@ -874,11 +874,11 @@ newwin (char *hostmon,
     }
     else
     {
-        messwa = W_MakeScrollingWindow ("review_all", 506, 668, 81, 5, baseWin, BORDER);
+        messwa = W_MakeScrollingWindow ("review_all", 506, 658, 81, 5, baseWin, BORDER);
         wam_windows[0] = messwa;
         W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
 
-        messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 8, baseWin, BORDER);
+        messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 7, baseWin, BORDER);
         wam_windows[1] = messwt;
         W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
    
@@ -886,7 +886,7 @@ newwin (char *hostmon,
         wam_windows[2] = messwi;
         W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
     
-        messwk = W_MakeScrollingWindow ("review_kill", 506, 727, 81, 3, baseWin, BORDER);
+        messwk = W_MakeScrollingWindow ("review_kill", 506, 717, 81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
         phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + 6, YOFF + 

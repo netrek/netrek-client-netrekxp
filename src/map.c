@@ -432,7 +432,7 @@ DrawPlanets ()
             if (planetBitmapGalaxy == 3)  // Needs adjusting
                 W_ClearArea (mapw, odx - 7 * BMP_MPLANET_WIDTH / 8,
                              ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4 + 1, 4 * BMP_MPLANET_HEIGHT / 3 + 1);
+                             7 * BMP_MPLANET_WIDTH / 4 + 2, 4 * BMP_MPLANET_HEIGHT / 3 + 2);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),

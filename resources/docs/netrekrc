@@ -4,6 +4,9 @@ name: guest
 # Login name
 login: netrek_player
 
+# Mouse button mapping
+buttonmap: 1P2k
+
 # Key mapping
 keymap: Ppa%d_eyftg^jmnrpPrls3tfuwvDwsye d
 
@@ -41,7 +44,7 @@ beepOnPrivateMessage: off
 colorClient: 4
 
 # Display color phasers
-colorfulPhasers: on
+colorfulPhasers: off
 
 # Use colored bitmaps for torps and plasmas
 colorWeapons: on
@@ -233,11 +236,17 @@ reportKills: on
 # Save options with comments
 saveBig: on
 
+# Save window placements to saveFile
+saveWindow: on
+
 # Save macros to saveFile
 saveMacro: on
 
 # Save RCD to saveFile
 saveRCD: on
+
+# Save beeplite macros to saveFile
+saveBeeplite: on
 
 # Save RCM to saveFile
 saveRCM: on
@@ -416,67 +425,119 @@ metaCache: metacache
 # 'W' - Wins
 playerList: nTR N  K l M
 
-## Window Options
-WaitMotd.mapped: on
+
+# Window placements section
+
+netrek.parent:          netrek
 netrek.geometry:        1024x768
+
 local.parent:           netrek
+local.geometry:         500x500+0+0
+
 map.parent:             netrek
-
-help.parent:            netrek
-help.geometry:          500x25+0+525
-
-planet.parent:          netrek
-planet.geometry:        +660+0
-
-message.parent:         netrek
-message.geometry:       502x19+508+504
-message.mapped:         on
-
-warn.parent:            netrek
-warn.geometry:          502x18+508+523
-warn.mapped:            on
+map.geometry:           500x500+506+0
 
 tstat.parent:           netrek
-tstat.geometry:	        506x45+0+504
-tstat.mapped:		on
+tstat.geometry:         505x43+0+506
 
-review.parent:          netrek
-review.geometry:        82x20+508+542
-review.mapped:		off
+warn.parent:            netrek
+warn.geometry:          504x16+506+523
 
-review_your.parent:     netrek
-review_your.geometry:   82x4+508+542
-review_your.mapped:     on
+message.parent:         netrek
+message.geometry:       504x16+506+506
+message.mapped:         on
 
-review_team.parent:     netrek
-review_team.geometry:   82x6+508+591
-review_team.mapped:     on
+planet.parent:          netrek
+planet.geometry:        57x43+660+0
+planet.mapped:          off
 
-review_all.parent:      netrek
-review_all.geometry:    82x4+508+660
-review_all.mapped:      on
-
-review_phaser.parent:   netrek
-review_phaser.geometry: +510+710
-review_phaser.mapped:   off
-
-reportkills:            on
-review_kill.parent:     netrek
-review_kill.geometry:   82x4+508+708
-review_kill.mapped:     on
-review_kill.allow: 	KP
+rank.parent:            netrek
+rank.geometry:          65x18+50+300
+rank.mapped:            off
 
 player.parent:          netrek
-player.geometry:        +0+549
+player.geometry:        +0+550
 player.mapped:          on
 
-udp.geometry:        	+0+0
-udp.mapped:          	off
+player2.parent:         netrek
+player2.geometry:       +140+100
+player2.mapped:         off
+
+help.parent:            netrek
+help.mapped:            off
+
+review_all.parent:      netrek
+review_all.geometry:    81x5+506+658
+review_all.mapped:      on
+
+review_team.parent:     netrek
+review_team.geometry:   81x7+506+579
+review_team.mapped:     on
+
+review_your.parent:     netrek
+review_your.geometry:   81x3+506+540
+review_your.mapped:     on
+
+review_kill.parent:     netrek
+review_kill.geometry:   81x3+506+717
+review_kill.mapped:     on
+review_kill.allow:      KP
+
+review_phaser.parent:   netrek
+review_phaser.geometry: 81x4+506+676
+review_phaser.mapped:   off
+
+review.parent:          netrek
+review.geometry:        81x22+506+540
+review.mapped:          off
+
+pingStats.parent:       netrek
+pingStats.geometry:     +500+4
+pingStats.mapped:       off
+
+UDP.parent:             netrek
+UDP.geometry:           +510+9
+UDP.mapped:             off
+
+network.parent:         netrek
+network.geometry:       +510+9
+network.mapped:         off
+
+DocWin.parent:          netrek
+DocWin.geometry:        500x500+0+181
+DocWin.mapped:          off
+
+xtrekrcWin.parent:      netrek
+xtrekrcWin.geometry:    500x500+0+200
+xtrekrcWin.mapped:      off
+
+fed.parent:             local
+fed.geometry:           100x100+0+400
+
+kli.parent:             local
+kli.geometry:           100x100+200+400
+
+ori.parent:             local
+ori.geometry:           100x100+300+400
+
+rom.parent:             local
+rom.geometry:           100x100+100+400
+
+quit.parent:            local
+quit.geometry:          100x100+400+400
 
 stats.parent:           netrek
-stats.geommac.s.%i:%y loss, %v ping, %V stddev
-stats geometry:         160x108+332+550      # puts the stats window further down
-stats.geometry:         160x94+842+500
+stats.geometry:         100x80+405+506
+stats.mapped:           off
+
+war.parent:             netrek
+war.geometry:           20x6+510+9
+war.mapped:             off
+
+sound.parent:           netrek
+sound.geometry:         +520+9
+sound.mapped:           off
+
 
 # Macros section
 # Also '?' can still not be used as a macro key. The following definitions will
@@ -788,10 +849,11 @@ mac.e.T: Escorting %g (%d%%D %s%%S %f%%F)
 mac.V.A: %T%c  PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
 mac.x.T: (%T%c) My Fuel: %f%%
 
+mac.L.%i: %y loss, %v ping, %V stddev
 mac.X.%p: My condition: %d%%D %s%%S %f%%F %a armies
 
 # Receiver configurable distress macros
-dist.^t.taking: %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
+dist.^t.take: %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
 dist.^o.ogg: %T%c->%O Help Ogg %p at %l
 dist.^b.bomb: %T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}
 dist.^c.space_control: %T%c->%O Help Control at %L
@@ -818,9 +880,16 @@ dist.^#.other2: %T%c->%O (%i)%?%a>0%{ has %a arm%?%a=1%{y%!ies%}%} at %l. (%d%%D
 dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtmp,%!%}%E%{ ETEMP!%}%W%{ WTEMP!%} %a armies!
 
 
+# Beeplite macros
+lite.take: /c/l
+lite.base_ogg: /g/m
+lite.pickup: /p
+lite.help: %?%S=SB%{/c%}%?%a>0%{/c%}
+
+
 # Receiver configurable messages
 msg.kill: GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) was kill %?%d>0%{%k%!(NO CREDIT)%} for %u (%r%p) %?%w>0%{%W%!%}
-msg.planet: GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%} killed by %l (%z) %?%w>0%{%W%!%}
+msg.planet: GOD->ALL %i (%S) (%T%c%?%a>0%{+%a armies%!%}) killed by %l (%z) %?%w>0%{%W%!%}
 msg.bomb: %N->%Z We are being attacked by %i (%T%c) who is %d%% damaged.
 msg.destroy: %N->%Z %N destroyed by %i (%T%c)
 msg.take: %N->%O %N taken by %i (%T%c)

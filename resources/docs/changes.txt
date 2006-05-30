@@ -1,4 +1,5 @@
 Version TBA:
+- changed default team window size from 8 to 7 lines
 - fixed some inconsistencies in how a few RCDs were named - "taking" renamed to "take",
   "generic" renamed to "help", "help3 and help4" renamed to "help1 and help2", and
   "doing3 and doing4" renamed to "doing1 and doing2"
