@@ -444,8 +444,9 @@ W_Cleanup (void)
 
     strcpy (FileName, GetExeDir ());
     strcat (FileName, FontFileName);
-    RemoveFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
-
+//  Breaks client in Windows 95, 98, and possibly ME
+//  RemoveFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
+    RemoveFontResource (FileName);
     //Select the original bitmaps back and delete our memory DCs
     SelectObject (GlobalMemDC, GlobalOldMemDCBitmap);
     DeleteDC (GlobalMemDC);
@@ -766,8 +767,9 @@ W_Initialize (char *display)
     //Create the fonts that we need. The fonts are actually in our resource file
     strcpy (FileName, GetExeDir ());
     strcat (FileName, FontFileName);
-    AddFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
-
+//  Breaks client in Windows 95, 98, and possibly ME
+//  AddFontResourceEx (FileName, FR_PRIVATE | FR_NOT_ENUM, 0);
+    AddFontResource (FileName);
     memset (&lf, 0, sizeof (LOGFONT));
 
     lf.lfCharSet = ANSI_CHARSET;

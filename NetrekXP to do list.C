@@ -31,6 +31,8 @@ Things that are sorta fixed, but could use improvement:
 ..I added a default return to switch statement, but the underlying bug still remains.
 3) Border issue - quite complex problem, how to know the borders to obey after the bitmap
 is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
+4) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
+old AddFontResource function.
 
 Things to do:
 1) Add warning hull.
@@ -47,7 +49,7 @@ closeable by shift right click.
 8) Is there a cpu leak with double buffering?
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-10) Addfontresource change in 4.4.0.4 - causing problems with win 98 machines.
+10) mono kil scout rotation seems off
 11) Get square planet bitmaps from defcom so I can turn them into mapped rotating globes.
 
 Stas's list:

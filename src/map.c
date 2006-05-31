@@ -430,9 +430,9 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, odx - 7 * BMP_MPLANET_WIDTH / 8,
+                W_ClearArea (mapw, odx - 7 * BMP_MPLANET_WIDTH / 8 - 1,
                              ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4 + 2, 4 * BMP_MPLANET_HEIGHT / 3 + 2);
+                             7 * BMP_MPLANET_WIDTH / 4, 4 * BMP_MPLANET_HEIGHT / 3);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),
@@ -448,9 +448,9 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, dx - 7 * BMP_MPLANET_WIDTH / 8,
-                             dy - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4 + 1, 4 * BMP_MPLANET_HEIGHT / 3 + 1);
+                W_ClearArea (mapw, dx - 7 * BMP_MPLANET_WIDTH / 8 - 5,
+                             dy - (5 * BMP_MPLANET_HEIGHT / 6) - 4,
+                             7 * BMP_MPLANET_WIDTH / 4 + 8, 4 * BMP_MPLANET_HEIGHT / 3 + 8);
 
             else
                 W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),

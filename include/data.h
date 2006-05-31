@@ -1,5 +1,6 @@
 /* data.h */
 #include "copyright.h"
+#include <time.h>
 
 #ifndef _h_data
 #define _h_data
@@ -587,7 +588,6 @@ HANDLE InputThread;
 DWORD InputThreadID;
 
 // Missing global variables
-#include <time.h>
 extern int autoQuit;
 
 extern int forceDisplay;
