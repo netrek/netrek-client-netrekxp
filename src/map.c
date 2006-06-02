@@ -40,12 +40,16 @@
  *  Local Variables:
  *  
  *  roughMap[x][y]      -- Rough map of planets to help find overlaps.
- *  roughMap2[x][y]     -- Secondary rought map, to help with overlap.
+ *  roughMap2[x][y]     -- Secondary rough map, to help with overlap.
+ *  roughMap3[x][y]     -- Rough map of new planets to help find overlaps.
+ *  roughMap4[x][y]     -- Secondary rough map for new planets, to help with overlap.
  *  initialized         -- Has initPlanets() been called?
  */
 
 static signed char roughMap[DETAIL][DETAIL];
 static signed char roughMap2[DETAIL][DETAIL];
+static signed char roughMap3[DETAIL][DETAIL];
+static signed char roughMap4[DETAIL][DETAIL];
 static int initialized = 0;
 
 
@@ -79,7 +83,7 @@ initPlanets (void)
     int startX, startY;
     int endX, endY;
     struct planet *pl;
-    const int pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
+    int pRadius;
     const int tHeight = W_Textheight * GWIDTH / WINSIDE;
     const int tWidth = W_Textwidth * GWIDTH / WINSIDE;
 
@@ -89,9 +93,20 @@ initPlanets (void)
         {
             roughMap[x][y] = -1;
             roughMap2[x][y] = -1;
+            roughMap3[x][y] = -1;
+            roughMap4[x][y] = -1;
         }
     }
-
+    /* Treating the planet a little bigger makes beeplite flashes redraw planets more
+       consistently - I don't think this function was written with the possibility of a
+       ship cutting out twice it's normal size on the galactic map.  The player's ship gets
+       assigned to a x,y point and that is intersected with the rough planet map in a 
+       checkredraw call, which doesn't work so good if the player ship is beeplite highlited */ 
+#ifdef BEEPLITE
+    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 5;
+#else
+    pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
+#endif
     for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
     {
         /*
@@ -130,33 +145,17 @@ initPlanets (void)
             }
         }
     }
-
-    initialized = 1;
-}
-
-
-#ifdef none                     /* Debugging code */
-
-/******************************************************************************/
-/***  showRegions()
-/******************************************************************************/
-void
-showRegions (void)
-/*
- *  Make a rough map of the location of all the planets to help decide
- *  whether a ship is possibly overlapping a planet.
- */
-{
-    int x, y, k;
-    int startX, startY, centre;
-    int endX, endY;
-    struct planet *pl;
-    const int pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
-    const int tHeight = W_Textheight * GWIDTH / WINSIDE;
-    const int tWidth = W_Textwidth * GWIDTH / WINSIDE;
-
+    /* Now loop for the new planet bitmaps, which are roughly 50% wider */
+    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 4;
     for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
     {
+        /*
+           Size of planet is pRadius but a ship will touch the planet if
+           it is one character away horizontally or half a character
+           vertically.  Also remember the planet name at the bottom.
+           This name can stick out about half a character to the right.
+         */
+
         startX = (pl->pl_x - pRadius - tWidth) / SIZE;
         endX = (pl->pl_x + pRadius + tWidth + (tWidth / 2)) / SIZE;
 
@@ -166,27 +165,28 @@ showRegions (void)
         if (startX < 0)
             startX = 0;
 
-        if (endX > DETAIL)
-            endX = DETAIL;
+        if (endX >= DETAIL)
+            endX = DETAIL - 1;
 
         if (startY < 0)
             startY = 0;
 
-        if (endY > DETAIL)
-            endY = DETAIL;
+        if (endY >= DETAIL)
+            endY = DETAIL - 1;
 
-        startX = startX * SIZE * WINSIDE / GWIDTH;
-        startY = startY * SIZE * WINSIDE / GWIDTH;
-        endX = (endX * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
-        endY = (endY * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
-
-        W_MakeLine (mapw, startX, startY, startX, endY, W_White);
-        W_MakeLine (mapw, startX, startY, endX, startY, W_White);
-        W_MakeLine (mapw, endX, endY, startX, endY, W_White);
-        W_MakeLine (mapw, endX, endY, endX, startY, W_White);
+        for (x = startX; x <= endX; x++)
+        {
+            for (y = startY; y <= endY; y++)
+            {
+                if (roughMap3[x][y] == -1)
+                    roughMap3[x][y] = (char) k;
+                else
+                    roughMap4[x][y] = (char) k;
+            }
+        }
     }
+    initialized = 1;
 }
-#endif  /* none */           /* Debugging code */
 
 /******************************************************************************/
 /***  checkRedraw()
@@ -205,17 +205,36 @@ checkRedraw (int x,
     x /= SIZE;
     y /= SIZE;
 
-    i = roughMap[x][y];
-
-    if (i != -1)
+    if (planetBitmapGalaxy != 3)
     {
-        planets[i].pl_flags |= PLREDRAW;
-
-        i = roughMap2[x][y];
+        i = roughMap[x][y];
 
         if (i != -1)
         {
             planets[i].pl_flags |= PLREDRAW;
+    
+            i = roughMap2[x][y];
+    
+            if (i != -1)
+            {
+                planets[i].pl_flags |= PLREDRAW;
+            }
+        }
+    }
+    else
+    {
+        i = roughMap3[x][y];
+    
+        if (i != -1)
+        {
+            planets[i].pl_flags |= PLREDRAW;
+    
+            i = roughMap4[x][y];
+    
+            if (i != -1)
+            {
+                planets[i].pl_flags |= PLREDRAW;
+            }
         }
     }
 }
@@ -323,7 +342,7 @@ mplanetBitmapC (register struct planet *p)
         }
         return mplanet_bits[i];
     }
-    else
+    else // Unknown planet
     {
         return mplanet_unknown;
     }
@@ -430,9 +449,9 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, odx - 7 * BMP_MPLANET_WIDTH / 8 - 1,
+                W_ClearArea (mapw, odx - (7 * BMP_MPLANET_WIDTH / 8 + 1),
                              ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4, 4 * BMP_MPLANET_HEIGHT / 3);
+                             7 * BMP_MPLANET_WIDTH / 4 + 2, 4 * BMP_MPLANET_HEIGHT / 3);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),
@@ -448,9 +467,9 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, dx - 7 * BMP_MPLANET_WIDTH / 8 - 5,
-                             dy - (5 * BMP_MPLANET_HEIGHT / 6) - 4,
-                             7 * BMP_MPLANET_WIDTH / 4 + 8, 4 * BMP_MPLANET_HEIGHT / 3 + 8);
+                W_ClearArea (mapw, dx - (7 * BMP_MPLANET_WIDTH / 8 + 5),
+                             dy - (5 * BMP_MPLANET_HEIGHT / 6 + 4),
+                             7 * BMP_MPLANET_WIDTH / 4 + 10, 4 * BMP_MPLANET_HEIGHT / 3 + 8);
 
             else
                 W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),
@@ -465,7 +484,7 @@ DrawPlanets ()
 #ifdef BEEPLITE
         if (useLite && emph_planet_seq_n[l->pl_no] > 0)
 	{
-	    int     seq_n = emph_planet_seq_n[l->pl_no] % emph_planet_seq_frames;
+	    int seq_n = emph_planet_seq_n[l->pl_no] % emph_planet_seq_frames;
             
             if (planetBitmapGalaxy == 3)
             {
@@ -890,7 +909,7 @@ map (void)
         if ((useLite && emph_player_seq_n[i] > 0)
 	  && (liteflag & LITE_PLAYERS_MAP))
 	{
-	    int     seq_n = emph_player_seq_n[i] % emph_player_seq_frames;
+	    int seq_n = emph_player_seq_n[i] % emph_player_seq_frames;
 
 	    W_WriteBitmap(dx - (emph_player_seq_width / 2 - 1),
 			  dy - (emph_player_seq_height / 2 + 1),

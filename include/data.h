@@ -47,6 +47,7 @@ extern struct memory universe;
 extern struct planet pdata[];
 
 extern unsigned int oldalert;
+extern int alertBorderColor;
 extern int remap[];
 extern int udcounter;
 extern char *title;
@@ -228,6 +229,7 @@ extern int showAllTractorPressor;
 extern int showLock;
 extern int planetBitmap;
 extern int planetBitmapGalaxy;
+extern int rotatePlanets;
 extern int logging;
 extern int continueTractor;
 extern int tcounter;
@@ -311,7 +313,10 @@ extern W_Icon fed_bitmapsHR[NUM_TYPES],
     ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
 
 // Planets
-extern W_Icon planet_unknown, mplanet_unknown;
+extern W_Icon planet_unknown_bitmap;
+extern W_Icon planet_unknown[CPLANET_VIEWS];
+extern W_Icon planet_unknown_NR;
+extern W_Icon mplanet_unknown;
 extern W_Icon planet_bitmaps[8], mplanet_bitmaps[8];
 extern W_Icon planet_earth[NUMTEAMS], planet_klingus[NUMTEAMS], planet_orion[NUMTEAMS],
     planet_romulus[NUMTEAMS], planet_agri1[NUMTEAMS], planet_agri2[NUMTEAMS],

@@ -886,9 +886,9 @@ repair_time (void)
             if ((planets[me->p_planet].pl_flags & PLREPAIR)
             &&(obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
                 me->p_subshield += me->p_ship.s_repair * 4;
-            if (me->p_flags & PFDOCK)
-    	        me->p_subshield += me->p_ship.s_repair * 6;
     	}
+    	if (me->p_flags & PFDOCK)
+    	    me->p_subshield += me->p_ship.s_repair * 6;
         /* Calculate time needed to repair shields */
         shieldrate = (float)(me->p_subshield)/(float)100.0;
         shieldtime = (int)(shieldneeded/shieldrate);
@@ -908,9 +908,9 @@ repair_time (void)
     	    if ((planets[me->p_planet].pl_flags & PLREPAIR)
     	    && (obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
     	        me->p_subdamage += me->p_ship.s_repair * 2;
-    	    if (me->p_flags & PFDOCK)
-    	        me->p_subdamage += me->p_ship.s_repair * 3;
     	}
+    	if (me->p_flags & PFDOCK)
+    	    me->p_subdamage += me->p_ship.s_repair * 3;
 	/* Calculate time needed to repair hull */
     	hullrate = (float)(me->p_subdamage)/(float)100.0;
         hulltime = (int)(hullneeded/hullrate);

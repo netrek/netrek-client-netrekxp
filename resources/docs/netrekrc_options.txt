@@ -202,6 +202,7 @@ romship1bmpfile:          (path) - new color bitmaps
 romshipGbmpfile:          (path) - your own ship's grayscale bitmaps
 romshipTbmpfile:          (path) - shaded color bitmaps
 romshipMbmpfile:          (path) - mono bitmaps
+rotatePlanets:            (on/off) rotate planets (only works with new planet bitmaps)
 saveFile:                 (path) path to saved options file
 saveBig:                  (on/off) save options with remarks
 saveBeeplite:             (on/off) save beeplite macros to saveFile

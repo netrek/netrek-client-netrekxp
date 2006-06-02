@@ -153,6 +153,10 @@
 
 // Untouched planet
 #define BMP_PLANET_UNKNOWN 9
+#define BMP_PLANET_UNKNOWN_NR 10
+
+// Map version of unknown planet
+#define BMP_PLANET_MUNKNOWN 11
 
 // Resources
 #define BMP_ARMYBMP 10
@@ -167,4 +171,4 @@
 #define BMP_CPLANET_WIDTH 120
 #define BMP_CPLANET_HEIGHT 120
 
-
+#define CPLANET_VIEWS 16

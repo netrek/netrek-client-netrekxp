@@ -1,5 +1,5 @@
 ;StampVer information file
-FileVersion=4.4.0.4
-ProductVersion=4.4.0.4
-;FileFormat=%a.%b.%c Build %04d (%td %tb %tY)
-;ProductFormat=%a.%b.%c Build %04d
+;FileVersion=1.0.0.0
+;ProductVersion=0.0.0.0
+;FileFormat=%a.%b.%c.%d
+;ProductFormat=%a.%b.%c.%d

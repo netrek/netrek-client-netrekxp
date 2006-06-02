@@ -35,7 +35,7 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
 #else
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 #endif
-
+static int planet_frame = 0;
 #ifdef SOUND
 static int sound_phaser = 0;
 static int sound_other_phaser = 0;
@@ -396,9 +396,14 @@ planetBitmapC (register struct planet *p)
         }
         return planet_bits[i];
     }
-    else
+    else // Unknown planet
     {
-        return planet_unknown;
+    	if ((planet_frame >= CPLANET_VIEWS - 1) || (planet_frame < 0))
+            planet_frame = 0;
+        if (rotatePlanets)
+            return planet_unknown[planet_frame];
+        else
+            return planet_unknown_NR;
     }
 }
 
@@ -560,10 +565,10 @@ DrawPlanets (void)
         }
         if (planetBitmap == 3) // Needs adjusting
         {
-            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8);
+            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8 + 1);
             clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6);
-            clearzone[2][clearcount] = 7 * BMP_PLANET_WIDTH / 4 + 1;
-            clearzone[3][clearcount] = 4 * BMP_PLANET_HEIGHT / 3 + 1;
+            clearzone[2][clearcount] = 7 * BMP_PLANET_WIDTH / 4 + 2;
+            clearzone[3][clearcount] = 4 * BMP_PLANET_HEIGHT / 3;
         }
         else
         {
@@ -574,6 +579,7 @@ DrawPlanets (void)
         }
         clearcount++;
     }
+    planet_frame++;
 }
 
 
@@ -994,8 +1000,8 @@ DrawShips (void)
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon,
                                playerColor (j), w);
-                if (!myPlayer (j))      /* if myplayer draw the
-                                         * shield */
+                if (!myPlayer (j) && !isObsLockPlayer(j))
+                /* if my player, or observing that player, draw the shield */
                     continue;
             }
 
@@ -1005,7 +1011,7 @@ DrawShips (void)
 	    if ((useLite && emph_player_seq_n[j->p_no] > 0)
 	      && (liteflag & LITE_PLAYERS_LOCAL))
 	    {
-	        int     seq_n = emph_player_seq_n[j->p_no] % emph_player_seql_frames;
+	        int seq_n = emph_player_seq_n[j->p_no] % emph_player_seql_frames;
 	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
 			       dy - (emph_player_seql_height / 2),
 			       emph_player_seql[seq_n],
@@ -1648,7 +1654,7 @@ DrawShips (void)
                     }
                 }
             }
-            else if (!(j->p_flags & PFPRESS || j->p_flags & PFTRACT))
+            else if ((myPlayer(j) || isObsLockPlayer(j))&& !(j->p_flags & PFPRESS || j->p_flags & PFTRACT))
                 tcounter = 2;
         }
     }
@@ -2193,7 +2199,6 @@ DrawMisc (void)
     int ex, ey, sx, sy;
 #endif
 
-
 #ifdef HOCKEY_LINES
     if (showHockeyLinesLocal && hockey_mode ())
         for (sl = local_hockey_lines + NUM_HOCKEY_LINES - 1;
@@ -2344,12 +2349,10 @@ DrawMisc (void)
             {
                 W_ChangeBorder (w, gColor);
                 W_ChangeBorder (mapw, gColor);
+                alertBorderColor = gColor;
             }
             else
-            {
-                W_ChangeBorder (w, W_White);
-                W_ChangeBorder (mapw, W_White);
-            }
+                alertBorderColor = W_White;
             W_ChangeBorder (baseWin, gColor);
 
 #if defined(SOUND)
@@ -2369,12 +2372,10 @@ DrawMisc (void)
             {
                 W_ChangeBorder (w, yColor);
                 W_ChangeBorder (mapw, yColor);
+                alertBorderColor = yColor;
             }
             else
-            {
-                W_ChangeBorder (w, W_White);
-                W_ChangeBorder (mapw, W_White);
-            }
+                alertBorderColor = W_White;
             W_ChangeBorder (baseWin, yColor);
 
 #if defined(SOUND)
@@ -2398,12 +2399,10 @@ DrawMisc (void)
             {
                 W_ChangeBorder (w, rColor);
                 W_ChangeBorder (mapw, rColor);
+                alertBorderColor = rColor;
             }
             else
-            {
-                W_ChangeBorder (w, W_White);
-                W_ChangeBorder (mapw, W_White);
-            }
+                alertBorderColor = W_White;
             W_ChangeBorder (baseWin, rColor);
             
 #if defined(SOUND)
@@ -2415,6 +2414,12 @@ DrawMisc (void)
 
             break;
         }
+    }
+    /* Force a border redraw */
+    else
+    {
+    	W_ChangeBorder (w, alertBorderColor);
+    	W_ChangeBorder (mapw, alertBorderColor);
     }
 
 #if defined(SOUND)

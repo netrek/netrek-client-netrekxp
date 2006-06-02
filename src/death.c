@@ -54,11 +54,12 @@ death (void)
         {
             W_ChangeBorder (w, gColor);
             W_ChangeBorder (mapw, gColor);
+            alertBorderColor = gColor;
         }
+        else
+            alertBorderColor = W_White;
         W_ChangeBorder (baseWin, gColor);
         oldalert = PFGREEN;
-        if (doubleBuffering)  /* Force a border refresh */
-            oldalert = 0;
     }
     if (W_IsMapped (statwin))
     {

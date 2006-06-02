@@ -1,3 +1,9 @@
+As Windows 95/98/ME user, please use the executable labeled netrek9598ME, rather than
+netrek.  The reason for two executables is due to a font resource problem, that requires
+the client to be compiled different to work on older vs newer operating systems.
+I acknowledge this is not the best solution, I will try to have it fixed in a future
+version.
+
 The following options will NOT work with Windows 95/98/ME.  In fact, they are very
 likely to crash the client, so do not use them.
 

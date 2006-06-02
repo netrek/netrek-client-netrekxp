@@ -445,6 +445,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"rotatePlanets", &rotatePlanets, RC_BOOL,
+        {
+            "Rotate planets (only works with new planet bitmaps)",
+            NULL
+        }
+    },
     {"saveBig", &saveBig, RC_BOOL,
         {
             "Save options with comments",

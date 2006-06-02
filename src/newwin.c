@@ -637,12 +637,25 @@ void loadplanetsC()
                             BMP_CPLANET_HEIGHT);
     }
                         
-    /* Load the unknown planet bitmap */
-    planet_unknown =
+    /* Load the rotating unknown planet bitmap */
+    planet_unknown_bitmap =
         W_StoreBitmap3 ("bitmaps/planlibm/color/unknown.bmp",
-                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_UNKNOWN, w,
-                        LR_DEFAULTCOLOR);
+                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT * CPLANET_VIEWS,
+                        BMP_PLANET_UNKNOWN, w, LR_DEFAULTCOLOR);
     
+    /* Make pointers to the rotating unknown bitmaps */
+    for (j = 0; j < CPLANET_VIEWS; j++)
+    {
+    	planet_unknown[j] =
+    	    W_PointBitmap2 (planet_unknown_bitmap, 0, j, BMP_CPLANET_WIDTH,
+                            BMP_CPLANET_HEIGHT);
+    }
+    /* Load the non-rotating unknown planet bitmap - use map version of bitmap */
+    planet_unknown_NR =
+        W_StoreBitmap3 ("bitmaps/planlibm/color/munknown.bmp",
+                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_UNKNOWN_NR, w,
+                        LR_DEFAULTCOLOR);
+
     /* Load the resource bitmaps */
     army_bitmap =
         W_StoreBitmap3 ("bitmaps/planlibm/color/army.bmp",
@@ -728,11 +741,11 @@ void loadmplanetsC()
     	    W_PointBitmap2 (mplanet_bitmaps[7], j, 0, BMP_CPLANET_WIDTH,
                             BMP_CPLANET_HEIGHT);
     }
-                        
+
     /* Load the unknown planet bitmap */
     mplanet_unknown =
-        W_StoreBitmap3 ("bitmaps/planlibm/color/unknown.bmp",
-                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_UNKNOWN, mapw,
+        W_StoreBitmap3 ("bitmaps/planlibm/color/munknown.bmp",
+                        BMP_CPLANET_WIDTH, BMP_CPLANET_HEIGHT, BMP_PLANET_MUNKNOWN, mapw,
                         LR_DEFAULTCOLOR);
     
     /* Load the resource bitmaps */
@@ -1082,6 +1095,7 @@ savebitmaps (void)
 
     planetBitmap = intDefault ("planetBitmap", planetBitmap);
     planetBitmapGalaxy = intDefault ("planetBitmapGalaxy", planetBitmapGalaxy);
+    rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
     loadplanetsC();  // Always load new color planet bitmaps..for now
     loadmplanetsC();
     switch (planetBitmap) // Case 3 = new color, but we never use Planlib
@@ -2035,7 +2049,7 @@ redrawTeam (W_Window win,
 void
 redrawQuit (void)
 {
-    W_WriteText (qwin, 5, 5, textColor, "Quit NetrekXP", 13, W_RegularFont);
+    W_WriteText (qwin, 5, 5, textColor, "Quit Netrek XP", 14, W_RegularFont);
 }
 
 #define CLOCK_BDR       0
@@ -2092,7 +2106,7 @@ showTimeLeft (time_t time, time_t max)
         ty = 2*(cy - W_Textheight / 2)/3;
         W_MaskText (qwin, tx, ty, W_Black, buf, strlen (buf), W_RegularFont);
 
-        cp = "Quit NetrekXP";
+        cp = "Quit Netrek XP";
     }
     else
     {

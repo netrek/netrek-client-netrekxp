@@ -61,6 +61,7 @@ int gen_distress = 0;           /* generic distress/macro
                                  * system support */
 int niftyNewMessages = 1;
 unsigned int oldalert = 0;
+int alertBorderColor = 0;
 int remap[16] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
 int messpend = 0;
 #ifdef XTRA_MESSAGE_UI
@@ -107,6 +108,7 @@ int msgBeep = 1;                /* ATM - msg beep */
 
 int planetBitmap = 0;
 int planetBitmapGalaxy = 0;
+int rotatePlanets = 1;
 
 int logging = 0;
 int continueTractor = 1;
@@ -209,7 +211,7 @@ int SBhours = 0;
 
 #ifdef SHORT_PACKETS
 int why_dead = 0;
-int tryShort = 0;               /* for .xtrekrc option */
+int tryShort = 1;               /* for .xtrekrc option */
 int tryShort1 = 0;
 int recv_short = 0;
 int recv_mesg = 1;
@@ -313,7 +315,10 @@ W_Icon fed_bitmapsHR[NUM_TYPES],
     ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
 
 // Planets
-W_Icon planet_unknown, mplanet_unknown;
+W_Icon planet_unknown_bitmap;
+W_Icon planet_unknown[CPLANET_VIEWS];
+W_Icon planet_unknown_NR;
+W_Icon mplanet_unknown;
 W_Icon planet_bitmaps[8], mplanet_bitmaps[8];
 W_Icon planet_earth[NUMTEAMS], planet_klingus[NUMTEAMS], planet_orion[NUMTEAMS],
     planet_romulus[NUMTEAMS], planet_agri1[NUMTEAMS], planet_agri2[NUMTEAMS],

@@ -233,6 +233,9 @@ rejectMacro: off
 # Report kills
 reportKills: on
 
+# Rotate planets (only works with new planet bitmaps)
+rotatePlanets: on
+
 # Save options with comments
 saveBig: on
 
@@ -675,6 +678,12 @@ sound.mapped:           off
 # Keys that will trigger macro without going to macro mode
 singleMacro: EF
 
+macro.0.A:%    __    __   ______        __     Want to see some better graphics?
+macro.0.A:%   /  \  / /__/_  __/______ / /__   Want a better sounding client?
+macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/   
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.0
+macro.0.A:%          Get it today at http://www.netrek.org
+
 macro.a.A:.          o                        Just         |    Squeal boy...
 macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
 macro.a.A:.       o  )/                       Wrong (tm)   |    hog!
@@ -786,12 +795,6 @@ macro.T.A:%       .][__n_n_|DD[  ====_____    when the clue
 macro.T.A:%      >(________|__|_[_________]_   train rolls by try
 macro.T.A:%      _/oo OOOOO oo`  ooo   ooo      to hop on board!
 macro.T.A:%     -+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-macro.0.A:%                ***PUBLIC SERVICE ANNOUNCEMENT***
-macro.0.A:%  Hit shift O (that's O the letter, not zero) to bring up the netrek 
-macro.0.A:%  menus. You will be on page zero.  See the bar that says updates
-macro.0.A:%  per second? If it doesn't say 10 updates per second, you should
-macro.0.A:%  change it! Click on the box until it gets to 10 updates per second!
 
 macro.1.A:%                    |\__/,|   (`\
 macro.1.A:%           Mew! -   |o o  |__ _) )   I'm coming after you,

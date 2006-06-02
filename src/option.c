@@ -279,6 +279,7 @@ struct option Planet_Menu[] = {
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
     {1, "", &planetBitmapGalaxy, 0, 0, 0, planetbitmapgalaxymess, &planetbitmapgalaxyrange},
+    {1, "rotate planets (new planets only)", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
@@ -903,7 +904,6 @@ optionaction (W_Event * data)
             W_ClearWindow (w);
             W_ClearWindow (mapw);
             redrawall = 1;
-            oldalert = 0; /* Force a border refresh */
         }
         else if (op->op_option == &partitionPlist)
             RedrawPlayerList ();

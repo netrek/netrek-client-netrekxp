@@ -24,6 +24,8 @@ actually, they do get the whydead, but it's somehow after they are sent to quit 
 When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
 3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
+4) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
+or twarpers
 
 Things that are sorta fixed, but could use improvement:
 1) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
@@ -33,6 +35,7 @@ Things that are sorta fixed, but could use improvement:
 is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
 4) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
+5) planet resource placement and refresh (for new planet bitmaps) will need adjusting if local is scaled
 
 Things to do:
 1) Add warning hull.
@@ -49,8 +52,8 @@ closeable by shift right click.
 8) Is there a cpu leak with double buffering?
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-10) mono kil scout rotation seems off
-11) Get square planet bitmaps from defcom so I can turn them into mapped rotating globes.
+10) Get square planet bitmaps so I can turn them into mapped rotating globes.
+11) more transparent det circle
 
 Stas's list:
 - color coded playerlist.

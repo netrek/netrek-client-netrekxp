@@ -566,7 +566,11 @@ W_Cleanup (void)
     free (planet_bitmaps[5]);
     free (planet_bitmaps[6]);
     free (planet_bitmaps[7]);
-    free (planet_unknown);
+    for (i = 0; i < CPLANET_VIEWS; i++)
+    {
+        free (planet_unknown[i]);
+    }
+    free (planet_unknown_NR);
     free (mplanet_bitmaps[0]);
     free (mplanet_bitmaps[1]);
     free (mplanet_bitmaps[2]);
@@ -576,7 +580,7 @@ W_Cleanup (void)
     free (mplanet_bitmaps[6]);
     free (mplanet_bitmaps[7]);
     free (mplanet_unknown);
-    
+
     free (army_bitmap);
     free (marmy_bitmap);
     free (wrench_bitmap);
@@ -3129,7 +3133,7 @@ W_MakeTractLine (W_Window window,
     register int Md /* Major direction */ , md; /* minor direction */
 /* 3 blank, 1 solid... etc. -SAC */
     int dashdesc[] = { 10, 1 };
-
+    RECT r;
     DBHEADER_VOID;
 
     dashdesc[0] = tpDotDist;
@@ -3146,7 +3150,7 @@ W_MakeTractLine (W_Window window,
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
-
+    
     border = win->border;
     x0 += border;
     y0 += border;
@@ -3154,6 +3158,12 @@ W_MakeTractLine (W_Window window,
     y1 += border;
     d2 = abs (x0 - x1);
     d3 = abs (y0 - y1);
+    // Get cliprect so tractor lines don't overdraw border
+    r.left = border;
+    r.right = win->ClipRect.right;
+    r.top = border;
+    r.bottom = win->ClipRect.bottom;
+
     if (d2 > d3)
     {
         /* Major axis is x */
@@ -3170,7 +3180,7 @@ W_MakeTractLine (W_Window window,
 
         while ((Md == 1 ? x0 <= x1 : x0 >= x1))
         {
-            if (dp & 1)         // An odd number
+            if (dp & 1 && (x0 > r.left && x0 < r.right))         // An odd number
                 SetPixel (hdc, x0, y0, colortable[color].rgb);
             dc--;
             if (dc < 1)
@@ -3210,7 +3220,7 @@ W_MakeTractLine (W_Window window,
 
         while ((Md == 1 ? y0 <= y1 : y0 >= y1))
         {
-            if (dp & 1)         // An odd number
+            if (dp & 1 && (y0 > r.top && y0 < r.bottom))         // An odd number
                 SetPixel (hdc, x0, y0, colortable[color].rgb);
             dc--;
             if (dc < 1)

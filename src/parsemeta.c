@@ -435,7 +435,7 @@ ReadFromMeta (int statusLevel)
     }
 
     free (sockbuf);
-    metaWindowName = "NetrekXP MetaServer List";
+    metaWindowName = "Netrek XP 2006 MetaServer List";
 
     return 1;
 }
