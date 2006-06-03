@@ -104,31 +104,6 @@ redraw (void)
         W_ClearArea (warnw, 5, 5, W_Textwidth * warncount, W_Textheight);
         warncount = 0;
     }
-    
-#ifdef BEEPLITE
-    if (tts_timer)
-    {
-        tts_timer--;
-        if (!tts_timer)
-	{
-	    /* timed out */
-	    W_EraseTTSText(w, last_tts_xpos, tts_ypos, last_tts_width);
-	    last_tts_width = 0;
-	}
-        else if (tts_timer == tts_time - 1 && last_tts_width)
-	{
-	    /* first draw -- erase previous */
-	    W_EraseTTSText(w, last_tts_xpos, tts_ypos, last_tts_width);
-	    /* draw new */
-	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
-	}
-        else
-	{
-	    /* regular draw */
-	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
-	}
-    }
-#endif
 
     local ();                   /* redraw local window */
 

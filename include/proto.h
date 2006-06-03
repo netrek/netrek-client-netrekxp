@@ -739,10 +739,6 @@ void W_OverlayScaleBitmap (int x,
                            W_Icon icon,
                            W_Color color,
                            W_Window window);
-void W_EraseTTSText  (W_Window window,
-		      int last_tts_xpos,
-		      int tts_ypos,
-		      int last_tts_width);
 void W_WriteTTSText  (W_Window window,
 		     int max_width,
 		     int tts_ypos,

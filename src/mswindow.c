@@ -711,7 +711,7 @@ W_Initialize (char *display)
 #endif
 
     //Register our class
-	wc.cbSize = sizeof(WNDCLASSEX);
+    wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_NOCLOSE | CS_HREDRAW | CS_VREDRAW;    //Don't allow them to close windows 
     wc.lpfnWndProc = NetrekWndProc;
     wc.cbClsExtra = 0;
@@ -5278,26 +5278,17 @@ W_OverlayScaleBitmap (int x,
 }
 
 #ifdef BEEPLITE
-void W_EraseTTSText(W_Window window, int last_tts_xpos, int tts_ypos, int last_tts_width)
-{
-    tts_ypos -= W_Textheight;
 
-    last_tts_xpos -= 3;
-    last_tts_width += 3;
-
-    W_ClearArea(window, last_tts_xpos, tts_ypos, last_tts_width, W_Textheight);
-}
-
-void W_WriteTTSText(W_Window window, int max_width, int tts_ypos, char *str, int len)
+void W_WriteTTSText(W_Window window, int max_width, int y, char *str, int len)
 {
     register int x;
-    HDC hdc;
+    register int border;
     SIZE ext;
-    FNHEADER_VOID;
+    DBHEADER_VOID;
 
-    tts_ypos -= W_Textheight;
-
-    hdc = GetDC(win->hwnd);
+    y -= W_Textheight;
+    border = win->border;
+    
     if (NetrekPalette)
     {
         SelectPalette(hdc, NetrekPalette, FALSE);
@@ -5306,14 +5297,18 @@ void W_WriteTTSText(W_Window window, int max_width, int tts_ypos, char *str, int
   
     SetTextColor(hdc, colortable[GREY].rgb);
     SetBkMode(hdc, TRANSPARENT);
+    SelectObject (hdc, (HFONT) W_HighlightFont);
     GetTextExtentPoint32 (hdc, str, len, &ext);
     x = (max_width - ext.cx)/2; 
-    if (x < 0)
-        x = 4;
-    TextOut(hdc, x, tts_ypos, str, len);
-    ReleaseDC(win->hwnd, hdc);
-    last_tts_xpos = x;
+    x += border;
+    y += border;
+
+    ExtTextOut (hdc, x, y, ETO_CLIPPED | ETO_OPAQUE, NULL, str, len, NULL);
+    last_tts_xpos = x - border;
     last_tts_width = ext.cx;
+
+    if (!sdb || !doubleBuffering || !ingame)
+        ReleaseDC (win->hwnd, hdc);
 }
 #endif
 

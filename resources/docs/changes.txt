@@ -1,4 +1,7 @@
 Version 1.1:
+- fixed beeplite TTS with detcircle and doublebuffering, at the same time rewriting the
+  text messaging code to display and clear text in a more intelligent fashion
+- fixed beeplite sounds with newSound
 - hopefully fixed redraw problem with beeplite not refreshing planets on the planet map
 
 Netrek XP 2006, Version 1.0: (Released 01-Jun-2006)

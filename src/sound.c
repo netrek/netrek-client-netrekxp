@@ -111,6 +111,8 @@ int loadSounds(void) {
   newsounds[OTHER_FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
   newsounds[INTRO_WAV] = Mix_LoadWAV(DATAFILE("nt_intro.wav"));
   newsounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
+  newsounds[MESSAGE1_WAV] = Mix_LoadWAV(DATAFILE("nt_message1.wav"));
+  newsounds[MESSAGE2_WAV] = Mix_LoadWAV(DATAFILE("nt_message2.wav"));
   newsounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
   newsounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
   newsounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));

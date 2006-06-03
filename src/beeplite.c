@@ -204,49 +204,89 @@ makelite(struct distress * dist, char *pm)
 		}
 	        break;
 
-/* The sound files don't even exist in standard client, and
-   are not loaded into SDL library currently - can change at
-   a later time. */
+/* SDL sounds sent to default (MESSAGE_WAV) for sounds not in client yet */
 #ifdef SOUND
-            if (!newSound)
-            {
 	    case '1':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE1_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE1_WAV);
+	          else
+		    Play_Sound(MESSAGE1_SOUND);
+		}
 	        break;
 	    case '2':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE2_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE2_WAV);
+	          else
+		    Play_Sound(MESSAGE2_SOUND);
+		}
 	        break;
 	    case '3':
   	        if (F_beeplite_flags & LITE_SOUNDS)
-	  	  Play_Sound(MESSAGE3_SOUND);
+  	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE3_SOUND);
+		}
 	        break;
 	    case '4':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE4_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE4_SOUND);
+		}
 	        break;
 	    case '5':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE5_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE5_SOUND);
+		}
 	        break;
 	    case '6':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE6_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE6_SOUND);
+		}
 	        break;
 	    case '7':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE7_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE7_SOUND);
+		}
 	        break;
 	    case '8':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE8_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE8_SOUND);
+		}
 	        break;
 	    case '9':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-		  Play_Sound(MESSAGE9_SOUND);
+	        {
+	          if (newSound)
+	            Play_Sound(MESSAGE_WAV);
+	          else
+		    Play_Sound(MESSAGE9_SOUND);
+		}
 	        break;
-            }
 #endif
 
 	      /* Text between:  /|    |   will be displayed with TTS */

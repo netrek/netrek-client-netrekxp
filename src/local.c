@@ -1120,7 +1120,29 @@ DrawShips (void)
                     clearcount++;
                 }
             }
-            
+      
+#ifdef BEEPLITE
+            if (tts_timer)
+            {
+            	tts_timer--;
+            	if (!tts_timer)
+            	{
+            	    /* timed out */
+            	    last_tts_width = 0;
+            	}
+            	else
+            	{
+            	    /* draw */
+            	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
+            	    clearzone[0][clearcount] = last_tts_xpos;
+                    clearzone[1][clearcount] = tts_ypos - W_Textheight;
+                    clearzone[2][clearcount] = last_tts_width;
+                    clearzone[3][clearcount] = W_Textheight;
+                    clearcount++;
+                }
+            }
+#endif
+
             if (j->p_flags & PFCLOAK)   /* when cloaked stop here */
                 continue;
 

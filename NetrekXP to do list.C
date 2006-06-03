@@ -15,6 +15,7 @@ away, etc).  Don't think this is fixable.
 6) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.
+7) xtkill team and teleport not working right
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
@@ -53,7 +54,9 @@ closeable by shift right click.
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
 10) Get square planet bitmaps so I can turn them into mapped rotating globes.
-11) more transparent det circle
+12) phaser burst % not working right with short packet and ATT
+14) ships near newplanets blink in and out of galactic
+15) bug with lock icon and new get planet orbit code
 
 Stas's list:
 - color coded playerlist.
