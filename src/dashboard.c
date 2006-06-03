@@ -860,6 +860,7 @@ repair_time (void)
     int hulltime = 0;
     int shieldneeded, hullneeded;
     float shieldrate = 0.0, hullrate = 0.0;
+    short planet;
     struct player *plr;
 
     if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
@@ -882,9 +883,9 @@ repair_time (void)
             /* And since observers don't get war flags, assume that if ship is orbiting a repair
     	       planet in repair mode, the planet is friendly - best we can do until server
     	       sends us more info */
-            me->p_planet = get_closest_planet(me->p_x, me->p_y);
-            if ((planets[me->p_planet].pl_flags & PLREPAIR)
-            &&(obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+            planet = get_closest_planet(me->p_x, me->p_y);
+            if ((planets[planet].pl_flags & PLREPAIR)
+            &&(obs || !(planets[planet].pl_owner & (plr->p_swar | plr->p_hostile))))
                 me->p_subshield += me->p_ship.s_repair * 4;
     	}
     	if (me->p_flags & PFDOCK)
@@ -904,9 +905,9 @@ repair_time (void)
     	    /* And since observers don't get war flags, assume that if ship is orbiting a repair
     	       planet in repair mode, the planet is friendly - best we can do until server
     	       sends us more info */
-            me->p_planet = get_closest_planet(me->p_x, me->p_y);
-    	    if ((planets[me->p_planet].pl_flags & PLREPAIR)
-    	    && (obs || !(planets[me->p_planet].pl_owner & (plr->p_swar | plr->p_hostile))))
+            planet = get_closest_planet(me->p_x, me->p_y);
+    	    if ((planets[planet].pl_flags & PLREPAIR)
+    	    && (obs || !(planets[planet].pl_owner & (plr->p_swar | plr->p_hostile))))
     	        me->p_subdamage += me->p_ship.s_repair * 2;
     	}
     	if (me->p_flags & PFDOCK)

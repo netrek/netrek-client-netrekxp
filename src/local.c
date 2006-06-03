@@ -528,7 +528,7 @@ DrawPlanets (void)
         }
         
         if (showArmy && (me->p_flags & PFORBIT)
-        && (me->p_planet = get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+        && (get_closest_planet(me->p_x, me->p_y) == l->pl_no))
         {
             char armbuf[4];
             int armbuflen;

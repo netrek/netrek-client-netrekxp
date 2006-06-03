@@ -1,4 +1,7 @@
 Version 1.1:
+- fixed bug with lock icon and orbiting
+- fixed short packet phaser stats for phaser hits > 1024 damage (only noticeable with ATTs,
+  server sends phaser hit packet as long packet instead)
 - fixed beeplite TTS with detcircle and doublebuffering, at the same time rewriting the
   text messaging code to display and clear text in a more intelligent fashion
 - fixed beeplite sounds with newSound

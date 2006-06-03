@@ -15,7 +15,6 @@ away, etc).  Don't think this is fixable.
 6) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.
-7) xtkill team and teleport not working right
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
@@ -27,6 +26,11 @@ When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
 send headings of 16 positions.
 4) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
 or twarpers
+5) More detail on problem with whydead not updating with SP on.  It's not just an observer thing,
+for players too, the first update where pstatus changes, whydead is not sent.  Only on 2nd update.
+Now for regular players, not a problem, as they get several explosion updates on geno, so on 2nd explosion
+frame they get the proper whydead.  But observers just go to quit screen.  So they don't have updated
+whydead until next update.
 
 Things that are sorta fixed, but could use improvement:
 1) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
@@ -54,9 +58,7 @@ closeable by shift right click.
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
 10) Get square planet bitmaps so I can turn them into mapped rotating globes.
-12) phaser burst % not working right with short packet and ATT
-14) ships near newplanets blink in and out of galactic
-15) bug with lock icon and new get planet orbit code
+11) ships near newplanets blink in and out of galactic
 
 Stas's list:
 - color coded playerlist.
