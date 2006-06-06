@@ -380,6 +380,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"planetHighlighting", &planetHighlighting, RC_BOOL,
+        {
+            "Highlight galactic planets by race and army status",
+            NULL
+        }
+    },
     {"playerListHack", &playerListHack, RC_BOOL,
         {
             "Suppose that players with letter greater than \'f\' are observers",

@@ -279,6 +279,7 @@ struct option Planet_Menu[] = {
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
     {1, "", &planetBitmapGalaxy, 0, 0, 0, planetbitmapgalaxymess, &planetbitmapgalaxyrange},
+    {1, "highlight planets", &planetHighlighting, 0, 0, 0, NULL, NULL},
     {1, "rotate planets (new planets only)", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
@@ -875,7 +876,7 @@ optionaction (W_Event * data)
         /* Actions to be taken when certain options are selected.
          * (Yes, this is a hack). */
 
-        if (op->op_option == &showPlanetOwner)
+        if (op->op_option == &showPlanetOwner || op->op_option == &planetHighlighting)
             redrawall = 1;
 #ifdef HOCKEY_LINES
         else if (op->op_option == &showHockeyLinesMap)

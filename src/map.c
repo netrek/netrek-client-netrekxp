@@ -310,7 +310,7 @@ mplanetBitmapC (register struct planet *p)
     	    else // This should never be called
     	        mplanet_bits = mplanet_rock1;
     	}
-    	else if (p->pl_flags & PLCORE) // Not functional yet due to server
+    	else if (p->pl_flags & PLCORE)
     	{
     	    if (p->pl_flags & PLAGRI)
     	        mplanet_bits = mplanet_agri1;
@@ -545,10 +545,14 @@ DrawPlanets ()
             W_WriteBitmap (dx - (BMP_MPLANET_WIDTH / 2),
                              dy - (BMP_MPLANET_HEIGHT / 2), planetmBitmap (l),
                              planetColor (l), mapw);
+
         }
 #ifdef BEEPLITE
 	}
 #endif
+        if (planetHighlighting) /* Draw halo */
+            W_WriteCircle(mapw, dx, dy, BMP_MPLANET_WIDTH / 2,
+                          l->pl_armies > 4 ? 1 : 0, planetColor(l));
 
         if ((l->pl_flags & PLAGRI) && (l->pl_info & me->p_team))
         {

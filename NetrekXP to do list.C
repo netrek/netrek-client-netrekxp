@@ -58,14 +58,14 @@ closeable by shift right click.
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
 10) Get square planet bitmaps so I can turn them into mapped rotating globes.
-11) ships near newplanets blink in and out of galactic
+11) ships at warp 0 near newplanets blink in and out of galactic
 12) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.
 13) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
-14) check why planet bitmaps (angle = 0) don't draw right on win98
+14) fix the 2 message sounds that don't convert right to 22 KHz
 
 Stas's list:
 - color coded playerlist.

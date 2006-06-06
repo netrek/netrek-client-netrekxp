@@ -596,6 +596,7 @@ void W_WriteCircle (W_Window window,
                     int x,
                     int y,
                     int r,
+                    int highlight,
                     W_Color color);
 void W_WriteTriangle (W_Window window,
                       int x,

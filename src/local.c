@@ -364,7 +364,7 @@ planetBitmapC (register struct planet *p)
     	    else // This should never be called
     	        planet_bits = planet_rock1;
     	}
-    	else if (p->pl_flags & PLCORE) // Not functional yet due to server
+    	else if (p->pl_flags & PLCORE)
     	{
     	    if (p->pl_flags & PLAGRI)
     	        planet_bits = planet_agri1;
@@ -1112,7 +1112,7 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, W_Red);         
+                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, W_Red);         
                     clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
                     clearzone[1][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
                     clearzone[2][clearcount] = 2*DETDIST/SCALE;

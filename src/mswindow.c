@@ -3309,6 +3309,7 @@ void W_WriteCircle (W_Window window,
                     int x,
                     int y,
                     int r,
+                    int highlight,
                     W_Color color)
 {
     DBHEADER_VOID;
@@ -3321,11 +3322,16 @@ void W_WriteCircle (W_Window window,
         SelectPalette (hdc, NetrekPalette, FALSE);
         RealizePalette (hdc);
     }
+
     SelectObject (hdc, colortable[color].pen);
     SelectObject (hdc, GetStockObject (NULL_BRUSH));
 
     Ellipse (hdc, x - r, y - r, x + r, y + r);
-
+    if (highlight) // Add extra white circle
+    {
+        SelectObject (hdc, colortable[W_White].pen);
+        Ellipse (hdc, x - r - 1, y - r - 1, x + r + 1, y + r + 1);
+    }
     if (!sdb || !doubleBuffering || !ingame)
         ReleaseDC (win->hwnd, hdc);
 }

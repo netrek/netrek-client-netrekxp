@@ -108,6 +108,7 @@ int msgBeep = 1;                /* ATM - msg beep */
 
 int planetBitmap = 0;
 int planetBitmapGalaxy = 0;
+int planetHighlighting = 0;
 int rotatePlanets = 1;
 
 int logging = 0;

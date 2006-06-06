@@ -144,6 +144,7 @@ planetBitmapGalaxy:       (0-3) what bitmaps to use for galaxy planets
 # 2 - Rabbitear
 # 3 - New color
 
+planetHighlighting:       (on/off) highlight galactic planets by race and army status
 playerList:               (string) custom style of player list
 # ' ' - White Space
 # 'b' - Armies Bombed

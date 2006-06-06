@@ -197,6 +197,9 @@ planetBitmap: 3
 # 3 - New color
 planetBitmapGalaxy: 3
 
+# Highlight galactic planets by race and army status
+planetHighlighting: on
+
 # Suppose that players with letter greater than 'f' are observers
 playerListHack: off
 
@@ -885,7 +888,7 @@ dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtm
 
 # Beeplite macros
 lite.take: /c/l
-lite.base_ogg: /g/m
+lite.base_ogg: /g/m/1/|OGG THE BASE!|
 lite.pickup: /p
 lite.help: %?%S=SB%{/c%}%?%a>0%{/c%}
 

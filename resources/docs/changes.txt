@@ -1,4 +1,7 @@
 Version 1.1:
+- added "planetHighlighting: on/(off)" to draw a circle around the galaxy planet in the
+  color of the team owner, and a 2nd white circle if planet has more than 4 armies.  Mostly
+  useful for new planets to easier tell race owner, and army status at a quick glance.
 - changed newQuit from default on to off
 - fixed a few bugs in scaled bitmap writing function, has the added bonus of making
   the new planet bitmaps work in Win95/98/ME

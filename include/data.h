@@ -229,6 +229,7 @@ extern int showAllTractorPressor;
 extern int showLock;
 extern int planetBitmap;
 extern int planetBitmapGalaxy;
+extern int planetHighlighting;
 extern int rotatePlanets;
 extern int logging;
 extern int continueTractor;
