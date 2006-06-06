@@ -227,7 +227,7 @@ int updatesPerSec = 10;
 #ifdef META
 /* Metaservers list */
 char *metaServer[] = {"metaserver.us.netrek.org",
-                      "metaserever2.us.netrek.org"};
+                      "metaserver2.us.netrek.org"};
 int metaPort = 3521;
 char *metaCache = NULL;
 #ifdef METAPING

@@ -1506,7 +1506,7 @@ entrywindow (int *team,
             case 'g':
                 *s_type = SGALAXY;
                 break;
-            case 'X':
+            case '*':
                 *s_type = ATT;
                 break;
             case 'a':

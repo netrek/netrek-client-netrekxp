@@ -746,7 +746,7 @@ metaaction (W_Event * data)
     int sock;
     char buf[80];
     struct servers *slist;
-	int x;
+    int x;
 
 #ifdef DEBUG
     LineToConsole ("Got meta window action, y=%d\n", data->y);
@@ -761,12 +761,12 @@ metaaction (W_Event * data)
             LineToConsole ("Attempting to observe on port %d...\n", xtrekPort);
         }
         serverName = strdup (slist->address);
-		serverType = metaGetServerType (slist->typeflag);
+	serverType = metaGetServerType (slist->typeflag);
 
 #ifdef RSA
         useRsa = slist->RSA_client;
 #endif
-		slist->status = statusConnecting;
+	slist->status = statusConnecting;
         metarefresh (data->y);
 
         LineToConsole ("Checking %s on port %d\n", serverName, xtrekPort);
@@ -785,25 +785,25 @@ metaaction (W_Event * data)
         }
     }
     else if (data->y == num_servers) /* Quit selected */
-	{
-		W_WriteText (metaWin, 0, num_servers, W_Yellow, "Quit", 4, 0);
-		metadone();
+    {
+	W_WriteText (metaWin, 0, num_servers, W_Yellow, "Quit", 4, 0);
+	metadone();
         terminate (0);
-	}
-	else if (data->y == num_servers + 1) /* Help Line */
-	{
-		x = data->x / W_Textwidth;
-		if (x >= 0 && x <= 19)			/* Netrek Home Page */
-			ShellExecute (NULL, "open", "http://www.netrek.org", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 21 && x <= 35)	/* Newbie Manual */
-			ShellExecute (NULL, "open", "http://genocide.netrek.org/beginner/newbie.php", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 37 && x <= 43)	/* Forums */
-			ShellExecute (NULL, "open", "http://groups-beta.google.com/group/rec.games.netrek", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 45 && x <= 49)	/* FAQ */
-			ShellExecute (NULL, "open", "http://www.inl.org/netrek/netrekFAQ.html", NULL, NULL, SW_SHOWNORMAL);
-		else if (x >= 51 && x <= 67)	/* Dogfight Manual */
-			ShellExecute (NULL, "open", "http://cha.rlie.nl/dfmanual/", NULL, NULL, SW_SHOWNORMAL);
-	}
+    }
+    else if (data->y == num_servers + 1) /* Help Line */
+    {
+	x = data->x / W_Textwidth;
+	if (x >= 0 && x <= 19)			/* Netrek Home Page */
+		ShellExecute (NULL, "open", "http://www.netrek.org", NULL, NULL, SW_SHOWNORMAL);
+	else if (x >= 21 && x <= 35)	/* Newbie Manual */
+		ShellExecute (NULL, "open", "http://genocide.netrek.org/beginner/newbie.php", NULL, NULL, SW_SHOWNORMAL);
+	else if (x >= 37 && x <= 43)	/* Forums */
+		ShellExecute (NULL, "open", "http://groups-beta.google.com/group/rec.games.netrek", NULL, NULL, SW_SHOWNORMAL);
+	else if (x >= 45 && x <= 49)	/* FAQ */
+		ShellExecute (NULL, "open", "http://www.inl.org/netrek/netrekFAQ.html", NULL, NULL, SW_SHOWNORMAL);
+	else if (x >= 51 && x <= 67)	/* Dogfight Manual */
+		ShellExecute (NULL, "open", "http://cha.rlie.nl/dfmanual/", NULL, NULL, SW_SHOWNORMAL);
+    }
 }
 
 
@@ -1057,7 +1057,7 @@ int metaPing_waitForEchoReply(SOCKET s, int waittime)
 	readfds.fd_count = 1;
 	readfds.fd_array[0] = s;
 	Timeout.tv_sec = waittime / 1000;
-    Timeout.tv_usec = waittime % 1000;
+	Timeout.tv_usec = waittime % 1000;
 
 	nRet=(select(1, &readfds, NULL, NULL, &Timeout));
 	return nRet;
@@ -1072,7 +1072,7 @@ DWORD WINAPI metaPing_thread(void)
 	int		elapsed;	// waiting time for icmp replies between loops
 	DWORD	timestamp;	// begin timestamp just before echo reply waiting loop
 	u_short	nSeq;		// icmp ping request sequence number
-    DWORD	rtt;		// round trip time in milliseconds
+	DWORD	rtt;		// round trip time in milliseconds
 	SOCKET	rawSocket;
 	struct sockaddr_in	saDest;
 	struct sockaddr_in	saSrc;
@@ -1095,7 +1095,7 @@ DWORD WINAPI metaPing_thread(void)
 		return (unsigned long) -1;
 	}
 
-    while (!thread_ready)
+	while (!thread_ready)
 	{
 		// Flood ping all netrek servers at once
 		for (i = 0; i < num_servers; ++i)

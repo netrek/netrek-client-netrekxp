@@ -1,4 +1,6 @@
 Version 1.1:
+- fixed typo in metaserver2 name
+- changed the key to pick ATT from X to *, to be consistent with the key for refitting
 - fixed bug with lock icon and orbiting
 - fixed short packet phaser stats for phaser hits > 1024 damage (only noticeable with ATTs,
   server sends phaser hit packet as long packet instead)

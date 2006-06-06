@@ -12,6 +12,9 @@ colorClient: 4
 planetBitmap: 3
 planetBitmapGalaxy: 3
 
+If you use your old netrekrc, please add newClock: off, as the default for the new
+clock is "on".
+
 So in conclusion, don't have any of those above options in your netrekrc, and the client 
 should work fine!  Also, I would recommend not switching between ship or planet bitmaps
 in game via options menu, as it may also break your client.  Just choose a bitmap set
