@@ -771,6 +771,6 @@ int allowWheelActions = 1;   /* allow wheel actions */
 WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
 int richText = 0;   /* temporary variable to select rich text message windows */
-int newQuit = 1;
+int newQuit = 0;    /* new quit clock */
 int newSound = 1;   /* use new SDL sound */
 int newSoundAngles = 1; /* use new SDL sound with angular 3d component */

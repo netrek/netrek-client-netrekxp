@@ -669,7 +669,7 @@ extern int allowWheelActions;    /* allow mouse wheel actions */
 extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our richedit controls */
 
 extern int richText;    /* temporary variable to enable/disable rich text windows */
-extern int newQuit;
+extern int newQuit;     /* new quit clock */
 extern int newSound;	/* Use new SDL sound interface */
 extern int newSoundAngles; /* Use SDL with angular 3D sound */
 #endif /* _h_data */

@@ -4000,7 +4000,7 @@ W_WriteScaleBitmap (int x,
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
     StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
-               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+               srcx, srcy, srcwidth, srcheight, SRCCOPY);
     
     //Fast (I hope) rectangle intersection, don't overwrite our borders
     if (usebitmaphwnd)
@@ -4126,7 +4126,7 @@ W_WriteScaleBitmap (int x,
 
         BitBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCPAINT);
     }
-
+    SelectObject (GlobalMemDC2, GlobalOldMemDC2Bitmap);   //So we don't crunch on the next line...
     DeleteObject (newbmp);
 
     if (!sdb || !doubleBuffering || !ingame)
@@ -5178,7 +5178,7 @@ W_OverlayScaleBitmap (int x,
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
     StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
-               srcx, srcy, srcwidth, srcheight, SRCPAINT);
+               srcx, srcy, srcwidth, srcheight, SRCCOPY);
 
     //Fast (I hope) rectangle intersection, don't overwrite our borders
     if (usebitmaphwnd)
@@ -5266,6 +5266,7 @@ W_OverlayScaleBitmap (int x,
         BitBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
     }
 
+    SelectObject (GlobalMemDC2, GlobalOldMemDC2Bitmap);   //So we don't crunch on the next line...
     DeleteObject (newbmp);
     
     if (!sdb || !doubleBuffering || !ingame)

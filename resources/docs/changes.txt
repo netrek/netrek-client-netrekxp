@@ -1,4 +1,7 @@
 Version 1.1:
+- changed newQuit from default on to off
+- fixed a few bugs in scaled bitmap writing function, has the added bonus of making
+  the new planet bitmaps work in Win95/98/ME
 - fixed typo in metaserver2 name
 - changed the key to pick ATT from X to *, to be consistent with the key for refitting
 - fixed bug with lock icon and orbiting
