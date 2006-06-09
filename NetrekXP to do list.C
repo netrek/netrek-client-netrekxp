@@ -66,6 +66,7 @@ scroll button, alt-enter, change to review all..and it shows up.
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
 14) fix the 2 message sounds that don't convert right to 22 KHz
+15) sounds for beamup/down and refit
 
 Stas's list:
 - color coded playerlist.

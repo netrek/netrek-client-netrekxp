@@ -101,7 +101,7 @@ warning (char *text)
         sprintf (newtext, "%s [%3d%%] [%2u]", text,
                  phaserStatTry ? (phaserStatHit * 100) / phaserStatTry : 0,
                  phaserStatTry ? phaserStatDamage / phaserStatTry : 0);
-        warncount += 14;
+        warncount = strlen (newtext);
         W_WriteText (warnw, 5, 5, textColor, newtext, warncount,
                      W_RegularFont);
     }

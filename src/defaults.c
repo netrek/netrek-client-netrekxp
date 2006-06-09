@@ -1471,6 +1471,8 @@ resetdefaults (void)
     showArmy = booleanDefault ("showArmy", showArmy);
     updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
+    planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
+    rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
     logging = booleanDefault ("logging", logging);
 
     phaserShrink = intDefault ("phaserShrink", phaserShrink);
