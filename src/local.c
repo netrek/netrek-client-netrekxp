@@ -549,7 +549,7 @@ DrawPlanets (void)
             else
             {
                 armbuf[0] = (char) (l->pl_armies / 100 + '0');
-                armbuf[1] = (char) (l->pl_armies / 10 + '0');
+                armbuf[1] = (char) ((l->pl_armies / 10) % 10 + '0');
                 armbuf[2] = (char) (l->pl_armies % 10 + '0');
                 armbuf[3] = '\0';
                 armbuflen = 4;

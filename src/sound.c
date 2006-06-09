@@ -176,7 +176,7 @@ extern void Init_Sound (void)
     	    atexit(SDL_Quit);
 
     	    /* Open the audio device at 22050 Hz 8 bit Microsoft PCM with stereo */
-    	    if (Mix_OpenAudio(22050, AUDIO_U8, 2, 1024) < 0) 
+    	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0) 
       		LineToConsole("Mix_OpenAudio: %s\n", Mix_GetError());
 
     	    /* If we successfully loaded the wav files, so shut-off sound_init and play

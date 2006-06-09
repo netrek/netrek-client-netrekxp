@@ -1,4 +1,7 @@
 Version 1.1:
+- converted 2 messages sounds and intro sound to higher quality to remove unwanted
+  static
+- changed SDL audio playback from 8 to 16bits, improves sound quality in a few cases.
 - added "planetHighlighting: on/(off)" to draw a circle around the galaxy planet in the
   color of the team owner, and a 2nd white circle if planet has more than 4 armies.  Mostly
   useful for new planets to easier tell race owner, and army status at a quick glance.
