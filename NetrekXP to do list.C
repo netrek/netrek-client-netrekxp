@@ -53,12 +53,11 @@ flip to.  Also, closing hint window has same effect
 5) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
 6) Workable windows installer would be nice
-7) Use nebula pic
 8) Is there a cpu leak with double buffering?
 9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
 (have it overwrite the planet/wrench/gas/army for example, not just combine colors).
 10) Get square planet bitmaps so I can turn them into mapped rotating globes.
-11) ships at warp 0 near newplanets blink in and out of galactic
+11) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
 12) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.

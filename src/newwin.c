@@ -1327,7 +1327,10 @@ savebitmaps (void)
     genopic =
         W_StoreBitmap3 ("bitmaps/misclib/color/genocide.bmp", WINSIDE,
                         WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
-                        
+
+    genopic2 =
+        W_StoreBitmap3 ("bitmaps/misclib/color/genocide2.bmp", WINSIDE,
+                        WINSIDE, BMP_GENO2, w, LR_DEFAULTCOLOR);                      
 }
 
 

@@ -244,7 +244,7 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
-extern W_Icon stipple, clockpic, clockhandpic, clockhandmask, genopic;
+extern W_Icon stipple, clockpic, clockhandpic, clockhandmask, genopic, genopic2;
 
 extern W_Icon base_expview;
 extern W_Icon expview[BMP_SHIPEXPL_FRAMES];

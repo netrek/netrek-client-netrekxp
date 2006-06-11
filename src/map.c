@@ -809,7 +809,7 @@ map (void)
 
                 *update = 0;
             }
-            else if (*update == 10)
+            else if (*update == 1)
             {
                 /*
                  *  Redraw stationary ships every update so that these

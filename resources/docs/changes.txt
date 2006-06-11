@@ -1,4 +1,6 @@
 Version 1.1:
+- added a 2nd geno pic, randomly chooses which one to show on a geno.  Also added the geno
+  pics for the rarer true genocide case (most of the time game ends by conquer not genocide).
 - added 5 new message sounds (can be used with beeplite, or you can just choose your favorite
   and save it over your default message sound file, which is nt_message.wav)
 - added enter ship sound to when you refit

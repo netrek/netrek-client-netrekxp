@@ -38,7 +38,7 @@ void
 death (void)
 {
     W_Event event;
-
+    int i;
     ingame = 0;
 #ifdef AUTOKEY
     if (autoKey)
@@ -140,7 +140,18 @@ death (void)
                  shipnos[players[me->p_whodead].p_no],
                  teamstring[players[me->p_whodead].p_team]);
         deathFont = W_BoldFont;
-        W_TileWindow (mapw, genopic);
+        srand ((unsigned) time (NULL));
+        i = RANDOM() % 2;
+        switch (i)
+        {
+            case 0:
+                W_TileWindow (mapw, genopic);
+                break;
+            case 1:
+            default:
+                W_TileWindow (mapw, genopic2);
+                break;
+        }
         break;
     case KGHOST:
         strcpy (deathmessage, "You were killed by a confused daemon.");
@@ -153,6 +164,18 @@ death (void)
                  shipnos[me->p_whodead],
                  teamstring[players[me->p_whodead].p_team]);
         deathFont = W_BoldFont;
+        srand ((unsigned) time (NULL));
+        i = RANDOM() % 2;
+        switch (i)
+        {
+            case 0:
+                W_TileWindow (mapw, genopic);
+                break;
+            case 1:
+            default:
+                W_TileWindow (mapw, genopic2);
+                break;
+        }
         break;
     case KPROVIDENCE:
         strcpy (deathmessage, "You were nuked by GOD.");
