@@ -113,6 +113,11 @@ int loadSounds(void) {
   newsounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
   newsounds[MESSAGE1_WAV] = Mix_LoadWAV(DATAFILE("nt_message1.wav"));
   newsounds[MESSAGE2_WAV] = Mix_LoadWAV(DATAFILE("nt_message2.wav"));
+  newsounds[MESSAGE3_WAV] = Mix_LoadWAV(DATAFILE("nt_message3.wav"));
+  newsounds[MESSAGE4_WAV] = Mix_LoadWAV(DATAFILE("nt_message4.wav"));
+  newsounds[MESSAGE5_WAV] = Mix_LoadWAV(DATAFILE("nt_message5.wav"));
+  newsounds[MESSAGE6_WAV] = Mix_LoadWAV(DATAFILE("nt_message6.wav"));
+  newsounds[MESSAGE7_WAV] = Mix_LoadWAV(DATAFILE("nt_message7.wav"));
   newsounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
   newsounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
   newsounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));

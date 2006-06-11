@@ -228,7 +228,7 @@ makelite(struct distress * dist, char *pm)
   	        if (F_beeplite_flags & LITE_SOUNDS)
   	        {
 	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
+	            Play_Sound(MESSAGE3_WAV);
 	          else
 		    Play_Sound(MESSAGE3_SOUND);
 		}
@@ -237,7 +237,7 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 	        {
 	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
+	            Play_Sound(MESSAGE4_WAV);
 	          else
 		    Play_Sound(MESSAGE4_SOUND);
 		}
@@ -246,7 +246,7 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 	        {
 	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
+	            Play_Sound(MESSAGE5_WAV);
 	          else
 		    Play_Sound(MESSAGE5_SOUND);
 		}
@@ -255,7 +255,7 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 	        {
 	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
+	            Play_Sound(MESSAGE6_WAV);
 	          else
 		    Play_Sound(MESSAGE6_SOUND);
 		}
@@ -264,7 +264,7 @@ makelite(struct distress * dist, char *pm)
 	        if (F_beeplite_flags & LITE_SOUNDS)
 	        {
 	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
+	            Play_Sound(MESSAGE7_WAV);
 	          else
 		    Play_Sound(MESSAGE7_SOUND);
 		}

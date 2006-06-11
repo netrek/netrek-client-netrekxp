@@ -45,7 +45,15 @@ warning (char *text)
     warncount = strlen (text);
     
     if (doRefit)
+    {
+#ifdef SOUND
+        if (newSound)
+            Play_Sound(ENTER_SHIP_WAV);
+        else
+            Play_Sound(ENTER_SHIP_SOUND);
+#endif
        rdelay = time (0) + REFITTIME;
+    }
     if (doDeclare)
        delay = time (0) + DECLARETIME;
        
