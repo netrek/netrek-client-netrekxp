@@ -1313,10 +1313,7 @@ savebitmaps (void)
                             BMP_CCLOCK_HEIGHT, BMP_CLOCK, qwin, LR_DEFAULTCOLOR);
         clockhandpic =
             W_StoreBitmap3 ("bitmaps/misclib/color/clockhand.bmp", BMP_CHAND_WIDTH,
-                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_DEFAULTCOLOR);
-        clockhandmask =
-            W_StoreBitmap3 ("bitmaps/misclib/color/clockhandmask.bmp", BMP_CHAND_WIDTH,
-                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_MONOCHROME);                             
+                            BMP_CHAND_HEIGHT, BMP_CLOCKHAND, qwin, LR_DEFAULTCOLOR);                          
     }
     else
     {
@@ -2099,9 +2096,6 @@ showTimeLeft (time_t time, time_t max)
         angle = (int)(-360 * time / max);
         W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor, qwin);
         W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
-                              BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
-                              angle, clockhandmask, foreColor, qwin);
-        W_WriteScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               angle, clockhandpic, foreColor, qwin);
         sprintf (buf, "%d", max - time);

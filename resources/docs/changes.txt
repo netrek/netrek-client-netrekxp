@@ -1,4 +1,11 @@
 Version 1.1:
+- fixed case of view box not updating under certain circumstances, like flipping through
+  options menus
+- changed drawing of the new ship bitmaps to overwrite any other image on the screen, except
+  for where the ship source bitmap is black (black treated as transparent).  Logic being that
+  ship draws should take precedence over things like planet and planet resource draws, to
+  make it easier to see the new ships.
+- removed the clock masking bitmap, instead using true transparent drawing
 - added a 2nd geno pic, randomly chooses which one to show on a geno.  Also added the geno
   pics for the rarer true genocide case (most of the time game ends by conquer not genocide).
 - added 5 new message sounds (can be used with beeplite, or you can just choose your favorite

@@ -504,7 +504,6 @@ W_Cleanup (void)
     // Free other bitmaps
     free (clockpic);
     free (clockhandpic);
-    free (clockhandmask);
     
     for (j = 0; j < NUM_CTORP_TYPES; j++)
     {
@@ -5151,6 +5150,7 @@ W_OverlayBitmap (int x,
     }
 }
 
+/* Copy over destination imagemap, but make any black in source image transparent */
 void
 W_OverlayScaleBitmap (int x,
                       int y,
@@ -5236,8 +5236,7 @@ W_OverlayScaleBitmap (int x,
         xForm.eDy = eDy;
 
         SetWorldTransform(hdc,&xForm);
-
-        BitBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
+        TransparentBlt(hdc, 0, 0, newwidth, newheight, GlobalMemDC2, srcx, srcy, newwidth, newheight, colortable[BLACK].rgb);
     
         // Reset xForm
         xForm.eM11 = (FLOAT) 1.0; 
@@ -5270,7 +5269,7 @@ W_OverlayScaleBitmap (int x,
         else if ((newheight = (usebitmaphwnd? bitmap->ClipRectAddr->bottom : win->ClipRect.bottom) - y) > destheight)
             newheight = destheight;
 
-        BitBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, SRCAND);
+        TransparentBlt(hdc, x, y, newwidth, newheight, GlobalMemDC2, srcx, srcy, newwidth, newheight, colortable[BLACK].rgb);
     }
 
     SelectObject (GlobalMemDC2, GlobalOldMemDC2Bitmap);   //So we don't crunch on the next line...

@@ -33,35 +33,29 @@ frame they get the proper whydead.  But observers just go to quit screen.  So th
 whydead until next update.
 
 Things that are sorta fixed, but could use improvement:
-1) rewrite placement/refresh of new resource bitmaps to work better with a scaled tactical
-2) Bug with waraction..was being called even when clicking on border (broke function)
+1) Bug with waraction..was being called even when clicking on border (broke function)
 ..I added a default return to switch statement, but the underlying bug still remains.
-3) Border issue - quite complex problem, how to know the borders to obey after the bitmap
+2) Border issue - quite complex problem, how to know the borders to obey after the bitmap
 is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
-4) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
+3) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
-5) planet resource placement and refresh (for new planet bitmaps) will need adjusting if local is scaled
+4) planet resource placement and refresh (for new planet bitmaps) will need adjusting if 
+local is scaled
 
 Things to do:
 1) Add warning hull.
 2) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
-3) flipping through options menus clears too large a path to the right on the galactic,
-noticeable with viewbox disappearing at low speeds , depending on what length of menu you
-flip to.  Also, closing hint window has same effect
-4) Save options for observer/servernick/servertype need to be saved
-5) A lot of annoying pop up windows (like macro window, default controls) should be
+3) Save options for observer/servernick/servertype need to be saved
+4) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-6) Workable windows installer would be nice
-8) Is there a cpu leak with double buffering?
-9) Use masking for things like player team/letter display on galactic.  Ship draw on tactical
-(have it overwrite the planet/wrench/gas/army for example, not just combine colors).
-10) Get square planet bitmaps so I can turn them into mapped rotating globes.
-11) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
-12) problem with message windows, text getting garbled near top, goes away with
+5) Workable windows installer would be nice
+6) Get square planet bitmaps so I can turn them into mapped rotating globes.
+7) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
+8) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.
-13) review all scrolling messes up text, if bottom of window is below the visible
+9) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
 

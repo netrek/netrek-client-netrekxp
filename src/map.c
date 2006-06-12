@@ -740,7 +740,7 @@ map (void)
 
         clearlock = 0;
         clearviewbox = 0;
-        viewboxcleared = 0;
+        viewboxcleared = 1;
 
         for (i = 0; i < MAXPLAYER; i++)
         {

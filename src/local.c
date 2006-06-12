@@ -983,16 +983,16 @@ DrawShips (void)
             }
             else
             {
-                W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2),
-                                    dy - (j->p_ship.s_height / 2),
-                                    j->p_ship.s_width,
-                                    j->p_ship.s_height,
-                                    BMP_SHIP_WIDTH_HR,
-                                    BMP_SHIP_HEIGHT_HR,
-                                    (360 * j->p_dir/255), // Converted to angle
-                                    ship_bitsHR[j->p_ship.s_type],
-                                    playerColor (j),
-                                    w);
+                W_OverlayScaleBitmap (dx - (j->p_ship.s_width / 2),
+                                      dy - (j->p_ship.s_height / 2),
+                                      j->p_ship.s_width,
+                                      j->p_ship.s_height,
+                                      BMP_SHIP_WIDTH_HR,
+                                      BMP_SHIP_HEIGHT_HR,
+                                      (360 * j->p_dir/255), // Converted to angle
+                                      ship_bitsHR[j->p_ship.s_type],
+                                      playerColor (j),
+                                      w);
             }
 
             if (j->p_cloakphase > 0)
