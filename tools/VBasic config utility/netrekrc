@@ -1,0 +1,254 @@
+########################## Login Options ###################################
+name:guest
+login:new-be-nice
+
+########################### Network Options ##################################
+dontPing:               on
+useRSA:			on
+askForUpdate:           on
+tryUDP:                 on
+tryShort:		on
+updatesPerSec:          10
+udpClientReceive:       1
+udpClientSend:          1
+udpDebug:		0
+udpSequenceChk:         off
+netStatFreq:		3
+netstats:		off
+newMesgFlags:		on
+agriCAPS:               on
+
+############################## Key Maps ######################################
+buttonmap:
+keymap:\Qa@q0Q0gffp
+########################### Sound stuff ######################################
+sound:                  on
+sounddir:               .\Sounds
+
+############################ Mouse Options ###################################
+continuousMouse:        on
+motionThresh:           0
+tpdotdist:              10
+shiftedMouse:           off
+
+########################### Options ##########################################
+forceDisplay:		0
+forceMono:		0
+cloakChars:             ??
+clock:			1
+colorfulPhasers:        on
+continueTractor:	on
+defaultShip:		CA
+dashboard:		on
+enemyPhasers:           1
+phasorShrink:           16
+theirPhasorShrink:      16
+shrinkPhasorOnMiss:     on
+extraAlertBorder:	on
+galacticFrequent:	on
+keepInfo:		15
+keepPeace:		on
+logMessage:		off
+macroKey:               TAB
+messageHUD:             2
+metaStatusLevel:	4
+PhaserMsg:		5
+phaserMsgI:		on
+phaserShrink:		6
+phaserStats:		on
+phaserWindow:           on
+reportKills:		on
+shortKillMesg:		on
+showFuelOnLocal:	off
+showGalactic:		1
+showLocal:		1
+showLock:		3
+showMapPlanetNames:	on
+showMySpeed:		off
+showPlanetNames:	on
+showPlayerStatus:	on
+showShields:		on
+showStats:		off
+showTractorPressor:	on
+sortPlayers:		on
+
+
+
+########################### WINDOW PLACEMENT ##################################
+###############################################################################
+#  Fonts
+#
+
+#Valid values are 8,9,10, and 13
+
+fontsize: 10
+
+###############################################################################
+#  Window placement
+#
+#  Since changing fonts causes changes to the window sizes
+#  this section has gone through many revisions as well
+#
+#  The next iteration of all this using the new dashboard....
+
+# I don't usually want to see the MOTD until I'm in
+
+
+# To encourage motd reading I'll activate this - jn
+WaitMotd.mapped: on
+
+
+## The main window -- only map it when there's no wait queue
+
+netrek.geometry:       1150x875+0    # the maximal window for my sparc 2
+
+#This is a Win32-only option. Hitting ALT-ENTER during
+#the game will toggle the caption bar also.
+
+netrek.w32caption:	on
+
+war.geometry:           +700
+
+help.parent:            netrek
+help.geometry:          500x25+0+525
+
+planet.parent:          netrek
+planet.geometry:        +20
+
+## Ok, on the left side we have a column of six windows; message,
+## warning, new dash (ie tstats), my messages, team messages, all
+## messages. I have the total messages maped to cover this whole area
+## so by using ? you can toggle between seeing the broken up messages
+## or the total window. The stats window has been removed in favor of
+## the new dashboard.
+
+message.parent:         netrek
+message.geometry:       502x19+508+504
+message.mapped:         on
+
+warn.parent:            netrek
+warn.geometry:          502x18+508+523
+warn.mapped:            on
+
+
+tstat.parent:           netrek
+tstat.geometry:	        510x45+0+504
+tstat.mapped:		on
+
+
+review_your.parent:     netrek
+review_your.geometry:   82x4+0+547
+review_your.mapped:     on
+
+review_team.parent:     netrek
+review_team.geometry:   82x7+0+595
+review_team.mapped:     on
+
+review_all.parent:      netrek
+review_all.geometry:    82x3+0+673
+review_all.mapped:      on
+
+
+## With this setup, you can use "?" to cycle between the big review window, the
+## four small message windows, and no windows at all.
+#
+review.parent:                netrek
+review.geometry:      82x20+0+547
+review.mapped:		off
+
+
+
+## phaser window
+## dunno if the following line is really needed or not....
+
+phaserWindow:          on
+## 0 = don't show    1 = all   2 = team   3 = indiv
+## 4 = kill          5 = total
+PhaserMsg: 1
+#(show hit percentage on phaser messages)
+PhaserStats: on
+
+
+player.parent:          netrek
+player.geometry:        +508+542
+player.mapped:          on
+
+reportkills:            on
+review_kill.parent:          netrek
+review.geometry:  80x40+510+170
+review_kill.geometry:   82x4+0+712
+review_kill.mapped:          on
+
+
+
+## a couple of other window mappings
+#
+# Some UDP stuff
+udp.geometry:        +0+0
+udp.mapped:          off
+
+# I'm planning on using the new dash instead
+showstats:              off 
+stats.parent:           netrek
+stats.geommac.s.%i:%y loss, %v ping, %V stddev
+stats geometry:         160x108+332+550      # puts the stats window further down
+stats.geometry:         160x94+842+500
+
+
+#MACROS
+dist.taking: (%c) %i Carrying %a to %l @ %n with %f fuel, %d damage
+dist.help:  (%c) %i NEEDS HELP NOW!  I have %a armies, %d damage, %s shields!
+dist.space_control: HELP CONTROL AT %l!  GET THERE NOW!
+
+lite.taking: /c/l /0 /|    %c carrying to %l    |  
+lite.space_control: /l /|    %l in danger    |
+lite.pickup: /h /|   %p++ @ %l    |
+lite.help: %?%S=SB%{/c%}%?%a>0%{/c%} /|    %c needs help   | /0
+lite.crippled:/h |   %h is cripple    |
+
+
+mac.H.A:% /~\ |_|   ~|~ |_| (~   |_| | | |\/| /~\ |\| | ~|~ \./ |
+mac.H.A:% \_/ | | ,  |  | | (_   | | |_| |  | |~| | | |  |   |  .
+
+
+mac.O.T:% /`\ /~_ /~_   ~|~ |_| <~  |~> .^. <~ <~  |
+mac.O.T:% \./ \_/ \_/    |  | | <_  |_> |~| _> <_  .
+
+
+mac.D.T:% | | <~ |  |~)  \./ /~\ | | |~)   |~>  /\  (~ <~   \~/ \~/
+mac.D.T:% |~| <_ |_ |~    |  \_/ |_| |~\   |_> /~~\ _) <_    o   o
+
+
+mac.g.A:%  ----  __| __|  \ |  _ \   __|_ _| _ \  __|
+mac.g.A:%  ---- (_ | _|  .  | (   | (     |  |  | _|
+mac.g.A:%  ----\___|___|_|\_|\___/ \___|___|___/ ___|
+
+
+mac.m.A:%    ,__, Moo!
+mac.m.A:%    (..)/___
+mac.m.A:%    (__)    )\
+mac.m.A:%       ||--|| *
+
+
+mac.L.A:_____\\ ~ ~ //__"What just happened?"_
+mac.L.A:_____(/ @ @ /)________________________
+mac.L.A:___oOOo-(_)-oOOo <-(%p)%U
+
+###Configuration changes added by the Netrek Configurator on 6/11/2006
+
+newdashboard:  2
+playerListStyle:    3
+
+showHints: on
+
+sound: on
+
+showStars: on
+
+warpStreaks: on
+
+###Keymap added by the Netrek Configurator on 6/11/2006
+keymap:\Qq0Q0gffp
+
+###Buttonmap added by the Netrek Configurator on 6/11/2006
+buttonmap:1t

@@ -1,0 +1,52 @@
+These are the controls you have chosen:
+
+
+Mouse Controls:
+
+Left Button     -  Torpedoes
+Middle Button   -  Unmap Special Windows (i.e. Close tip window)
+Right Button    -  Steer
+
+
+
+Keyboard Controls:
+
+Messaging            -  m (Be sure to hold your mouse cursor over
+                           the Galaxy or Tactical maps when you press 'm'.
+                           After pressing 'm' type 'A' to send messages to
+                           the All Window, type 'T' to send messages
+                           to the Team Window, or type the letter/number
+                           of the player you would like to send a message to.
+                           After you type A, T, or the player letter/number, 
+                           type your message and press enter.)
+Help                 -  h
+
+Torpedoes            -  t
+Phasers              -  f
+Shield               -  s
+Bomb                 -  b
+Cloak                -  c
+
+Drop Armies          -  x
+Pickup Armies        -  z
+
+Detonate Own Torps   -  D
+Detonate Enemy Torps -  d
+
+Tractor              -  T
+Pressor              -  y
+
+Repair               -  R
+Refit Ship Type      -  r
+Lock on Target       -  l
+Target Info          -  i
+
+Max Warp             -  @
+Half Speed           -  #
+Quit                 -  \
+Plasma               -  g
+
+Warp 0               -  0
+Warp 2               -  2
+Warp 3               -  3
+Warp 4               -  4
