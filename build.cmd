@@ -471,6 +471,7 @@ copy resources\misclib\mono\cloak.bmp %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\clock.bmp %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\shield.bmp %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\stipple.bmp %InstCWD%\netrek\bitmaps\misclib
+copy resources\misclib\mono\varyhull.bmp %InstCWD%\netrek\bitmaps\misclib
 copy resources\misclib\mono\vshield.bmp %InstCWD%\netrek\bitmaps\misclib
 
 mkdir %InstCWD%\netrek\bitmaps\misclib\color

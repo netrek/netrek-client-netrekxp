@@ -255,6 +255,7 @@ struct option Ship_Menu[] = {
     {1, "vary shields bitmap", &varyShields, 0, 0, 0, NULL, NULL},
 #endif
     {1, "use warning shields", &warnShields, 0, 0, 0, NULL, NULL},
+    {1, "use warning hull", &vary_hull, 0, 0, 0, NULL, NULL},
     {1, "show speed on tactical", &showMySpeed, 0, 0, 0, NULL, NULL},
 #ifdef JUBILEE_PHASERS
     {1, "use colorful phasers", &colorfulPhasers, 0, 0, 0, NULL, NULL},

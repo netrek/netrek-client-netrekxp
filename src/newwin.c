@@ -1296,9 +1296,16 @@ savebitmaps (void)
                         LR_MONOCHROME);
     for (i = 0; i < SHIELD_FRAMES; i++)
         shield[i] =
-            W_PointBitmap2 (base_vshield, 0, i, BMP_SHIELD_WIDTH,
-                            BMP_SHIELD_HEIGHT);
+            W_PointBitmap2 (base_vshield, 0, i, BMP_SHIELD_WIDTH, BMP_SHIELD_HEIGHT);
 #endif
+
+    base_hull =
+        W_StoreBitmap3 ("bitmaps/misclib/varyhull.bmp", hull_width,
+                        hull_height * BMP_HULL_FRAMES, BMP_HULL, w,
+                        LR_MONOCHROME);
+    for (i = 0; i < BMP_HULL_FRAMES; i++)
+        hull[i] =
+            W_PointBitmap2 (base_hull, 0, i, hull_width, hull_height);
 
     cloakicon =
         W_StoreBitmap3 ("bitmaps/misclib/cloak.bmp", BMP_CLOAK_WIDTH,

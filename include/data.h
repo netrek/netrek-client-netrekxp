@@ -20,6 +20,8 @@
 #define shield_height           20
 #define cloak_width             20
 #define cloak_height            20
+#define hull_width              22
+#define hull_height             22
 
 #define etorp_width             3
 #define etorp_height            3
@@ -279,6 +281,10 @@ extern int varyShields;
 extern W_Icon shield, cloakicon;
 
 #endif
+
+extern W_Icon base_hull;
+extern W_Icon hull[BMP_HULL_FRAMES];
+extern int vary_hull;
 
 extern W_Icon tractbits, pressbits;
 

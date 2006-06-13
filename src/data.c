@@ -284,6 +284,10 @@ W_Icon shield, cloakicon;
 
 #endif
 
+W_Icon base_hull;
+W_Icon hull[BMP_HULL_FRAMES];
+int vary_hull = 0;
+
 // Ships
 W_Icon ship_bitmaps[5];
 W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS], kli_bitmaps[NUM_TYPES][SHIP_VIEWS],

@@ -1107,6 +1107,65 @@ DrawShips (void)
                                dy - (shield_height / 2), shield, color, w);
 #endif
             }
+            /* Warning hull */
+            if (vary_hull)
+            {
+            	if (myPlayer(j) || isObsLockPlayer(j))
+            	{	
+            	    int hull_left = (100 * (me->p_ship.s_maxdamage -
+		                     me->p_damage)) / me->p_ship.s_maxdamage;
+		    int hull_num = 7;
+		    int hull_color;
+		    
+		    if (hull_left <= 16)
+		    {
+		    	hull_num = 0;
+		    	hull_color = W_Red;
+		    }
+		    else if (hull_left <= 28)
+		    {
+		    	hull_num = 1;
+		    	hull_color = W_Red;
+		    }
+		    else if (hull_left <= 40)
+		    {
+		    	hull_num = 2;
+		    	hull_color = W_Red;
+		    }
+		    else if (hull_left <= 52)
+		    {
+		    	hull_num = 3;
+		    	hull_color = W_Yellow;
+		    }
+		    else if (hull_left <= 64)
+		    {
+		    	hull_num = 4;
+		    	hull_color = W_Yellow;
+		    }
+		    else if (hull_left <= 76)
+		    {
+		    	hull_num = 5;
+		    	hull_color = W_Yellow;
+		    }
+		    else if (hull_left <= 88)
+		    {
+		    	hull_num = 6;
+		    	hull_color = W_Yellow;
+		    }
+		    else
+		        hull_color = playerColor(j);
+
+		    W_WriteBitmap(dx - (shield_width / 2 + 1),
+			          dy - (shield_height / 2 + 1),
+			          hull[hull_num], hull_color, w);
+			          
+		    clearzone[0][clearcount] = dx - (shield_width / 2 + 1);
+		    clearzone[1][clearcount] = dy - (shield_height / 2 + 1);
+		    clearzone[2][clearcount] = shield_width + 2;
+		    clearzone[3][clearcount] = shield_height + 2;
+		    clearcount++;
+                }
+            }
             /* Det circle */
             if (detCircle)
             {

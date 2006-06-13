@@ -604,6 +604,9 @@ W_Cleanup (void)
     free (shield);
 #endif
 
+    for (i = 0; i < BMP_HULL_FRAMES; i++)
+        free (hull[i]);
+
     free (cloakicon);
     free (stipple);
     free (genopic);
@@ -4586,7 +4589,7 @@ W_FlushScrollingWindow (W_Window window)
     SetScrollRange (win->hwnd, SB_VERT, 0, y, FALSE);
     SetScrollPos (win->hwnd, SB_VERT, y, TRUE);
 
-    //Scroll up however many lines. Use ScrollDC se we don't invalidate the window
+    //Scroll up however many lines. Use ScrollDC so we don't invalidate the window
     y = win->TextHeight - win->AddedStrings;
 
     if (y < 0)                  //Pathalogical case (but it does happen):

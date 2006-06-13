@@ -43,21 +43,22 @@ old AddFontResource function.
 local is scaled
 
 Things to do:
-1) Add warning hull.
-2) resizeable message windows.  Perhaps memory of window positions if you choose
+1) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
-3) Save options for observer/servernick/servertype need to be saved
-4) A lot of annoying pop up windows (like macro window, default controls) should be
+2) Save options for observer/servernick/servertype need to be saved
+3) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-5) Workable windows installer would be nice
-6) Get square planet bitmaps so I can turn them into mapped rotating globes.
-7) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
-8) problem with message windows, text getting garbled near top, goes away with
+4) Workable windows installer would be nice
+5) Get square planet bitmaps so I can turn them into mapped rotating globes.
+6) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
+7) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.
-9) review all scrolling messes up text, if bottom of window is below the visible
+7a) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
+8) Change beeplite (and any other bitmaps) that are in header file graphical format,
+into actual bitmap files (necessary for eventual tactical and galactic scaling)
 
 Stas's list:
 - color coded playerlist.

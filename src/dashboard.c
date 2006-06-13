@@ -591,7 +591,7 @@ db_redraw_krp (int fr)
         else
             color = W_Green;
         db_bar ("Hu", 90, 31,
-                (me->p_ship.s_maxdamage - me->p_damage),
+                max(0,(me->p_ship.s_maxdamage - me->p_damage)),  // Can't display negative hull values
                 me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_3DIGITS,
                 color);
         old_dam = me->p_damage;

@@ -1,4 +1,12 @@
 Version 1.1:
+- fixed KRP dashboard hull display on death (it incorrectly displayed hull value, which
+  went into the negative if more damage was taken than the ship's hull could take, now it
+  just shows hull at 0 upon death)
+- added "warnHull: on/(off)" to visually display hull status as a series of dots around your
+  ship (same as in COW), except that the colors of the hull dots more closely resemble the 
+  corresponding colors for the COW dashboard hull states.  So the hull dots are white when
+  ship hull is about 90% or better, then they turn to yellow from about 40-90% hull left, and
+  finally they turn red from about 0-40% hull left. 
 - fixed case of view box not updating under certain circumstances, like flipping through
   options menus
 - changed drawing of the new ship bitmaps to overwrite any other image on the screen, except

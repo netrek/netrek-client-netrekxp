@@ -750,6 +750,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"warnHull", &vary_hull, RC_BOOL,
+        {
+            "Warn hull state based on damage",
+            NULL
+        }
+    },
     {"warnShields", &warnShields, RC_BOOL,
         {
             "Change shields color on enemy approach",
@@ -1495,6 +1501,7 @@ resetdefaults (void)
 #endif
 
     warnShields = booleanDefault ("warnShields", warnShields);
+    vary_hull = booleanDefault("warnHull", vary_hull);
 
 #ifdef RSA
     if (useRsa >= 0)

@@ -35,6 +35,7 @@
 
 #define BMP_TORPDET_FRAMES 5
 #define BMP_TORP_FRAMES 8
+#define BMP_HULL_FRAMES 8
 
 #define BMP_EPLASMA 6
 #define BMP_ETORP 7
@@ -81,6 +82,7 @@
 #define BMP_CLOAK 15
 #define BMP_SHIELD 16
 #define BMP_VSHIELD 17
+#define BMP_HULL 18
 #define BMP_STIPPLE 22
 #define BMP_GENO 23
 #define BMP_GENO2 24
