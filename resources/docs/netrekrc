@@ -385,6 +385,9 @@ varyShields: on
 # Show limits of tactical display on galaxy
 viewBox: on
 
+# Warn hull state based on damage
+warnHull: off
+
 # Change shields color on enemy approach
 warnShields: off
 
