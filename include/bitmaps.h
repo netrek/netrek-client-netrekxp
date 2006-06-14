@@ -108,6 +108,11 @@
 #define BMP_STIPPLE_WIDTH 16
 #define BMP_STIPPLE_HEIGHT 16
 
+#ifdef BEEPLITE
+#define BMP_BEEPLITE1 1
+#define BMP_BEEPLITE2 2
+#define BMP_BEEPLITE3 3
+#endif
 // Planets
 // -------
 

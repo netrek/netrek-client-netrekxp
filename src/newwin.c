@@ -25,7 +25,6 @@
 #include "data.h"
 #include "playerlist.h"
 #include "bitmaps.h"
-#include "litebitmaps.h"
 #include "parsemeta.h"
 #include "packets.h"
 #include "spopt.h"
@@ -1157,26 +1156,34 @@ savebitmaps (void)
     }
     
 #ifdef BEEPLITE
-    for (i = 0; i < emph_player_seq_frames; i++)
-    {
-        emph_player_seq[emph_player_seq_frames - (i + 1)] =
-	    W_StoreBitmap(emph_player_seq_width, emph_player_seq_height,
-	  		emph_player_seq_bits[i], mapw);
-    }
+            
+    beeplite1 = 
+        W_StoreBitmap3 ("bitmaps/misclib/beepliteplayerm.bmp", emph_player_seq_width,
+                        emph_player_seq_height * emph_player_seq_frames, BMP_BEEPLITE1,
+                        mapw, LR_MONOCHROME);       
 
+    for (i = 0; i < emph_player_seq_frames; i++)
+        emph_player_seq[emph_player_seq_frames - (i + 1)] =
+            W_PointBitmap2 (beeplite1, 0, i, emph_player_seq_width, emph_player_seq_height);
+
+    beeplite2 = 
+        W_StoreBitmap3 ("bitmaps/misclib/beepliteplayerl.bmp", emph_player_seql_width,
+                        emph_player_seql_height * emph_player_seql_frames, BMP_BEEPLITE2,
+                        mapw, LR_MONOCHROME);      
+ 
     for (i = 0; i < emph_player_seql_frames; i++)
-    {
         emph_player_seql[emph_player_seql_frames - (i + 1)] =
-	    W_StoreBitmap(emph_player_seql_width, emph_player_seql_height,
-			emph_player_seql_bits[i], w);
-    }
+            W_PointBitmap2 (beeplite2, 0, i, emph_player_seql_width, emph_player_seql_height);
+
+    beeplite3 = 
+        W_StoreBitmap3 ("bitmaps/misclib/beepliteplanet.bmp", emph_planet_seq_width,
+                        emph_planet_seq_height * emph_planet_seq_frames, BMP_BEEPLITE3,
+                        mapw, LR_MONOCHROME);
 
     for (i = 0; i < emph_planet_seq_frames; i++)
-    {
         emph_planet_seq[emph_planet_seq_frames - (i + 1)] =
-	    W_StoreBitmap(emph_planet_seq_width, emph_planet_seq_height,
-			emph_planet_seq_bits[i], mapw);
-    }
+            W_PointBitmap2 (beeplite3, 0, i, emph_planet_seq_width, emph_planet_seq_height);
+
 #endif
 
 

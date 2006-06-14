@@ -57,8 +57,6 @@ scroll button, alt-enter, change to review all..and it shows up.
 7a) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
-8) Change beeplite (and any other bitmaps) that are in header file graphical format,
-into actual bitmap files (necessary for eventual tactical and galactic scaling)
 
 Stas's list:
 - color coded playerlist.

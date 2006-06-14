@@ -1789,10 +1789,6 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\src\litebitmaps.h"
-			>
-		</File>
-		<File
 			RelativePath="src\main.ico"
 			>
 			<FileConfiguration

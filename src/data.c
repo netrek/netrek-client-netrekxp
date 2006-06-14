@@ -514,6 +514,9 @@ int     emph_planet_seq_n[MAXPLANETS] =
 {0,};
 int     emph_player_seq_n[MAXPLAYER] =
 {0,};
+W_Icon beeplite1;
+W_Icon beeplite2;
+W_Icon beeplite3;
 W_Icon  emph_planet_seq[10];
 W_Icon  emph_player_seq[10];
 W_Icon  emph_player_seql[10];
