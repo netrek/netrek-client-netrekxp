@@ -1,8 +1,7 @@
 List for the netrekrc/installer:
-1) Change recommendation on metaserver from off to on!
-2) there should be some sort of chance to give default resolution in GUI,
+1) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
-3) Add chance for player to input their default login name - tired of seeing
+2) Add chance for player to input their default login name - tired of seeing
 new-be-nice!!
 
 Things not gonna happen, or server problems:
@@ -10,9 +9,8 @@ Things not gonna happen, or server problems:
 away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
 3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
-4) ATT not listed as valid ship even if it's in sysdef.
-5) in orbit.c, pftranswarp strangeness.
-6) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
+4) in orbit.c, pftranswarp strangeness.
+5) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.
 
@@ -57,6 +55,7 @@ scroll button, alt-enter, change to review all..and it shows up.
 7a) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
+9)  text break with ATT
 
 Stas's list:
 - color coded playerlist.

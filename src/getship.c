@@ -104,7 +104,7 @@ getshipdefaults ()
     shipvals[ATT].s_phaserdamage = 10000;       /* att: */
     shipvals[ATT].s_torpspeed = 30;     /* att: */
     shipvals[ATT].s_maxspeed = 60;      /* att: */
-    shipvals[ATT].s_maxfuel = 12000;    /* att: */
+    shipvals[ATT].s_maxfuel = 60000;    /* att: */
     shipvals[ATT].s_maxarmies = 1000;   /* att: */
     shipvals[ATT].s_maxshield = 30000;  /* att: */
     shipvals[ATT].s_maxdamage = 30000;  /* att: */

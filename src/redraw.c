@@ -201,21 +201,43 @@ stline (int flag)
     buf[15] = (char) ('0' + (me->p_speed % 10)); /* speed */
     buf[16] = ' ';
     buf[17] = ' ';
-    buf[18] = (char) ('0' + (me->p_damage / 100));
-    if (buf[18] == '0')
-        buf[18] = ' ';
-    buf[19] = (char) ('0' + ((me->p_damage % 100) / 10));
-    if ((buf[19] == '0') && (me->p_damage < 100))
-        buf[19] = ' ';
-    buf[20] = (char) ('0' + (me->p_damage % 10));
+    if (me->p_ship.s_type != ATT)
+    {
+        buf[18] = (char) ('0' + (me->p_damage / 100));
+        if (buf[18] == '0')
+            buf[18] = ' ';
+        buf[19] = (char) ('0' + ((me->p_damage % 100) / 10));
+        if ((buf[19] == '0') && (me->p_damage < 100))
+            buf[19] = ' ';
+        buf[20] = (char) ('0' + (me->p_damage % 10));
+    }
+    else
+    {
+        buf[18] = (char) ('0' + (me->p_damage / 10000));
+        if (buf[18] == '0')
+            buf[18] = ' ';
+        buf[19] = (char) ('0' + ((me->p_damage % 10000) / 1000));
+        buf[20] = 'k';
+    }
     buf[21] = ' ';
-    buf[22] = (char) ('0' + (me->p_shield / 100));
-    if (buf[22] == '0')
-        buf[22] = ' ';
-    buf[23] = (char) ('0' + ((me->p_shield % 100) / 10));
-    if ((buf[23] == '0') && (me->p_shield < 100))
-        buf[23] = ' ';
-    buf[24] = (char) ('0' + (me->p_shield % 10));
+    if (me->p_ship.s_type != ATT)
+    {
+        buf[22] = (char) ('0' + (me->p_shield / 100));
+        if (buf[22] == '0')
+            buf[22] = ' ';
+        buf[23] = (char) ('0' + ((me->p_shield % 100) / 10));
+        if ((buf[23] == '0') && (me->p_shield < 100))
+            buf[23] = ' ';
+        buf[24] = (char) ('0' + (me->p_shield % 10));
+    }
+    else
+    {
+        buf[22] = (char) ('0' + (me->p_shield / 10000));
+        if (buf[22] == '0')
+            buf[22] = ' ';
+        buf[23] = (char) ('0' + ((me->p_shield % 10000) / 1000));
+        buf[24] = 'k';
+    }
     buf[25] = ' ';
     buf[26] = ' ';
     buf[27] = (char) ('0' + ((plr->p_ntorp % 100) / 10));
@@ -404,12 +426,20 @@ updateMaxStats (int redraw)
     sprintf (buf,
              "Flags        Warp Dam Shd Torps  Kills Armies   Fuel  Wtemp Etemp  Time");
     W_WriteText (tstatw, 50, 5, textColor, buf, strlen (buf), W_RegularFont);
-    sprintf (buf,
-             "Maximum:   %2d/%2d  %3d %3d              %2d/%2d  %6d   %3d   %3d",
-             maxspeed, me->p_ship.s_maxspeed,
-             me->p_ship.s_maxdamage, me->p_ship.s_maxshield,
-             troop_capacity, me->p_ship.s_maxarmies,
-             me->p_ship.s_maxfuel, me->p_ship.s_maxwpntemp / 10,
-             me->p_ship.s_maxegntemp / 10);
+    if (me->p_ship.s_type != ATT)
+        sprintf (buf,
+                "Maximum:   %2d/%2d  %3d %3d              %2d/%2d  %6d   %3d   %3d",
+                 maxspeed, me->p_ship.s_maxspeed,
+                 me->p_ship.s_maxdamage, me->p_ship.s_maxshield,
+                 troop_capacity, me->p_ship.s_maxarmies,
+                 me->p_ship.s_maxfuel, me->p_ship.s_maxwpntemp / 10,
+                 me->p_ship.s_maxegntemp / 10);
+    else
+        sprintf (buf,
+                "Maximum:   %2d/%2d  30k 30k              %2d/1k  %6d   %4d  %4d",
+                 maxspeed, me->p_ship.s_maxspeed,
+                 troop_capacity,
+                 me->p_ship.s_maxfuel, me->p_ship.s_maxwpntemp / 10,
+                 me->p_ship.s_maxegntemp / 10);
     W_WriteText (tstatw, 50, 27, textColor, buf, strlen (buf), W_RegularFont);
 }

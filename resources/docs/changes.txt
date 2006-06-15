@@ -1,7 +1,11 @@
 Version 1.1:
-- fixed KRP dashboard hull display on death (it incorrectly displayed hull value, which
-  went into the negative if more damage was taken than the ship's hull could take, now it
-  just shows hull at 0 upon death)
+- changed COW, KRP and text dashboard so they display ATT ship correctly
+- changed the way dashboard reports negative values for the bars (hull,shield,fuel,etc) - instead
+  of getting a garbled display since most of the dashboards can't handle negative values,
+  the number will display as a positive number, but will be in red font.  This effects cases
+  such as the KRP dashboard when your ship dies (hull goes to negative).
+- fixed ATT maxfuel to match server value
+- changed beeplite from built-into-the-client bitmaps to actual windows bitmaps
 - added "warnHull: on/(off)" to visually display hull status as a series of dots around your
   ship (same as in COW), except that the colors of the hull dots more closely resemble the 
   corresponding colors for the COW dashboard hull states.  So the hull dots are white when

@@ -222,7 +222,15 @@ db_bar (char *lab,
     register int wt, wv;
     register int tc = 11;
     register int tw = W_Textwidth * tc;
+    int sign_change = 0;
     char valstr[32];
+    
+    /* Take care of case where value is negative */
+    if (value < 0)
+    {
+        value = abs(value);
+        sign_change = 1;
+    }
 
     switch (digits)
     {
@@ -260,8 +268,8 @@ db_bar (char *lab,
         wv = BAR_LENGTH;
 
     W_WriteText (tstatw, x, y, textColor, valstr, 3, W_RegularFont);
-    W_WriteText (tstatw, x + 3 * W_Textwidth, y, textColor, (&valstr[3]),
-                 tc / 2 + 1, W_BoldFont);
+    W_WriteText (tstatw, x + 3 * W_Textwidth, y, sign_change ? W_Red : textColor,
+                (&valstr[3]), tc / 2 + 1, W_BoldFont);
     W_WriteText (tstatw, x + (tc / 2 + 1) * W_Textwidth, y, textColor,
                  (&valstr[tc / 2 + 1]), tc / 2, W_RegularFont);
 
@@ -573,9 +581,14 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Green;
-        db_bar ("Sh", 90, 17,
-                me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
-                DB_3DIGITS, color);
+        if (me->p_ship.s_type == ATT)
+            db_bar ("Sh", 90, 17,
+                    me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
+                    DB_5DIGITS, color);
+        else
+            db_bar ("Sh", 90, 17,
+                    me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
+                    DB_3DIGITS, color);
         old_shl = me->p_shield;
     }
 
@@ -590,10 +603,16 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Green;
-        db_bar ("Hu", 90, 31,
-                max(0,(me->p_ship.s_maxdamage - me->p_damage)),  // Can't display negative hull values
-                me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_3DIGITS,
-                color);
+        if (me->p_ship.s_type == ATT)
+            db_bar ("Hu", 90, 31,
+                    (me->p_ship.s_maxdamage - me->p_damage),
+                    me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_5DIGITS,
+                    color);
+        else
+            db_bar ("Hu", 90, 31,
+                    (me->p_ship.s_maxdamage - me->p_damage),
+                    me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_3DIGITS,
+                    color);
         old_dam = me->p_damage;
     }
 
@@ -632,9 +651,10 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        db_bar ("Wt", 218, 17,
-                me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
-                me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
+        if (me->p_ship.s_type != ATT)
+            db_bar ("Wt", 218, 17,
+                    me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
+                    me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
         old_wpn = me->p_wtemp;
     }
 
@@ -647,9 +667,10 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        db_bar ("Et", 218, 31,
-                me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
-                me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
+        if (me->p_ship.s_type != ATT)
+            db_bar ("Et", 218, 31,
+                    me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
+                    me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
         old_egn = me->p_etemp;
     }
 
@@ -732,9 +753,14 @@ db_redraw_COW (int fr)
             color = W_Yellow;
         else
             color = W_White;
-        db_bar ("Sh", 90, 17,
-                me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
-                me->p_ship.s_maxshield, DB_3DIGITS, color);
+        if (me->p_ship.s_type == ATT)
+            db_bar ("Sh", 90, 17,
+                    me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
+                    me->p_ship.s_maxshield, DB_5DIGITS, color);
+        else
+            db_bar ("Sh", 90, 17,
+                    me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
+                    me->p_ship.s_maxshield, DB_3DIGITS, color);
         old_shl = me->p_shield;
     }
 
@@ -747,9 +773,14 @@ db_redraw_COW (int fr)
             color = W_Red;
         else
             color = W_Yellow;
-        db_bar ("Da", 90, 31,
-                me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
-                DB_3DIGITS, color);
+        if (me->p_ship.s_type == ATT)
+            db_bar ("Da", 90, 31,
+                    me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
+                    DB_5DIGITS, color);
+        else
+            db_bar ("Da", 90, 31,
+                    me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
+                    DB_3DIGITS, color);
         old_dam = me->p_damage;
     }
 
@@ -789,9 +820,10 @@ db_redraw_COW (int fr)
             color = W_White;
         else
             color = W_Yellow;
-        db_bar ("Wt", 218, 17,
-                me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
-                me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
+        if (me->p_ship.s_type != ATT)
+            db_bar ("Wt", 218, 17,
+                    me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
+                    me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
         old_wpn = me->p_wtemp;
     }
 
@@ -805,9 +837,10 @@ db_redraw_COW (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        db_bar ("Et", 218, 31,
-                me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
-                me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
+        if (me->p_ship.s_type != ATT)
+            db_bar ("Et", 218, 31,
+                    me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
+                    me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
         old_egn = me->p_etemp;
     }
 
