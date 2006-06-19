@@ -13,6 +13,9 @@ away, etc).  Don't think this is fixable.
 5) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.
+6) admin commands aren't set to executable by default, and the system call doesn't
+seem to work (might be executing in wrong directory)?
+7) twarping to base docked on base causes the twarp problem
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
@@ -55,7 +58,6 @@ scroll button, alt-enter, change to review all..and it shows up.
 7a) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen
-9)  text break with ATT
 
 Stas's list:
 - color coded playerlist.

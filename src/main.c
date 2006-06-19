@@ -122,7 +122,7 @@ main2 (int argc,
             case 'C':          /* character name */
                 if (i < argc && argv[i + 1])
                 {
-                    (void) STRNCPY (pseudo, argv[i + 1], sizeof (argv[i + 1]));
+                    (void) STRNCPY (pseudo, argv[i + 1], sizeof pseudo);
                     i++;
                 }
                 else
@@ -132,7 +132,7 @@ main2 (int argc,
             case 'A':          /* authorization password */
                 if (i < argc && argv[i + 1])
                 {
-                    (void) STRNCPY (defpasswd, argv[i + 1], sizeof (argv[i + 1]));
+                    (void) STRNCPY (defpasswd, argv[i + 1], sizeof defpasswd);
                     i++;
                 }
                 else

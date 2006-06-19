@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/mapinfo:lines /mapinfo:exports&#x0D;&#x0A;"
-				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib libgmp.lib SDL.lib SDLmain.lib SDL_mixer.lib"
+				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib msimg32.lib libgmp.lib SDL.lib SDLmain.lib SDL_mixer.lib"
 				OutputFile="\netrek_files\netrek\netrek.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
