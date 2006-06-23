@@ -53,8 +53,7 @@ scroll button, alt-enter, change to review all..and it shows up.
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen.  Apprently the native windows function doesn't properly
 scroll text that is outside the viewable window.
-8) Have client utilize new pingpong plasma server code
-9) Have client utilize new server torp vector code
+8) Have client utilize new server torp vector code
 
 Stas's list:
 - color coded playerlist.

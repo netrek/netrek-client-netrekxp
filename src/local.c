@@ -2210,10 +2210,7 @@ DrawPlasmaTorps (void)
                         ptorpTeam = 2;
                     }
                 }
-                if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||
-                                                      (players[pt->pt_owner].
-                                                       p_team & (me->p_hostile | me->
-                                                                 p_swar))))
+                if (pt->pt_war & me->p_team)
                 {
                     W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
                                    dy - (BMP_CPLASMATORP_HEIGHT / 2),
@@ -2232,14 +2229,10 @@ DrawPlasmaTorps (void)
                 clearzone[2][clearcount] = BMP_CPLASMATORP_WIDTH;
                 clearzone[3][clearcount] = BMP_CPLASMATORP_HEIGHT;
                 clearcount++;
-             }
-             else
-             {   
-                /* needmore: if(pt->pt_war & me->p_team) */
-                if (pt->pt_owner != me->p_no && ((pt->pt_war & me->p_team) ||
-                                                      (players[pt->pt_owner].
-                                                       p_team & (me->p_hostile | me->
-                                                                 p_swar))))
+            }
+            else
+            {   
+                if (pt->pt_war & me->p_team)
                 {
                     W_WriteBitmap (dx - (eplasmatorp_width / 2),
                                    dy - (eplasmatorp_height / 2),
