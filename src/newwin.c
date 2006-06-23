@@ -875,9 +875,9 @@ newwin (char *hostmon,
         messwk = W_MakeScrollingRichTextWindow ("review_kill", 506, 717, 81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
-        phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", WINSIDE + BORDER + 6, YOFF + 
+        phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", WINSIDE + 6, YOFF + 
                                                     WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                                                    15 * W_Textheight + 16, 80, 4, baseWin, BORDER);
+                                                    15 * W_Textheight + 16, 81, 4, baseWin, BORDER);
         wam_windows[4] = phaserwin;
 
         reviewWin = W_MakeScrollingRichTextWindow ("review", 506, 540, 81, 22, baseWin, BORDER);

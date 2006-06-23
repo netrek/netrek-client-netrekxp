@@ -1142,19 +1142,14 @@ newWindow (char *name,
             s = title_buff;
             sprintf (title_buff, "Netrek  @  %s", serverName);
         }
-// SRS /4/4/98      SpecialStyle = WS_OVERLAPPEDWINDOW;    //Make main window sizeable
-        // These options give a window with a title bar, along with ability to minimize
-// This fullscreen stuff doesn't work.  It's throwing exceptions now.  No time to fix.
-// SRS 11/29/02
-        //        if (booleanDefault("fullscreen",0))
         // WS_THICKFRAME adds resizing frame to window without adding titlebar
         mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
+        mainTitleBar = booleanDefault ("mainTitleBar", mainTitleBar);
+        SpecialStyle |= WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
         if (mainResizeable)
-            SpecialStyle |= WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
-        else
-            SpecialStyle |= WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
-//        else
-//          SpecialStyle |= WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+            SpecialStyle |= WS_THICKFRAME;
+        if (mainTitleBar)
+            SpecialStyle |= WS_CAPTION;
     }
     else if (strcmp (name, "wait") == 0)
     {

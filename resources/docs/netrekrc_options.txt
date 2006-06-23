@@ -78,6 +78,7 @@ logging:                  (on/off) enable logging
 login:                    (string) character login
 macroKey:                 (char, ESC, TAB) key to toggle macro mode
 mainResizeable:           (on/off) make main window (netrek) resizeable
+mainTitleBar:             (on/off) start main window with title bar on (can be toggled by alt-enter)
 messageHoldThresh:        (integer) put message on hold after mouse move (Adds # to the end of message)
 messageHUD:               (0-2) where to duplicate message that is written in message window
 # 0 - none (default)

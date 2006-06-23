@@ -634,6 +634,7 @@ extern int agriColor;   /* agri planets font color on map */
 
 extern int windowMove;          /* allow moving of internal windows */
 extern int mainResizeable;      /* allow resize of netrek window */
+extern int mainTitleBar;        /* start netrek window with title bar on */
 extern int playerListMessaging; /* allow message zoom when clicking on player list */
 extern int observerMode;        /* set observer mode variable */
 extern int observerPorts[];     /* predefined list of observer ports */

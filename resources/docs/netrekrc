@@ -110,6 +110,9 @@ logging: off
 # Make main window resizeable
 mainResizeable: on
 
+# Start main window with title bar on (can be toggled by alt+enter)
+mainTitleBar: off
+
 # Message hold threshold
 messageHoldThresh: 0
 
@@ -269,7 +272,7 @@ showAllTractorPressor: on
 showArmy: on
 
 # Show hints window
-showHints: off
+showHints: on
 
 # Show hockey lines on map
 # Works only on hockey server

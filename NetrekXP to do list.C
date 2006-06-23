@@ -20,18 +20,12 @@ seem to work (might be executing in wrong directory)?
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
 there is no movement anywhere on map, and observer sound also messes up
-2) Observers don't get any geno message at all (head to default which is error message) -
-actually, they do get the whydead, but it's somehow after they are sent to quit screen.
-When obs quits, their state is K_WINNER ..and they see the new geno bitmap.
+2) Observers don't get any geno message at all due to whydead not being sent as
+a critical packet
 3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
 4) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
 or twarpers
-5) More detail on problem with whydead not updating with SP on.  It's not just an observer thing,
-for players too, the first update where pstatus changes, whydead is not sent.  Only on 2nd update.
-Now for regular players, not a problem, as they get several explosion updates on geno, so on 2nd explosion
-frame they get the proper whydead.  But observers just go to quit screen.  So they don't have updated
-whydead until next update.
 
 Things that are sorta fixed, but could use improvement:
 1) Bug with waraction..was being called even when clicking on border (broke function)
@@ -57,7 +51,10 @@ flushing with scroll button.  Doesn't show up initially, but do something like u
 scroll button, alt-enter, change to review all..and it shows up.
 7a) review all scrolling messes up text, if bottom of window is below the visible
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
-down there at bottom of screen
+down there at bottom of screen.  Apprently the native windows function doesn't properly
+scroll text that is outside the viewable window.
+8) Have client utilize new pingpong plasma server code
+9) Have client utilize new server torp vector code
 
 Stas's list:
 - color coded playerlist.

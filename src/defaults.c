@@ -211,6 +211,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"mainTitleBar", &mainTitleBar, RC_BOOL,
+        {
+            "Start main window with title bar on (can be toggled by alt+enter)",
+            NULL
+        }
+    },
     {"mainResizeable", &mainResizeable, RC_BOOL,
         {
             "Make main window resizeable",

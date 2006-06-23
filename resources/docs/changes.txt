@@ -1,4 +1,6 @@
 Version 1.1:
+- added "mainTitleBar: on/(off)" to choose whether to start game with title bar on.  As always,
+  title bar can be toggled by alt+enter.
 - changed COW, KRP and text dashboard so they display ATT ship correctly
 - changed the way dashboard reports negative values for the bars (hull,shield,fuel,etc) - instead
   of getting a garbled display since most of the dashboards can't handle negative values,

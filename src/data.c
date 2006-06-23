@@ -734,6 +734,7 @@ int agriColor = 2;
 
 int windowMove = 0;
 int mainResizeable = 1;
+int mainTitleBar = 0;
 int observerMode = 0;
 int showHockeyScore = 1;
 
