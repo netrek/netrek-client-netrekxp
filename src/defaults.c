@@ -439,6 +439,12 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"puckCircle", &puckCircle, RC_BOOL,
+        {
+            "Show the puck's max shot range as a circle around your ship",
+            NULL
+        }
+    },
     {"redrawDelay", &redrawDelay, RC_INT,
         {
             "Number of updates before redraw",
@@ -1480,6 +1486,7 @@ resetdefaults (void)
     showPlanetOwner = booleanDefault ("showPlanetOwner", showPlanetOwner);
     newDashboard = intDefault ("newDashboard", newDashboard);
     detCircle = booleanDefault ("detCircle", detCircle);
+    puckCircle = booleanDefault ("puckCircle", puckCircle);
     showArmy = booleanDefault ("showArmy", showArmy);
     updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);

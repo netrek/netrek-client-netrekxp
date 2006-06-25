@@ -58,7 +58,8 @@
                                  * explode */
 #define DETDIST 1700            /* At this range a player
                                  * can detonate a torp */
-
+#define SHOTRANGE 3000          /* At this range a player
+                                 * can shoot the puck */
 #define PHASEDIST 6000          /* At this range a player
                                  * can do damage with
                                  * phasers */

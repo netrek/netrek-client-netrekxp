@@ -55,6 +55,7 @@ int newDashboard = 2;           /* use new graphic
 int old_db = 0;                 /* should be same as
                                  * newDashboard */
 int detCircle = 0;              /* Show det circle on tactical */
+int puckCircle = 0;             /* Show maximum puck shooting distance on tactical */
 int showArmy = 1;               /* Show army count of planet you are orbiting */
 int fastQuit = 0;
 int gen_distress = 0;           /* generic distress/macro

@@ -230,6 +230,9 @@ port: 2592
 # Use new UDP code
 portSwap: on
 
+# Show the puck's max shot range as a circle around your ship
+puckCircle: off
+
 # Number of updates before redraw
 redrawDelay: 0
 
@@ -690,8 +693,14 @@ singleMacro: EF
 macro.0.A:%    __    __   ______        __     Want to see some better graphics?
 macro.0.A:%   /  \  / /__/_  __/______ / /__   Want a better sounding client?
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/   
-macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.0
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.1
 macro.0.A:%          Get it today at http://www.netrek.org
+
+macro.).A:  /*   Get the latest version of Netrek XP 2006 today!            */
+macro.).A:  /*   Current version is 1.1, released June 26, 2006             */
+macro.).A:  /*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
+macro.).A:  /*                      or                                      */
+macro.).A:  /*        http://www.playnetrek.org/                            */
 
 macro.a.A:.          o                        Just         |    Squeal boy...
 macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a

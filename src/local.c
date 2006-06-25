@@ -1179,7 +1179,22 @@ DrawShips (void)
                     clearcount++;
                 }
             }
-      
+#ifdef HOCKEY_LINES
+            /* Puck circle */
+            if (puckCircle && hockey_mode)
+            {
+            	if (myPlayer(j) || isObsLockPlayer(j))
+            	{
+                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, SHOTRANGE/SCALE, 0, W_Grey);         
+                    clearzone[0][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
+                    clearzone[1][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
+                    clearzone[2][clearcount] = 2*SHOTRANGE/SCALE;
+                    clearzone[3][clearcount] = 2*SHOTRANGE/SCALE;
+                    clearcount++;
+                }
+            }
+#endif
+
 #ifdef BEEPLITE
             if (tts_timer)
             {

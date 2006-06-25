@@ -271,6 +271,9 @@ struct option Ship_Menu[] = {
     {1, "shrink phasers on a miss", &shrinkPhaserOnMiss, 0, 0, 0, NULL, NULL},
     {1, "report kills", &reportKills, 0, 0, 0, NULL, NULL},
     {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
+#ifdef HOCKEY_LINES
+    {1, "show puck circle", &puckCircle, 0, 0, 0, NULL, NULL},
+#endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -898,6 +901,12 @@ optionaction (W_Event * data)
             // same as above
             if (showHockeyScore && !hockey_mode ())
                 showHockeyScore = 0;
+        }
+        else if (op->op_option == &puckCircle)
+        {
+            // same as above
+            if (puckCircle && !hockey_mode ())
+                puckCircle = 0;
         }
 #endif
         /* Let's see if this is our double buffering changed */

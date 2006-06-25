@@ -172,6 +172,7 @@ extern int dynamicBitmaps;
 extern int colorWeapons;
 extern int newDashboard, old_db;
 extern int detCircle;
+extern int puckCircle;
 extern int showArmy;
 extern int niftyNewMessages;
 extern int fastQuit;

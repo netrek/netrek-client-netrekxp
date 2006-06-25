@@ -1,4 +1,6 @@
 Version 1.1:
+- added "puckCircle: on/(off)" to show the puck's max shot range as a circle around your ship, works
+  on hockey servers only.
 - client can now tell if a ping-pong plasma is hostile to your ship (no longer assumes your own
   plasma or your team's plasmas are friendly) - the plasma will be drawn different depending
   on if it is hostile to you or not.
