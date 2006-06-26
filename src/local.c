@@ -1174,8 +1174,8 @@ DrawShips (void)
                     W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, W_Red);         
                     clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
                     clearzone[1][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
-                    clearzone[2][clearcount] = 2*DETDIST/SCALE;
-                    clearzone[3][clearcount] = 2*DETDIST/SCALE;
+                    clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
+                    clearzone[3][clearcount] = 2*DETDIST/SCALE + 1;
                     clearcount++;
                 }
             }
@@ -1188,8 +1188,8 @@ DrawShips (void)
                     W_WriteCircle(w, WINSIDE/2, WINSIDE/2, SHOTRANGE/SCALE, 0, W_Grey);         
                     clearzone[0][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
                     clearzone[1][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
-                    clearzone[2][clearcount] = 2*SHOTRANGE/SCALE;
-                    clearzone[3][clearcount] = 2*SHOTRANGE/SCALE;
+                    clearzone[2][clearcount] = 2*SHOTRANGE/SCALE + 1;
+                    clearzone[3][clearcount] = 2*SHOTRANGE/SCALE + 1;
                     clearcount++;
                 }
             }
