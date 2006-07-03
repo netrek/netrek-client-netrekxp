@@ -801,6 +801,8 @@ DrawShips (void)
             }
         }
 
+        /* If cloaking cycle is complete, just draw the cloak icon, and skip over
+           the ship drawing code with the goto statement */
         if (j->p_flags & PFCLOAK && (j->p_cloakphase == (CLOAK_PHASES - 1)))
         {
             if (myPlayer (j)
@@ -820,6 +822,8 @@ DrawShips (void)
                 goto shieldlabel;       /* draw the shield even when
                                          * cloaked */
             }
+            /* At this point, it's another player who is fully cloaked - skip
+               the rest of the draw function */
             continue;
         }
         if (j->p_status == PALIVE)
@@ -995,17 +999,20 @@ DrawShips (void)
                                       w);
             }
 
+            /* If the ship is not yet fully cloaked, draw the cloak icon on top
+               of the ship icon */
             if (j->p_cloakphase > 0)
             {
                 W_WriteBitmap (dx - (cloak_width / 2),
                                dy - (cloak_height / 2), cloakicon,
                                playerColor (j), w);
                 if (!myPlayer (j) && !isObsLockPlayer(j))
-                /* if my player, or observing that player, draw the shield */
+                /* If not my player, or not observing that player, we exit the draw
+                   function here */
                     continue;
             }
-
-          shieldlabel:
+            /* This is the goto reentry point for the case when your ship is fully cloaked */
+            shieldlabel:
 
 #ifdef BEEPLITE
 	    if ((useLite && emph_player_seq_n[j->p_no] > 0)
@@ -1217,8 +1224,17 @@ DrawShips (void)
             }
 #endif
 
-            if (j->p_flags & PFCLOAK)   /* when cloaked stop here */
+            /* When cloaked, stop here.  But need to reset the sound_phaser counter
+               to 0, otherwise other people's phaser sounds don't play while you are
+               cloaked.  Not necessary to check against phaser PHFREE status.*/
+            if (j->p_flags & PFCLOAK)
+            {
+#ifdef SOUND
+                if (myPlayer(j) || isObsLockPlayer(j))
+                    sound_phaser = 0;
+#endif
                 continue;
+            }
 
             {
                 int color = playerColor (j);

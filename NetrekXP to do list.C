@@ -1,8 +1,7 @@
 List for the netrekrc/installer:
 1) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
-2) Add chance for player to input their default login name - tired of seeing
-new-be-nice!!
+2) fix netrekrc append so that it doesn't keep adding new lines to the netrekrc
 
 Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
@@ -21,7 +20,7 @@ Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
 there is no movement anywhere on map, and observer sound also messes up
 2) Observers don't get any geno message at all due to whydead not being sent as
-a critical packet
+a critical packet - fixed
 3) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
 4) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
@@ -43,9 +42,9 @@ to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
 3) A lot of annoying pop up windows (like macro window, default controls) should be
 closeable by shift right click.
-4) Workable windows installer would be nice
+4) Get source code for installer from Joe.
 5) Get square planet bitmaps so I can turn them into mapped rotating globes.
-6) ships at warp 0 near newplanets blink in and out of galactic - may be fixed
+6) ships at warp 0 near newplanets blink in and out of galactic - not quite fixed
 7) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.

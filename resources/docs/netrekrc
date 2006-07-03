@@ -696,12 +696,6 @@ macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/
 macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.1
 macro.0.A:%          Get it today at http://www.netrek.org
 
-macro.).A:  /*   Get the latest version of Netrek XP 2006 today!            */
-macro.).A:  /*   Current version is 1.1, released June 26, 2006             */
-macro.).A:  /*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
-macro.).A:  /*                      or                                      */
-macro.).A:  /*        http://www.playnetrek.org/                            */
-
 macro.a.A:.          o                        Just         |    Squeal boy...
 macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
 macro.a.A:.       o  )/                       Wrong (tm)   |    hog!
@@ -865,6 +859,13 @@ macro.9.A:%      All your base           .  :    \_/ /  / \
 macro.9.A:%      are belong to us!     <    <     / /  // /\          \o/
 macro.9.A:%                          .:>: .> >. :/*/:</>./.X__         |
 macro.9.A:% --------------------:--:--**#:-<<:^/^<**#**#**:._/--------/->---
+
+macro.).A:  /*   Get the latest version of Netrek XP 2006 today!            */
+macro.).A:  /*   Current version is 1.1, released June 26, 2006             */
+macro.).A:  /*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
+macro.).A:  /*                      or                                      */
+macro.).A:  /*        http://www.playnetrek.org/                            */
+
 
 mac.e.T: Escorting %g (%d%%D %s%%S %f%%F)
 mac.V.A: %T%c  PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
