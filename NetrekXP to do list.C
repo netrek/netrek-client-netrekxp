@@ -44,7 +44,6 @@ to save settings.  Text in windows should adjust to new window size.
 closeable by shift right click.
 4) Get source code for installer from Joe.
 5) Get square planet bitmaps so I can turn them into mapped rotating globes.
-6) ships at warp 0 near newplanets blink in and out of galactic - not quite fixed
 7) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
 scroll button, alt-enter, change to review all..and it shows up.

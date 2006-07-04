@@ -550,7 +550,7 @@ DrawPlanets ()
 #ifdef BEEPLITE
 	}
 #endif
-        if (planetHighlighting) /* Draw halo */
+        if (planetHighlighting && (l->pl_info & me->p_team)) /* Draw halo */
             W_WriteCircle(mapw, dx, dy, BMP_MPLANET_WIDTH / 2,
                           l->pl_armies > 4 ? 1 : 0, planetColor(l));
 
@@ -786,14 +786,12 @@ map (void)
         }
 
         /* Erase the ships */
-
         for (i = 0, update = lastUpdate; i < MAXPLAYER; i++, update++)
         {
             if (redrawPlayer[i])
             {
                 /* Erase the player if redrawPlayer[i] is set
-                 * or lastUpdate allows it. */
-
+                   or lastUpdate allows it. */
                 if (mclearzone[2][i])
                 {
                     /* XFIX */
@@ -803,25 +801,17 @@ map (void)
                     checkRedraw (mclearzone[4][i], mclearzone[5][i]);
                     mclearzone[2][i] = 0;
                 }
-
-
                 /* Reset the last redrawn counter */
-
                 *update = 0;
             }
-            else if (*update == 1)
+            else if (*update == 10)
             {
-                /*
-                 *  Redraw stationary ships every update so that these
-                 *  ships are not hidden by planet updates.
-                 */
-
+                /* Redraw stationary ships every update so that these
+                   ships are not hidden by planet updates. */
                 redrawPlayer[i] = 1;
             }
             else
-            {
                 ++(*update);
-            }
         }
     }
 
