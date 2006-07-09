@@ -848,7 +848,8 @@ newwin (char *hostmon,
     else
 #endif
         W_SetWindowExposeHandler (helpWin, fillhelp);
-		W_SetWindowKeyDownHandler (helpWin, helpaction);
+    W_SetWindowKeyDownHandler (helpWin, helpaction);
+    W_SetWindowButtonHandler (helpWin, helpaction);
 
 #ifdef META
     metaWin = W_MakeMenu ("MetaServer List", 0, 0, 72, num_servers + 2,

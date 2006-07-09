@@ -15,6 +15,8 @@ is to just have server send repair time and planet orbit info.
 6) admin commands aren't set to executable by default, and the system call doesn't
 seem to work (might be executing in wrong directory)?
 7) twarping to base docked on base causes the twarp problem
+8) Server sometimes not updating tract/press flags for observers, several instances
+where a ship is seen to have pressors on constantly, even when they are off
 
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if

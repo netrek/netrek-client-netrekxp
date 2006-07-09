@@ -215,7 +215,7 @@ fillhelp (void)
     char helpmessage[MAXHELP];
 
 
-    /* 4 column help window. THis may be changed depending on font size */
+    /* 4 column help window. This may be changed depending on font size */
     for (column = 0; column < 4; column++)
     {
         for (row = 1; row < HELPMESSAGES / 4 + 2; row++)
@@ -248,6 +248,13 @@ helpaction (W_Event * data)
 {
 	int i, message_number = -1;
 	int row, column = 0;
+
+	/* Close window? */
+	if (data->key == W_MBUTTON)
+	{
+		W_UnmapWindow (helpWin);
+		return;
+	}
 
 	/* Let's find row and column from mouse coordinates */
 	row = (data->y - 4)/ W_Textheight;
