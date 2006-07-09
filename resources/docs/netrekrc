@@ -12,7 +12,7 @@ keymap: Ppa%d_eyftg^jmnrpPrls3tfuwvDwsye d
 
 # Key to switch to macro mode
 # TAB, ESC could be used too
-macroKey: m
+macroKey: X
 
 # Show AGRI planet names in caps on map
 agriCAPS: on
