@@ -1,4 +1,7 @@
-This source tree was tested with MS Visual C++ 6.0 and Borland C Builder 5.5
+This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2005
+Express Edition.  The client can also be compiled with MS Visual C++ 6.0, and the instructions
+below explain how to do so.  However, this compiler is no longer supported by the Netrek
+XP 2006 author as it is not free software (everything else needed for compiling is free).
 
 I'd like however to discourage you from using Borland's compiler unless you know how
 to debug its binaries. The output is also slower even though speed optimizations
@@ -27,6 +30,14 @@ Make sure you have configuration set correctly for the builder itself.
 Follow setup instructions from builder readme file to create proper configuration
 files. Otherwise the compiler and linker won't find the correct paths.
 
+If you're building with Microsoft Visual Studio 2005
+
+This is the preferred compiler.  You will need the SDK from the web, as the software
+doesn't come with the necessary files.  Additionally, DirectX SDK is probably needed too,
+for the SDL support.  If you use the studio files that come with the source,
+it should already have all the proper configuration set up, such as links to the
+lib files and using the proper resource files.
+
 Step 3:
 --------
 Open command prompt in the source tree directory and run build.cmd
@@ -35,18 +46,6 @@ If everything is correct and working then after a couple of minutes you will hav
 a working client under InstCWD\netrek.
 If you were compiling with Visual C++ you will also have a InstCWD\tmp folder containing
 lots of objects.  Just delete it.
-
-Other Notes:
-------------
-Additional instructions for compiling with Microsoft Visual C++ 2005 Express Edition,
-aka Microsoft Visual Studio 2005
-
-You will need the SDK from the web, as the software doesn't come with the necessary files.
-Additionally, DirectX SDK is probably needed too, for the SDL support.
-Compile the entire project in studio (which includes clientr, curslib, and winkey),
-then run the build script from DOS prompt.  I (Bill) have commented out the build lines
-that used cscript to compile the source since that command doesn't work with Visual
-Studio.
 
 That's pretty much all.
 
