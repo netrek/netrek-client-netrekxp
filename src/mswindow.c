@@ -92,7 +92,7 @@
 #ifdef DEBUG
 #define MAX_SCROLLWINDOW_LINES 300
 #else
-#define MAX_SCROLLWINDOW_LINES 100
+#define MAX_SCROLLWINDOW_LINES 300 /* Was 100, but that's too small! - BB 7/2006*/
 #endif
 //The max # lines a scrollwindow will have
 

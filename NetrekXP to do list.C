@@ -54,6 +54,8 @@ bottom border of netrek window.  Actually will happen to whatever window is mapp
 down there at bottom of screen.  Apprently the native windows function doesn't properly
 scroll text that is outside the viewable window.
 8) Have client utilize new server torp vector code
+9) planet owner on galactic overlaps with new fuel can graphic
+10) update dashboard on receiving a ship cap packet
 
 Stas's list:
 - color coded playerlist.

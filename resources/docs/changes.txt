@@ -1,3 +1,6 @@
+Netrek XP 2006, Version 1.2:
+- upped max number of lines in the message window scrollback buffer from 100 to 300
+
 Netrek XP 2006, Version 1.1: (Released 26-Jun-2006)
 - middle mouse button now closes the help window
 - other people's phasers sounds were not being heard if you were cloaked, this has been fixed
