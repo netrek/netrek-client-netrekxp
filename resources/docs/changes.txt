@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2:
+- added -L option for logging to an automatically generated logfile that is datestamped
+  (i.e. 20061002.log will be the log file generated on October 2, 2006).
 - added support for multiline macros sent using NEWMACRO variables (%p, %z, etc)
 - upped max number of lines in the message window scrollback buffer from 100 to 300
 
