@@ -532,6 +532,7 @@ struct plupdate
 struct macro_list
 {
     int type;
+    int multi;
     unsigned char key;
     char who;
     char *string;

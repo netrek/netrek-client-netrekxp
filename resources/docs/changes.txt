@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.2:
+- added support for multiline macros sent using NEWMACRO variables (%p, %z, etc)
 - upped max number of lines in the message window scrollback buffer from 100 to 300
 
 Netrek XP 2006, Version 1.1: (Released 26-Jun-2006)

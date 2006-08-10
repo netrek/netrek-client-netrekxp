@@ -2041,7 +2041,13 @@ doMacro (W_Event * data)
 
                     if (!pmacro (c, who, data))
                         W_Beep ();
-
+#ifdef MULTILINE_MACROS
+                    if (macro[c].multi == 1)
+                    {
+                    	found = 1;
+                    	break;          /* Loop again */
+                    }
+#endif
                     return;
                     break;
                 }

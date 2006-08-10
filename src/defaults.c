@@ -947,6 +947,7 @@ initDefaults (char *deffile)
                 else
                 {
                     macro[macrocnt].key = c;
+                    macro[macrocnt].multi = 0;
 
                     if (str[0] == '.')
                     {
@@ -1000,9 +1001,19 @@ initDefaults (char *deffile)
 #ifdef MULTILINE_MACROS
                     if (keysused[macro[macrocnt].key])
                     {
-                        macro[keysused[macro[macrocnt].key] - 1].type =
-                            NEWMULTIM;
-                        macro[macrocnt].type = NEWMULTIM;
+                    	/* Don't switch mouse targeted multiline macros to type
+                    	   multiline, just flag them as being multiline */
+                    	if (macro[macrocnt].type == NEWMMOUSE)
+                    	{
+                            macro[keysused[macro[macrocnt].key] - 1].multi = 1;
+                            macro[macrocnt].multi = 1;
+                        }
+                    	else
+                    	{
+                            macro[keysused[macro[macrocnt].key] - 1].type =
+                               NEWMULTIM;
+                            macro[macrocnt].type = NEWMULTIM;
+                	}
                     }
                     else
                     {
