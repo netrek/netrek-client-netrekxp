@@ -56,6 +56,7 @@ scroll text that is outside the viewable window.
 8) Have client utilize new server torp vector code
 9) planet owner on galactic overlaps with new fuel can graphic
 10) update dashboard on receiving a ship cap packet
+11) Fade out ship explosion sound on quit
 
 Stas's list:
 - color coded playerlist.

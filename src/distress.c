@@ -935,7 +935,9 @@ makedistress (struct distress *dist,
     buf3[index3] = '\0';
 
     cry[0] = '\0';
-    strncat (cry, buf3, MSG_LEN);
+//  strncat (cry, buf3, MSG_LEN);
+    /* Need room for automatic NULL termination */
+    strncat (cry, buf3, MSG_LEN - 1);
 
     return (index3);
 }
