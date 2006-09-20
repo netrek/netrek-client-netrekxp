@@ -30,7 +30,6 @@
 #include "local.h"
 #include "proto.h"
 
-
 /* #define INCLUDE_SCAN            /* include Amdahl scanning beams */
 #define INCLUDE_VISTRACT        /* include visible tractor beams */
 
@@ -2347,6 +2346,10 @@ handleShipCap (struct ship_cap_spacket *packet)
     shipvals[stype].s_height = ntohs (packet->s_height);
     shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
     getship (myship, myship->s_type);
+    
+    redrawTstats ();
+    calibrate_stats ();
+    redrawStats ();
 }
 
 #ifdef RSA

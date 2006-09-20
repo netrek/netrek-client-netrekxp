@@ -201,10 +201,6 @@ updateStats ()
         {
             box (1, BX_OFF (), BY_OFF (i), new_x, SL_HEI, -1);
         }
-        else if ((i == 1) && (colvalue > 0))
-        {
-            box (1, BX_OFF (), BY_OFF (i), new_x, SL_HEI, rColor);
-        }
         else if (colvalue > s->red)
         {
             box (1, BX_OFF (), BY_OFF (i), new_x, SL_HEI, rColor);
