@@ -24,27 +24,28 @@
 #define PLASMA_KILL_SOUND       17
 #define ENTER_WARP_SOUND        18
 #define EXIT_WARP_SOUND         19
-#define MESSAGE_SOUND           20
-#define MESSAGE1_SOUND          21
-#define MESSAGE2_SOUND          22
-#define MESSAGE3_SOUND          23
-#define MESSAGE4_SOUND          24
-#define MESSAGE5_SOUND          25
-#define MESSAGE6_SOUND          26
-#define MESSAGE7_SOUND          27
-#define MESSAGE8_SOUND          28
-#define MESSAGE9_SOUND          29
-
-#define OTHER_SOUND_OFFSET      29
+#define START_TMODE_SOUND       20
+#define STOP_TMODE_SOUND        21
+#define MESSAGE_SOUND           22
+#define MESSAGE1_SOUND          23
+#define MESSAGE2_SOUND          24
+#define MESSAGE3_SOUND          25
+#define MESSAGE4_SOUND          26
+#define MESSAGE5_SOUND          27
+#define MESSAGE6_SOUND          28
+#define MESSAGE7_SOUND          29
+#define MESSAGE8_SOUND          30
+#define MESSAGE9_SOUND          31
+#define OTHER_SOUND_OFFSET      31
 
 /* Other people's sounds; not all of these are currently used */
-#define OTHER_FIRE_TORP_SOUND   30
-#define OTHER_PHASER_SOUND      31
-#define OTHER_FIRE_PLASMA_SOUND 32
-#define OTHER_EXPLOSION_SOUND   33
+#define OTHER_FIRE_TORP_SOUND   32
+#define OTHER_PHASER_SOUND      33
+#define OTHER_FIRE_PLASMA_SOUND 34
+#define OTHER_EXPLOSION_SOUND   35
 
 
-#define NUM_SOUNDS 33
+#define NUM_SOUNDS 35
 
 struct Sound
 {
@@ -92,6 +93,8 @@ enum {
   SELF_DESTRUCT_WAV,
   SHIELD_DOWN_WAV,
   SHIELD_UP_WAV,
+  START_TMODE_WAV,
+  STOP_TMODE_WAV,
   TORP_HIT_WAV,
   UNCLOAK_WAV,
   WARNING_WAV,

@@ -63,6 +63,8 @@ static struct Sound sounds[NUM_SOUNDS + 1] = {
     {"nt_plasma_kill", 11, 1},
     {"nt_enter_warp", 4, 1},
     {"nt_exit_warp", 4, 1},
+    {"nt_start_tmode", 6, 1},
+    {"nt_stop_tmode", 6, 1},
     {"nt_message", 4, 1},
     {"nt_message1", 4, 1},
     {"nt_message2", 4, 1},
@@ -126,6 +128,8 @@ int loadSounds(void) {
   newsounds[SELF_DESTRUCT_WAV] = Mix_LoadWAV(DATAFILE("nt_self_destruct.wav"));
   newsounds[SHIELD_DOWN_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_down.wav"));
   newsounds[SHIELD_UP_WAV] = Mix_LoadWAV(DATAFILE("nt_shield_up.wav"));
+  newsounds[START_TMODE_WAV] = Mix_LoadWAV(DATAFILE("nt_start_tmode.wav"));
+  newsounds[STOP_TMODE_WAV] = Mix_LoadWAV(DATAFILE("nt_stop_tmode.wav"));
   newsounds[TORP_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_torp_hit.wav"));
   newsounds[UNCLOAK_WAV] = Mix_LoadWAV(DATAFILE("nt_uncloak.wav"));
   newsounds[WARNING_WAV] = Mix_LoadWAV(DATAFILE("nt_warning.wav"));
@@ -477,6 +481,12 @@ static void soundrefresh (int i)
             break;
         case SHIELD_UP_SOUND:
             sprintf (buf, "Shield up sound is %s", flag);
+            break;
+        case START_TMODE_SOUND:
+            sprintf (buf, "Start tmode sound is %s", flag);
+            break;
+        case STOP_TMODE_SOUND:
+            sprintf (buf, "Stop tmode sound is %s", flag);
             break;
         case TORP_HIT_SOUND:
             sprintf (buf, "Torp hit sound is %s", flag);

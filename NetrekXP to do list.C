@@ -12,20 +12,30 @@ away, etc).  Don't think this is fixable.
 5) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.
-6) admin commands aren't set to executable by default, and the system call doesn't
-seem to work (might be executing in wrong directory)?
-7) twarping to base docked on base causes the twarp problem
-8) Server sometimes not updating tract/press flags for observers, several instances
+6) twarping to base docked on base causes the twarp problem, but hard to reproduce
+7) Server sometimes not updating tract/press flags for observers, several instances
 where a ship is seen to have pressors on constantly, even when they are off
+8) Triple mode blanks planet names, if you vote to dogfight or hockey, names are not restored
+9) "The 0 0 20 minutes before empire collapses" - with surrenderstart = 1
+11) all observer ghostbusts now do a double ghostbust: no ping observ, no ping alive
+12) mars - lose nb_robots
+13) newbie/pret: monitor vs full_hostname
+14) on daemon exit in newbie/pret, kill any hosed bot slots
+15) end game bots are stupid, and on timericide don't act right
+16) if obs in game when merlin quits, queues still open..should be closed dammit
 
+Sturgeon problems
+1) after free upgrade, ship cap packet not being sent to everyone..seems to
+   only be sent to 1 person.
+1b) someone got my super ship cap packet when he had a normal GA
+2) need ship cap packet sent after xtkill super
+  
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
 there is no movement anywhere on map, and observer sound also messes up
-2) Observers don't get any geno message at all due to whydead not being sent as
-a critical packet - fixed
-3) The new smooth turning only working on self, not obs or others - short packets only
+2) The new smooth turning only working on self, not obs or others - short packets only
 send headings of 16 positions.
-4) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
+3) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
 or twarpers
 
 Things that are sorta fixed, but could use improvement:
@@ -57,6 +67,8 @@ scroll text that is outside the viewable window.
 9) planet owner on galactic overlaps with new fuel can graphic
 10) update dashboard on receiving a ship cap packet
 11) Fade out ship explosion sound on quit
+12) Pop-up dialog box for bad version response
+13) control-g doesn't set your login on the player list
 
 Stas's list:
 - color coded playerlist.

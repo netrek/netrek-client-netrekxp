@@ -62,6 +62,7 @@ int gen_distress = 0;           /* generic distress/macro
                                  * system support */
 int niftyNewMessages = 1;
 unsigned int oldalert = 0;
+unsigned char oldtourn = (unsigned char) 2;  /* placeholder starting status */
 int alertBorderColor = 0;
 int remap[16] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
 int messpend = 0;

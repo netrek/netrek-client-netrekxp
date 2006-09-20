@@ -1168,6 +1168,28 @@ void
 handleStatus (struct status_spacket *packet)
 {
     status->tourn = packet->tourn;
+    /* T-mode sounds - avoid playing on game entry by using
+       placeholder setting for oldtourn */
+    if (oldtourn != status->tourn && oldtourn != 2)
+    {
+#ifdef SOUND
+        if (status->tourn)
+        {
+            if (newSound)
+                Play_Sound(START_TMODE_WAV);
+            else
+                Play_Sound(START_TMODE_SOUND);
+        }
+        else
+        {
+            if (newSound)
+                Play_Sound(STOP_TMODE_WAV);
+            else
+                Play_Sound(STOP_TMODE_SOUND);
+        }	
+#endif
+    }
+    oldtourn = status->tourn;
     status->armsbomb = ntohl (packet->armsbomb);
     status->planets = ntohl (packet->planets);
     status->kills = ntohl (packet->kills);
