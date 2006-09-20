@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2:
+- removed the 'A' key as alternate player list, was causing way too many complaints
+  that it was accidentally popping up.  Toggling this window is now controlled only
+  through the netrekrc, or the playerlist options menu.
 - added sounds for tmode starting and stopping
 - fixed longstanding crash bug with macros with more than 80 characters in a line
 - added -L option for logging to an automatically generated logfile that is datestamped

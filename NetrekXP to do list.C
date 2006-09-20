@@ -23,6 +23,7 @@ where a ship is seen to have pressors on constantly, even when they are off
 14) on daemon exit in newbie/pret, kill any hosed bot slots
 15) end game bots are stupid, and on timericide don't act right
 16) if obs in game when merlin quits, queues still open..should be closed dammit
+17) sndlogin not good when you login twice, it erases your login name
 
 Sturgeon problems
 1) after free upgrade, ship cap packet not being sent to everyone..seems to
@@ -68,7 +69,6 @@ scroll text that is outside the viewable window.
 10) update dashboard on receiving a ship cap packet
 11) Fade out ship explosion sound on quit
 12) Pop-up dialog box for bad version response
-13) control-g doesn't set your login on the player list
 
 Stas's list:
 - color coded playerlist.

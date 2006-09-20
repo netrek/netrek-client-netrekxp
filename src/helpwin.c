@@ -127,7 +127,7 @@ char *help_message[] = {
     "U     Show rankings window",
     "m     Message Window Zoom",
     "/     Toggle sorted player list",
-    "A     Toggle alternate player list",
+//    "A     Toggle alternate player list",
     ":     Toggle message logging",
     "+     Show UDP options window",
     "=     Update all",
