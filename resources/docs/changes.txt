@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2:
+- moved position of planet owner on galactic (if showPlanetOwner on) so that it
+  does not overlap with the fuel can graphic.  The letter indicating planet owner
+  is now in the upper right hand corner of the planet rather than the center right.
 - changed how hull damage is colored in the graphical stats window - it now obeys
   the green/yellow/red coloring by percent damage rather than being red at all hull conditions
 - fixed dashboard and graphical stats window that were not updating properly when

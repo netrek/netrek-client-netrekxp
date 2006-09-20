@@ -603,7 +603,7 @@ DrawPlanets ()
 #endif
                 )? tolower (teamlet[l->pl_owner]) : '?');
             W_WriteText (mapw, dx + (BMP_MPLANET_WIDTH / 2) + 2,
-                         dy - 6, planetColor (l), &ch, 1, planetFont (l));
+                         dy - (BMP_MPLANET_HEIGHT / 2) - 6, planetColor (l), &ch, 1, planetFont (l));
         }
     }
 }
