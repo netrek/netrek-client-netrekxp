@@ -71,7 +71,10 @@ scroll text that is outside the viewable window.
   a) help window too small to display all options
   b) < and > keys don't seem to work
   c) t-mode on/off sound plays continually, something odd with tourn status packet
-  
+13) metaserver related: fix color scheme for metaaction options, update documenation on
+new metatype option, fix metastatuslevel option (broken by COW code merge)
+
+
 Stas's list:
 - color coded playerlist.
 - check inl server for behavior (observers and tractor/pressor packets)
