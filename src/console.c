@@ -53,7 +53,7 @@ void
 LineToConsole (char * format, ...)
 {
     struct cons_buffer * tmp;     // temporary pointer to our linked list;
-    char str[256];
+    char str[1024];
     DWORD numChars;
     va_list args;
 

@@ -228,9 +228,8 @@ int recv_warn = 1;
 int updatesPerSec = 10;
 
 #ifdef META
-/* Metaservers list */
-char *metaServer[] = {"metaserver.us.netrek.org",
-                      "metaserver2.us.netrek.org"};
+/* Metaservers list - comma delimited  */
+char *metaServer = "metaserver.us.netrek.org, metaserver2.us.netrek.org";
 int metaPort = 3521;
 char *metaCache = NULL;
 #ifdef METAPING

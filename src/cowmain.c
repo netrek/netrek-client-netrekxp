@@ -496,6 +496,10 @@ int checking = 0;
 
 #ifdef META
 int usemeta = 0;
+int metaType;                 /* which meta to use, UDP, cache, or TCP */
+                              /* can be set in xtrekrc with metaType: */
+                              /* 1 == UDP, 2 == cache, TCP, 3 = TCP, cache */
+#define DEFAULT_METATYPE  3   /* want TCP, cache as the default */
 #endif
 
 /******************************************************************************/
@@ -644,7 +648,13 @@ cowmain (char *server,
 
 #ifdef META
     if (usemeta)
-        parsemeta (usemeta);
+    {
+        metaType = intDefault("metaType", usemeta);
+        /* use default metatype for illegal values */
+        if ((metaType < 1) || (metaType > 3))
+            metaType = DEFAULT_METATYPE;
+        parsemeta(metaType);
+    }
 #endif
   
     fed_ship_bmp = "bitmaps/shiplib/fedship.bmp";

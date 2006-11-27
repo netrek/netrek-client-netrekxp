@@ -31,6 +31,7 @@
 #include "proto.h"
 
 extern HINSTANCE MyInstance;
+extern int metaHeight;   /* height of metaserver window */
 
 static int line = 0;
 int MaxMotdLine = 0;
@@ -852,7 +853,7 @@ newwin (char *hostmon,
     W_SetWindowButtonHandler (helpWin, helpaction);
 
 #ifdef META
-    metaWin = W_MakeMenu ("MetaServer List", 0, 0, 72, num_servers + 2,
+    metaWin = W_MakeMenu ("MetaServer List", 0, 0, 80, metaHeight,
                           NULL, 2);
     W_SetWindowKeyDownHandler (metaWin, metaaction);
     W_SetWindowButtonHandler (metaWin, metaaction);

@@ -16,11 +16,11 @@ extern int num_servers;         /* The number of servers in the list */
 
 void parsemeta (int metaType);
 /*
- * Read and Parse the meta-server information, either from the meta-
- * server (if metaType = 1) or from the cache (if metaType = 2).
+ * Read and Parse the metaserver information, either from the metaservers
+ * by UDP (1), from a single metaserver by TCP (3), or from the cache (2).
  *  
  * NOTE: This function sets the variable "num_servers" which is
- * later used to decide the hight of the meta-server window.
+ * used in newwin() to set the height of the meta-server window.
  */
 
 
