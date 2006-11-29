@@ -68,9 +68,20 @@
 static int msock = -1;		/* the socket to talk to the metaservers	*/
 static int sent = 0;		/* number of solicitations sent			*/
 static int seen = 0;		/* number of replies seen			*/
-static int verbose = 1;		/* whether to talk a lot about it all		*/
+static int verbose = 0;		/* whether to talk a lot about it all		*/
 static int type;		/* type of connection requested			*/
 #define RTT_AVG_BUFLEN  5	/* number of samples used for average rtt time	*/
+
+    /* from meta.h of metaserver code */
+#define SS_WORKING 0
+#define SS_QUEUE 1
+#define SS_OPEN 2
+#define SS_EMPTY 3
+#define SS_NOCONN 4
+#define SS_INIT 5
+    /* not a real metaserver number, but overcomes a limitation of dropping text */
+    /* description of sp->why_dead */
+#define SS_TOUT 6
 
 /* Local Types */
 
@@ -112,7 +123,7 @@ HANDLE hThread = NULL;
  * particular point.
  * 
  * The strings after statusNull are internal status types and are formatted
- * separatly from the other strings.
+ * separately from the other strings.
  * 
  * The string corresponding to "statusNull" is assigned to those servers which
  * have "statusNobody" or earlier strings in old, cached, meta-server data. */
@@ -491,6 +502,7 @@ static void version_r(struct sockaddr_in *address) {
     struct servers *sp = NULL;
     char *host, type;
     int port, status, age, players, queue, throwaway;
+    int tempstatus = 0;
       
     throwaway = 0;
 
@@ -505,8 +517,31 @@ static void version_r(struct sockaddr_in *address) {
     if (p == NULL) continue;
     status = atoi(p);
 
-    /* ignore servers based on status */
-    if (status > statusLevel)
+    /* Metaserver and client define status level differently, must convert
+       status so that client option metaStatusLevel works properly */
+    switch (status) {
+    case SS_QUEUE:
+      tempstatus = statusWait;
+      break;
+    case SS_OPEN:
+      tempstatus = statusOpen;
+      break;
+    case SS_EMPTY:
+      tempstatus = statusNobody;
+      break;
+    case SS_TOUT:
+      tempstatus = statusTout;
+      break;
+    case SS_NOCONN:			/* no connection */
+    case SS_WORKING:		/* metaserver should not return this */
+    case SS_INIT:			/* nor this */
+    default:
+      tempstatus = statusNoConnect;
+      break;
+    }
+
+    /* ignore servers based on converted status */
+    if (tempstatus > statusLevel)
       throwaway++;
     /* the sp->why_dead workaround */
     if (status == 6)
@@ -564,16 +599,6 @@ static void version_r(struct sockaddr_in *address) {
     }
     sp->refresh = 1;
 
-    /* from meta.h of metaserver code */
-#define SS_WORKING 0
-#define SS_QUEUE 1
-#define SS_OPEN 2
-#define SS_EMPTY 3
-#define SS_NOCONN 4
-#define SS_INIT 5
-    /* not a real metaserver number, but overcomes a limitation of dropping text */
-    /* description of sp->why_dead */
-#define SS_TOUT 6
     switch (status) {
     case SS_QUEUE:
       sp->status = statusWait;
@@ -1299,6 +1324,10 @@ metarefresh (int i,
 	    strcat (buf, "      ");
 	}
     }
+    else {
+        /* Pad string with spaces for formatting purposes */
+        strcat (buf, "                     ");
+    }
 
 
 #ifdef METAPING
@@ -1384,7 +1413,7 @@ metawindow (void)
         W_WriteText(metaWin, 0, metaHeight-3, W_Yellow, "Refresh", 7, 0);
 
     /* Add quit option */
-    W_WriteText (metaWin, 0, metaHeight-2, textColor, "Quit", 4, 0);
+    W_WriteText (metaWin, 0, metaHeight-2, W_Yellow, "Quit", 4, 0);
 
     /* Additional Help Options */
     W_WriteText (metaWin, 0, metaHeight-1, W_Yellow, 

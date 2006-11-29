@@ -71,8 +71,8 @@ scroll text that is outside the viewable window.
   a) help window too small to display all options
   b) < and > keys don't seem to work
   c) t-mode on/off sound plays continually, something odd with tourn status packet
-13) metaserver related: fix color scheme for metaaction options, update documenation on
-new metatype option, fix metastatuslevel option (broken by COW code merge)
+13) metaserver related: update documenation on new metatype option, prevent UDP metaserver
+from overwriting bottom 3 entries (quit/refresh/links)
 
 
 Stas's list:
