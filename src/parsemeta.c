@@ -502,7 +502,7 @@ static void version_r(struct sockaddr_in *address) {
     struct servers *sp = NULL;
     char *host, type;
     int port, status, age, players, queue, throwaway;
-    int tempstatus = 0;
+    int tempstatus, tempplayers;
       
     throwaway = 0;
 
@@ -516,37 +516,6 @@ static void version_r(struct sockaddr_in *address) {
     p = strtok(NULL,",");		/* status */
     if (p == NULL) continue;
     status = atoi(p);
-
-    /* Metaserver and client define status level differently, must convert
-       status so that client option metaStatusLevel works properly */
-    switch (status) {
-    case SS_QUEUE:
-      tempstatus = statusWait;
-      break;
-    case SS_OPEN:
-      tempstatus = statusOpen;
-      break;
-    case SS_EMPTY:
-      tempstatus = statusNobody;
-      break;
-    case SS_TOUT:
-      tempstatus = statusTout;
-      break;
-    case SS_NOCONN:			/* no connection */
-    case SS_WORKING:		/* metaserver should not return this */
-    case SS_INIT:			/* nor this */
-    default:
-      tempstatus = statusNoConnect;
-      break;
-    }
-
-    /* ignore servers based on converted status */
-    if (tempstatus > statusLevel)
-      throwaway++;
-    /* the sp->why_dead workaround */
-    if (status == 6)
-      if ((status - 3) <= statusLevel) 
-	throwaway--;
 
     p = strtok(NULL,",");		/* age (of data in seconds) */
     if (p == NULL) continue;
@@ -563,6 +532,39 @@ static void version_r(struct sockaddr_in *address) {
     p = strtok(NULL,"\n");		/* server type */
     if (p == NULL) continue;
     type = p[0];
+
+    /* Metaserver and client define status level differently, must convert
+       status so that client option metaStatusLevel works properly.  And
+       temporarily record player field as well.  */
+    switch (status) {
+    case SS_QUEUE:
+      tempstatus = statusWait;
+      tempplayers = queue;
+      break;
+    case SS_OPEN:
+      tempstatus = statusOpen;
+      tempplayers = players;
+      break;
+    case SS_EMPTY:
+      tempstatus = statusNobody;
+      tempplayers = 0;
+      break;
+    case SS_TOUT:
+      tempstatus = statusTout;
+      tempplayers = 0;
+      break;
+    case SS_NOCONN:			/* no connection */
+    case SS_WORKING:		/* metaserver should not return this */
+    case SS_INIT:			/* nor this */
+    default:
+      tempstatus = statusNoConnect;
+      tempplayers = 0;
+      break;
+    }
+
+    /* ignore servers based on converted status */
+    if (tempstatus > statusLevel)
+      throwaway++;
 
     /* ignore paradise servers */
     if (type == 'P') throwaway++;
@@ -599,31 +601,10 @@ static void version_r(struct sockaddr_in *address) {
     }
     sp->refresh = 1;
 
-    switch (status) {
-    case SS_QUEUE:
-      sp->status = statusWait;
-      sp->players = queue;
-      break;
-    case SS_OPEN:
-      sp->status = statusOpen;
-      sp->players = players;
-      break;
-    case SS_EMPTY:
-      sp->status = statusNobody;
-      sp->players = 0;
-      break;
-    case SS_TOUT:
-      sp->status = statusTout;
-      sp->players = 0;
-      break;
-    case SS_NOCONN:			/* no connection */
-    case SS_WORKING:		/* metaserver should not return this */
-    case SS_INIT:			/* nor this */
-    default:
-      sp->status = statusNoConnect;
-      sp->players = 0;
-      break;
-    }
+    /* Use converted status and player values */
+    sp->status = tempstatus;
+    sp->players = tempplayers;
+
     sp->typeflag = type;
     strcpy(sp->comment, "");
 #ifdef METAPING
@@ -1166,11 +1147,11 @@ parsemeta (int metaType)
 	    LoadMetasCache();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
-	        metaHeight = num_servers + 10;
+	        metaHeight = num_servers + 6;
 	    } else {
 	        LineToConsole("Warning: no response from metaservers, are you firewalled?\n"
 		              "         (no reply to probe on UDP port %d)\n", metaPort);
-	        metaHeight = num_servers + 15;
+	        metaHeight = num_servers + 11;
 	    }
             return;
 	    break;
