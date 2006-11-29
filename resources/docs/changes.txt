@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2:
+- added "metaVerbose: on/(off)" and "metaUDPCache: (filename)" options to netrekrc
+  and help docs, these were part of the UDP metaserver merge
 - close windows key now closes ping stats window, graphical ship stats window,
   sound window, xtrekrc window, documentation window, and short packets window
 - remapped close special windows key to W (was unused in the prior xp 2006 keymap)

@@ -145,6 +145,9 @@ metaType: 1
 # Use ICMP to ping the metaserver list
 metaPing: on
 
+# Show detailed messages during connect to metaserver
+metaVerbose: off
+
 # Mouse motion threshold
 motionThresh: 0
 
@@ -420,6 +423,9 @@ sounddir: .\sounds
 
 # Metacache file
 metaCache: metacache
+
+# UDP Metacache file
+metaUDPCache: metaUDPcache
 
 # Custom style for player list
 # ' ' - White Space

@@ -66,7 +66,6 @@ scroll text that is outside the viewable window.
 11) Pop-up dialog box for bad version response
 12) Bugs with cambot playback: t-mode on/off sound plays continually, something odd with
 tourn status packet, looks like it's server side in inl_move
-13) detcircle, cow version history
 
 Stas's list:
 - color coded playerlist.

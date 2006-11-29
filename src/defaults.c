@@ -281,6 +281,12 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"metaVerbose", &metaVerbose, RC_BOOL,
+        {
+            "Show detailed messages during connect to metaserver",
+            NULL
+        }
+    },
 #endif
 
 #ifdef MOTION_MOUSE
@@ -2074,6 +2080,16 @@ saveOptions ()
     	if (saveBig)
     	    fputs ("# Metacache file\n", fp);
     	sprintf (str, "metaCache: %s\n", metaCache);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
+    }
+    // UDP metacache
+    if (metaUDPCache != NULL)
+    {
+    	if (saveBig)
+    	    fputs ("# UDP Metacache file\n", fp);
+    	sprintf (str, "metaUDPCache: %s\n", metaUDPCache);
     	fputs (str, fp);
     	if (saveBig)
     	    fputs ("\n", fp);

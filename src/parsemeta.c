@@ -68,7 +68,6 @@
 static int msock = -1;		/* the socket to talk to the metaservers	*/
 static int sent = 0;		/* number of solicitations sent			*/
 static int seen = 0;		/* number of replies seen			*/
-static int verbose = 0;		/* whether to talk a lot about it all		*/
 static int type;		/* type of connection requested			*/
 #define RTT_AVG_BUFLEN  5	/* number of samples used for average rtt time	*/
 
@@ -357,7 +356,7 @@ static int ReadMetasSend()
   metaPort = intDefault("metaPort", metaPort);
 
   /* whether to report everything that happens */
-  verbose = booleanDefault("metaVerbose", verbose);
+  metaVerbose = booleanDefault("metaVerbose", metaVerbose);
 
   /* create the socket */
   if (msock < 0) {
@@ -379,7 +378,7 @@ static int ReadMetasSend()
   address.sin_family = AF_INET;
   address.sin_port = htons(metaPort);
   address.sin_addr.s_addr = inet_addr("224.0.0.1");
-  if (verbose)
+  if (metaVerbose)
     LineToConsole ("Requesting player list from nearby servers on %s\n",
                     inet_ntoa(address.sin_addr));
   if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
@@ -418,7 +417,7 @@ static int ReadMetasSend()
 	  /* check for end of list of addresses */
 	  if (hp->h_addr_list[i] == NULL) break;
 	  address.sin_addr.s_addr = *(long *) hp->h_addr_list[i];
-	  if (verbose)
+	  if (metaVerbose)
             LineToConsole ("Requesting player list from metaserver %s at %s\n",
                             token, inet_ntoa(address.sin_addr));
 	  if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
@@ -431,7 +430,7 @@ static int ReadMetasSend()
       }
     } else {
       /* call to inet_addr() worked, host name is in IP address form */
-      if (verbose)
+      if (metaVerbose)
         LineToConsole ("Requesting player list from metaserver %s\n",
                         inet_ntoa(address.sin_addr));
       if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
@@ -489,7 +488,7 @@ static void version_r(struct sockaddr_in *address) {
   if (servers > 2048) return;
   if (servers < 0) return;
 
-  if (verbose) 
+  if (metaVerbose) 
     LineToConsole ("Metaserver at %s responded with %d server%s\n",
 		   inet_ntoa(address->sin_addr),
 		   servers,
@@ -630,7 +629,7 @@ static void version_s(struct sockaddr_in *address)
   is the case with multihomed machines */
   host = inet_ntoa(address->sin_addr);
 
-  if (verbose) 
+  if (metaVerbose) 
     LineToConsole ("Server at %s responded\n", host);
 
   p = strtok(NULL,",");	/* server type */

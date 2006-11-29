@@ -102,6 +102,8 @@ metaType:                 (1-3) what type of metaserver to use
 # 2 - cache, then TCP metaserver
 # 3 - TCP metaserver, then cache
 
+metaUDPCache:             (filename) name of UDP metacache file
+metaVerbose:              (on/off) show detailed messages during connect to metaserver
 motionThresh:             (int) mouse motion threshold
 mouseAsShift:             (on/off) use mouse buttons to switch keymaps
 mungScrollbarColors:      (on/off) set scrollbar colors to match background colors
