@@ -3023,6 +3023,7 @@ Key100 (void)
         lastdet = curtime;
     }
 #endif /* AUTOKEY */
+    detCircle = 1;
 
 }
 

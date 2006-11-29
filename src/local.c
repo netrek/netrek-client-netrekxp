@@ -1184,6 +1184,7 @@ DrawShips (void)
                     clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
                     clearzone[3][clearcount] = 2*DETDIST/SCALE + 1;
                     clearcount++;
+                    detCircle--;
                 }
             }
 #ifdef HOCKEY_LINES

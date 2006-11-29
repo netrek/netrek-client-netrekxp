@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.2:
+- det circle changed so it only flashes on det, rather than be on all the time
 - added "metaVerbose: on/(off)" and "metaUDPCache: (filename)" options to netrekrc
   and help docs, these were part of the UDP metaserver merge
 - close windows key now closes ping stats window, graphical ship stats window,
