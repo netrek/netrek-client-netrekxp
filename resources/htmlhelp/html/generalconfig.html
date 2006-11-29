@@ -446,6 +446,11 @@ in case two buttons are pressed at the same time
 </td>
 </tr>
 <tr>
+<td><code><b>maxScrollLines</b></code></td>
+<td>Maximum number of scroll lines in a message window</td>
+<td><b>integer</b><br>default: 300</td>
+</tr>
+<tr>
 <td><code><b>messageHoldThresh</b></code></td>
 <td>Threshold value to put message on hold</td>
 <td><b>integer</b><br>default: 0</td>
@@ -486,6 +491,17 @@ in case two buttons are pressed at the same time
 	<li><b>2</b> - as 1 or with nobody playing</li>
 	<li><b>3 (default)</b> - as 2 or timed out servers</li>
 	<li><b>4</b> - as 3 or servers refusing connections</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><code><b>metaType</b></code></td>
+<td>What type of metaserver to use</td>
+<td>
+	<ul>
+	<li><b>1 (default)</b> - UDP multiple metaservers</li>
+	<li><b>2</b> - cache, then TCP metaserver</li>
+	<li><b>3</b> - TCP metaserver, then cache</li>
 	</ul>
 </td>
 </tr>

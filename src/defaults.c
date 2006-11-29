@@ -223,6 +223,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"maxScrollLines", &maxScrollLines, RC_INT,
+        {
+            "Maximum number of lines in message window scrollback",
+            NULL
+        }
+    },
 #ifdef XTRA_MESSAGE_UI
     {"messageHoldThresh", &messageHoldThresh, RC_INT,
         {
@@ -1513,6 +1519,11 @@ resetdefaults (void)
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
     logging = booleanDefault ("logging", logging);
+    maxScrollLines = intDefault ("maxScrollLines", maxScrollLines);
+    if (maxScrollLines > 500)
+        maxScrollLines = 500;
+    else if (maxScrollLines < 50)
+        maxScrollLines = 50;
 
     phaserShrink = intDefault ("phaserShrink", phaserShrink);
     if (phaserShrink > 16)

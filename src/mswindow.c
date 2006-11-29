@@ -89,13 +89,6 @@
 #define WM_TERMINATE_WAIT 0x8000
 #define WM_CROSS_THREAD_DESTROY 0x8001
 
-#ifdef DEBUG
-#define MAX_SCROLLWINDOW_LINES 300
-#else
-#define MAX_SCROLLWINDOW_LINES 300 /* Was 100, but that's too small! - BB 7/2006*/
-#endif
-//The max # lines a scrollwindow will have
-
 #define EVENT_Q_SIZE 15
 //The number of events our custom queue will hold
 
@@ -4424,7 +4417,7 @@ AddToScrolling (Window * win,
         NumStrings = 0;
     }
 
-    if (NumStrings < MAX_SCROLLWINDOW_LINES)    //Create a new stringList item
+    if (NumStrings < maxScrollLines)    //Create a new stringList item
     {
         p2 = (struct stringList *) malloc (sizeof (struct stringList));
         if (!p2)
@@ -5738,7 +5731,7 @@ AddToRichText (Window * win,
         NumStrings = 0;
     }
 
-    if (NumStrings < MAX_SCROLLWINDOW_LINES)    //Create a new stringList item
+    if (NumStrings < maxScrollLines)    //Create a new stringList item
     {
         p2 = (struct stringList *) malloc (sizeof (struct stringList));
         if (!p2)

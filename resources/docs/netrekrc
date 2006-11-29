@@ -113,6 +113,9 @@ mainResizeable: on
 # Start main window with title bar on (can be toggled by alt+enter)
 mainTitleBar: off
 
+# maximum number of scroll lines in a message window (range of values 50-500)
+maxScrollLines: 300
+
 # Message hold threshold
 messageHoldThresh: 0
 
