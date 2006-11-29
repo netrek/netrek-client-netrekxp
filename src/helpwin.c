@@ -250,7 +250,11 @@ helpaction (W_Event * data)
 	int row, column = 0;
 
 	/* Close window? */
-	if (data->key == W_MBUTTON)
+	if (data->key == W_MBUTTON
+#ifdef SHIFTED_MOUSE
+            || (data->key == W_RBUTTON2)
+#endif
+	)
 	{
 		W_UnmapWindow (helpWin);
 		return;

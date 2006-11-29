@@ -172,6 +172,9 @@ hintaction (W_Event * data)
             curhint = 0;
         showhint (curhint);
         return;
+#ifdef SHIFTED_MOUSE
+    case W_RBUTTON2:
+#endif
     case W_MBUTTON:
         showHints = 0;
         W_UnmapWindow (hintWin);

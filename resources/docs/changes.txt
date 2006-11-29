@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2:
+- help window and hint window are now closeable by shift-right click (assuming shiftedMouse
+  is on)
 - added "maxScrollLines: (integer)" to control how many lines of scrollback you want,
   range of acceptable values is 50-500
 - fixed cambot playback help window size, and fixed bug where you could make the
