@@ -437,6 +437,8 @@ pbsetspeed (char key)
         break;
     case '>':
         pbdelay *= 2;
+        if (pbdelay > 600)
+            pbdelay = 600;
         break;
     case 'R':
         {

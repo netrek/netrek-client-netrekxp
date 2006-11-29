@@ -836,7 +836,7 @@ newwin (char *hostmon,
     if (playback)
         helpWin = W_MakeTextWindow ("help", 286,
                           YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 50,
-                          72, 12, NULL, BORDER);
+                          72, 15, NULL, BORDER);
     else
 #endif
         helpWin = W_MakeTextWindow ("help", 20,

@@ -67,10 +67,8 @@ scroll text that is outside the viewable window.
 8) Have client utilize new server torp vector code
 10) Fade out ship explosion sound on quit
 11) Pop-up dialog box for bad version response
-12) Bugs with cambot playback:
-  a) help window too small to display all options
-  b) < and > keys don't seem to work
-  c) t-mode on/off sound plays continually, something odd with tourn status packet
+12) Bugs with cambot playback: t-mode on/off sound plays continually, something odd with
+tourn status packet, looks like it's server side in inl_move
 
 Stas's list:
 - color coded playerlist.
