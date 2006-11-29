@@ -1,4 +1,16 @@
 Netrek XP 2006, Version 1.2:
+- added "metaType: (integer)" for which type of metaserver you wish to use, where the
+  default is 1, and the options are:
+# What type of metaserver to use
+# 1 - UDP multiple metaservers
+# 2 - cache, then TCP metaserver
+# 3 - TCP metaserver, then cache
+- merged the COW metaserver code.  There is now a UDP metaserver option, which can be
+  refreshed, that merges data from all known metaservers.  The UDP metaserver can also
+  solicit other servers as if they were a metaserver, and supports the server option to
+  display a comment rather than server name.  There is also support for multicast server
+  packets.  This change also renames the old -m option to -M, and changes -m option to
+  the UDP metaserver.
 - moved position of planet owner on galactic (if showPlanetOwner on) so that it
   does not overlap with the fuel can graphic.  The letter indicating planet owner
   is now in the upper right hand corner of the planet rather than the center right.

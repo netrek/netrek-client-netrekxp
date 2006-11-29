@@ -258,6 +258,15 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"metaType", &metaType, RC_INT,
+        {
+            "What type of metaserver to use",
+            "1 - UDP multiple metaservers",
+            "2 - cache, then TCP metaserver",
+            "3 - TCP metaserver, then cache",
+            NULL
+        }
+    },
 #ifdef METAPING
     {"metaPing", &metaPing, RC_BOOL,
         {

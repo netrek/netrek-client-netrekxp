@@ -96,7 +96,8 @@ run netrek from the same userid / account and still have unique defaults files.
   -f <file name>		: record game to file (can be viewed later with -F)
   -F <file name>		: view recorded game
   -l <file name>		: record all messages to log file
-  -m			: connect to metaserver (default)
+  -m			: connect to metaservers by UDP (default)
+  -M  		: connect to metaserver by TCP
   -k			: display known servers The client generates a list of known servers
 			 after each call to the metaserver but only if the "metaCache" option is
 			 set in your .netrekrc.

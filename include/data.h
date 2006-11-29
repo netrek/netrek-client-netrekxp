@@ -609,6 +609,7 @@ extern int autoQuit;
 
 extern int forceDisplay;
 extern int forceMono;
+extern int metaType;
 extern int metaStatusLevel;
 extern int mungScrollbarColors;
 extern int showMotd;

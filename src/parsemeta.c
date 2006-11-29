@@ -1147,18 +1147,20 @@ parsemeta (int metaType)
 	    LoadMetasCache();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
-	        metaHeight = num_servers + 6;
+	    	/* Allocate 4 spots for header/refresh/quit/link, and 3 slots for additional servers */
+	        metaHeight = num_servers + 7;
 	    } else {
 	        LineToConsole("Warning: no response from metaservers, are you firewalled?\n"
 		              "         (no reply to probe on UDP port %d)\n", metaPort);
-	        metaHeight = num_servers + 11;
+	        /* Allocate 4 spots for header/refresh/quit/link, and 8 server slots */
+	        metaHeight = num_servers + 12;
 	    }
             return;
 	    break;
         case 2:
 	    if (ReadFromCache() || ReadFromMeta()) 
 	    {
-                /* add 3 for header and quit button and link bar */
+                /* Allocate 3 spots for header/quit/link */
 	        metaHeight = num_servers + 3;
 	        return;
 	    }
@@ -1167,7 +1169,7 @@ parsemeta (int metaType)
         case 3:
 	    if (ReadFromMeta() || ReadFromCache()) 
             {
-                /* add 2 for header and quit button and link bar */
+                /* Allocate 3 spots for header/quit/link */
                 metaHeight = num_servers + 3;
                 return;
             }

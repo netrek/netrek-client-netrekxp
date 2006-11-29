@@ -499,7 +499,7 @@ int usemeta = 0;
 int metaType;                 /* which meta to use, UDP, cache, or TCP */
                               /* can be set in xtrekrc with metaType: */
                               /* 1 == UDP, 2 == cache, TCP, 3 = TCP, cache */
-#define DEFAULT_METATYPE  3   /* want TCP, cache as the default */
+#define DEFAULT_METATYPE  1   /* want UDP as the default */
 #endif
 
 /******************************************************************************/
