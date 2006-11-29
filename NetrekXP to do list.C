@@ -52,8 +52,6 @@ Things to do:
 1) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
-3) A lot of annoying pop up windows (like macro window, default controls) should be
-closeable by shift right click.
 4) Get source code for installer from Joe.
 5) Get square planet bitmaps so I can turn them into mapped rotating globes.
 7) problem with message windows, text getting garbled near top, goes away with
@@ -68,6 +66,7 @@ scroll text that is outside the viewable window.
 11) Pop-up dialog box for bad version response
 12) Bugs with cambot playback: t-mode on/off sound plays continually, something odd with
 tourn status packet, looks like it's server side in inl_move
+13) detcircle, cow version history
 
 Stas's list:
 - color coded playerlist.

@@ -2112,6 +2112,21 @@ void
 Key32 (void)
 {
     /* ' ' = clear special windows */
+#ifdef SOUND
+    W_UnmapWindow (soundWin);
+#endif
+
+#ifdef DOC_WIN
+    W_UnmapWindow (xtrekrcwin);
+    W_UnmapWindow (docwin);
+#endif
+
+#ifdef SHORT_PACKETS
+    W_UnmapWindow (spWin);
+#endif
+
+    W_UnmapWindow (pStats);
+    W_UnmapWindow (statwin);
     W_UnmapWindow (planetw);
     W_UnmapWindow (rankw);
     if (infomapped)

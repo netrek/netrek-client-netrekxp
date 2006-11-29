@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.2:
+- close windows key now closes ping stats window, graphical ship stats window,
+  sound window, xtrekrc window, documentation window, and short packets window
+- remapped close special windows key to W (was unused in the prior xp 2006 keymap)
+- remapped lower volume key to Z (was unused in the prior xp 2006 keymap)
 - help window and hint window are now closeable by shift-right click (assuming shiftedMouse
   is on)
 - added "maxScrollLines: (integer)" to control how many lines of scrollback you want,
