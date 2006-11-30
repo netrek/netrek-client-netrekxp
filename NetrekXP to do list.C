@@ -52,6 +52,8 @@ Things to do:
 1) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
+3) Although the borland build works without errors, the netrek executable crashes, and 
+it is beyond my knowledge to know how to debug it.
 4) Get source code for installer from Joe.
 5) Get square planet bitmaps so I can turn them into mapped rotating globes.
 7) problem with message windows, text getting garbled near top, goes away with
@@ -64,8 +66,7 @@ scroll text that is outside the viewable window.
 8) Have client utilize new server torp vector code
 10) Fade out ship explosion sound on quit
 11) Pop-up dialog box for bad version response
-12) Bugs with cambot playback: t-mode on/off sound plays continually, something odd with
-tourn status packet, looks like it's server side in inl_move
+
 
 Stas's list:
 - color coded playerlist.

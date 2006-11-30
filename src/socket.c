@@ -1172,6 +1172,9 @@ handleStatus (struct status_spacket *packet)
     if (oldtourn != status->tourn && oldtourn != 2)
     {
 #ifdef SOUND
+#ifdef RECORDGAME
+      if (!inplayback) {
+#endif
         if (status->tourn)
         {
             if (newSound)
@@ -1185,7 +1188,10 @@ handleStatus (struct status_spacket *packet)
                 Play_Sound(STOP_TMODE_WAV);
             else
                 Play_Sound(STOP_TMODE_SOUND);
-        }	
+        }
+#ifdef RECORDGAME
+      }
+#endif	
 #endif
     }
     oldtourn = status->tourn;
