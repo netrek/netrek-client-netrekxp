@@ -40,7 +40,8 @@ lib files and using the proper resource files.
 
 Step 3:
 --------
-Open command prompt in the source tree directory and run build.cmd
+Open command prompt in the source tree directory and run build.cmd.  Note that this build
+script must use borland make, not GNU make, so don't try and run it under cygwin.
 
 If everything is correct and working then after a couple of minutes you will have compiled
 a working client under InstCWD\netrek.

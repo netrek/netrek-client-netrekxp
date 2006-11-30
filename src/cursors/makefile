@@ -13,7 +13,7 @@ all: curslib.dll
 RESOURCES = curslib.res
 
 $(RESOURCES): curslib.rc
-        $(rc) -FOcurslib.res curslib.rc
+	$(rc) -FOcurslib.res curslib.rc
 
 curslib.dll:  $(RESOURCES)
 	$(link) -Tpd -aa -V4.0 -c -x C0d32.OBJ, curslib.dll,, import32.lib cw32i.lib, , $(RESOURCES)
