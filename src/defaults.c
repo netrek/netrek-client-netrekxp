@@ -665,12 +665,14 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef SOUND
     {"sound", &sound_init, RC_BOOL,
         {
             "Enable sound",
             NULL
         }
     },
+#endif
     {"theirPhaserShrink", &theirPhaserShrink, RC_INT,
         {
             "Shrink enemy phaser by x/16 of its length",
@@ -2062,7 +2064,8 @@ saveOptions ()
     fputs (str, fp);
     if (saveBig)
         fputs ("\n", fp);
-        
+
+#ifdef SOUND
     // sound directory
     if (sounddir != NULL)
     {
@@ -2073,7 +2076,8 @@ saveOptions ()
     	if (saveBig)
     	    fputs ("\n", fp);
     }
-    
+#endif
+
     // metacache
     if (metaCache != NULL)
     {

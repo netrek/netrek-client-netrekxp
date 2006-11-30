@@ -1002,6 +1002,7 @@ newwin (char *hostmon,
     getResources (progname);
 }
 
+#if defined(SOUND)
 /******************************************************************************/
 /***  newsoundwin() - Need to map it after reset_defaults, so pulled out of newwin
 /******************************************************************************/
@@ -1026,6 +1027,7 @@ newsoundwin (char *hostmon,
         W_DefineArrowCursor(soundWin);
     }
 }
+#endif
 
 /******************************************************************************/
 /***  mapAll()

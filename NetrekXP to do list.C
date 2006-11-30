@@ -23,6 +23,7 @@ where a ship is seen to have pressors on constantly, even when they are off
 14) on daemon exit in newbie/pret, kill any hosed bot slots
 15) end game bots are stupid, and on timericide don't act right
 16) if obs in game when merlin quits, queues still open..should be closed dammit
+17) final planet count and cscore would be nice in pw_stats
 
 Sturgeon problems
 1) after free upgrade, ship cap packet not being sent to everyone..seems to
@@ -66,7 +67,6 @@ scroll text that is outside the viewable window.
 8) Have client utilize new server torp vector code
 10) Fade out ship explosion sound on quit
 11) Pop-up dialog box for bad version response
-
 
 Stas's list:
 - color coded playerlist.

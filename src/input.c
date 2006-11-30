@@ -2849,7 +2849,7 @@ Key86 (void)
 #ifdef SOUND
     ChangeVolume (1);
 #else
-    emptykey ();
+    emptyKey ();
 #endif
 }
 
