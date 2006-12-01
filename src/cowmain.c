@@ -656,7 +656,7 @@ cowmain (char *server,
         parsemeta(metaType);
     }
 #endif
-  
+
     fed_ship_bmp = "bitmaps/shiplib/fedship.bmp";
     if ((stringDefault ("fedshipbmpfile")) != NULL)
         fed_ship_bmp = stringDefault ("fedshipbmpfile");

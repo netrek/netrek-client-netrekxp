@@ -839,7 +839,7 @@ static void LoadMetasCache()
   FILE *cache;
   char *cacheName;
   char cacheFileName[PATH_MAX];
-  int  i;
+  int  i, j;
 
   cacheName = stringDefault("metaUDPCache");
 
@@ -877,8 +877,6 @@ static void LoadMetasCache()
   /* hunt and kill old server lines from cache */
   for(i=0;i<num_servers;i++)
   {
-      int j;
-
       /* mark each server as needing to be refreshed */
       serverlist[i].refresh = 1;
 
@@ -1231,6 +1229,10 @@ metarefresh (int i,
 #ifdef METAPING
     }
 #endif
+
+    /* Ensure status field not out of bounds */
+    if (sp->status < statusOpen || sp->status > statusConnecting)
+        sp->status = statusNull;
 
     sprintf(buf + strlen (buf), "%14s ", statusStrings[sp->status]);
 
