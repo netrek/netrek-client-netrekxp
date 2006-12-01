@@ -1182,7 +1182,7 @@ metarefresh (int i,
 /* Refresh line i in the list */
 {
     struct servers *sp;
-    char comment[LINE];
+    char serverline[LINE];
     char buf[LINE + 1];
 
 #ifdef METAPING
@@ -1203,29 +1203,26 @@ metarefresh (int i,
     if (metablock(sp->address))
         return;
 
+    /* Ensure comment/address field not longer than we want */
 #ifdef METAPING
     if (metaPing)
     {
       if (strlen(sp->comment))
-      {
-        strncpy(comment, sp->comment, 34);
-        comment[34] = '\0';
-        sprintf(buf, "%-34s ", comment);
-      }
+        strncpy(serverline, sp->comment, 34);
       else
-	sprintf (buf, "%-34s ", sp->address);
+        strncpy(serverline, sp->address, 34);
+      serverline[34] = '\0';
+      sprintf(buf, "%-34s ", serverline);
     }
     else
     {
 #endif
       if (strlen(sp->comment))
-      {
-        strncpy(comment, sp->comment, 40);
-        comment[40] = '\0';
-        sprintf(buf, "%-40s ", comment);
-      }
+        strncpy(serverline, sp->comment, 40);
       else
-	sprintf (buf, "%-40s ", sp->address);
+        strncpy(serverline, sp->address, 40);
+      serverline[40] = '\0';
+      sprintf(buf, "%-40s ", serverline);
 #ifdef METAPING
     }
 #endif
