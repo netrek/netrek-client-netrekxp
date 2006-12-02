@@ -64,6 +64,7 @@
 
 #define BUF     6144
 #define LINE    80		/* Width of a meta-server line			*/
+#define MAX_SERVERS  2048	/* Maximum number of servers allowed		*/
 #define MAXMETABYTES 2048	/* maximum metaserver UDP packet size		*/
 static int msock = -1;		/* the socket to talk to the metaservers	*/
 static int sent = 0;		/* number of solicitations sent			*/
@@ -290,7 +291,7 @@ parseInput (char *in,
 
         /* Is this a line we want? */
 
-        if (sscanf (line, "-h %s -p %d %d %*d",
+        if (sscanf (line, "-h %s -p %d %d",
                     slist->address, &(slist->port), &(slist->age)) != 3)
         {
             continue;
@@ -485,7 +486,7 @@ static void version_r(struct sockaddr_in *address) {
   servers = atoi(p);
 
   /* sanity check on number of servers */
-  if (servers > 2048) return;
+  if (servers > MAX_SERVERS) return;
   if (servers < 0) return;
 
   if (metaVerbose) 
@@ -533,8 +534,8 @@ static void version_r(struct sockaddr_in *address) {
     type = p[0];
 
     /* Metaserver and client define status level differently, must convert
-       status so that client option metaStatusLevel works properly.  And
-       temporarily record player field as well.  */
+       status before the throwaway checks so that client option metaStatusLevel
+       works properly.  And temporarily record player field as well.  */
     switch (status) {
     case SS_QUEUE:
       tempstatus = statusWait;
@@ -574,8 +575,19 @@ static void version_r(struct sockaddr_in *address) {
     /* find in current server list? */
     sp = server_find(host, port);
 
+    /* if it was not found, add it to the end of the list */
+    if (sp == NULL) {
+      grow(1);
+      sp = serverlist + num_servers;
+      num_servers++;
+      strncpy(sp->address,host,LINE);
+      sp->port = port;
+      sp->age = age;
+      sp->when = now;
+      sp->lifetime = 4;
+    }
     /* if it was found, check age */
-    if (sp != NULL) {
+    else {
       if ((now-age) < (sp->when-sp->age)) {
 	sp->age = (int)now - (int)(sp->when-sp->age);
 	sp->when = now;
@@ -587,22 +599,12 @@ static void version_r(struct sockaddr_in *address) {
 	sp->when = now;
 	sp->lifetime = 20;
       }
-    } else {
-      /* not found, store it at the end of the list */
-      grow(1);
-      sp = serverlist + num_servers;
-      num_servers++;
-      strncpy(sp->address,host,LINE);
-      sp->port = port;
-      sp->age = age;
-      sp->when = now;
-      sp->lifetime = 4;
-    }
-    sp->refresh = 1;
-
+    } 
     /* Use converted status and player values */
     sp->status = tempstatus;
     sp->players = tempplayers;
+
+    sp->refresh = 1;
 
     sp->typeflag = type;
     strcpy(sp->comment, "");
@@ -778,8 +780,9 @@ static void SaveMetasCache()
   FILE *cache;
   char cacheFileName[PATH_MAX];
   char tmpFileName[PATH_MAX];
+  char str[LINE];
   char *cacheName;
-  int len;
+  int i, len;
 
   cacheName = stringDefault("metaUDPCache");
   /* overwrite existing file if possible */
@@ -811,14 +814,29 @@ static void SaveMetasCache()
       cache = NULL;
   }
 
-
   if (cache != NULL)
   {
-
-      fwrite(&statusLevel, sizeof(statusLevel), 1, cache);
-      fwrite(&num_servers, sizeof(num_servers), 1, cache);
-      fwrite(serverlist, sizeof(struct servers), num_servers, cache);
-
+      /* Save status level and number of servers on first line - these variables
+         determine whether to use the cache during LoadMetasCache() */
+      sprintf (str, "%d,%d\n", statusLevel, num_servers);
+      fputs (str, cache);
+      
+      /* Save important data in a similar, but not identical, manner to how the
+         metaserver sends the UDP metadata.  The internal status types are not saved,
+         instead they default to "Active". */
+      for (i = 0; i < num_servers; i++)
+      {
+          sprintf(str,"%s,%d,%lld,%d,%d,%d,%d,%c\n",
+          serverlist[i].address,
+          serverlist[i].port,
+          serverlist[i].when,
+          serverlist[i].age,
+          serverlist[i].lifetime,
+          serverlist[i].players,
+          ((serverlist[i].status <= statusNull) ? serverlist[i].status : statusNull),
+          serverlist[i].typeflag);
+          fputs (str, cache);
+      }
       fclose(cache);
 
       /* Can't rename file to existing name under NT */
@@ -838,8 +856,12 @@ static void LoadMetasCache()
 {
   FILE *cache;
   char *cacheName;
+  char *buffer;
+  char *p;
   char cacheFileName[PATH_MAX];
+  long lSize;
   int  i, j;
+  int invalid[MAX_SERVERS] = {0};
 
   cacheName = stringDefault("metaUDPCache");
 
@@ -857,31 +879,133 @@ static void LoadMetasCache()
       num_servers = 0; 
       return; 
   }
- 
-  /* ignore the cache if user changed statusLevel */
-  fread(&i, sizeof(i), 1, cache);
+  /* Obtain file size. */
+  fseek (cache , 0 , SEEK_END);
+  lSize = ftell (cache);
+  rewind (cache);
+
+  /* Allocate memory to contain the whole file. */
+  buffer = (char*) malloc (lSize);
+  if (buffer == NULL)
+  {
+      num_servers = 0;
+      fclose(cache);
+      return;
+  }
+
+  /* Copy the file into the buffer. */
+  fread (buffer,1,lSize,cache);
+
+  /* Read in statusLevel */
+  p = strtok(buffer,",");
+  if (p == NULL)
+  {
+      num_servers = 0;
+      fclose(cache);
+      return;
+  }
+  i = atoi(p);
+
+  /* Ignore the cache if user changed statusLevel */
   if (i != statusLevel)
   {
       num_servers = 0;
       fclose(cache);
       return; 
   }
- 
-
-  /* read the server list into memory from the file */
-  fread(&num_servers, sizeof(num_servers), 1, cache);
-  serverlist = (struct servers *) malloc(sizeof(struct servers)*num_servers);
-  fread(serverlist, sizeof(struct servers), num_servers, cache);
-  fclose(cache);
   
+  /* Read in number of servers */
+  p = strtok(NULL,"\n");
+  if (p == NULL)
+  {
+      num_servers = 0;
+      fclose(cache);
+      return;
+  }
+  num_servers = atoi(p);
+
+  /* Allocate memory for server list */
+  serverlist = (struct servers *) malloc(sizeof(struct servers)*num_servers);
+
+  /* Load servers into server list */
+  for(i = 0; i < num_servers; i++)
+  {
+    p = strtok(NULL,",");		/* hostname */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    strcpy(serverlist[i].address, p);
+
+    p = strtok(NULL,",");		/* port */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].port = atoi(p);
+
+    p = strtok(NULL,",");		/* when */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].when = atoi(p);
+
+    p = strtok(NULL,",");		/* age */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].age = atoi(p);
+
+    p = strtok(NULL,",");		/* lifetime */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].lifetime = atoi(p);
+
+    p = strtok(NULL,",");		/* players */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].players = atoi(p);
+
+    p = strtok(NULL,",");		/* status */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].status = atoi(p);
+
+    p = strtok(NULL,"\n");		/* type */
+    if (p == NULL) {
+    	invalid[i] = 1;
+    	continue;
+    }
+    serverlist[i].typeflag = p[0];
+
+    strcpy(serverlist[i].comment, "");
+ 
+    /* mark each server as needing to be refreshed */
+    serverlist[i].refresh = 1;
+
+#ifdef METAPING
+    /* Initialize the ping rtt fields */
+    for (j = 0; j < RTT_AVG_BUFLEN; ++j )
+        serverlist[i].pkt_rtt[j] = (unsigned long) -1;
+#endif
+  }
+
+  fclose(cache);
+
   /* hunt and kill old server lines from cache */
   for(i=0;i<num_servers;i++)
   {
-      /* mark each server as needing to be refreshed */
-      serverlist[i].refresh = 1;
-
-      /* skip the deletion below if the entry was received recently */
-      if (serverlist[i].lifetime-- > 0) continue;
+      /* skip the deletion below if the entry was received recently,
+         and all the data was valid */
+      if (serverlist[i].lifetime-- > 0 && !invalid[i]) continue;
 
       /* delete this entry by moving the ones above down */
       for(j=i;j<num_servers-1;j++)
@@ -1175,6 +1299,114 @@ parsemeta (int metaType)
     }
 }
 
+static void
+metasort( void )
+/* Sort the server list in a manner similiar to how the metaserver
+   sorts the servers.  Useful for when the order of servers in the
+   UDP metacache does not reflect the current player counts.  Or when
+   a request for updated server stats make one server more populated
+   than it was before */
+{
+    struct servers *sp;
+    char tempaddress[LINE];
+    int tempport, tempage;
+    time_t tempwhen;
+    int temprefresh, templifetime, tempplayers, tempstatus;
+    char temptypeflag;
+    char tempcomment[LINE];
+#ifdef METAPING
+    u_long tempip_addr;
+    DWORD temppkt_rtt[RTT_AVG_BUFLEN];
+#endif
+    int i, j, change;
+
+    /* Tracks if we performed a sorting action */
+    change = 0;
+
+    /* Only need to sort to the 2nd to last server, since we compare that
+       server to the one above it on the list. */
+    for (i = 0; i < (num_servers - 1); i++)
+    {
+        sp = serverlist;
+        
+        /* Sorting order is: status, then player_count/queue_size */
+        
+        /* If status is equal, the server with more players should be higher */
+        if (serverlist[i].status == serverlist[i+1].status)
+        {
+            if (serverlist[i].players > serverlist[i+1].players)
+                change = 1;
+        }
+        else
+        {
+            /* If the server above it has a wait queue, don't swap. */
+            if (serverlist[i+1].status != statusWait)
+            {
+            	/* Server has wait queue?  Swap up (since we know the one above
+            	   doesn't have a queue */
+                if (serverlist[i].status == statusWait)
+                    change = 1;
+                /* Server has lower status?  Swap up */
+                else if (serverlist[i].status < serverlist[i+1].status)
+                    change = 1;
+            }  
+        }
+        if (change)
+        {
+            /* Copy bottom entry (i) into temp space */
+            strcpy (tempaddress, serverlist[i].address);
+            tempport = serverlist[i].port;
+            tempage = serverlist[i].age;
+            tempwhen = serverlist[i].when;
+            temprefresh = serverlist[i].refresh;
+            templifetime = serverlist[i].lifetime;
+            tempplayers = serverlist[i].players;
+            tempstatus = serverlist[i].status;
+            temptypeflag = serverlist[i].typeflag;
+            strcpy (tempcomment, serverlist[i].comment);
+#ifdef METAPING
+            tempip_addr = serverlist[i].ip_addr;
+            for (j = 0; j < RTT_AVG_BUFLEN; j++)
+                temppkt_rtt[j] = serverlist[i].pkt_rtt[j];
+#endif
+            /* Move top entry (i+1) into bottom entry (i) */
+            strcpy (serverlist[i].address, serverlist[i+1].address);
+            serverlist[i].port = serverlist[i+1].port;
+            serverlist[i].age = serverlist[i+1].age;
+            serverlist[i].when = serverlist[i+1].when;
+            serverlist[i].refresh = serverlist[i+1].refresh;
+            serverlist[i].lifetime = serverlist[i+1].lifetime;
+            serverlist[i].players = serverlist[i+1].players;
+            serverlist[i].status = serverlist[i+1].status;
+            serverlist[i].typeflag = serverlist[i+1].typeflag;
+            strcpy (serverlist[i].comment, serverlist[i+1].comment);
+#ifdef METAPING
+            serverlist[i].ip_addr = serverlist[i+1].ip_addr;
+            for (j = 0; j < RTT_AVG_BUFLEN; j++)
+                serverlist[i].pkt_rtt[j] = serverlist[i+1].pkt_rtt[j];
+#endif
+            /* Copy temp entry into top entry (i+1) */
+            strcpy (serverlist[i+1].address, tempaddress);
+            serverlist[i+1].port = tempport;
+            serverlist[i+1].age = tempage;
+            serverlist[i+1].when = tempwhen;
+            serverlist[i+1].refresh = temprefresh;
+            serverlist[i+1].lifetime = templifetime;
+            serverlist[i+1].players = tempplayers;
+            serverlist[i+1].status = tempstatus;
+            serverlist[i+1].typeflag = temptypeflag;
+            strcpy (serverlist[i+1].comment, tempcomment);
+#ifdef METAPING
+            serverlist[i+1].ip_addr = tempip_addr;
+            for (j = 0; j < RTT_AVG_BUFLEN; j++)
+                serverlist[i+1].pkt_rtt[j] = temppkt_rtt[j];
+#endif
+            /* Start back at beginning - could be more efficient */
+            i = 0;	
+            change = 0;
+        }
+    }
+}	
 
 static void
 metarefresh (int i,
@@ -1383,6 +1615,11 @@ metawindow (void)
 
     W_WriteText(metaWin, 0, 0, W_Yellow, header, strlen(header), 0);
     
+    /* Sort the server list */
+    if (type == 1)
+        metasort();
+    
+    /* Write the metaserver lines */
     for (i = 0; i < metaHeight; i++)
         metarefresh (i, textColor);
 
@@ -1481,6 +1718,7 @@ metaaction (W_Event * data)
     {
         W_WriteText(metaWin, 0, metaHeight-3, W_Red, "Asking for refresh from metaservers and nearby servers", 54, 0);
         ReadMetasSend();
+        metasort();
     }
     else if (data->y == (metaHeight-2)) /* Quit selected */
     {
@@ -1793,7 +2031,7 @@ DWORD WINAPI metaPing_thread(void)
 			serverlist[i].ip_addr = inet_addr(serverlist[i].address); // INADDR_NONE if failed
 		else
 			serverlist[i].ip_addr = *((u_long FAR *) (hp->h_addr));
-		}
+	}
 
 	// Create a Raw socket
 	rawSocket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);

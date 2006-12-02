@@ -54,6 +54,7 @@ Things to do:
 to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
 4) Get source code for installer from Joe.
+4a) Add a Cambot playback and Cambot record shortcut links to the installation package.
 5) Get square planet bitmaps so I can turn them into mapped rotating globes.
 7) problem with message windows, text getting garbled near top, goes away with
 flushing with scroll button.  Doesn't show up initially, but do something like use
@@ -68,11 +69,8 @@ scroll text that is outside the viewable window.
 
 Stas's list:
 - color coded playerlist.
-- check inl server for behavior (observers and tractor/pressor packets)
 ! server: ita won't block RCDs (why not ?)
-- add usage on metaserver window (well, what would you write there ?)
 ! after res if there cloaker around he will be seen briefly (speed 0 bug)
-- whydead dies when out of range (not confirmed)
 - add "reset to defaults" to options menu
 - add bitmap themes option (change default bitmap naming and processing)
 - add shiftMouse, controlMouse on/off
