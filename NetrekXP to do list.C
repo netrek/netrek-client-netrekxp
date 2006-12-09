@@ -7,7 +7,6 @@ Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
-3) Can't bomb enemy 3rd space planets in your T-mode opponent's space.
 4) in orbit.c, pftranswarp strangeness.
 5) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
@@ -17,19 +16,12 @@ is to just have server send repair time and planet orbit info.
 where a ship is seen to have pressors on constantly, even when they are off
 8) Triple mode blanks planet names, if you vote to dogfight or hockey, names are not restored
 9) "The 0 0 20 minutes before empire collapses" - with surrenderstart = 1
-11) all observer ghostbusts now do a double ghostbust: no ping observ, no ping alive
 12) mars - lose nb_robots
 13) newbie/pret: monitor vs full_hostname
 14) on daemon exit in newbie/pret, kill any hosed bot slots
 15) end game bots are stupid, and on timericide don't act right
 16) if obs in game when merlin quits, queues still open..should be closed dammit
 17) final planet count and cscore would be nice in pw_stats
-
-Sturgeon problems
-1) after free upgrade, ship cap packet not being sent to everyone..seems to
-   only be sent to 1 person.
-1b) someone got my super ship cap packet when he had a normal GA
-2) need ship cap packet sent after xtkill super
   
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
