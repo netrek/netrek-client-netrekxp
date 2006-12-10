@@ -1046,10 +1046,10 @@ cowmain (char *server,
         W_MapWindow (hintWin);
 
     if (W_IsMapped (pStats))    /* support ping stuff */
-	{
-		BringWindowToTop (((Window *) pStats)->hwnd);
+    {
+	BringWindowToTop (((Window *) pStats)->hwnd);
         redrawPStats ();
-	}
+    }
 
     if (isFirstEntry)
     {

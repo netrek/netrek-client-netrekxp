@@ -7,7 +7,6 @@ Things not gonna happen, or server problems:
 1) Player list messaging doesn't work if you can't see player (cloaked, too far
 away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
-4) in orbit.c, pftranswarp strangeness.
 5) look into swar/war in repair time, with obs and plr - doesn't seem to be any way
 for an obs to know what the war decs are of the person he is observing. Best solution
 is to just have server send repair time and planet orbit info.

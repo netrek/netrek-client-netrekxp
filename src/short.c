@@ -1191,6 +1191,8 @@ handleVPlanet (unsigned char *sbuf)
 #endif /* ATM */
 
     }                           /* FOR */
+    if (W_IsMapped (planetw))    /* planet window */
+        updatePlanetw ();
 }
 
 

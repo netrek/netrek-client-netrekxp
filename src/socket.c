@@ -1577,6 +1577,8 @@ handlePlanet (struct planet_spacket *packet)
     {
         plan->pl_flags |= PLREDRAW;
     }
+    if (W_IsMapped (planetw))    /* planet window */
+        updatePlanetw ();
 }
 
 void
