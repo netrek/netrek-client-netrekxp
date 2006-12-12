@@ -25,10 +25,6 @@ where a ship is seen to have pressors on constantly, even when they are off
 Things that go wrong when short packets are on:
 1) cloaking/shields at warp 0 doesn't update someone else's tactical on what you did if
 there is no movement anywhere on map, and observer sound also messes up
-2) The new smooth turning only working on self, not obs or others - short packets only
-send headings of 16 positions.
-3) Others speed only sent to 16..messed up for obs locked onto puck in hockey,
-or twarpers
 
 Things that are sorta fixed, but could use improvement:
 1) Bug with waraction..was being called even when clicking on border (broke function)

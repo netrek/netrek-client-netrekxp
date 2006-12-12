@@ -145,7 +145,7 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* #31, and dummy won't */
 #endif
 
-    {0, dummy},                 /* 32 */
+    {sizeof (struct generic_32_spacket), handleGeneric32},  /* SP_GENERIC_32 */
     {0, dummy},                 /* 33 */
     {0, dummy},                 /* 34 */
     {0, dummy},                 /* 35 */
@@ -1680,6 +1680,8 @@ sendLoginReq (char *name,
     strcpy (packet.login, login);
     packet.type = CP_LOGIN;
     packet.query = query;
+    //packet.pad2 = 0x69; /* Paradise support */
+    //packet.pad3 = 0x43; /* Paradise support */
     sendServerPacket ((struct player_spacket *) &packet);
 }
 
@@ -2358,6 +2360,29 @@ handleShipCap (struct ship_cap_spacket *packet)
     redrawTstats ();
     calibrate_stats ();
     redrawStats ();
+}
+
+void
+handleGeneric32 (struct generic_32_spacket *packet)
+{
+/*
+    unsigned short stype;
+
+    stype = ntohs (packet->s_type);
+    shipvals[stype].s_torpspeed = ntohs (packet->s_torpspeed);
+    shipvals[stype].s_maxshield = ntohl (packet->s_maxshield);
+    shipvals[stype].s_maxdamage = ntohl (packet->s_maxdamage);
+    shipvals[stype].s_maxegntemp = ntohl (packet->s_maxegntemp);
+    shipvals[stype].s_maxwpntemp = ntohl (packet->s_maxwpntemp);
+    shipvals[stype].s_maxarmies = ntohs (packet->s_maxarmies);
+    shipvals[stype].s_maxfuel = ntohl (packet->s_maxfuel);
+    shipvals[stype].s_maxspeed = ntohl (packet->s_maxspeed);
+    shipvals[stype].s_width = ntohs (packet->s_width);
+    shipvals[stype].s_height = ntohs (packet->s_height);
+    shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
+    getship (myship, myship->s_type);
+*/
+
 }
 
 #ifdef RSA

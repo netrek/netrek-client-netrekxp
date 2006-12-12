@@ -864,6 +864,7 @@ void updatePStats (void);
 /***  planetlist.c
 /******************************************************************************/
 void planetlist (void);
+void updatePlanetw (void);
 
 /******************************************************************************/
 /***  playback.c
@@ -1107,6 +1108,8 @@ void handleReserved (struct reserved_spacket *packet,
                      int sock);
 struct ship_cap_spacket;
 void handleShipCap (struct ship_cap_spacket *packet);
+struct generic_32_spacket;
+void handleGeneric32 (struct generic_32_spacket *packet);
 struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
 #ifdef INCLUDE_SCAN

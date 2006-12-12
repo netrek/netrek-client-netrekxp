@@ -76,6 +76,8 @@ struct feature features[] = {
     {"SELF_8FLAGS2", &F_self_8flags2, 'S', 0, 0, 0},
     {"19FLAGS", &F_self_19flags, 'S', 1, 0, 0},
     {"SHIP_CAP", &F_ship_cap, 'S', 1, 0, 0},
+    {"SP_GENERIC_32", &F_sp_generic_32, 'S', 1, 0, 0},
+    {"FULL_DIRECTION_RESOLUTION", &F_full_direction_resolution, 'S', 1, 0, 0},
 
 #ifdef WARP_DEAD
     {"DEAD_WARP", &F_dead_warp, 'S', 1, 0, 0},
@@ -107,12 +109,13 @@ reportFeatures (void)
         if (strcmpi (f->name, "FEATURE_PACKETS") != 0)
             sendFeature (f->name,
                          f->feature_type,
-                         f->value,
+                         (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION") ? useFullShipInfo : f->value),
                          (char) (f->arg1 ? *f->arg1 : 0),
                          (char) (f->arg2 ? *f->arg2 : 0));
 
 #ifdef DEBUG
-        LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type, f->value);
+        LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type,
+        !strcmp(f->name, "FULL_DIRECTION_RESOLUTION") ? useFullShipInfo : f->value);
 #endif
     }
 }

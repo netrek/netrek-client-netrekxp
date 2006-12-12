@@ -83,7 +83,9 @@
                                  * verification */
 #endif
 
-#define SP_SHIP_CAP 39          /* Handles server ship mods */
+#define SP_GENERIC_32	32	/* 32 byte packet, currently sends ship
+				   repair time, room for future info */
+#define SP_SHIP_CAP	39	/* Handles server ship mods */
 
 #ifdef SHORT_PACKETS
 #define SP_S_REPLY      40      /* reply to send-short
@@ -869,6 +871,13 @@ struct ship_cap_spacket
     char s_desig1;
     char s_desig2;
     unsigned short s_bitmap;
+};
+
+struct generic_32_spacket {
+    char type;			/* SP_GENERIC_32 Header */
+    char version;
+    int repair_time;		/* Estimated repair time, in seconds */
+    char pad1;			/* TODO: Change to union */
 };
 
 #ifdef SHORT_PACKETS

@@ -1,4 +1,16 @@
 Netrek XP 2006, Version 1.2:
+- added "UseFullShipInfo: (on)/off" to choose whether to use short or long type packets
+  for other player info.  Default is on.  This netrekrc setting controls whether the
+  feature packet FULL_DIRECTION_RESOLUTION is used.
+- support for new server feature packet FULL_DIRECTION_RESOLUTION.  This is a great change,
+  for it now uses long packets instead of short packets for other players ship info.
+  This means, finally, other ships can be displayed to 256 directions instead of 16,
+  and other player's speeds can be displayed correctly above warp 16.  For those using
+  the high res bitmap sets, it is a subtle yet noticeable improvement.  The one downside
+  is the player packets are now 12 bytes instead of 4 bytes.  At 10 updates/sec and 10
+  players on the screen, it is an extra 800 bytes/sec, or .8 kb/sec, of bandwidth.  If
+  you can't afford that bandwidth, you probably have no business being on the internet,
+  anyways.
 - planet window now updates regularly when planet status changes
 - det circle changed so it only flashes on det, rather than be on all the time
 - added "metaVerbose: on/(off)" and "metaUDPCache: (filename)" options to netrekrc

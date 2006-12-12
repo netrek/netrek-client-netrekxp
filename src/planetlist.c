@@ -18,9 +18,6 @@
 #include "data.h"
 #include "proto.h"
 
-/* Local functions */
-void updatePlanetw (void);
-
 static char priorplanets[MAXPLANETS][BUFSIZ];
 
 static char *teamname[9] = {

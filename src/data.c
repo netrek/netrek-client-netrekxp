@@ -660,6 +660,8 @@ int F_self_8flags2 = 0;
 int F_self_19flags = 1;
 int F_ship_cap = 0;
 int F_show_all_tractors = 1;
+int F_sp_generic_32 = 0;
+int F_full_direction_resolution = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;
@@ -787,3 +789,5 @@ int richText = 0;   /* temporary variable to select rich text message windows */
 int newQuit = 0;    /* new quit clock */
 int newSound = 1;   /* use new SDL sound */
 int newSoundAngles = 1; /* use new SDL sound with angular 3d component */
+
+int useFullShipInfo = 1;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */

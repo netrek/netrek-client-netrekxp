@@ -555,6 +555,8 @@ extern int F_self_8flags2;
 extern int F_self_19flags;
 extern int F_ship_cap;
 extern int F_show_all_tractors;
+extern int F_sp_generic_32;
+extern int F_full_direction_resolution;
 
 #ifdef RECORDGAME
 extern int F_many_self;
@@ -689,4 +691,6 @@ extern int richText;    /* temporary variable to enable/disable rich text window
 extern int newQuit;     /* new quit clock */
 extern int newSound;	/* Use new SDL sound interface */
 extern int newSoundAngles; /* Use SDL with angular 3D sound */
+
+extern int useFullShipInfo;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
 #endif /* _h_data */

@@ -749,6 +749,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"useFullShipInfo", &useFullShipInfo, RC_BOOL,
+        {
+            "Display other ships to 256 directions instead of 16",
+            NULL
+        }
+    },
 #ifdef BEEPLITE
     {"useLite", &useLite, RC_BOOL,
         {
@@ -1491,6 +1497,7 @@ resetdefaults (void)
     newQuit = booleanDefault ("newQuit", newQuit);
     newSound = booleanDefault ("newSound", newSound);
     newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
+    useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
     beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);

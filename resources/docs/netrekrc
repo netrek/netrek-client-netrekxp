@@ -388,6 +388,9 @@ udpSequenceCheck: on
 # 1-10 range
 updatesPerSec: 10
 
+# Display other ships to 256 directions instead of 16
+useFullShipInfo: on
+
 # Use beeplite
 useLite: on
 
