@@ -341,7 +341,7 @@ db_special (int fr, int x, int y)
     else if ((me->p_flags & PFREPAIR) && plr->p_speed == 0)
     {
         sprintf (buf, "Fix ");
-        sprintf(buf2, "%d", repair_time());
+        sprintf(buf2, "%d", (F_sp_generic_32 ? me->p_repair_time : repair_time()));
         strcat (buf, buf2);
         msgtype = 2;
         color = W_Cyan;
@@ -883,7 +883,8 @@ db_redraw (int fr)
 /******************************************************************************/
 /***  repair_time() - calculate time left till ship is fully repaired
                       using server defined repair rates.  Only called when
-                      ship is at warp 0 and under repair                    ***/
+                      ship is at warp 0 and under repair.  Made obsolete by
+                      F_sp_generic_32 feature packet                        ***/
 /******************************************************************************/
 int
 repair_time (void)

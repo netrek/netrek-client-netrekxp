@@ -131,6 +131,7 @@ waraction (W_Event * data)
         return;
         break;
     default:
+        W_Beep ();
         return;
         break;
     }

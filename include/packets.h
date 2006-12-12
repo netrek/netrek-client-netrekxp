@@ -874,11 +874,23 @@ struct ship_cap_spacket
 };
 
 struct generic_32_spacket {
-    char type;			/* SP_GENERIC_32 Header */
-    char version;
-    int repair_time;		/* Estimated repair time, in seconds */
-    char pad1;			/* TODO: Change to union */
+    char type;			/* SP_GENERIC_32 */
+    char version;		/* alphabetic */
+    short repair_time;		/* server estimate of repair time in seconds */
+    char pad1[28];
 };
+
+/* versioning instructions: we start with version 'a', and each time a
+   field is added increment the version and reduce the pad size,
+   keeping the packet the same size ... client is entitled to trust
+   fields in struct that were defined at a particular version. */
+
+/*
+    packet.type = SP_GENERIC_32;
+    packet.version = GENERIC_32_VERSION;
+    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH) abort();
+*/
+
 
 #ifdef SHORT_PACKETS
 struct shortreq_cpacket

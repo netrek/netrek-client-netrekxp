@@ -54,7 +54,8 @@ int newDashboard = 2;           /* use new graphic
                                  * dashboard, 6/2/93 LAB */
 int old_db = 0;                 /* should be same as
                                  * newDashboard */
-int detCircle = 0;              /* Show det circle on tactical */
+int detCircle = 0;              /* Enable det circle option */
+int showdetCircle = 0;          /* Det circle toggles on only when det is hit */
 int puckCircle = 0;             /* Show maximum puck shooting distance on tactical */
 int showArmy = 1;               /* Show army count of planet you are orbiting */
 int fastQuit = 0;

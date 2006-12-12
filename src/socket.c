@@ -2356,7 +2356,7 @@ handleShipCap (struct ship_cap_spacket *packet)
     shipvals[stype].s_height = ntohs (packet->s_height);
     shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
     getship (myship, myship->s_type);
-    
+
     redrawTstats ();
     calibrate_stats ();
     redrawStats ();
@@ -2365,24 +2365,12 @@ handleShipCap (struct ship_cap_spacket *packet)
 void
 handleGeneric32 (struct generic_32_spacket *packet)
 {
-/*
-    unsigned short stype;
+    char version;
+//    char unused;
 
-    stype = ntohs (packet->s_type);
-    shipvals[stype].s_torpspeed = ntohs (packet->s_torpspeed);
-    shipvals[stype].s_maxshield = ntohl (packet->s_maxshield);
-    shipvals[stype].s_maxdamage = ntohl (packet->s_maxdamage);
-    shipvals[stype].s_maxegntemp = ntohl (packet->s_maxegntemp);
-    shipvals[stype].s_maxwpntemp = ntohl (packet->s_maxwpntemp);
-    shipvals[stype].s_maxarmies = ntohs (packet->s_maxarmies);
-    shipvals[stype].s_maxfuel = ntohl (packet->s_maxfuel);
-    shipvals[stype].s_maxspeed = ntohl (packet->s_maxspeed);
-    shipvals[stype].s_width = ntohs (packet->s_width);
-    shipvals[stype].s_height = ntohs (packet->s_height);
-    shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
-    getship (myship, myship->s_type);
-*/
-
+    version = packet->version;
+    me->p_repair_time = packet->repair_time;
+   // unused = packet->pad1;
 }
 
 #ifdef RSA

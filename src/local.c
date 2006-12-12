@@ -1174,7 +1174,7 @@ DrawShips (void)
                 }
             }
             /* Det circle */
-            if (detCircle)
+            if (showdetCircle)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
@@ -1184,7 +1184,7 @@ DrawShips (void)
                     clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
                     clearzone[3][clearcount] = 2*DETDIST/SCALE + 1;
                     clearcount++;
-                    detCircle--;
+                    showdetCircle--;
                 }
             }
 #ifdef HOCKEY_LINES
@@ -2672,6 +2672,9 @@ local (void)
     if (doubleBuffering)
         W_Mem2Win (localSDB);
 #endif
+    /* Fade all sounds on quit */
+    if (me->p_whydead == KQUIT && me->p_status == PEXPLODE)
+        Mix_FadeOutChannel(-1, 1000);
 }
 
 

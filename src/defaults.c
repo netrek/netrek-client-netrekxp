@@ -225,7 +225,7 @@ struct save_options save_options[] = {
     },
     {"maxScrollLines", &maxScrollLines, RC_INT,
         {
-            "Maximum number of lines in message window scrollback",
+            "Maximum number of scroll lines in a message window (range of values 50-500)",
             NULL
         }
     },
@@ -752,6 +752,8 @@ struct save_options save_options[] = {
     {"useFullShipInfo", &useFullShipInfo, RC_BOOL,
         {
             "Display other ships to 256 directions instead of 16",
+            "by using long ship packets instead of short ship packets",
+            "slight increase in bandwidth usage",
             NULL
         }
     },
@@ -1985,7 +1987,7 @@ saveOptions ()
         if (c + 32 != mystats->st_keymap[c])
         {
             if (mystats->st_keymap[c] != 'X' &&
-               (mystats->st_keymap[c] > 32 &&
+               (mystats->st_keymap[c] >= 32 &&
                 mystats->st_keymap[c] < 127))
             {
                 sprintf (str1, "%c%c", c + 32, mystats->st_keymap[c]);
@@ -2020,6 +2022,8 @@ saveOptions ()
             strcpy (macroKey, "TAB");
         else if (mystats->st_keymap[155] == 'X')
             strcpy (macroKey, "ESC");
+	else if (mystats->st_keymap[56] == 'X')
+            strcpy (macroKey, "X");
     }
 
     if (strlen (macroKey) != 0)

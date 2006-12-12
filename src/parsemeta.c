@@ -348,16 +348,6 @@ static int ReadMetasSend()
   char *metaservers;		/* our copy of the metaserver host names */
   char *token;			/* current metaserver host name          */
   struct sockaddr_in address;	/* the address of the metaservers	 */
- 
-  /* host names of metaservers, default in data.c, comma delimited */
-  if ((stringDefault("metaServer")) != NULL)
-    metaServer = stringDefault("metaServer");
-
-  /* port number of metaservers, unlikely to change, not a list */
-  metaPort = intDefault("metaPort", metaPort);
-
-  /* whether to report everything that happens */
-  metaVerbose = booleanDefault("metaVerbose", metaVerbose);
 
   /* create the socket */
   if (msock < 0) {
@@ -781,15 +771,13 @@ static void SaveMetasCache()
   char cacheFileName[PATH_MAX];
   char tmpFileName[PATH_MAX];
   char str[LINE];
-  char *cacheName;
   int i, len;
 
-  cacheName = stringDefault("metaUDPCache");
   /* overwrite existing file if possible */
-  if (cacheName && !findfile(cacheName, cacheFileName))
-   strcpy(cacheFileName, cacheName);
+  if (metaUDPCache && !findfile(metaUDPCache, cacheFileName))
+      strcpy(cacheFileName, metaUDPCache);
 
-  if (cacheName)
+  if (metaUDPCache)
   {
       len = strlen(cacheFileName);
       strcpy(tmpFileName, cacheFileName);
@@ -841,12 +829,12 @@ static void SaveMetasCache()
 
       /* Can't rename file to existing name under NT */
 #ifdef _MSC_VER
-      _unlink(cacheName);
+      _unlink(metaUDPCache);
 #else
-      unlink(cacheName);
+      unlink(metaUDPCache);
 #endif
   
-      if (rename(tmpFileName, cacheName) == -1)
+      if (rename(tmpFileName, metaUDPCache) == -1)
 	perror("Could not rename new cache file");
   }
 
@@ -855,7 +843,6 @@ static void SaveMetasCache()
 static void LoadMetasCache()
 {
   FILE *cache;
-  char *cacheName;
   char *buffer;
   char *p;
   char cacheFileName[PATH_MAX];
@@ -863,15 +850,12 @@ static void LoadMetasCache()
   int  i, j;
   int invalid[MAX_SERVERS] = {0};
 
-  cacheName = stringDefault("metaUDPCache");
 
-  if(!cacheName)
+  if(!metaUDPCache)
   {
       num_servers = 0;
       return;
   }
-
-  findfile(cacheName, cacheFileName);
 
   cache = fopen(cacheFileName, "r");
   if (cache == NULL) 
@@ -1035,11 +1019,6 @@ ReadFromMeta ()
     int bufleft = BUF - 1;
     int len = 0;
     int sock = 0;
-
-    if (stringDefault ("metaServer") != NULL)
-        metaServer = stringDefault ("metaServer");
-
-    metaPort = intDefault ("metaPort", metaPort);
     
     /* try each of the comma delimited metaserver host names */
     metaservers = strdup(metaServer);
@@ -1089,7 +1068,6 @@ ReadFromMeta ()
         return 0;
     }
 
-    metaCache = stringDefault ("metaCache");
     if (metaCache && !findfile (metaCache, cacheFileName))
         strcpy (cacheFileName, metaCache);      /* overwrite existing file if possible */
 
@@ -1153,8 +1131,6 @@ ReadFromCache ()
     int bufleft = BUF - 1;
     int len;
     char cacheFileName[PATH_MAX];
-
-    metaCache = stringDefault ("metaCache");
 
     if (!metaCache)
     {
@@ -1251,6 +1227,17 @@ parsemeta (int metaType)
  * used in newwin() to set the height of the meta-server window.
  */
 {
+    /* host names of metaservers, default in data.c, comma delimited */
+    if ((stringDefault("metaServer")) != NULL)
+        metaServer = stringDefault("metaServer");
+
+    /* port number of metaservers, unlikely to change, not a list */
+    metaPort = intDefault("metaPort", metaPort);
+
+    /* whether to report everything that happens */
+    metaVerbose = booleanDefault("metaVerbose", metaVerbose);
+
+    /* status cutoff for listing servers */
     metaStatusLevel = intDefault ("metaStatusLevel", metaStatusLevel);
 
     if (metaStatusLevel < 0)
@@ -1259,6 +1246,10 @@ parsemeta (int metaType)
         metaStatusLevel = statusNull - 1;
 
     statusLevel = metaStatusLevel;
+
+    /* cache files */
+    metaCache = stringDefault ("metaCache");
+    metaUDPCache = stringDefault("metaUDPCache");
 
     type = metaType;
     switch (type)

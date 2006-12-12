@@ -287,6 +287,7 @@ struct player
                                  * lock */
     int p_pos;                  /* My position in the player
                                  * file */
+    short p_repair_time;        /* estimated time in seconds to a full repair */
 };
 
 struct statentry
