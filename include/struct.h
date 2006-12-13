@@ -252,7 +252,8 @@ struct player
                                  * with */
     float p_kills;              /* Enemies killed */
     short p_planet;             /* Planet orbiting or locked
-                                 * onto */
+                                 * onto, set only client */
+    short pl_orbit;             /* Planet orbiting, sent by server */
     short p_playerl;            /* Player locked onto */
 
 #ifdef ARMY_SLIDER

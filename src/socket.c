@@ -2368,8 +2368,16 @@ handleGeneric32 (struct generic_32_spacket *packet)
     char version;
 //    char unused;
 
+    if (sizeof(*packet) != GENERIC_32_LENGTH)
+    {
+#ifdef DEBUG
+    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(*packet));
+#endif
+    	return;
+    }
     version = packet->version;
     me->p_repair_time = packet->repair_time;
+    me->pl_orbit = packet->pl_orbit;
    // unused = packet->pad1;
 }
 

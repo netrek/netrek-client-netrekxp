@@ -884,7 +884,7 @@ db_redraw (int fr)
 /***  repair_time() - calculate time left till ship is fully repaired
                       using server defined repair rates.  Only called when
                       ship is at warp 0 and under repair.  Made obsolete by
-                      F_sp_generic_32 feature packet                        ***/
+                      F_sp_generic_32 feature packet.                       ***/
 /******************************************************************************/
 int
 repair_time (void)
@@ -956,7 +956,8 @@ repair_time (void)
 
 /******************************************************************************/
 /***  get_closest_planet() - find closest planet to given location
-      Useful for determining which planet you are orbitting                 ***/
+      Useful for determining which planet you are orbitting.
+      Made obsolete by F_sp_generic_32 feature packet.                      ***/
 /******************************************************************************/
 int get_closest_planet(int x, int y)
 {
