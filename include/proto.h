@@ -836,6 +836,7 @@ void metawindow (void);
 void metaaction (W_Event * data);
 void metainput (void);
 #ifdef METAPING
+void metapinginit(void);
 DWORD WINAPI metaPing_thread(void);
 #endif
 

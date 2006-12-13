@@ -98,8 +98,9 @@ struct servers
     char    typeflag;
     char    comment[LINE];
 #ifdef METAPING
-    u_long ip_addr;			/* Cache the ip address after DNS lookup */
-    DWORD pkt_rtt[RTT_AVG_BUFLEN];	/* store last # ping samples for avg rtt */
+    int     ip_lookup;			/* 0 if IP needs looking up, 1 if not    */
+    u_long  ip_addr;			/* Cache the ip address after DNS lookup */
+    DWORD   pkt_rtt[RTT_AVG_BUFLEN];	/* store last # ping samples for avg rtt */
 					/* -1:init, -2:unknown host, -3:timeout  */
 					/* >=0:round trip time in ms             */
 #endif
@@ -323,6 +324,7 @@ parseInput (char *in,
         strcpy(slist->comment, "");
     
 #ifdef METAPING
+        slist->ip_lookup = 0;
 	/* Initialize the ping rtt fields */
 	for (i = 0; i < RTT_AVG_BUFLEN; ++i )
 		slist->pkt_rtt[i] = (unsigned long) -1;
@@ -601,6 +603,7 @@ static void version_r(struct sockaddr_in *address) {
     sp->typeflag = type;
     strcpy(sp->comment, "");
 #ifdef METAPING
+    sp->ip_lookup = 0;
     /* Initialize the ping rtt fields */
     for (i = 0; i < RTT_AVG_BUFLEN; ++i )
       sp->pkt_rtt[i] = (unsigned long) -1;
@@ -678,6 +681,7 @@ static void version_s(struct sockaddr_in *address)
   strncpy(sp->comment, comment, LINE);
   free(comment);
 #ifdef METAPING
+  sp->ip_lookup = 0;
   /* Initialize the ping rtt fields */
   for (i = 0; i < RTT_AVG_BUFLEN; ++i )
     sp->pkt_rtt[i] = (unsigned long) -1;
@@ -767,13 +771,16 @@ static int ReadMetasRecv(int x)
     {
     	/* Metaserver window too small, restart it */
         LineToConsole("Resizing metaserver window, standby.\n");
-        metaHeight = num_servers + 7;
+        metaHeight = num_servers + 4;
         metaPartition = metaHeight - 3;
         W_UnmapWindow (metaWin);
         metaWin = W_MakeMenu ("MetaServer List", 0, 0, 80, metaHeight, NULL, 2);
         W_SetWindowKeyDownHandler (metaWin, metaaction);
         W_SetWindowButtonHandler (metaWin, metaaction);
         metawindow();
+#ifdef METAPING
+        metapinginit();
+#endif
     }
 
     /* if we have seen the same number of replies to what we sent, end */
@@ -992,6 +999,7 @@ static void LoadMetasCache()
     serverlist[i].refresh = 1;
 
 #ifdef METAPING
+    serverlist[i].ip_lookup = 0;
     /* Initialize the ping rtt fields */
     for (j = 0; j < RTT_AVG_BUFLEN; ++j )
         serverlist[i].pkt_rtt[j] = (unsigned long) -1;
@@ -1275,13 +1283,13 @@ parsemeta (int metaType)
 	    LoadMetasCache();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
-	    	/* Allocate 4 spots for header/refresh/quit/link, and 3 slots for additional servers */
-	        metaHeight = num_servers + 7;
+	    	/* Allocate 4 spots for header/refresh/quit/link */
+	        metaHeight = num_servers + 4;
 	    } else {
 	        LineToConsole("Warning: no response from metaservers, are you firewalled?\n"
 		              "         (no reply to probe on UDP port %d)\n", metaPort);
-	        /* Allocate 4 spots for header/refresh/quit/link, and 8 server slots */
-	        metaHeight = num_servers + 12;
+	        /* Allocate 4 spots for header/refresh/quit/link, and 1 server slot */
+	        metaHeight = num_servers + 5;
 	    }
             metaPartition = metaHeight - 3;
             return;
@@ -1317,18 +1325,11 @@ metasort( void )
    a request for updated server stats make one server more populated
    than it was before */
 {
-    struct servers *sp;
-    char tempaddress[LINE];
-    int tempport, tempage;
-    time_t tempwhen;
-    int temprefresh, templifetime, tempplayers, tempstatus;
-    char temptypeflag;
-    char tempcomment[LINE];
-#ifdef METAPING
-    u_long tempip_addr;
-    DWORD temppkt_rtt[RTT_AVG_BUFLEN];
-#endif
-    int i, j, change;
+    struct servers *tempserver;
+    int i, change;
+    
+    /* Allocate memory for temporary server */
+    tempserver = (struct servers *) malloc(sizeof(struct servers));
 
     /* Tracks if we performed a sorting action */
     change = 0;
@@ -1337,8 +1338,6 @@ metasort( void )
        server to the one above it on the list. */
     for (i = 0; i < (num_servers - 1); i++)
     {
-        sp = serverlist;
-        
         /* Sorting order is: status, then player_count/queue_size */
         
         /* If status is equal, the server with more players should be higher */
@@ -1363,59 +1362,17 @@ metasort( void )
         }
         if (change)
         {
-            /* Copy bottom entry (i) into temp space */
-            strcpy (tempaddress, serverlist[i].address);
-            tempport = serverlist[i].port;
-            tempage = serverlist[i].age;
-            tempwhen = serverlist[i].when;
-            temprefresh = serverlist[i].refresh;
-            templifetime = serverlist[i].lifetime;
-            tempplayers = serverlist[i].players;
-            tempstatus = serverlist[i].status;
-            temptypeflag = serverlist[i].typeflag;
-            strcpy (tempcomment, serverlist[i].comment);
-#ifdef METAPING
-            tempip_addr = serverlist[i].ip_addr;
-            for (j = 0; j < RTT_AVG_BUFLEN; j++)
-                temppkt_rtt[j] = serverlist[i].pkt_rtt[j];
-#endif
-            /* Move top entry (i+1) into bottom entry (i) */
-            strcpy (serverlist[i].address, serverlist[i+1].address);
-            serverlist[i].port = serverlist[i+1].port;
-            serverlist[i].age = serverlist[i+1].age;
-            serverlist[i].when = serverlist[i+1].when;
-            serverlist[i].refresh = serverlist[i+1].refresh;
-            serverlist[i].lifetime = serverlist[i+1].lifetime;
-            serverlist[i].players = serverlist[i+1].players;
-            serverlist[i].status = serverlist[i+1].status;
-            serverlist[i].typeflag = serverlist[i+1].typeflag;
-            strcpy (serverlist[i].comment, serverlist[i+1].comment);
-#ifdef METAPING
-            serverlist[i].ip_addr = serverlist[i+1].ip_addr;
-            for (j = 0; j < RTT_AVG_BUFLEN; j++)
-                serverlist[i].pkt_rtt[j] = serverlist[i+1].pkt_rtt[j];
-#endif
-            /* Copy temp entry into top entry (i+1) */
-            strcpy (serverlist[i+1].address, tempaddress);
-            serverlist[i+1].port = tempport;
-            serverlist[i+1].age = tempage;
-            serverlist[i+1].when = tempwhen;
-            serverlist[i+1].refresh = temprefresh;
-            serverlist[i+1].lifetime = templifetime;
-            serverlist[i+1].players = tempplayers;
-            serverlist[i+1].status = tempstatus;
-            serverlist[i+1].typeflag = temptypeflag;
-            strcpy (serverlist[i+1].comment, tempcomment);
-#ifdef METAPING
-            serverlist[i+1].ip_addr = tempip_addr;
-            for (j = 0; j < RTT_AVG_BUFLEN; j++)
-                serverlist[i+1].pkt_rtt[j] = temppkt_rtt[j];
-#endif
-            /* Start back at beginning - could be more efficient */
+            /* Perform the swap */
+            memcpy(&tempserver[0],&serverlist[i],sizeof(struct servers));
+            memcpy(&serverlist[i],&serverlist[i+1],sizeof(struct servers));
+            memcpy(&serverlist[i+1],&tempserver[0],sizeof(struct servers));
+            /* Start back at beginning - could be more efficient with maybe
+               a qsort but the serverlist is so small it doesn't matter much */
             i = 0;	
             change = 0;
         }
     }
+    free(tempserver);
 }	
 
 static void
@@ -2020,6 +1977,24 @@ int metaPing_waitForEchoReply(SOCKET s, int waittime)
 
 }
 
+/* Look up and cache all ip addresses */
+void metapinginit(void)
+{
+	int i;
+	struct hostent	*hp;
+
+	for (i = 0; i < num_servers; ++i)
+	{
+		if (serverlist[i].ip_lookup == 0)
+		{
+			if ((hp = gethostbyname(serverlist[i].address)) == NULL)
+				serverlist[i].ip_addr = inet_addr(serverlist[i].address); // INADDR_NONE if failed
+			else
+				serverlist[i].ip_addr = *((u_long FAR *) (hp->h_addr));
+			serverlist[i].ip_lookup = 1;
+		}
+	}
+}
 
 DWORD WINAPI metaPing_thread(void) 
 {
@@ -2032,16 +2007,8 @@ DWORD WINAPI metaPing_thread(void)
 	SOCKET	rawSocket;
 	struct sockaddr_in	saDest;
 	struct sockaddr_in	saSrc;
-	struct hostent	*hp;
 
-	// First look up and cache all ip addresses
-	for (i = 0; i < num_servers; ++i)
-	{
-		if ((hp = gethostbyname(serverlist[i].address)) == NULL)
-			serverlist[i].ip_addr = inet_addr(serverlist[i].address); // INADDR_NONE if failed
-		else
-			serverlist[i].ip_addr = *((u_long FAR *) (hp->h_addr));
-	}
+	metapinginit();
 
 	// Create a Raw socket
 	rawSocket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
