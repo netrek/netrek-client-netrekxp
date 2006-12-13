@@ -956,8 +956,8 @@ repair_time (void)
 
 /******************************************************************************/
 /***  get_closest_planet() - find closest planet to given location
-      Useful for determining which planet you are orbitting.
-      Made obsolete by F_sp_generic_32 feature packet.                      ***/
+      Used to determine which planet you are orbiting, when the server
+      does not provide the SP_GENERIC_32 packet.                            ***/
 /******************************************************************************/
 int get_closest_planet(int x, int y)
 {
