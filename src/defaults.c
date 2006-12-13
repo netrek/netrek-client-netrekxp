@@ -2022,7 +2022,7 @@ saveOptions ()
             strcpy (macroKey, "TAB");
         else if (mystats->st_keymap[155] == 'X')
             strcpy (macroKey, "ESC");
-	else if (mystats->st_keymap[56] == 'X')
+        else if (mystats->st_keymap[56] == 'X')
             strcpy (macroKey, "X");
     }
 

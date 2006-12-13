@@ -110,6 +110,8 @@ static int num_servers = 0;		/* The number of servers.       */
 int metaHeight = 0;			/* The number of list lines.	*/
 char *metaWindowName;			/* The window's name.           */
 int statusLevel;
+static int metaPartition = 0;		/* Cutoff line at which servers end,
+					   and bottom headers begin */
 
 #ifdef METAPING
 u_short metaPing_procId = 0;		/* Process id helps identify own ping replies */
@@ -760,6 +762,20 @@ static int ReadMetasRecv(int x)
     /* if this is the first call, return on first reply, for sizing list */
     if (x == -1 && isawsomething) return 1;
 
+    /* Check window size now that we have received multiple metaserver packets */
+    if (type == 1 && num_servers >= metaPartition) 
+    {
+    	/* Metaserver window too small, restart it */
+        LineToConsole("Resizing metaserver window, standby.\n");
+        metaHeight = num_servers + 7;
+        metaPartition = metaHeight - 3;
+        W_UnmapWindow (metaWin);
+        metaWin = W_MakeMenu ("MetaServer List", 0, 0, 80, metaHeight, NULL, 2);
+        W_SetWindowKeyDownHandler (metaWin, metaaction);
+        W_SetWindowButtonHandler (metaWin, metaaction);
+        metawindow();
+    }
+
     /* if we have seen the same number of replies to what we sent, end */
     if (sent == seen) return 1;
   }
@@ -775,7 +791,7 @@ static void SaveMetasCache()
 
   /* overwrite existing file if possible */
   if (metaUDPCache && !findfile(metaUDPCache, cacheFileName))
-      strcpy(cacheFileName, metaUDPCache);
+      strncpy(cacheFileName, metaUDPCache, PATH_MAX);
 
   if (metaUDPCache)
   {
@@ -1069,7 +1085,7 @@ ReadFromMeta ()
     }
 
     if (metaCache && !findfile (metaCache, cacheFileName))
-        strcpy (cacheFileName, metaCache);      /* overwrite existing file if possible */
+        strncpy (cacheFileName, metaCache, PATH_MAX);      /* overwrite existing file if possible */
 
     if (metaCache)
     {
@@ -1267,14 +1283,16 @@ parsemeta (int metaType)
 	        /* Allocate 4 spots for header/refresh/quit/link, and 8 server slots */
 	        metaHeight = num_servers + 12;
 	    }
+            metaPartition = metaHeight - 3;
             return;
 	    break;
         case 2:
 	    if (ReadFromCache() || ReadFromMeta()) 
 	    {
                 /* Allocate 3 spots for header/quit/link */
-	        metaHeight = num_servers + 3;
-	        return;
+                metaHeight = num_servers + 3;
+                metaPartition = metaHeight - 2;
+                return;
 	    }
 	    terminate(0);
 	    break;
@@ -1283,6 +1301,7 @@ parsemeta (int metaType)
             {
                 /* Allocate 3 spots for header/quit/link */
                 metaHeight = num_servers + 3;
+                metaPartition = metaHeight - 2;
                 return;
             }
 	    terminate(0);
@@ -1416,7 +1435,7 @@ metarefresh (int i,
     /* can't say a thing if line is beyond server list */
     if (i >= num_servers) {
         /* but we can at least blank the line shown */
-        if (i < metaHeight-3)
+        if (i < metaPartition)
             W_WriteText(metaWin, 0, i+1, color, "", 0, 0);
         return;
     }
@@ -1812,13 +1831,13 @@ typedef struct tagIPHDR
 	u_char  VIHL;			// Version and IHL
 	u_char	TOS;			// Type Of Service
 	short	TotLen;			// Total Length
-	short	ID;				// Identification
+	short	ID;			// Identification
 	short	FlagOff;		// Flags and Fragment Offset
 	u_char	TTL;			// Time To Live
 	u_char	Protocol;		// Protocol
 	u_short	Checksum;		// Checksum
-	struct	in_addr iaSrc;	// Internet Address - Source
-	struct	in_addr iaDst;	// Internet Address - Destination
+	struct	in_addr iaSrc;		// Internet Address - Source
+	struct	in_addr iaDst;		// Internet Address - Destination
 }IPHDR, *PIPHDR;
 
 
@@ -1828,7 +1847,7 @@ typedef struct tagICMPHDR
 	u_char	Type;			// Type
 	u_char	Code;			// Code
 	u_short	Checksum;		// Checksum
-	u_short	ID;				// Identification
+	u_short	ID;			// Identification
 	u_short	Seq;			// Sequence
 	char	Data;			// Data
 }ICMPHDR, *PICMPHDR;
@@ -1897,7 +1916,7 @@ u_short metaPing_in_cksum(u_short *addr, int len)
 	 */
 	sum = (sum >> 16) + (sum & 0xffff);	/* add hi 16 to low 16 */
 	sum += (sum >> 16);			/* add carry */
-	answer = (unsigned short) (~sum);				/* truncate to 16 bits */
+	answer = (unsigned short) (~sum);	/* truncate to 16 bits */
 	return (answer);
 }
 

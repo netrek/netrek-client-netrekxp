@@ -44,8 +44,7 @@ scroll text that is outside the viewable window.
 5) Have client utilize new server torp vector code
 6) Pop-up dialog box for bad version response
 7) new UDP metaserver code has several problems re loading/saving metacache, status
-field not updating due to refresh not happening when it should, metawindow still can't
-handle correctly the case where servers would overwrite the quit button
+field not updating due to refresh not happening when it should
 
 Stas's list:
 - color coded playerlist.

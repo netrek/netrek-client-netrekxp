@@ -247,7 +247,10 @@ extern void Play_Sound (int type)
 
         if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
         {
+#if DEBUG
+            /* Frequent occurence is more than 16 channels playing sound */
             LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+#endif
             return;
         }
             
@@ -290,8 +293,8 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
 
     if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
     {
-            LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
-            return;
+        LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
+        return;
     }
     /* Make sure distance in boundary range that function accepts */
     if (distance < 0)
@@ -303,7 +306,7 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
         // Adjust volume with distance and angle
         if (Mix_SetPosition(channel, angle, distance) == 0)
         {
-           LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
+            LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
             return;
         }
     }
@@ -312,7 +315,7 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
         // Adjust volume with distance
         if (Mix_SetDistance(channel, distance) == 0)
         {
-           LineToConsole("Mix_SetDistance: %s\n", Mix_GetError());
+            LineToConsole("Mix_SetDistance: %s\n", Mix_GetError());
             return;
         }
     }
