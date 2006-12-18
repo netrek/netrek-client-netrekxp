@@ -83,8 +83,7 @@
                                  * verification */
 #endif
 
-#define SP_GENERIC_32	32	/* 32 byte packet, currently sends ship
-				   repair time, room for future info */
+#define SP_GENERIC_32	32	/* 32 byte generic, see struct */
 #define SP_SHIP_CAP	39	/* Handles server ship mods */
 
 #ifdef SHORT_PACKETS

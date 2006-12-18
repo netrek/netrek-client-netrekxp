@@ -41,7 +41,10 @@ Netrek XP 2006, Version 1.2:
   solicit other servers as if they were a metaserver, and supports the server option to
   display a comment rather than server name.  There is also support for multicast server
   packets.  This change also renames the old -m option to -M, and changes -m option to
-  the UDP metaserver.
+  the UDP metaserver.  As multiple metaservers (and servers) may be polled, it is 
+  possible the metaserver window may need to be resized as more metaserver packets are
+  received.  Thus the metaserver window may briefly close/reopen in order to resize.
+  The time delay on closing/reopening is not even noticeable, from my testing.
 - moved position of planet owner on galactic (if showPlanetOwner on) so that it
   does not overlap with the fuel can graphic.  The letter indicating planet owner
   is now in the upper right hand corner of the planet rather than the center right.

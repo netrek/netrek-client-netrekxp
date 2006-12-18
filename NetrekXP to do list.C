@@ -6,8 +6,6 @@ which then maps windows accordingly.
 4) Add a Cambot playback and Cambot record shortcut links to the installation package.
 
 Things not gonna happen, or server problems:
-1) Player list messaging doesn't work if you can't see player (cloaked, too far
-away, etc).  Don't think this is fixable.
 2) torp_other and plasma_other not working right due to lack of torp fuse info
 3) twarping to base docked on base causes the twarp problem, but hard to reproduce
 4) Server sometimes not updating tract/press flags for observers, several instances
@@ -41,11 +39,11 @@ scroll button, alt-enter, change to review all..and it shows up.
 bottom border of netrek window.  Actually will happen to whatever window is mapped 
 down there at bottom of screen.  Apprently the native windows function doesn't properly
 scroll text that is outside the viewable window.
-5) Have client utilize new server torp vector code
 6) Pop-up dialog box for bad version response
 7) new UDP metaserver code has 2 problems
 Possible corruption with loading/saving metacache
 Possible that status field not updating due to refresh not happening when it should
+8) Fix generic_32 size check
 
 
 Stas's list:
