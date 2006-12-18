@@ -1139,7 +1139,7 @@ ReadFromMeta ()
     }
 
     free (sockbuf);
-    metaWindowName = "Netrek XP 2006 MetaServer List";
+    metaWindowName = "Netrek XP 2006 Server List";
 
     return 1;
 }
