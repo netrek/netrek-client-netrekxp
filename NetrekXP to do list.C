@@ -44,7 +44,8 @@ scroll text that is outside the viewable window.
 Possible corruption with loading/saving metacache
 Possible that status field not updating due to refresh not happening when it should
 8) Fix generic_32 size check
-
+9) Some sort of click action on player list brings up a menu with settings for that
+player's candock, cantranswarp, ban, ignore, etc.
 
 Stas's list:
 - color coded playerlist.
