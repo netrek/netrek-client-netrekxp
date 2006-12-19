@@ -473,6 +473,9 @@ static void version_r(struct sockaddr_in *address) {
   char *p;
   int servers, i;
   time_t now = time(NULL);
+#ifdef METAPING
+  int j;
+#endif
 
   /* number of servers */
   p = strtok(NULL,"\n");
@@ -605,8 +608,8 @@ static void version_r(struct sockaddr_in *address) {
 #ifdef METAPING
     sp->ip_lookup = 0;
     /* Initialize the ping rtt fields */
-    for (i = 0; i < RTT_AVG_BUFLEN; ++i )
-      sp->pkt_rtt[i] = (unsigned long) -1;
+    for (j = 0; j < RTT_AVG_BUFLEN; ++j )
+      sp->pkt_rtt[j] = (unsigned long) -1;
 #endif
   }
 }

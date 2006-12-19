@@ -34,14 +34,21 @@ If you're building with Microsoft Visual Studio 2005
 
 This is the preferred compiler.  You will need the SDK from the web, as the software
 doesn't come with the necessary files.  Additionally, DirectX SDK is probably needed too,
-for the SDL support.  If you use the studio files that come with the source,
-it should already have all the proper configuration set up, such as links to the
-lib files and using the proper resource files.
+for the SDL support.  You will also need the HTML help workshop (from Microsoft) to 
+compile the help file.  If you use the studio files that come with the source,
+it should already have most of the proper configuration set up, such as links to the
+lib files and using the proper resource files.  The following webpage indicates how
+to properly install the Microsoft SDK.  The name of the article on this webpage is
+"Using Visual C++ 2005 Express Edition with the Microsoft Platform SDK"
+http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/
+Especially important are steps 3 and 4.  Step 4 was necessary to get winkey to compile.
 
 Step 3:
 --------
 Open command prompt in the source tree directory and run build.cmd.  Note that this build
-script must use borland make, not GNU make, so don't try and run it under cygwin.
+script must use borland make, not GNU make, so don't try and run it under cygwin.  Also
+note that since the script is run in DOS, it can't handle directory names with spaces or
+quotations.  Highly recommend having netrekxp folder in root, i.e. c:\netrekxp
 
 If everything is correct and working then after a couple of minutes you will have compiled
 a working client under InstCWD\netrek.
