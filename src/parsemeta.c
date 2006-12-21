@@ -142,7 +142,7 @@ enum statusTypes
     statusNull, statusCantConnect, statusDefault, statusConnecting
 };
 
-int metaStatusLevel = statusTout;
+int metaStatusLevel = statusNobody;
 
 
 /* Functions */
@@ -439,7 +439,7 @@ static int ReadMetasSend()
     token = strtok(NULL,",");
   } /* while (token != NULL) */
 
-  metaWindowName = "Netrek XP 2006 MetaServer List";
+  metaWindowName = "Netrek XP 2006 Server List";
   return sent;
 }
 
@@ -582,6 +582,12 @@ static void version_r(struct sockaddr_in *address) {
       sp->age = age;
       sp->when = now;
       sp->lifetime = 4;
+#ifdef METAPING
+      sp->ip_lookup = 0;
+      /* Initialize the ping rtt fields */
+      for (j = 0; j < RTT_AVG_BUFLEN; ++j )
+        sp->pkt_rtt[j] = (unsigned long) -1;
+#endif
     }
     /* if it was found, check age */
     else {
@@ -605,12 +611,6 @@ static void version_r(struct sockaddr_in *address) {
 
     sp->typeflag = type;
     strcpy(sp->comment, "");
-#ifdef METAPING
-    sp->ip_lookup = 0;
-    /* Initialize the ping rtt fields */
-    for (j = 0; j < RTT_AVG_BUFLEN; ++j )
-      sp->pkt_rtt[j] = (unsigned long) -1;
-#endif
   }
 }
 
@@ -669,10 +669,19 @@ static void version_s(struct sockaddr_in *address)
     grow(1);
     sp = serverlist + num_servers;
     num_servers++;
+#ifdef METAPING
+    sp->ip_lookup = 0;
+    /* Initialize the ping rtt fields */
+    for (i = 0; i < RTT_AVG_BUFLEN; ++i )
+      sp->pkt_rtt[i] = (unsigned long) -1;
+#endif
   }
 
   /* add or update the entry */
-  strncpy(sp->address, host, LINE);
+  if (host != NULL)
+    strncpy(sp->address, host, LINE);
+  else
+    strcpy(sp->address, "Unknown address");
   sp->port = port;
   sp->age = 0;
   sp->when = now;
@@ -683,12 +692,6 @@ static void version_s(struct sockaddr_in *address)
   sp->typeflag = type;
   strncpy(sp->comment, comment, LINE);
   free(comment);
-#ifdef METAPING
-  sp->ip_lookup = 0;
-  /* Initialize the ping rtt fields */
-  for (i = 0; i < RTT_AVG_BUFLEN; ++i )
-    sp->pkt_rtt[i] = (unsigned long) -1;
-#endif
 }
 
 static int ReadMetasRecv(int x)
@@ -780,10 +783,6 @@ static int ReadMetasRecv(int x)
         metaWin = W_MakeMenu ("MetaServer List", 0, 0, 80, metaHeight, NULL, 2);
         W_SetWindowKeyDownHandler (metaWin, metaaction);
         W_SetWindowButtonHandler (metaWin, metaaction);
-        metawindow();
-#ifdef METAPING
-        metapinginit();
-#endif
     }
 
     /* if we have seen the same number of replies to what we sent, end */
@@ -1282,7 +1281,7 @@ parsemeta (int metaType)
     switch (type)
     {
         case 1:
-            ReadMetasSend();
+	    ReadMetasSend();
 	    LoadMetasCache();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
@@ -1990,11 +1989,11 @@ void metapinginit(void)
 	{
 		if (serverlist[i].ip_lookup == 0)
 		{
+			serverlist[i].ip_lookup = 1;
 			if ((hp = gethostbyname(serverlist[i].address)) == NULL)
 				serverlist[i].ip_addr = inet_addr(serverlist[i].address); // INADDR_NONE if failed
 			else
 				serverlist[i].ip_addr = *((u_long FAR *) (hp->h_addr));
-			serverlist[i].ip_lookup = 1;
 		}
 	}
 }
@@ -2011,7 +2010,6 @@ DWORD WINAPI metaPing_thread(void)
 	struct sockaddr_in	saDest;
 	struct sockaddr_in	saSrc;
 
-	metapinginit();
 
 	// Create a Raw socket
 	rawSocket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
@@ -2023,6 +2021,9 @@ DWORD WINAPI metaPing_thread(void)
 
 	while (!thread_ready)
 	{
+		// Lookup any IP addresses if necessary
+		metapinginit();
+
 		// Flood ping all netrek servers at once
 		for (i = 0; i < num_servers; ++i)
 		{

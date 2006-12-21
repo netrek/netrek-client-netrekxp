@@ -131,10 +131,10 @@ metaPort: 3521
 # What servers to get from metaserver
 # 0 - with players
 # 1 - as above + with queue
-# 2 - as above + with nobody playing
-# 3 - as above + timed out servers (default)
+# 2 - as above + with nobody playing (default)
+# 3 - as above + timed out servers
 # 4 - as above + servers that metaserver could not connect to
-metaStatusLevel: 3
+metaStatusLevel: 2
 
 # What type of metaserver to use
 # 1 - UDP multiple metaservers
@@ -928,10 +928,12 @@ dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtm
 
 
 # Beeplite macros
-lite.take: /c/l
+lite.take: /c/l/3
 lite.base_ogg: /g/m/1/|OGG THE BASE!|
 lite.pickup: /p
 lite.help: %?%S=SB%{/c%}%?%a>0%{/c%}
+lite.carrying: /c
+lite.escorting: /c/p/4
 
 
 # Receiver configurable messages

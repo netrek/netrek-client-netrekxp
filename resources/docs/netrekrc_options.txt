@@ -93,8 +93,8 @@ metaServer:               (address) metaserver address
 metaStatusLevel:          (0-4) what servers to display
 # 0 - servers with players, but not on a wait queue
 # 1 - servers with players and with a wait queue
-# 2 - servers with nobody playing
-# 3 - servers timed out to metaserver (default)
+# 2 - servers with nobody playing (default)
+# 3 - servers timed out to metaserver
 # 4 - servers that metaServer could not contact
 
 metaType:                 (1-3) what type of metaserver to use

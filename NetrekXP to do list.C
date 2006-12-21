@@ -46,6 +46,7 @@ Possible that status field not updating due to refresh not happening when it sho
 8) Fix generic_32 size check
 9) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
+10) add auto guest# name generation for INL server
 
 Stas's list:
 - color coded playerlist.
