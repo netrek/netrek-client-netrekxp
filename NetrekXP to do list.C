@@ -3,7 +3,6 @@ List for the netrekrc/installer:
 which then maps windows accordingly.
 2) fix netrekrc append so that it doesn't keep adding new lines to the netrekrc
 3) Get source code for installer from Joe.
-4) Add a Cambot playback and Cambot record shortcut links to the installation package.
 
 Things not gonna happen, or server problems:
 2) torp_other and plasma_other not working right due to lack of torp fuse info
@@ -40,13 +39,14 @@ bottom border of netrek window.  Actually will happen to whatever window is mapp
 down there at bottom of screen.  Apprently the native windows function doesn't properly
 scroll text that is outside the viewable window.
 6) Pop-up dialog box for bad version response
-7) new UDP metaserver code has 2 problems
-Possible corruption with loading/saving metacache
-Possible that status field not updating due to refresh not happening when it should
+7) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
+awkward to resize window if user going to click on a server
 8) Fix generic_32 size check
 9) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
 10) add auto guest# name generation for INL server
+11) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
+Win98 xp computer
 
 Stas's list:
 - color coded playerlist.

@@ -4554,8 +4554,8 @@ W_FlushScrollingWindow (W_Window window)
         win->AddedStrings = 0;
         return;
     }
-    //Do full redraw if faster
-    if (win->AddedStrings > (win->TextHeight / 2))
+    //Do full redraw if faster, only works for mapped windows
+    if (win->AddedStrings > (win->TextHeight / 2) && W_IsMapped(window))
     {
         InvalidateRect (win->hwnd, NULL, FALSE);
         UpdateWindow (win->hwnd);       //Generates paint msg, which calls RedrawScrolling
@@ -5440,7 +5440,7 @@ updateWindowsGeometry (W_Window window)
 	int x, y, width, height;
 	int result, scrollpos;
 
-    FNHEADER_VOID;
+	FNHEADER_VOID;
 
 	loc.length = sizeof (WINDOWPLACEMENT); /* Have to set this */
 
