@@ -4539,6 +4539,9 @@ W_FlushScrollingWindow (W_Window window)
     struct stringList *p;
     int HiddenLines;
     int y;
+    int clipped = 0;
+    RECT r;
+    WINDOWPLACEMENT loc;
     FNHEADER_VOID;
 
     if (!win->AddedStrings)
@@ -4546,6 +4549,8 @@ W_FlushScrollingWindow (W_Window window)
 
     y = win->NumItems - win->TextHeight;
     y = max (0, y);
+ 
+    loc.length = sizeof (WINDOWPLACEMENT); /* Have to set this */
 
     // Just update scrollbar if we are looking back
     if ((y - win->AddedStrings) > GetScrollPos (win->hwnd, SB_VERT))
@@ -4554,12 +4559,22 @@ W_FlushScrollingWindow (W_Window window)
         win->AddedStrings = 0;
         return;
     }
-    //Do full redraw if faster, only works for mapped windows
-    if (win->AddedStrings > (win->TextHeight / 2) && W_IsMapped(window))
+    // For mapped windows, do full redraw if more than half of window content
+    // is changed, or if part of window is outside viewable area, because
+    // ScrollDC fails to properly scroll text in such cases
+    if (W_IsMapped(window))
     {
-        InvalidateRect (win->hwnd, NULL, FALSE);
-        UpdateWindow (win->hwnd);       //Generates paint msg, which calls RedrawScrolling
-        return;
+    	GetWindowPlacement (win->hwnd, &loc);
+    	GetWindowRect (((Window *) baseWin)->hwnd, &r);
+    	if (loc.rcNormalPosition.left < r.left || loc.rcNormalPosition.right > r.right
+    	|| loc.rcNormalPosition.top < r.top || loc.rcNormalPosition.bottom > r.bottom)
+    	    clipped = 1;
+    	if (win->AddedStrings > (win->TextHeight / 2) || clipped)
+    	{
+            InvalidateRect (win->hwnd, NULL, FALSE);
+            UpdateWindow (win->hwnd);       //Generates paint msg, which calls RedrawScrolling
+            return;
+        }
     }
 
     //Setup the HDC

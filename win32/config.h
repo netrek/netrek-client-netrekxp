@@ -20,7 +20,7 @@
 ################################################################################
 */
 
-#define CBUGS "Send bugs/suggestion to: williamb@its.caltech.edu"
+#define CBUGS "Send bugs/suggestion to: billbalcerski@hotmail.com"
 
 /* 
 ################################################################################

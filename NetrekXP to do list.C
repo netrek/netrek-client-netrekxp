@@ -17,6 +17,7 @@ where a ship is seen to have pressors on constantly, even when they are off
 10) end game bots are stupid, and on timericide don't act right
 11) if obs in game when merlin quits, queues still open..should be closed dammit
 12) final planet count and cscore would be nice in pw_stats
+13) add auto guest# name generation for INL server
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -31,22 +32,15 @@ Things to do:
 to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
 3) Get square planet bitmaps so I can turn them into mapped rotating globes.
-4) problem with message windows, text getting garbled near top, goes away with
-flushing with scroll button.  Doesn't show up initially, but do something like use
-scroll button, alt-enter, change to review all..and it shows up.
-4a) review all scrolling messes up text, if bottom of window is below the visible
-bottom border of netrek window.  Actually will happen to whatever window is mapped 
-down there at bottom of screen.  Apprently the native windows function doesn't properly
-scroll text that is outside the viewable window.
-6) Pop-up dialog box for bad version response
-7) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
+4) Pop-up dialog box for bad version response
+5) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
 awkward to resize window if user going to click on a server
-8) Fix generic_32 size check
-9) Some sort of click action on player list brings up a menu with settings for that
+6) Fix generic_32 size check
+7) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
-10) add auto guest# name generation for INL server
-11) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
+8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
 Win98 xp computer
+9) fix metaping to work if server has multiple entries, ie home and away inl ports
 
 Stas's list:
 - color coded playerlist.

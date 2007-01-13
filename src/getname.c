@@ -79,11 +79,11 @@ showreadme (void)
         "      No one takes responsibility for lost INL games etc.",
         "      Use at your own risk! If you don't like it, don't use it.",
         "",
-        "Comments, suggestions, bugreports to: williamb@its.caltech.edu",
+        "Comments, suggestions, bugreports to: billbalcerski@hotmail.com",
         "",
         "Include version and architecture info in bug reports",
         "",
-        "Patches to: williamb@its.caltech.edu",
+        "Patches to: billbalcerski@hotmail.com",
         "",
     };
     int i, length;

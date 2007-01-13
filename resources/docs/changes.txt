@@ -1,4 +1,6 @@
-Netrek XP 2006, Version 1.2:
+Netrek XP 2006, Version 1.2: (Released Jan-2007)
+- fixed several bugs relating to message windows, most noticeably, messages that are
+  printed off the viewable screen will no longer garble scrolling text
 - changed default metaStatusLevel from 3 to 2, so as not to include timed out servers
 - new engine sound that replaces the old static-like engine sound, the sound file is still
   not used in normal gameplay though
@@ -8,7 +10,8 @@ Netrek XP 2006, Version 1.2:
 - support for new server feature packet SP_GENERIC_32.  This is a great upgrade to the server
   as it allows for future data to be sent in this packet (lots of empty room).  Currently
   it sends your ship's repair time..removing the need for the client side repair time
-  calculation, which had several flaws and didn't work well with observers.
+  calculation, which had several flaws and didn't work well with observers.  It also
+  sends info on which planet you are orbitting.
 - added "UseFullShipInfo: (on)/off" to choose whether to use short or long type packets
   for other player info.  Default is on.  This netrekrc setting controls whether the
   feature packet FULL_DIRECTION_RESOLUTION is used.
