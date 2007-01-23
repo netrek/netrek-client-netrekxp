@@ -18,6 +18,7 @@ where a ship is seen to have pressors on constantly, even when they are off
 11) if obs in game when merlin quits, queues still open..should be closed dammit
 12) final planet count and cscore would be nice in pw_stats
 13) add auto guest# name generation for INL server
+14) sysdef option for base orbit enemy planets
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -35,12 +36,14 @@ to save settings.  Text in windows should adjust to new window size.
 4) Pop-up dialog box for bad version response
 5) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
 awkward to resize window if user going to click on a server
+5b) Metaping on a Unknown server is causing unseemly delay due to threading.
 6) Fix generic_32 size check
 7) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
 8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
 Win98 xp computer
-9) fix metaping to work if server has multiple entries, ie home and away inl ports
+9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
+rect doesn't take these into account.
 
 Stas's list:
 - color coded playerlist.

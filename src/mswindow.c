@@ -4540,6 +4540,7 @@ W_FlushScrollingWindow (W_Window window)
     int HiddenLines;
     int y;
     int clipped = 0;
+    int totally_clipped = 0;
     RECT r;
     WINDOWPLACEMENT loc;
     FNHEADER_VOID;
@@ -4562,14 +4563,19 @@ W_FlushScrollingWindow (W_Window window)
     // For mapped windows, do full redraw if more than half of window content
     // is changed, or if part of window is outside viewable area, because
     // ScrollDC fails to properly scroll text in such cases
-    if (W_IsMapped(window))
+    if (W_IsMapped (window) && W_IsMapped (baseWin))
     {
     	GetWindowPlacement (win->hwnd, &loc);
     	GetWindowRect (((Window *) baseWin)->hwnd, &r);
+    	// At least partially clipped
     	if (loc.rcNormalPosition.left < r.left || loc.rcNormalPosition.right > r.right
     	|| loc.rcNormalPosition.top < r.top || loc.rcNormalPosition.bottom > r.bottom)
     	    clipped = 1;
-    	if (win->AddedStrings > (win->TextHeight / 2) || clipped)
+    	// Totally clipped, treat like unmapped window
+    	if (loc.rcNormalPosition.right < r.left || loc.rcNormalPosition.left > r.right
+    	|| loc.rcNormalPosition.bottom < r.top || loc.rcNormalPosition.top > r.bottom)
+    	    totally_clipped = 1;
+    	if (win->AddedStrings > (win->TextHeight / 2) || (clipped && !totally_clipped))
     	{
             InvalidateRect (win->hwnd, NULL, FALSE);
             UpdateWindow (win->hwnd);       //Generates paint msg, which calls RedrawScrolling

@@ -881,13 +881,13 @@ static void LoadMetasCache()
       num_servers = 0;
       return;
   }
-
-  cache = fopen(cacheFileName, "r");
-  if (cache == NULL) 
-  { 
+  if (!findfile (metaUDPCache, cacheFileName)
+             || !(cache = fopen (cacheFileName, "r")))
+  {
       num_servers = 0; 
       return; 
   }
+
   /* Obtain file size. */
   fseek (cache , 0 , SEEK_END);
   lSize = ftell (cache);
@@ -1281,8 +1281,8 @@ parsemeta (int metaType)
     switch (type)
     {
         case 1:
-	    ReadMetasSend();
 	    LoadMetasCache();
+	    ReadMetasSend();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
 	    	/* Allocate 4 spots for header/refresh/quit/link */
@@ -1687,7 +1687,6 @@ metaaction (W_Event * data)
     {
         W_WriteText(metaWin, 0, metaHeight-3, W_Red, "Asking for refresh from metaservers and nearby servers", 54, 0);
         ReadMetasSend();
-        metasort();
     }
     else if (data->y == (metaHeight-2)) /* Quit selected */
     {
@@ -2066,13 +2065,13 @@ DWORD WINAPI metaPing_thread(void)
 				// Receive reply
 				if (!metaPing_recvEchoReply(rawSocket, &saSrc, &rtt, &nSeq))
 				{
-					//printf("\nReply from: %s: rtt=%ldms seq=%d", inet_ntoa(saSrc.sin_addr), rtt, nSeq);
+					//LineToConsole("\nReply from: %s: rtt=%ldms seq=%d", inet_ntoa(saSrc.sin_addr), rtt, nSeq);
 					for (i = 0; i < num_servers; ++i)
+					{
+						// Support multiple servers with same IP - update every server entry with latest ping time
 						if (saSrc.sin_addr.s_addr == serverlist[i].ip_addr) 
-						{
 							serverlist[i].pkt_rtt[nSeq % RTT_AVG_BUFLEN] = rtt;
-							break;
-						}
+					}
 				}
 			}
 		}
