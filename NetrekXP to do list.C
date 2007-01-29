@@ -19,6 +19,9 @@ where a ship is seen to have pressors on constantly, even when they are off
 12) final planet count and cscore would be nice in pw_stats
 13) add auto guest# name generation for INL server
 14) sysdef option for base orbit enemy planets
+15) phaser misses have the client computer phaser length, but with phaser upgrades,
+this causes a mismatch in the actual phaser length for other players.  Server needs
+to somehow relay phaser damage values for other ships, perhaps in generic_32?
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -35,7 +38,9 @@ to save settings.  Text in windows should adjust to new window size.
 3) Get square planet bitmaps so I can turn them into mapped rotating globes.
 4) Pop-up dialog box for bad version response
 5) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
-awkward to resize window if user going to click on a server
+awkward to resize window if user going to click on a server.  However if cache is working
+properly, after the first connect, all servers should be stored and the metaserver window
+should not resize due to differences between the metaservers.
 5b) Metaping on a Unknown server is causing unseemly delay due to threading.
 6) Fix generic_32 size check
 7) Some sort of click action on player list brings up a menu with settings for that

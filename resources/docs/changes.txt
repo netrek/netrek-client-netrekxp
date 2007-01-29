@@ -1,6 +1,10 @@
 Netrek XP 2006, Version 1.2: (Released Jan-2007)
-- fixed several bugs relating to message windows, most noticeably, messages that are
-  printed off the viewable screen will no longer garble scrolling text
+- servers that don't respond to metaping are not saved in the UDPcache, as they are likely
+  defunct
+- fixed some bugs relating to message windows, most noticeably, messages that are
+  printed off the viewable screen will no longer garble scrolling text.  Still doesn't
+  work for certain cases, most noticeable if the windows taskbar is covering part
+  of a message window
 - changed default metaStatusLevel from 3 to 2, so as not to include timed out servers
 - new engine sound that replaces the old static-like engine sound, the sound file is still
   not used in normal gameplay though

@@ -581,7 +581,7 @@ static void version_r(struct sockaddr_in *address) {
       sp->port = port;
       sp->age = age;
       sp->when = now;
-      sp->lifetime = 4;
+      sp->lifetime = 2;
 #ifdef METAPING
       sp->ip_lookup = 0;
       /* Initialize the ping rtt fields */
@@ -595,12 +595,12 @@ static void version_r(struct sockaddr_in *address) {
 	sp->age = (int)now - (int)(sp->when-sp->age);
 	sp->when = now;
 	sp->refresh = 1;
-	sp->lifetime = 20;
+	sp->lifetime = 5;
 	continue;
       } else {
 	sp->age = age;
 	sp->when = now;
-	sp->lifetime = 20;
+	sp->lifetime = 5;
       }
     } 
     /* Use converted status and player values */
@@ -686,7 +686,7 @@ static void version_s(struct sockaddr_in *address)
   sp->age = 0;
   sp->when = now;
   sp->refresh = 1;
-  sp->lifetime = 20;
+  sp->lifetime = 5;
   sp->players = players;
   sp->status = statusOpen;
   sp->typeflag = type;
@@ -839,6 +839,12 @@ static void SaveMetasCache()
          instead they default to "Active". */
       for (i = 0; i < num_servers; i++)
       {
+#ifdef METAPING	
+      	  /* Don't cache servers that aren't responding to ping, they are likely 
+      	     defunct. */
+      	  if (metaPing && serverlist[i].pkt_rtt[0] == -2)
+      	      continue;
+#endif
           sprintf(str,"%s,%d,%lld,%d,%d,%d,%d,%c\n",
           serverlist[i].address,
           serverlist[i].port,
@@ -1281,8 +1287,8 @@ parsemeta (int metaType)
     switch (type)
     {
         case 1:
-	    LoadMetasCache();
 	    ReadMetasSend();
+	    LoadMetasCache();
 	    if (num_servers == 0) ReadMetasRecv(-1);
 	    if (num_servers != 0) {
 	    	/* Allocate 4 spots for header/refresh/quit/link */
