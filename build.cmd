@@ -491,6 +491,7 @@ copy resources\docs\netrekrc %InstCWD%\netrek
 
 mkdir %InstCWD%\netrek\sounds
 copy resources\sounds\*.wav %InstCWD%\netrek\sounds
+copy resources\sounds\*.ogg %InstCWD%\netrek\sounds
 copy win32\SDL\*.dll %InstCWD%\netrek
 
 if /I "%Compiler%" == "BCC" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmaps
