@@ -1,4 +1,13 @@
 Netrek XP 2006, Version 1.2: (Released Jan-2007)
+- three new netrekrc options, which are newSoundEffects, newSoundMusic, and newSoundMusicBkgd.
+  The first toggles sound effects on/off, the second toggles music on/off, the third plays
+  a mix of star trek theme music continually in the background.  Thus, if you wish to play
+  with only music, you can.  If you want to play with only sound effects, you can.  Or both.
+  Or neither.  Defaults are on for sound effects and music, and off for background music.
+- the client can now play music files, 9 star trek themed music files from the various
+  star trek series have been added.  Random intro themes will play on client connect, and
+  random end credits themes will play on genocide.  Music is only available with the newSound
+  option on, as it uses SDL.  These new music files are in the .ogg format.
 - servers that don't respond to metaping are not saved in the UDPcache, as they are likely
   defunct
 - fixed some bugs relating to message windows, most noticeably, messages that are

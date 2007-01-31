@@ -152,6 +152,13 @@ death (void)
                 W_TileWindow (mapw, genopic2);
                 break;
         }
+#ifdef SOUND
+        if (newSound)
+        {
+            i = MUSIC_OFFSET + (RANDOM() % MUSIC_OFFSET); // Play random end theme
+            Play_Music(i);
+        }
+#endif
         break;
     case KGHOST:
         strcpy (deathmessage, "You were killed by a confused daemon.");
@@ -176,6 +183,13 @@ death (void)
                 W_TileWindow (mapw, genopic2);
                 break;
         }
+#ifdef SOUND
+        if (newSound)
+        {
+            i = MUSIC_OFFSET + (RANDOM() % MUSIC_OFFSET); // Play random end theme
+            Play_Music(i);
+        }
+#endif
         break;
     case KPROVIDENCE:
         strcpy (deathmessage, "You were nuked by GOD.");

@@ -173,6 +173,15 @@ newQuit: on
 # Use new layered, stereo sound
 newSound: on
 
+# Play sound effects (newSound only)
+newSoundEffects: on
+
+# Play music (newSound only)
+newSoundMusic: on
+
+# Play theme music in background (requires newSound and newSoundMusic)
+newSoundMusicBkgd: off
+
 # Use 3D sound effects (only works if newSound is on)
 newSoundAngles: off
 

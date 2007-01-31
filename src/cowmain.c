@@ -1083,7 +1083,11 @@ cowmain (char *server,
 #ifdef SOUND
     if (newSound)
     {
-        Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+        /* Kill all currently playing sounds when entering game */
+        Mix_HaltChannel(-1);
+        /* Fade out any music playing over 5 seconds */
+        if (Mix_PlayingMusic())
+            Mix_FadeOutMusic(5000);
         Play_Sound(ENTER_SHIP_WAV);
     }
     else

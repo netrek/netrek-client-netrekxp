@@ -29,6 +29,7 @@
 #include "proto.h"
 
 Mix_Chunk *newsounds[NUM_WAVES];
+Mix_Music *newmusic[NUM_MUSIC];
 /* Each sound has a priority which controls what can override what
    Currently these are set as follows:
 
@@ -144,6 +145,32 @@ int loadSounds(void) {
   return(1);
 }
 
+/*
+ * Load the .ogg files into the music arrays
+ */
+int loadMusic(void) {
+  int i;
+
+  newmusic[INTRO1_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_TOS.ogg"));
+  newmusic[INTRO2_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_TNG.ogg"));
+  newmusic[INTRO3_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_VOY.ogg"));
+  newmusic[INTRO4_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_DS9.ogg"));
+  newmusic[INTRO5_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_ENT.ogg"));
+  newmusic[END1_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_TOS.ogg"));
+  newmusic[END2_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_TNG.ogg"));
+  newmusic[END3_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_VOY.ogg"));
+  newmusic[END4_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_DS9.ogg"));
+
+  for (i=0; i < NUM_MUSIC; i++) {
+    if (!newmusic[i]) {
+      LineToConsole("Mix_LoadMUS newmusic[%d] could not be loaded. Check soundDir in your .netrekrc: %s\n", i, Mix_GetError());
+      return(-1);
+    }
+  }
+
+  return(1);
+}
+
 extern void Exit_Sound (void)
 {
     if (sound_init)
@@ -174,6 +201,8 @@ extern void Init_Sound (void)
         
         if (newSound)
         {
+            int i;
+
 #ifdef DEBUG
 	    LineToConsole ("Init_Sound using SDL\n");
 #endif
@@ -188,15 +217,15 @@ extern void Init_Sound (void)
     	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0) 
       		LineToConsole("Mix_OpenAudio: %s\n", Mix_GetError());
 
-    	    /* If we successfully loaded the wav files, so shut-off sound_init and play
-    	     * the introduction
-    	     */
-    	    if (loadSounds())
-    	    {
-     	        if (Mix_PlayChannel(-1, newsounds[INTRO_WAV], 0) < 0)
-		    LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
-      	    }
+            /* Toggle on sound, and load sound files */
       	    sound_toggle = 1;
+      	    loadSounds();
+ 
+      	    /* Toggle on music, load music files, and play random intro music */
+      	    music_toggle = 1;
+      	    loadMusic();
+      	    i = RANDOM() % MUSIC_OFFSET;
+      	    Play_Music(i);
       	    /* See if volume is adjustable */
       	    CheckVolumeSettings ();
       	    /* Default of 8 channels not enough */
@@ -236,7 +265,7 @@ extern void Play_Sound (int type)
     {
     	int channel;
     	
-        if (!sound_init || !sound_toggle)
+        if (!sound_init || !newSoundEffects || !sound_toggle)
 	    return;
 
         if ((type >= NUM_WAVES) || (type < 0))
@@ -278,11 +307,12 @@ extern void Play_Sound (int type)
             current_sound = NO_SOUND;
      }
 }
+
 extern void Play_Sound_Loc (int type, int angle, int distance)
 {
     int channel;
     
-    if (!sound_init || !sound_toggle)
+    if (!sound_init || !newSoundEffects || !sound_toggle)
         return;
 
     if ((type >= NUM_WAVES) || (type < 0))
@@ -322,6 +352,48 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
         
     Group_Sound(type, channel);
     return;
+}
+
+/* Only works with SDL, i.e. newSound */
+extern void Play_Music (int type)
+{
+    if (!sound_init || !newSound || !newSoundMusic || !music_toggle)
+        return;
+
+    if ((type >= NUM_MUSIC) || (type < 0))
+    {
+        LineToConsole("Invalid music type %d\n", type);
+        return;
+    }
+
+    if (Mix_PlayMusic(newmusic[type], 1) < 0)
+    {
+        LineToConsole("Mix_PlayMusic: %s\n", Mix_GetError());
+        return;
+    }
+}
+
+/* Only works with SDL, i.e. newSound */
+extern void Play_Music_Bkgd (void)
+{
+    int i;
+
+    if (!sound_init || !newSound || !newSoundMusic || !newSoundMusicBkgd|| !music_toggle)
+        return;
+
+    if (Mix_PlayingMusic())
+        return;
+
+    i = RANDOM() % NUM_MUSIC;
+
+    if (Mix_PlayMusic(newmusic[i], 1) < 0)
+    {
+        LineToConsole("Mix_PlayMusic: %s\n", Mix_GetError());
+        return;
+    }
+    /* So we play another one when done */
+    Mix_HookMusicFinished(Play_Music_Bkgd);
+    
 }
 
 void Group_Sound (int type, int channel)
@@ -375,8 +447,11 @@ extern void Abort_Sound (int type)
 #define SOUND_INIT    MESSAGE_SOUND + 2
 #define SOUND_DONE    MESSAGE_SOUND + 3
 
-#define SDL_SOUND_ANGLE 1
-#define SDL_SOUND_DONE 2
+#define SDL_EFFECTS_TOGGLE 1
+#define SDL_MUSIC_TOGGLE 2
+#define SDL_MUSIC_BKGD 3
+#define SDL_SOUND_ANGLE 4
+#define SDL_SOUND_DONE 5
 
 static void soundrefresh (int i);
 static void sdlsoundrefresh (int i);
@@ -407,6 +482,21 @@ static void sdlsoundrefresh (int i)
     {
         sprintf (buf, "Sound is turned %s",
                  (sound_toggle == 1) ? "ON" : "OFF");
+    }
+    else if (i == SDL_EFFECTS_TOGGLE)
+    {
+        sprintf (buf, "Sound effects are turned %s",
+                 (newSoundEffects == 1) ? "ON" : "OFF");
+    }
+    else if (i == SDL_MUSIC_TOGGLE)
+    {
+        sprintf (buf, "Music is turned %s",
+                 (newSoundMusic == 1) ? "ON" : "OFF");
+    }
+    else if (i == SDL_MUSIC_BKGD)
+    {
+        sprintf (buf, "Background music is turned %s",
+                 (newSoundMusicBkgd == 1) ? "ON" : "OFF");
     }
     else if (i == SDL_SOUND_ANGLE)
     {
@@ -544,7 +634,39 @@ void sdlsoundaction (W_Event * data)
     {
         if (sound_init)
             sound_toggle = (sound_toggle == 1) ? 0 : 1;
+        // Halt all sounds if toggled off
+        if (!sound_toggle)
+        {
+            Mix_HaltChannel(-1);
+            Mix_HaltMusic();
+        }
         sdlsoundrefresh (SOUND_TOGGLE);
+    }
+    else if (i == SDL_EFFECTS_TOGGLE)
+    {
+    	if (sound_init)
+            newSoundEffects = (newSoundEffects) ? 0 : 1;
+        if (!newSoundEffects)
+            Mix_HaltChannel(-1);
+    	sdlsoundrefresh (SDL_EFFECTS_TOGGLE);
+    }
+    else if (i == SDL_MUSIC_TOGGLE)
+    {
+    	if (sound_init)
+            newSoundMusic = (newSoundMusic) ? 0 : 1;
+        if (!newSoundMusic)
+            Mix_HaltMusic();
+    	sdlsoundrefresh (SDL_MUSIC_TOGGLE);
+    }
+    else if (i == SDL_MUSIC_BKGD)
+    {
+    	if (sound_init)
+    	    newSoundMusicBkgd = (newSoundMusicBkgd) ? 0 : 1;
+    	if (!newSoundMusicBkgd)
+    	    Mix_HaltMusic();
+    	else
+    	    Play_Music_Bkgd();
+    	sdlsoundrefresh (SDL_MUSIC_BKGD);
     }
     else if (i == SDL_SOUND_ANGLE)
     {

@@ -339,6 +339,24 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"newSoundEffects", &newSoundEffects, RC_BOOL,
+        {
+            "Play sound effects (newSound only)",
+            NULL
+        }
+    },
+    {"newSoundMusic", &newSoundMusic, RC_BOOL,
+        {
+            "Play music (newSound only)",
+            NULL
+        }
+    },
+    {"newSoundMusicBkgd", &newSoundMusicBkgd, RC_BOOL,
+        {
+            "Play theme music in background (requires newSound and newSoundMusic)",
+            NULL
+        }
+    },
     {"newSoundAngles", &newSoundAngles, RC_BOOL,
         {
             "Use 3D sound effects (only works if newSound is on)",
@@ -1498,6 +1516,9 @@ resetdefaults (void)
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
     newSound = booleanDefault ("newSound", newSound);
+    newSoundEffects= booleanDefault ("newMusic", newSoundEffects);
+    newSoundMusic = booleanDefault ("newMusicPlayRandom", newSoundMusic);
+    newSoundMusicBkgd = booleanDefault ("newSoundMusicBkgd", newSoundMusicBkgd);
     newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);

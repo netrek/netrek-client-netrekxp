@@ -632,6 +632,7 @@ unsigned char keys[MAX_KEY] = "";
 #ifdef SOUND
 int sound_init = 1;
 int sound_toggle = 0;
+int music_toggle = 0;
 char *sounddir = NULL;
 W_Window soundWin = NULL;
 
@@ -786,9 +787,12 @@ int allowWheelActions = 1;   /* allow wheel actions */
 
 WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
-int richText = 0;   /* temporary variable to select rich text message windows */
-int newQuit = 0;    /* new quit clock */
-int newSound = 1;   /* use new SDL sound */
-int newSoundAngles = 1; /* use new SDL sound with angular 3d component */
+int richText = 0;   		/* temporary variable to select rich text message windows */
+int newQuit = 0;    		/* new quit clock */
+int newSound = 1;   		/* Use new SDL sound interface */
+int newSoundEffects = 1;	/* Use SDL sound effects playback */
+int newSoundMusic = 1;		/* Use SDL music playback */
+int newSoundMusicBkgd = 0;	/* Play random background music continuously */
+int newSoundAngles = 1; 	/* Use SDL with angular 3D sound */
 
 int useFullShipInfo = 1;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */

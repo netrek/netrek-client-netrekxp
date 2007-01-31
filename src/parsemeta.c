@@ -589,9 +589,11 @@ static void version_r(struct sockaddr_in *address) {
         sp->pkt_rtt[j] = (unsigned long) -1;
 #endif
     }
-    /* if it was found, check age */
+    /* if it was found, check age.  Don't update if old entry is newer or
+       of the same age.  However, make sure status hasn't changed.  If status
+       differs, we want to use the new information packet regardless of age. */
     else {
-      if ((now-age) < (sp->when-sp->age)) {
+      if ((now-age) < (sp->when-sp->age) && (sp->status == tempstatus)) {
 	sp->age = (int)now - (int)(sp->when-sp->age);
 	sp->when = now;
 	sp->refresh = 1;

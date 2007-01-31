@@ -527,6 +527,7 @@ extern unsigned char keys[MAX_KEY];
 #include "sound.h"
 extern int sound_init;
 extern int sound_toggle;
+extern int music_toggle;
 extern char *sounddir;
 extern W_Window soundWin;
 
@@ -688,10 +689,13 @@ extern int allowWheelActions;    /* allow mouse wheel actions */
 
 extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our richedit controls */
 
-extern int richText;    /* temporary variable to enable/disable rich text windows */
-extern int newQuit;     /* new quit clock */
-extern int newSound;	/* Use new SDL sound interface */
-extern int newSoundAngles; /* Use SDL with angular 3D sound */
+extern int richText;    	/* temporary variable to enable/disable rich text windows */
+extern int newQuit;     	/* new quit clock */
+extern int newSound;		/* Use new SDL sound interface */
+extern int newSoundEffects;	/* Use SDL sound effects playback */
+extern int newSoundMusic;	/* Use SDL music playback */
+extern int newSoundMusicBkgd;	/* Play random background music continuously */
+extern int newSoundAngles;	/* Use SDL with angular 3D sound */
 
 extern int useFullShipInfo;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
 #endif /* _h_data */

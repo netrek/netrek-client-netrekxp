@@ -59,6 +59,8 @@ extern void soundwindow (void);
 
 extern void Play_Sound (int type);
 extern void Play_Sound_Loc (int type, int angle, int distance);
+extern void Play_Music (int type);
+extern void Play_Music_Bkgd (void);
 extern void Abort_Sound (int type);
 extern void Init_Sound (void);
 extern void Exit_Sound (void);
@@ -100,5 +102,19 @@ enum {
   WARNING_WAV,
   NUM_WAVES
 };
+
+enum {
+  INTRO1_MUSIC,
+  INTRO2_MUSIC,
+  INTRO3_MUSIC,
+  INTRO4_MUSIC,
+  INTRO5_MUSIC,
+  END1_MUSIC,
+  END2_MUSIC,
+  END3_MUSIC,
+  END4_MUSIC,
+  NUM_MUSIC,
+};
+#define MUSIC_OFFSET	END1_MUSIC /* Offset for end music */
 
 #endif /* __SOUND_H */
