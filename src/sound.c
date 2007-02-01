@@ -156,6 +156,7 @@ int loadMusic(void) {
   newmusic[INTRO3_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_VOY.ogg"));
   newmusic[INTRO4_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_DS9.ogg"));
   newmusic[INTRO5_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_ENT.ogg"));
+  newmusic[INTRO6_MUSIC] = Mix_LoadMUS(DATAFILE("intro_theme_ST2.ogg"));
   newmusic[END1_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_TOS.ogg"));
   newmusic[END2_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_TNG.ogg"));
   newmusic[END3_MUSIC] = Mix_LoadMUS(DATAFILE("end_theme_VOY.ogg"));

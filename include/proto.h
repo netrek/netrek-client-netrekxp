@@ -1147,6 +1147,7 @@ char *strcpy_return (register char *s1,
      extern void Play_Sound (int type);
      extern void Play_Sound_Loc (int type, int angle, int distance);
      extern void Play_Music (int type);
+     extern void Play_Music_Bkgd (void);
      void Group_Sound (int type, int channel);
      extern void Abort_Sound (int type);
      extern void soundwindow (void);

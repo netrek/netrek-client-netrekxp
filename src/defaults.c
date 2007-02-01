@@ -1516,8 +1516,8 @@ resetdefaults (void)
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
     newSound = booleanDefault ("newSound", newSound);
-    newSoundEffects= booleanDefault ("newMusic", newSoundEffects);
-    newSoundMusic = booleanDefault ("newMusicPlayRandom", newSoundMusic);
+    newSoundEffects= booleanDefault ("newSoundEffects", newSoundEffects);
+    newSoundMusic = booleanDefault ("newSoundMusic", newSoundMusic);
     newSoundMusicBkgd = booleanDefault ("newSoundMusicBkgd", newSoundMusicBkgd);
     newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
