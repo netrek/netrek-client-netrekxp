@@ -258,8 +258,8 @@ struct save_options save_options[] = {
             "What servers to get from metaserver",
             "0 - with players",
             "1 - as above + with queue",
-            "2 - as above + with nobody playing",
-            "3 - as above + timed out servers (default)",
+            "2 - as above + with nobody playing (default)",
+            "3 - as above + timed out servers",
             "4 - as above + servers that metaserver could not connect to",
             NULL
         }
@@ -770,7 +770,7 @@ struct save_options save_options[] = {
     {"useFullShipInfo", &useFullShipInfo, RC_BOOL,
         {
             "Display other ships to 256 directions instead of 16",
-            "by using long ship packets instead of short ship packets",
+            "by using long ship packets instead of short ship packets,",
             "slight increase in bandwidth usage",
             NULL
         }

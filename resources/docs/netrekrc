@@ -892,10 +892,10 @@ macro.9.A:% --------------------:--:--**#:-<<:^/^<**#**#**:._/--------/->---
 macro.).A:/*   Join the netrek clue game mailing list today! At         */
 macro.).A:/*   http://groups.google.com/group/netrek-clue-games         */
 macro.).A:/*   INL-style timed bronco games are every Wednesday         */
-macro.).A:/*   10pm EST/7pm PST on ports 4566/4577 at netrek.warped.us  */
+macro.).A:/*   10pm EST/7pm PST on ports 4566/4577                      */
 
 macro.(.A:  /*   Get the latest version of Netrek XP 2006 today!            */
-macro.(.A:  /*   Current version is 1.1, released June 26, 2006             */
+macro.(.A:  /*   Current version is 1.2, released February 2007             */
 macro.(.A:  /*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
 macro.(.A:  /*                      or                                      */
 macro.(.A:  /*        http://www.playnetrek.org/                            */
@@ -939,10 +939,10 @@ dist.E.help: %T%c->%O Help(%S)! %s%% shd, %d%% dmg, %f%% fuel,%?%S=SB%{ %w%% wtm
 # Beeplite macros
 lite.take: /c/l/3
 lite.base_ogg: /g/m/1/|OGG THE BASE!|
-lite.pickup: /p
-lite.help: %?%S=SB%{/c%}%?%a>0%{/c%}
-lite.carrying: /c
 lite.escorting: /c/p/4
+lite.pickup: /p
+lite.carrying: /c
+lite.help: %?%S=SB%{/c%}%?%a>0%{/c%}
 
 
 # Receiver configurable messages

@@ -1,4 +1,4 @@
-Netrek XP 2006, Version 1.2: (Released Jan-2007)
+Netrek XP 2006, Version 1.2: (Released Feb-2007)
 - three new netrekrc options, which are newSoundEffects, newSoundMusic, and newSoundMusicBkgd.
   The first toggles sound effects on/off, the second toggles music on/off, the third plays
   a mix of star trek theme music continually in the background.  Thus, if you wish to play

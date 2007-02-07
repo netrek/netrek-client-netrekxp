@@ -155,7 +155,7 @@ death (void)
 #ifdef SOUND
         if (newSound)
         {
-            i = MUSIC_OFFSET + (RANDOM() % MUSIC_OFFSET); // Play random end theme
+            i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
             Play_Music(i);
         }
 #endif
@@ -186,7 +186,7 @@ death (void)
 #ifdef SOUND
         if (newSound)
         {
-            i = MUSIC_OFFSET + (RANDOM() % MUSIC_OFFSET); // Play random end theme
+            i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
             Play_Music(i);
         }
 #endif
