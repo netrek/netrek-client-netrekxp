@@ -731,8 +731,13 @@ DrawShips (void)
                             // Reason for normalization is Mix_SetDistance requires that range        
                             distance = (int)((255 * distance)/CORNER_DIST);
                             // Calculate angle, then adjust as necessary for Mix_SetDistance
-                            angle = (int)(atan2(newdy, newdx)*180/XPI);
-                            angle = 270 - angle;
+                            if (distance != 0)
+                            {
+                                angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                                angle = 90 - angle;
+                            }
+                            else
+                                angle = 0;
                             // At short distances, don't use angular sound
                             if (distance < SCALE/2)
                                 Play_Sound(CLOAKED_WAV);
@@ -763,7 +768,7 @@ DrawShips (void)
                     if (newSound)
                     {
                         if (j->p_cloakphase == CLOAK_PHASES - 1)
-                            {
+                        {
                             newdx = dx - WINSIDE/2;
                             newdy = dy - WINSIDE/2;
                         
@@ -773,8 +778,13 @@ DrawShips (void)
                             // Reason for normalization is Mix_SetDistance requires that range        
                             distance = (int)((255 * distance)/CORNER_DIST);
                             // Calculate angle, then adjust as necessary for Mix_SetDistance
-                            angle = (int)(atan2(newdy, newdx)*180/XPI);
-                            angle = 270 - angle;
+                            if (distance != 0)
+                            {
+                                angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                                angle = 90 - angle;
+                            }
+                            else
+                                angle = 0;
                              // At short distances, don't use angular sound
                             if (distance < SCALE/2)
                                 Play_Sound(UNCLOAK_WAV);
@@ -1334,8 +1344,13 @@ DrawShips (void)
                         // Reason for normalization is Mix_SetDistance requires that range        
                         distance = (int)((255 * distance)/CORNER_DIST);
                         // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        angle = (int)(atan2(newdy, newdx)*180/XPI);
-                        angle = 270 - angle;
+                        if (distance != 0)
+                        {
+                            angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                            angle = 90 - angle;
+                        }
+                        else
+                            angle = 0;
                         // At short distances, don't use angular sound
                         if (distance < SCALE/2)
                         {
@@ -1427,8 +1442,13 @@ DrawShips (void)
                         // Reason for normalization is Mix_SetDistance requires that range        
                         distance = (int)((255 * distance)/CORNER_DIST);
                         // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        angle = (int)(atan2(newdy, newdx)*180/XPI);
-                        angle = 270 - angle;
+                        if (distance != 0)
+                        {
+                            angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                            angle = 90 - angle;
+                        }
+                        else
+                            angle = 0;
                         // At short distances, don't use angular sound
                         if (distance < SCALE/2)
                             Play_Sound(PHASER_OTHER_WAV);
@@ -1858,8 +1878,13 @@ DrawTorps (void)
                 new_other_torp_dist = (int)((255 * new_other_torp_dist)/CORNER_DIST);
                 // Find how long till torp expires...BROKEN!
                 // Calculate angle, then adjust as necessary for Mix_SetDistance
-                new_angle = (int)(atan2(newdy, newdx)*180/XPI);
-                new_angle = 270 - new_angle;
+                if (new_other_torp_dist != 0)
+                {
+                    new_angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                    new_angle = 90 - new_angle;
+                }
+                else
+                    new_angle = 0;
                 // Choose closest torp - yes this sucks sometimes, but better than nothing
                 if (new_other_torp_dist < other_torp_dist)
                 {
@@ -1903,8 +1928,13 @@ DrawTorps (void)
                         // Reason for normalization is Mix_SetDistance requires that range        
                         distance = (int)((255 * distance)/CORNER_DIST);
                         // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        angle = (int)(atan2(newdy, newdx)*180/XPI);
-                        angle = 270 - angle;
+                        if (distance != 0)
+                        {
+                            angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                            angle = 90 - angle;
+                        }
+                        else
+                            angle = 0;
                         // At short distances, don't use angular sound
                         if (distance < SCALE/2)
                             Play_Sound(TORP_HIT_WAV);
@@ -2109,8 +2139,13 @@ DrawPlasmaTorps (void)
             new_other_plasma_dist = (int)((255 * new_other_plasma_dist)/CORNER_DIST);
             // Find how long till torp expires...BROKEN!
             // Calculate angle, then adjust as necessary for Mix_SetDistance
-            new_angle = (int)(atan2(newdy, newdx)*180/XPI);
-            new_angle = 270 - new_angle;
+            if (new_other_plasma_dist != 0)
+            {
+                new_angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                new_angle = 90 - new_angle;
+            }
+            else
+                new_angle = 0;
             // Choose closest plasma - yes this sucks sometimes, but better than nothing
             if (new_other_plasma_dist < other_plasma_dist)
             {
@@ -2154,8 +2189,13 @@ DrawPlasmaTorps (void)
                     // Reason for normalization is Mix_SetDistance requires that range        
                     distance = (int)((255 * distance)/CORNER_DIST);
                     // Calculate angle, then adjust as necessary for Mix_SetDistance
-                    angle = (int)(atan2(newdy, newdx)*180/XPI);
-                    angle = 270 - angle;
+                    if (distance != 0)
+                    {
+                        angle = (int)(atan2(-newdy, newdx)*180/XPI);
+                        angle = 90 - angle;
+                    }
+                    else
+                        angle = 0;
                     // At short distances, don't use angular sound
                     if (distance < SCALE/2)
                         Play_Sound(PLASMA_HIT_WAV);
