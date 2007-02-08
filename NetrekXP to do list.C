@@ -41,8 +41,7 @@ to save settings.  Text in windows should adjust to new window size.
 awkward to resize window if user going to click on a server.  However if cache is working
 properly, after the first connect, all servers should be stored and the metaserver window
 should not resize due to differences between the metaservers.
-5b) Metaping on a Unknown server is causing unseemly delay due to threading.
-6) Fix generic_32 size check
+5a) Metaping on a Unknown server is causing unseemly delay due to threading.
 7) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
 8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
