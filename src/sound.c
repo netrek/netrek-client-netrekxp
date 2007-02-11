@@ -222,8 +222,7 @@ extern void Init_Sound (void)
       	    sound_toggle = 1;
       	    loadSounds();
  
-      	    /* Toggle on music, load music files, and play random intro music */
-      	    music_toggle = 1;
+      	    /* Load music files, and play random intro music */
       	    loadMusic();
       	    i = RANDOM() % MUSIC_OFFSET;
       	    Play_Music(i);
@@ -361,7 +360,7 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
 /* Only works with SDL, i.e. newSound */
 extern void Play_Music (int type)
 {
-    if (!sound_init || !newSound || !newSoundMusic || !music_toggle)
+    if (!sound_init || !sound_toggle || !newSound || !newSoundMusic)
         return;
 
     if ((type >= NUM_MUSIC) || (type < 0))
@@ -382,7 +381,7 @@ extern void Play_Music_Bkgd (void)
 {
     int i;
 
-    if (!sound_init || !newSound || !newSoundMusic || !newSoundMusicBkgd|| !music_toggle)
+    if (!sound_init || !sound_toggle || !newSound || !newSoundMusic || !newSoundMusicBkgd)
         return;
 
     if (Mix_PlayingMusic())
@@ -435,6 +434,28 @@ void Group_Sound (int type, int channel)
                 LineToConsole("Mix_GroupChannel: %s\n", Mix_GetError());
             break;
     }
+}
+
+/* Only works with SDL, i.e. newSound */
+extern void ChangeNewsoundVolume (int vol)
+{
+    int mvolume, volume;
+    
+    // Get current average sound volume and music volume
+    volume = Mix_Volume(-1, -1);
+    mvolume = Mix_VolumeMusic(-1);
+
+    // Change sound volume for all channels, range is 0 to 128
+    volume = volume + 10*vol;
+    if (volume < 0)
+        volume = 0;
+    Mix_Volume(-1,volume);
+
+    // Change music volume, range is 0 to 128
+    mvolume = mvolume + 10*vol;
+    if (mvolume < 0)
+        mvolume = 0;
+    Mix_VolumeMusic(mvolume);
 }
 
 extern void Abort_Sound (int type)

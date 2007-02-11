@@ -2847,7 +2847,10 @@ void
 Key86 (void)
 {
 #ifdef SOUND
-    ChangeVolume (1);
+    if (newSound)
+        ChangeNewsoundVolume (1);
+    else
+        ChangeVolume (1);
 #else
     emptyKey ();
 #endif
@@ -3322,7 +3325,10 @@ void
 Key118 (W_Event * data)
 {
 #ifdef SOUND
-    ChangeVolume (-1);
+    if (newSound)
+        ChangeNewsoundVolume (-1);
+    else
+        ChangeVolume (-1);
 #else
     emptyKey ();
 #endif

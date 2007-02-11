@@ -48,6 +48,7 @@ player's candock, cantranswarp, ban, ignore, etc.
 Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
+10) Make sure all ping related fields are switched correctly via metasort.
 
 Stas's list:
 - color coded playerlist.
