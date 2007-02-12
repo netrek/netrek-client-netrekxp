@@ -238,6 +238,7 @@ parseInput (char *in,
         serverlist[num_servers].status = statusDefault;
         serverlist[num_servers].players = 0;
         serverlist[num_servers].typeflag = ' ';
+        strcpy (serverlist[num_servers].comment, "");
         num_servers++;
     }
 

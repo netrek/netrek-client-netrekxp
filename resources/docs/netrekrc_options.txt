@@ -225,7 +225,7 @@ saveMacro:                (on/off) save macros to saveFile
 saveRCD:                  (on/off) save receiver configurable distresses to saveFile
 saveRCM:                  (on/off) save receiver configurable messages to saveFile
 saveWindow:               (on/off) save window placements to saveFile
-server:                   (address) default server
+server:                   (address) default server (only listed on TCP metaserver)
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands
 showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
