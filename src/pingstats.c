@@ -138,7 +138,8 @@ text (int value,
 {
     char buf[6];
 
-    sprintf (buf, "(%3d)", value);      /* fix */
+    if (value < 1000) sprintf (buf, "(%3d)", value);
+    else sprintf (buf, ">1sec");
 
     W_WriteText (pStats, STAT_WIDTH - TEXT_WIDTH, y, textColor,
                  buf, 5, W_RegularFont);
