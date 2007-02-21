@@ -1141,7 +1141,7 @@ PlistLine (W_Window win,
         case 'K':              /* Kills */
             if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
             {
-            	if (j->p_kills == 0.00 && playerListBlankZeroKills)
+                if (j->p_kills == 0.00 && playerListBlankZeroKills)
                 {
                     if (*(ptr + 1) == '0')
                         format (buffPoint, "   ", 3, 0);

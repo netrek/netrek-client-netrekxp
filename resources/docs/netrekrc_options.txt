@@ -9,6 +9,7 @@ agriColor:                (0-2) select color to display agri planet names on the
 
 allowWheelActions:        (on/off) allow mouse wheel to work in non-scrolling windows
 autoQuit:                 (int) autoquit time after death
+autoRotate:               (on/off) automatically rotate galaxy so teams are on left side of map
 b1keymap:                 (string) keymap for mouse button 1 (mouseAsShift=on)
 b2keymap:                 (string) keymap for mouse button 2 (mouseAsShift=on)
 b3keymap:                 (string) keymap for mouse button 3 (mouseAsShift=on)

@@ -25,10 +25,6 @@
 
 int notdone;                    /* not done flag */
 
-#ifdef ROTATERACE
-static int old_rotate, old_rotate_deg;
-#endif
-
 static int lastUpdateSpeed = 10;
 static char newkeys[14];
 
@@ -293,6 +289,7 @@ struct option Planet_Menu[] = {
     {1, "", &agriColor, 0, 0, 0, agricolormess, NULL},
     {1, "", &showLock, 0, 0, 0, lockoptions, NULL},
 #ifdef ROTATERACE
+    {1, "autorotate galaxy", &autoRotate, 0, 0, 0, NULL, NULL},
     {1, "", &rotate, 0, 0, 0, rotatemess, NULL},
 #endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
@@ -788,63 +785,8 @@ optionaction (W_Event * data)
         }
 #ifdef ROTATERACE
         else if (rotate != old_rotate)
-        {
-            register i;
-            register struct planet *l;
-            register struct player *j;
-
-            redrawall = 1;
-            reinitPlanets = 1;
-
-            for (i = 0, l = planets; i < MAXPLANETS; i++, l++)
-            {
-                if (rotate)
-                {
-                    rotate_deg = -old_rotate_deg + rotate * 64;
-                    rotate_coord (&l->pl_x, &l->pl_y, rotate_deg, GWIDTH / 2,
-                                  GWIDTH / 2);
-                    rotate_deg = rotate * 64;
-                }
-                else
-                {
-                    rotate_deg = -old_rotate_deg;
-                    rotate_coord (&l->pl_x, &l->pl_y, rotate_deg, GWIDTH / 2,
-                                  GWIDTH / 2);
-                    rotate_deg = 0;
-                }
-            }
-
-            /* we could wait for the server to do this but looks better if we
-             * do it now. */
-            for (i = 0, j = players; i < MAXPLAYER; i++, j++)
-            {
-                if (j->p_status != PALIVE)
-                    continue;
-                if (rotate)
-                {
-                    rotate_deg = -old_rotate_deg + rotate * 64;
-                    rotate_coord (&j->p_x, &j->p_y, rotate_deg,
-                                  GWIDTH / 2, GWIDTH / 2);
-                    rotate_dir (&j->p_dir, rotate_deg);
-
-                    rotate_deg = rotate * 64;
-                }
-                else
-                {
-                    rotate_deg = -old_rotate_deg;
-                    rotate_coord (&j->p_x, &j->p_y, rotate_deg,
-                                  GWIDTH / 2, GWIDTH / 2);
-                    rotate_dir (&j->p_dir, rotate_deg);
-                    rotate_deg = 0;
-                }
-            }
-            /* phasers/torps/etc .. wait for server */
-
-            old_rotate = rotate;
-            old_rotate_deg = rotate_deg;
-        }
+            rotateGalaxy();
 #endif
-
     }
 
 

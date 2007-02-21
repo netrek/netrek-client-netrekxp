@@ -160,6 +160,7 @@ void loadxtrekrc (void);
 /******************************************************************************/
 void enter (void);
 void openmem (void);
+void rotateTeams (void);
 void drawTstats (void);
 #ifdef HOCKEY_LINES
 int hockey_mode (void);
@@ -937,6 +938,7 @@ void rotate_coord (int *x,
                    int d,
                    int cx,
                    int cy);
+void rotateGalaxy (void);
 
 /******************************************************************************/
 /***  rsa_box.c

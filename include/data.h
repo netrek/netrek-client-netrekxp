@@ -130,9 +130,11 @@ extern struct macro_list macro[];       /* NBT 2/26/93 */
 #endif
 
 #ifdef ROTATERACE
+extern int autoRotate;
 extern int rotate;
 extern int rotate_deg;
-
+extern int old_rotate;
+extern int old_rotate_deg;
 #endif
 
 extern int updatesPerSec;

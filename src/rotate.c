@@ -13,6 +13,7 @@
 #include "struct.h"
 #include "data.h"
 #include "packets.h"
+#include "map.h"
 #include "proto.h"
 
 #ifdef ROTATERACE
@@ -85,4 +86,61 @@ rotate_coord (int *x,
     }
 }
 
+void
+rotateGalaxy (void)
+{
+    register i;
+    register struct planet *l;
+    register struct player *j;
+
+    redrawall = 1;
+    reinitPlanets = 1;
+
+    for (i = 0, l = planets; i < MAXPLANETS; i++, l++)
+    {
+        if (rotate)
+        {
+            rotate_deg = -old_rotate_deg + rotate * 64;
+            rotate_coord (&l->pl_x, &l->pl_y, rotate_deg, GWIDTH / 2,
+                          GWIDTH / 2);
+            rotate_deg = rotate * 64;
+        }
+        else
+        {
+            rotate_deg = -old_rotate_deg;
+            rotate_coord (&l->pl_x, &l->pl_y, rotate_deg, GWIDTH / 2,
+                          GWIDTH / 2);
+            rotate_deg = 0;
+        }
+    }
+
+    /* we could wait for the server to do this but looks better if we
+     * do it now. */
+    for (i = 0, j = players; i < MAXPLAYER; i++, j++)
+    {
+        if (j->p_status != PALIVE)
+            continue;
+        if (rotate)
+        {
+            rotate_deg = -old_rotate_deg + rotate * 64;
+            rotate_coord (&j->p_x, &j->p_y, rotate_deg,
+                          GWIDTH / 2, GWIDTH / 2);
+            rotate_dir (&j->p_dir, rotate_deg);
+
+            rotate_deg = rotate * 64;
+        }
+        else
+        {
+            rotate_deg = -old_rotate_deg;
+            rotate_coord (&j->p_x, &j->p_y, rotate_deg,
+                          GWIDTH / 2, GWIDTH / 2);
+            rotate_dir (&j->p_dir, rotate_deg);
+            rotate_deg = 0;
+        }
+    }
+    /* phasers/torps/etc .. wait for server */
+
+    old_rotate = rotate;
+    old_rotate_deg = rotate_deg;
+}
 #endif

@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- added "autoRotate: on/(off)" to automatically rotate the galaxy when you enter so that
+  your team and largest other team are on the left hand side of the galaxy, if possible.
 - added "playerListBlankZeroKills: (on)/off" to choose whether or not to display 0.00 kills
   in the player list.
 - fixed cloak/decloak cycling so that it animates properly at 10 updates/second.

@@ -31,6 +31,10 @@
 void
 enter (void)
 {
+#ifdef ROTATERACE
+    if (autoRotate)   
+        rotateTeams();
+#endif
     drawTstats ();
     delay = 0;
 }
@@ -97,6 +101,81 @@ openmem (void)
         mystats = &(me->p_stats);
     }
 }
+
+#ifdef ROTATERACE
+/******************************************************************************/
+/***  rotateTeams()                                                         ***/
+/***  Place 2 largest teams on left hand side of galaxy                     ***/
+/******************************************************************************/
+void
+rotateTeams (void)
+{
+    int i;
+    int playercount = 0;
+    int largestteam = -1, nextlargestteam= -1;
+    int largestteamcount = 0, nextlargestteamcount = 0;
+
+    /* Find the 2 largest teams (hopefully) */
+    for (i = 0; i < 4; i++)
+    {
+        if ((playercount = realNumShips(1 << i)) == 0)
+            continue;
+        if (playercount > largestteamcount)
+        {
+            nextlargestteam = largestteam;
+            nextlargestteamcount = largestteamcount;
+            largestteam = i;
+            largestteamcount = playercount;
+        }
+        else if (playercount > nextlargestteamcount)
+        {
+            nextlargestteam = i;
+            nextlargestteamcount = playercount;
+        }
+    }
+    /* Server empty or only 1 team? Don't rotate. */
+    if (largestteam < 0 || nextlargestteam < 0)
+        return;
+
+    /* 2 largest teams are diagonal (possible before T mode), i.e. FED-KLI
+       or ROM-ORI?  Don't rotate.  Team order is FED ROM KLI ORI */
+    if ((largestteam - nextlargestteam) == 2 || (largestteam - nextlargestteam) == -2)
+        return;
+    
+    /* Determine how many degrees needed to rotate galaxy so both teams
+       on left side of the map, and set global rotate value accordingly */
+    switch (largestteam)
+    {
+        case 0: /* FED */
+            if (nextlargestteam == 3) /* FED-ORI */
+               rotate = 1;
+            break;
+        case 1: /* ROM */
+            if (nextlargestteam == 2) /* ROM-KLI */
+                rotate = 3;
+            break;
+        case 2: /* KLI */
+            if (nextlargestteam == 1) /* KLI-ROM */
+                rotate = 3;
+            else if (nextlargestteam == 3) /* KLI-ORI */
+                rotate = 2;
+            break;
+        case 3: /* ORI */
+            if (nextlargestteam == 1) /* ORI-FED */
+                rotate = 1;
+            else if (nextlargestteam == 2) /* ORI-KLI */
+                rotate = 2;
+            break;
+        default:
+            break;
+    }
+    
+    /* Perform rotation if necessary */
+    if (rotate != old_rotate)
+        rotateGalaxy();
+    return;
+}
+#endif
 
 /******************************************************************************/
 /***  drawTstats()                                                          ***/

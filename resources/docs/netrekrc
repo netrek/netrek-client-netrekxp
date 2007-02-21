@@ -29,6 +29,9 @@ allowWheelActions: on
 # Autoquit timer (default 60)
 autoQuit: 60
 
+# Automatically rotate galaxy so teams are on left side of map
+autoRotate: off
+
 # Base UDP local port
 baseUdpLocalPort: 0
 

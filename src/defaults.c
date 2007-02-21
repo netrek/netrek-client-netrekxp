@@ -66,6 +66,14 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef ROTATERACE
+    {"autoRotate", &autoRotate, RC_BOOL,
+        {
+            "Automatically rotate galaxy so teams are on left side of map",
+            NULL
+        }
+    },
+#endif
     {"baseUdpLocalPort", &baseUdpLocalPort, RC_INT,
         {
             "Base UDP local port",
@@ -1564,6 +1572,7 @@ resetdefaults (void)
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
+    autoRotate = booleanDefault ("autoRotate", autoRotate);
     logging = booleanDefault ("logging", logging);
     maxScrollLines = intDefault ("maxScrollLines", maxScrollLines);
     if (maxScrollLines > 500)

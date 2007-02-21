@@ -1659,7 +1659,8 @@ entrywindow (int *team,
             }
             else if (event.Window == w)
             {
-                showMotdWin (w, line);
+            	if (me->p_whydead != KWINNER && me->p_whydead != KGENOCIDE)
+                    showMotdWin (w, line);
             }
             else if (event.Window == helpWin)
 #ifdef RECORDGAME

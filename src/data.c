@@ -128,9 +128,11 @@ int lastRank = -1;
 int promoted = 0;
 
 #ifdef ROTATERACE
+int autoRotate = 0;
 int rotate = 0;
 int rotate_deg = 0;
-
+int old_rotate = 0;
+int old_rotate_deg = 0;
 #endif
 
 int loginAccept = -1;
