@@ -187,6 +187,7 @@ playerList:               (string) custom style of player list
 # 'W' - Wins
 
 playerList2:              (string) custom layout for alternate player list window (same as playerlist)
+playerListBlankZeroKills: (on/off) don't display player's kills if they have zero kills
 playerListHack:           (on/off) if player's letter is greater than 'f' suppose that
                                    the player is observer.
 playerListMessaging:      (on/off) allow messages to be sent to players by clicking player

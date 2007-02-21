@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- added "playerListBlankZeroKills: (on)/off" to choose whether or not to display 0.00 kills
+  in the player list.
+- fixed cloak/decloak cycling so that it animates properly at 10 updates/second.
 - sound and music volume are now independent of Windows sound volume, i.e. changing
   game volume with the in game raise/lower volume keys does not change system WAV volume
   (newSound only).

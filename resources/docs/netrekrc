@@ -5,7 +5,7 @@ name: guest
 login: netrek_player
 
 # Mouse button mapping
-buttonmap: 1P2k
+buttonmap: 1P2f3k
 
 # Key mapping
 keymap: PpW Zva%d_eyftg^jmnrpPrls3tfuwvDwsye d
@@ -223,6 +223,9 @@ planetBitmapGalaxy: 3
 
 # Highlight galactic planets by race and army status
 planetHighlighting: on
+
+# Don't display player's kills if they have zero kills
+playerListBlankZeroKills: on
 
 # Suppose that players with letter greater than 'f' are observers
 playerListHack: off

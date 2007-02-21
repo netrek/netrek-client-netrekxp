@@ -1141,7 +1141,16 @@ PlistLine (W_Window win,
         case 'K':              /* Kills */
             if (*(ptr + 1) >= '0' && *(ptr + 1) <= '2')
             {
-                if (j->p_kills > 100.0)
+            	if (j->p_kills == 0.00 && playerListBlankZeroKills)
+                {
+                    if (*(ptr + 1) == '0')
+                        format (buffPoint, "   ", 3, 0);
+                    else if (*(ptr + 1) == '1')
+                        format (buffPoint, "    ", 4, 0);
+                    else
+                        format (buffPoint, "     ", 5, 0);
+                }
+                else if (j->p_kills >= 100.0)
                     /* Cheat a bit */
                     ftoa (j->p_kills, buffPoint - 1, 0, 3, (*(ptr + 1) - '0'));
                 else
@@ -1151,7 +1160,9 @@ PlistLine (W_Window win,
             }
             else
             {
-                if (j->p_kills > 100.0)
+                if (j->p_kills == 0.00 && playerListBlankZeroKills)
+                    format (buffPoint, "     ", 5, 0);
+                else if (j->p_kills >= 100.0)
                     /* Cheat a bit */
                     ftoa (j->p_kills, buffPoint - 1, 0, 3, 2);
                 else

@@ -404,6 +404,7 @@ extern char cloakChars[3];
 
 extern int showIND;
 extern int newPlist;
+extern int playerListBlankZeroKills;
 extern int playerListHack;
 
 

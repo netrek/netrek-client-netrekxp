@@ -431,6 +431,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"playerListBlankZeroKills", &playerListBlankZeroKills, RC_BOOL,
+        {
+            "Don't display player's kills if they have zero kills",
+            NULL
+        }
+    },
     {"playerListHack", &playerListHack, RC_BOOL,
         {
             "Suppose that players with letter greater than \'f\' are observers",
@@ -1545,6 +1551,8 @@ resetdefaults (void)
     saveRCM = booleanDefault ("saveRCM", saveRCM);
 #endif
 
+    playerListBlankZeroKills =
+        booleanDefault ("playerListBlankZeroKills", playerListBlankZeroKills);
     playerListHack = booleanDefault ("playerListHack", playerListHack);
     keepInfo = intDefault ("keepInfo", keepInfo);
     showPlanetOwner = booleanDefault ("showPlanetOwner", showPlanetOwner);

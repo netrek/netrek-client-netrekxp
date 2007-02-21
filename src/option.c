@@ -284,7 +284,7 @@ struct option Planet_Menu[] = {
     {1, "", &planetBitmap, 0, 0, 0, planetbitmapmess, &planetbitmaprange},
     {1, "", &planetBitmapGalaxy, 0, 0, 0, planetbitmapgalaxymess, &planetbitmapgalaxyrange},
     {1, "highlight planets", &planetHighlighting, 0, 0, 0, NULL, NULL},
-    {1, "rotate planets (new planets only)", &rotatePlanets, 0, 0, 0, NULL, NULL},
+    {1, "rotate new planets", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
@@ -365,6 +365,7 @@ struct option Playerlist_Menu[] = {
     {1, "put my team first in the list", &sortMyTeamFirst, 0, 0, 0, NULL, 0},
     {1, "partition the playerlist", &partitionPlist, 0, 0, 0, NULL, 0},
     {1, "", &playerListObserver, 0, 0, 0, playerlistobservermess, &playerlistobserver_range},
+    {1, "blank zero kills", &playerListBlankZeroKills, 0, 0, 0, NULL, 0},
     {1, "hack player list", &playerListHack, 0, 0, 0, NULL, 0},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}

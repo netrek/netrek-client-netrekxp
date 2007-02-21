@@ -15,9 +15,7 @@ where a ship is seen to have pressors on constantly, even when they are off
 8) newbie/pret: monitor vs full_hostname
 9) on daemon exit in newbie/pret, kill any hosed bot slots
 10) end game bots are stupid, and on timericide don't act right
-11) if obs in game when merlin quits, queues still open..should be closed dammit
 12) final planet count and cscore would be nice in pw_stats
-13) add auto guest# name generation for INL server
 14) sysdef option for base orbit enemy planets
 15) phaser misses have the client computer phaser length, but with phaser upgrades,
 this causes a mismatch in the actual phaser length for other players.  Server needs

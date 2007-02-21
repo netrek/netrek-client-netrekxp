@@ -120,8 +120,15 @@ sendServerPingResponse (int number)     /* CP_PING_RESPONSE */
     if (gwrite (s, (char *) &packet, sizeof (struct ping_cpacket)) !=
         sizeof (struct ping_cpacket))
     {
-        LineToConsole ("gwrite failed.\n");
-        serverDead = 1;
+        if (s == udpSock) {
+            s = sock;
+            if (gwrite(s, (char *) &packet, sizeof(struct ping_cpacket)) !=
+                sizeof  (struct ping_cpacket))
+            {
+                serverDead = 1;
+                LineToConsole("gwrite failed again.\n");
+            }
+        }
     }
 }
 

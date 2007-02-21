@@ -423,6 +423,7 @@ char cloakChars[3] = "??";
 
 int showIND = 0;
 int newPlist = 0;
+int playerListBlankZeroKills = 1;
 int playerListHack = 0;
 int playerListMessaging = 1;
 
