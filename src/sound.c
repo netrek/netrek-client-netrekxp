@@ -217,6 +217,10 @@ extern void Init_Sound (void)
     	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0) 
       		LineToConsole("Mix_OpenAudio: %s\n", Mix_GetError());
 
+            /* Set sound and music volume to half (128 is MAXVOLUME) */
+            Mix_Volume(-1, 64);
+            Mix_VolumeMusic(64);
+
             /* Toggle on sound, and load sound files */
       	    sound_toggle = 1;
       	    loadSounds();
