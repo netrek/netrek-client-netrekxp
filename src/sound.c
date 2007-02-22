@@ -214,8 +214,12 @@ extern void Init_Sound (void)
     	    atexit(SDL_Quit);
 
     	    /* Open the audio device at 22050 Hz 8 bit Microsoft PCM with stereo */
-    	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0) 
+    	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0)
+    	    {
       		LineToConsole("Mix_OpenAudio: %s\n", Mix_GetError());
+      		sound_init = 0;
+      		return;
+    	    }
 
             /* Set sound and music volume to half (128 is MAXVOLUME) */
             Mix_Volume(-1, 64);
