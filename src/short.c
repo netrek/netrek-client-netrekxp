@@ -273,7 +273,7 @@ handleVTorp (unsigned char *sbuf)
     thetorp = &torps[((unsigned char) *which * 8)];
     for (shift = 0, i = 0; i < 8; i++, thetorp++, bitset >>= 1)
     {
-        thetorp->t_updateFuse = TORP_UPDATE_FUSE;
+        thetorp->t_updateFuse = TORP_UPDATE_FUSE * fps / 10;
 
         if (bitset & 01)
         {
@@ -998,7 +998,7 @@ handleVTorpInfo (unsigned char *sbuf)
     for (shift = 0, i = 0; i < 8;
          thetorp++, *bitset >>= 1, *infobitset >>= 1, i++)
     {
-        thetorp->t_updateFuse = TORP_UPDATE_FUSE;
+        thetorp->t_updateFuse = TORP_UPDATE_FUSE * fps / 10;
 
         if (*bitset & 01)
         {
@@ -2003,7 +2003,7 @@ handleVPhaser (unsigned char *sbuf)
     phas->ph_y = y;
     phas->ph_target = (short) target;
     phas->ph_fuse = 0;
-    phas->ph_updateFuse = PHASER_UPDATE_FUSE;
+    phas->ph_updateFuse = PHASER_UPDATE_FUSE * fps / 10;
     phas->ph_maxfuse = (players[pnum].p_ship.s_phaserfuse * updatesPerSec) / 10;
 
 #ifdef ROTATERACE

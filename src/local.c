@@ -632,6 +632,7 @@ DrawShips (void)
     char idbuf[10];
     int buflen = 1;
     static int ph_col = 0;
+    static int scaled_ph_col = 0;
     const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
@@ -1556,7 +1557,7 @@ DrawShips (void)
                     {
                         int col;
 
-                        switch (ph_col)
+                        switch (scaled_ph_col)
                         {
                         case 1:
                         case 2:
@@ -1576,10 +1577,10 @@ DrawShips (void)
                             break;
                         default:
                             col = shipCol[remap[j->p_team]];
-                            ph_col = 0;
                             break;
                         }
                         ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
+                        scaled_ph_col = ph_col * 10 / fps;
                         if (phaserShrinkStyle == 1)
                         {
                             get_shrink_phaser_coords(&new_dx, &new_dy,
