@@ -53,7 +53,8 @@ static int other_plasma_dist = 0;
 static int new_other_plasma_dist = 0;
 static int other_plasma_angle = 0;
 static int warpchange = 0;
-static unsigned int twarpflag = 0; 
+static unsigned int twarpflag = 0;
+static int cloak_phases = 0;
 #endif
 
 /* Background Stars Definitions */
@@ -708,10 +709,11 @@ DrawShips (void)
 
         dx = dx / SCALE + WINSIDE / 2;
         dy = dy / SCALE + WINSIDE / 2;
-        
+
+        cloak_phases = CLOAK_PHASES * fps / 10;
         if (j->p_flags & PFCLOAK)
         {
-            if (j->p_cloakphase < (CLOAK_PHASES - 1))
+            if (j->p_cloakphase < (cloak_phases - 1))
             {
 
 #ifdef SOUND
@@ -767,7 +769,7 @@ DrawShips (void)
                 {
                     if (newSound)
                     {
-                        if (j->p_cloakphase == CLOAK_PHASES - 1)
+                        if (j->p_cloakphase == cloak_phases - 1)
                         {
                             newdx = dx - WINSIDE/2;
                             newdy = dy - WINSIDE/2;
@@ -798,7 +800,7 @@ DrawShips (void)
                     {
                         if (myPlayer(j) || isObsLockPlayer(j))
                         {
-                            if (j->p_cloakphase == CLOAK_PHASES - 1)
+                            if (j->p_cloakphase == cloak_phases - 1)
                                 Play_Sound(UNCLOAK_SOUND);
                             else
                                 Abort_Sound(CLOAK_SOUND);
@@ -813,7 +815,7 @@ DrawShips (void)
 
         /* If cloaking cycle is complete, just draw the cloak icon, and skip over
            the ship drawing code with the goto statement */
-        if (j->p_flags & PFCLOAK && (j->p_cloakphase == (CLOAK_PHASES - 1)))
+        if (j->p_flags & PFCLOAK && (j->p_cloakphase == (cloak_phases - 1)))
         {
             if (myPlayer (j)
 #ifdef RECORDGAME
@@ -1317,10 +1319,10 @@ DrawShips (void)
         {
             int i;
 
-            i = j->p_explode;
+            i = j->p_explode * 10 / fps;
 
 #ifdef SOUND
-            if (i == 1)
+            if (j->p_explode == 1)
             {
                 if (newSound)
                 {
@@ -1710,7 +1712,7 @@ DrawShips (void)
 
                 if (tractee->p_status != PALIVE ||
                     ((tractee->p_flags & PFCLOAK) &&
-                     (tractee->p_cloakphase == (CLOAK_PHASES - 1))))
+                     (tractee->p_cloakphase == (cloak_phases - 1))))
                 {
                     continue;
                 }

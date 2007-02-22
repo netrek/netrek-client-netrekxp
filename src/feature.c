@@ -171,6 +171,12 @@ checkFeature (struct feature_cpacket *packet)
     /* special cases: */
     if (strcmpi (packet->name, "FEATURE_PACKETS") == 0)
         reportFeatures ();
+    if (strcmpi (packet->name, "FPS") == 0 && value != -1)
+    {
+        fps = value;
+        LineToConsole("Receiving %d frames per second from the server.\n", fps);
+    }
+
     if ((strcmpi (packet->name, "RC_DISTRESS") == 0) && gen_distress)
         distmacro = dist_prefered;
 

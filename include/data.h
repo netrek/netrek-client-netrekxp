@@ -575,6 +575,8 @@ extern int F_dead_warp;
 extern int portSwap;
 #endif
 
+extern int fps;
+
 // Load Ship Bitmaps from .BMP files
 extern char *fed_ship_bmp;
 extern char *rom_ship_bmp;

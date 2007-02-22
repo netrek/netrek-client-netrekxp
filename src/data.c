@@ -680,6 +680,8 @@ int F_dead_warp = 0;
 int portSwap = 0;
 #endif
 
+int fps = 10;
+
 // Load Ship Bitmaps from .BMP files
 char *fed_ship_bmp;
 char *rom_ship_bmp;
