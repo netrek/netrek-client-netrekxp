@@ -1094,7 +1094,7 @@ handleVTorpInfo (unsigned char *sbuf)
                 thetorp->t_status = status;
                 if (thetorp->t_status == TEXPLODE)
                 {
-                    thetorp->t_fuse = BMP_TORPDET_FRAMES;
+                    thetorp->t_fuse = BMP_TORPDET_FRAMES * fps / 10;
                 }
             }
         }                       /* if */

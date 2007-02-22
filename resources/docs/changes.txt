@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- the varyShields option now scales shield damage properly, previously it would go straight
+  from green to red shields, now there is an intermediate yellow state as well.  Damage threshholds
+  are the somewhat standard 33%/66% for transition between green-yellow and yellow-red.
 - added "autoRotate: on/(off)" to automatically rotate the galaxy when you enter so that
   your team and largest other team are on the left hand side of the galaxy, if possible.
 - added "playerListBlankZeroKills: (on)/off" to choose whether or not to display 0.00 kills

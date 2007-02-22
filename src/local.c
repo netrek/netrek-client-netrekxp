@@ -55,6 +55,8 @@ static int other_plasma_angle = 0;
 static int warpchange = 0;
 static unsigned int twarpflag = 0;
 static int cloak_phases = 0;
+static int bmp_torpdet_frames = 0;
+static int bmp_torp_frames = 0;
 #endif
 
 /* Background Stars Definitions */
@@ -335,7 +337,7 @@ planetBitmapC (register struct planet *p)
  *  Choose the color bitmap for a planet.
  */
 {
-    int i;
+    int i, j;
     W_Icon (*planet_bits);
     
     if ((p->pl_info & me->p_team)
@@ -399,10 +401,14 @@ planetBitmapC (register struct planet *p)
     }
     else // Unknown planet
     {
-    	if ((planet_frame >= CPLANET_VIEWS - 1) || (planet_frame < 0))
+    	j = planet_frame * 10 / fps;
+    	if ((j >= CPLANET_VIEWS - 1) || (j < 0))
+    	{
+            j = 0;
             planet_frame = 0;
+        }
         if (rotatePlanets)
-            return planet_unknown[planet_frame];
+            return planet_unknown[j];
         else
             return planet_unknown_NR;
     }
@@ -1080,19 +1086,19 @@ DrawShips (void)
 
                 if (j == me && varyShields)
                 {
+                    int value;
+
                     shieldnum =
                         SHIELD_FRAMES * me->p_shield / me->p_ship.s_maxshield;
                     if (shieldnum >= SHIELD_FRAMES)
                         shieldnum = SHIELD_FRAMES - 1;
-                    color = gColor;
-                    if (shieldnum < SHIELD_FRAMES * 2 / 3)
-                    {
+                    value = (100 * me->p_shield) / me->p_ship.s_maxshield;
+                    if (value <= 33)
+                        color = rColor;
+                    else if (value <= 66)
                         color = yColor;
-                        if (shieldnum < SHIELD_FRAMES * 2 / 3)
-                        {
-                            color = rColor;
-                        }
-                    }
+                    else
+                       color = gColor;
                 }
                 else
                 {
@@ -1804,6 +1810,7 @@ DrawTorps (void)
     struct player *j;
     int torpCount;
     int torpTeam;
+    int frame;
     const int view = SCALE * WINSIDE / 2;
 
     for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
@@ -1901,21 +1908,23 @@ DrawTorps (void)
 
             if (k->t_status == TEXPLODE)
             {
-
                 k->t_fuse--;
+                bmp_torpdet_frames = BMP_TORPDET_FRAMES * fps / 10;
+                frame = k->t_fuse * 10 / fps;
                 if (k->t_fuse <= 0)
                 {
                     k->t_status = TFREE;
                     j->p_ntorp--;
                     continue;
                 }
-                if (k->t_fuse >= BMP_TORPDET_FRAMES)
+
+                if (k->t_fuse >= bmp_torpdet_frames)
                 {
-                    k->t_fuse = BMP_TORPDET_FRAMES - 1;
+                    k->t_fuse = bmp_torpdet_frames - 1;
                 }
 
 #ifdef SOUND
-                if (k->t_fuse == BMP_TORPDET_FRAMES - 1)
+                if (k->t_fuse == bmp_torpdet_frames - 1)
                 {
                     if (newSound)
                     {
@@ -1974,7 +1983,7 @@ DrawTorps (void)
                     }
                     W_WriteBitmap (dx - (BMP_CTORPDET_WIDTH / 2),
                                    dy - (BMP_CTORPDET_HEIGHT / 2),
-                                   cloudC[torpTeam][k->t_fuse], torpColor (k), w);
+                                   cloudC[torpTeam][frame], torpColor (k), w);
                     clearzone[0][clearcount] = dx - (BMP_CTORPDET_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_CTORPDET_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_CTORPDET_WIDTH;
@@ -1985,7 +1994,7 @@ DrawTorps (void)
                 {
                     W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2),
                                    dy - (BMP_TORPDET_HEIGHT / 2),
-                                   cloud[k->t_fuse], torpColor (k), w);
+                                   cloud[frame], torpColor (k), w);
                     clearzone[0][clearcount] = dx - (BMP_TORPDET_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_TORPDET_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_TORPDET_WIDTH;
@@ -1997,7 +2006,12 @@ DrawTorps (void)
             {
             	if (colorWeapons)
             	{
-                    if ((k->t_fuse++ >= BMP_TORP_FRAMES - 1) || (k->t_fuse < 0))
+            	    k->t_fuse++;
+
+                    bmp_torp_frames = BMP_TORP_FRAMES * fps / 10;
+                    frame = k->t_fuse * 10 / fps;
+
+                    if ((k->t_fuse >= bmp_torp_frames - 1) || (k->t_fuse < 0))
                         k->t_fuse = 0;
         
                     if (myPlayer(j))
@@ -2028,13 +2042,13 @@ DrawTorps (void)
                     {
                         W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
                                        dy - (BMP_CTORP_HEIGHT / 2),
-                                       torpC[torpTeam][k->t_fuse], torpColor (k), w);
+                                       torpC[torpTeam][frame], torpColor (k), w);
                     }
                     else
                     {
                         W_WriteBitmap (dx - (BMP_CTORP_WIDTH / 2),
                                        dy - (BMP_CTORP_HEIGHT / 2),
-                                       mtorpC[torpTeam][k->t_fuse], torpColor (k), w);
+                                       mtorpC[torpTeam][frame], torpColor (k), w);
                     }
                     
                     clearzone[0][clearcount] = dx - (BMP_CTORP_WIDTH / 2);
@@ -2085,6 +2099,7 @@ DrawPlasmaTorps (void)
     register int dx, dy;
     const int view = SCALE * WINSIDE / 2;
     int ptorpTeam;
+    int frame;
 
     /* MAXPLASMA is small so work through all the plasmas rather than
        look at the number of outstanding plasma torps for each player. */
@@ -2163,6 +2178,8 @@ DrawPlasmaTorps (void)
         if (pt->pt_status == PTEXPLODE)
         {
             pt->pt_fuse--;
+            bmp_torpdet_frames = BMP_TORPDET_FRAMES * fps / 10;
+            frame = pt->pt_fuse * 10 / fps;
             if (pt->pt_fuse <= 0)
             {
                 pt->pt_status = PTFREE;
@@ -2170,13 +2187,13 @@ DrawPlasmaTorps (void)
                 continue;
             }
 
-            if (pt->pt_fuse >= BMP_TORPDET_FRAMES)
+            if (pt->pt_fuse >= bmp_torpdet_frames)
             {
-                pt->pt_fuse = BMP_TORPDET_FRAMES - 1;
+                pt->pt_fuse = bmp_torpdet_frames - 1;
             }
 
 #ifdef SOUND
-            if (pt->pt_fuse == BMP_TORPDET_FRAMES - 1)
+            if (pt->pt_fuse == bmp_torpdet_frames - 1)
             {
                 if (newSound)
                 {
@@ -2235,7 +2252,7 @@ DrawPlasmaTorps (void)
                 }
                 W_WriteBitmap (dx - (BMP_CPLASMATORPDET_WIDTH / 2),
                                dy - (BMP_CPLASMATORPDET_HEIGHT / 2),
-                               plcloudC[ptorpTeam][pt->pt_fuse],
+                               plcloudC[ptorpTeam][frame],
                                plasmatorpColor (pt), w);
                 clearzone[0][clearcount] = dx - (BMP_CPLASMATORPDET_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_CPLASMATORPDET_HEIGHT / 2);
@@ -2247,7 +2264,7 @@ DrawPlasmaTorps (void)
             {
                 W_WriteBitmap (dx - (BMP_PLASMATORPDET_WIDTH / 2),
                                dy - (BMP_PLASMATORPDET_HEIGHT / 2),
-                               plasmacloud[pt->pt_fuse], plasmatorpColor (pt), w);
+                               plasmacloud[frame], plasmatorpColor (pt), w);
                 clearzone[0][clearcount] = dx - (BMP_PLASMATORPDET_WIDTH / 2);
                 clearzone[1][clearcount] = dy - (BMP_PLASMATORPDET_HEIGHT / 2);
                 clearzone[2][clearcount] = BMP_PLASMATORPDET_WIDTH;
@@ -2259,7 +2276,12 @@ DrawPlasmaTorps (void)
         {
             if (colorWeapons)
             {
-                if ((pt->pt_fuse++ >= BMP_TORP_FRAMES - 1) || (pt->pt_fuse < 0))
+                pt->pt_fuse++;
+
+                bmp_torp_frames = BMP_TORP_FRAMES * fps / 10;
+                frame = pt->pt_fuse * 10 / fps;
+
+                if ((pt->pt_fuse >= bmp_torp_frames - 1) || (pt->pt_fuse < 0))
                     pt->pt_fuse = 0;
         
                 if (pt->pt_owner == me->p_no)
@@ -2288,14 +2310,14 @@ DrawPlasmaTorps (void)
                 {
                     W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
                                    dy - (BMP_CPLASMATORP_HEIGHT / 2),
-                                   plasmaC[ptorpTeam][pt->pt_fuse],
+                                   plasmaC[ptorpTeam][frame],
                                    plasmatorpColor (pt), w);
                 }
                 else
                 {
                     W_WriteBitmap (dx - (BMP_CPLASMATORP_WIDTH / 2),
                                    dy - (BMP_CPLASMATORP_HEIGHT / 2),
-                                   mplasmaC[ptorpTeam][pt->pt_fuse],
+                                   mplasmaC[ptorpTeam][frame],
                                    plasmatorpColor (pt), w);
                 }
                 clearzone[0][clearcount] = dx - (BMP_CPLASMATORP_WIDTH / 2);
