@@ -484,7 +484,7 @@ DrawPlanets ()
 #ifdef BEEPLITE
         if (useLite && emph_planet_seq_n[l->pl_no] > 0)
 	{
-	    int seq_n = emph_planet_seq_n[l->pl_no] % emph_planet_seq_frames;
+	    int seq_n = (emph_planet_seq_n[l->pl_no] * 10 / fps) % emph_planet_seq_frames;
             
             if (planetBitmapGalaxy == 3)
             {
@@ -903,7 +903,7 @@ map (void)
         if ((useLite && emph_player_seq_n[i] > 0)
 	  && (liteflag & LITE_PLAYERS_MAP))
 	{
-	    int seq_n = emph_player_seq_n[i] % emph_player_seq_frames;
+	    int seq_n = (emph_player_seq_n[i] * 10 / fps) % emph_player_seq_frames;
 
 	    W_WriteBitmap(dx - (emph_player_seq_width / 2 - 1),
 			  dy - (emph_player_seq_height / 2 + 1),

@@ -1036,7 +1036,7 @@ DrawShips (void)
 	    if ((useLite && emph_player_seq_n[j->p_no] > 0)
 	      && (liteflag & LITE_PLAYERS_LOCAL))
 	    {
-	        int seq_n = emph_player_seq_n[j->p_no] % emph_player_seql_frames;
+	        int seq_n = (emph_player_seq_n[j->p_no] * 10 / fps) % emph_player_seql_frames;
 	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
 			       dy - (emph_player_seql_height / 2),
 			       emph_player_seql[seq_n],
