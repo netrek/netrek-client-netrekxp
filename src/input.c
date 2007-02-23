@@ -33,8 +33,10 @@
 #endif
 
 #ifdef __BORLANDC__
+#ifndef CYGWIN
 //   #pragma warn -rvl    //Turon off "parameter never used..." warning
 //   #pragma warn -pro    //Turon off "parameter never used..." warning
+#endif
 #endif
 
 int detallow = 1;               /* flag used to figure out

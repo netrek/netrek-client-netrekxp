@@ -283,7 +283,7 @@ extern void Play_Sound (int type)
 
         if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
         {
-#if DEBUG
+#ifdef DEBUG
             /* Frequent occurence is more than 16 channels playing sound */
             LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
 #endif
@@ -330,7 +330,7 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
 
     if ((channel = Mix_PlayChannel(-1, newsounds[type], 0)) < 0)
     {
-#if DEBUG
+#ifdef DEBUG
         /* Frequent occurence is more than 16 channels playing sound */
         LineToConsole("Mix_PlayChannel: %s\n", Mix_GetError());
 #endif

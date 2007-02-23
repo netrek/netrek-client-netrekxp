@@ -401,7 +401,7 @@ planetBitmapC (register struct planet *p)
     }
     else // Unknown planet
     {
-    	j = planet_frame * 10 / fps;
+    	j = planet_frame * 10 / server_ups;
     	if ((j >= CPLANET_VIEWS - 1) || (j < 0))
     	{
             j = 0;
@@ -717,7 +717,7 @@ DrawShips (void)
         dx = dx / SCALE + WINSIDE / 2;
         dy = dy / SCALE + WINSIDE / 2;
 
-        cloak_phases = CLOAK_PHASES * fps / 10;
+        cloak_phases = CLOAK_PHASES * server_ups / 10;
         if (j->p_flags & PFCLOAK)
         {
             if (j->p_cloakphase < (cloak_phases - 1))
@@ -1037,7 +1037,7 @@ DrawShips (void)
 	    if ((useLite && emph_player_seq_n[j->p_no] > 0)
 	      && (liteflag & LITE_PLAYERS_LOCAL))
 	    {
-	        int seq_n = (emph_player_seq_n[j->p_no] * 10 / fps) % emph_player_seql_frames;
+	        int seq_n = (emph_player_seq_n[j->p_no] * 10 / server_ups) % emph_player_seql_frames;
 	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
 			       dy - (emph_player_seql_height / 2),
 			       emph_player_seql[seq_n],
@@ -1326,7 +1326,7 @@ DrawShips (void)
         {
             int i;
 
-            i = j->p_explode * 10 / fps;
+            i = j->p_explode * 10 / server_ups;
 
 #ifdef SOUND
             if (j->p_explode == 1)
@@ -1580,7 +1580,7 @@ DrawShips (void)
                             break;
                         }
                         ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
-                        scaled_ph_col = ph_col * 10 / fps;
+                        scaled_ph_col = ph_col * 10 / server_ups;
                         if (phaserShrinkStyle == 1)
                         {
                             get_shrink_phaser_coords(&new_dx, &new_dy,
@@ -1910,8 +1910,8 @@ DrawTorps (void)
             if (k->t_status == TEXPLODE)
             {
                 k->t_fuse--;
-                bmp_torpdet_frames = BMP_TORPDET_FRAMES * fps / 10;
-                frame = k->t_fuse * 10 / fps;
+                bmp_torpdet_frames = BMP_TORPDET_FRAMES * server_ups / 10;
+                frame = k->t_fuse * 10 / server_ups;
                 if (k->t_fuse <= 0)
                 {
                     k->t_status = TFREE;
@@ -2009,8 +2009,8 @@ DrawTorps (void)
             	{
             	    k->t_fuse++;
 
-                    bmp_torp_frames = BMP_TORP_FRAMES * fps / 10;
-                    frame = k->t_fuse * 10 / fps;
+                    bmp_torp_frames = BMP_TORP_FRAMES * server_ups / 10;
+                    frame = k->t_fuse * 10 / server_ups;
 
                     if ((k->t_fuse >= bmp_torp_frames - 1) || (k->t_fuse < 0))
                         k->t_fuse = 0;
@@ -2179,8 +2179,8 @@ DrawPlasmaTorps (void)
         if (pt->pt_status == PTEXPLODE)
         {
             pt->pt_fuse--;
-            bmp_torpdet_frames = BMP_TORPDET_FRAMES * fps / 10;
-            frame = pt->pt_fuse * 10 / fps;
+            bmp_torpdet_frames = BMP_TORPDET_FRAMES * server_ups / 10;
+            frame = pt->pt_fuse * 10 / server_ups;
             if (pt->pt_fuse <= 0)
             {
                 pt->pt_status = PTFREE;
@@ -2279,8 +2279,8 @@ DrawPlasmaTorps (void)
             {
                 pt->pt_fuse++;
 
-                bmp_torp_frames = BMP_TORP_FRAMES * fps / 10;
-                frame = pt->pt_fuse * 10 / fps;
+                bmp_torp_frames = BMP_TORP_FRAMES * server_ups / 10;
+                frame = pt->pt_fuse * 10 / server_ups;
 
                 if ((pt->pt_fuse >= bmp_torp_frames - 1) || (pt->pt_fuse < 0))
                     pt->pt_fuse = 0;

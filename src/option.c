@@ -214,7 +214,7 @@ struct int_range MenuPages = { 0, 1, 1 };
 
 
 /* updates: use of the int range thing... */
-struct int_range updates_range = { 1, 10, 1 };
+struct int_range updates_range = { 1, 50, 1 };
 struct int_range redraw_updates_range = { 0, 5, 1 };
 
 struct int_range phaserShrinkRng = { 0, 16, 1 };

@@ -5,6 +5,7 @@
 #include "copyright2.h"
 #include <stdio.h>
 #include <sys/types.h>
+#include <winsock.h>
 #include "Wlib.h"
 #include "defs.h"
 #include "struct.h"

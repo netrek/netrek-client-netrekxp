@@ -21,6 +21,7 @@
 */
 
 #define CBUGS "Send bugs/suggestion to: billbalcerski@hotmail.com"
+//#define CYGWIN /* For compiling with Cygwin */
 
 /* 
 ################################################################################
@@ -434,7 +435,6 @@ typedef short SHORT;
 #define access _access
 #define unlink _unlink
 #endif
-
 
 #endif  /* __CONFIG_H */
 

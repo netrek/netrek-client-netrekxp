@@ -22,6 +22,7 @@
 #include <pwd.h>
 #include <math.h>
 #include <process.h>
+#include <errno.h>
 
 #include "Wlib.h"
 #include "defs.h"

@@ -164,6 +164,18 @@ checkFeature (struct feature_cpacket *packet)
             break;
         }
     }
+    if (strcmpi (packet->name, "FPS") == 0 && value != -1)
+    {
+        server_fps = updatesPerSec = server_ups = value;
+        LineToConsole("Server capable of computing %d frames per second.\n", value);
+        return;
+    }
+    if (strcmpi(packet->name, "UPS") == 0 && value != -1) {
+        updatesPerSec = server_ups = value;
+        LineToConsole("Server actually sending %d updates per second.\n", value);
+        return;
+    }
+
     if (features[i].name == 0)
     {
         LineToConsole ("Feature %s from server unknown to client!\n", packet->name);
@@ -171,11 +183,6 @@ checkFeature (struct feature_cpacket *packet)
     /* special cases: */
     if (strcmpi (packet->name, "FEATURE_PACKETS") == 0)
         reportFeatures ();
-    if (strcmpi (packet->name, "FPS") == 0 && value != -1)
-    {
-        fps = value;
-        LineToConsole("Server plans to send at %d frames per second.\n", fps);
-    }
 
     if ((strcmpi (packet->name, "RC_DISTRESS") == 0) && gen_distress)
         distmacro = dist_prefered;

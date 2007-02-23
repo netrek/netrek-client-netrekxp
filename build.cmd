@@ -3,6 +3,7 @@ set InstCWD="\netrek_files"
 set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
 rem set Compiler=VCC
 set Compiler=BCC
+rem set Compiler=CYGWIN
 
 @echo off
 Set MyCWD=%cd%
@@ -363,6 +364,7 @@ popd
 
 if /I "%Compiler%" == "BCC" goto :CompilerBCC
 if /I "%Compiler%" == "VCC" goto :CompilerVCC
+if /I "%Compiler%" == "CYGWIN" goto :CompilerCYGWIN
 
 echo You must set which compiler you have at the top of this batch file.
 goto :end
@@ -393,6 +395,20 @@ pushd winkey
 make
 popd
 make
+%MyCWD%\tools\stampver -v%MyCWD%\src\stampver.inf netrek.exe
+popd
+
+goto :dist
+
+:CompilerCYGWIN
+pushd src
+pushd cursors
+make --makefile=makecyg
+popd
+pushd winkey
+make --makefile=makecyg
+popd
+make --makefile=makecyg
 %MyCWD%\tools\stampver -v%MyCWD%\src\stampver.inf netrek.exe
 popd
 
@@ -498,6 +514,10 @@ if /I "%Compiler%" == "BCC" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmap
 if /I "%Compiler%" == "BCC" copy src\winkey\winkey.dll %InstCWD%\netrek\bitmaps
 if /I "%Compiler%" == "BCC" copy src\netrek.exe %InstCWD%\netrek
 
+if /I "%Compiler%" == "CYGWIN" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmaps
+if /I "%Compiler%" == "CYGWIN" copy src\winkey\winkey.dll %InstCWD%\netrek\bitmaps
+if /I "%Compiler%" == "CYGWIN" copy src\netrek.exe %InstCWD%\netrek
+
 goto end
 
 :clean
@@ -548,6 +568,7 @@ del resources\misclib\color\shexpl.bmp
 
 if /I "%Compiler%" == "BCC" goto :CleanBCC
 if /I "%Compiler%" == "VCC" goto :CleanVCC
+if /I "%Compiler%" == "CYGWIN" goto :CleanCYGWIN
 
 echo You must set which compiler you have at the top of this batch file.
 
@@ -577,6 +598,19 @@ make clean
 popd
 pushd winkey
 make clean
+popd
+popd
+
+goto :end
+
+:CleanCYGWIN
+pushd src
+make clean --makefile=makecyg
+pushd cursors
+make clean --makefile=makecyg
+popd
+pushd winkey
+make clean --makefile=makecyg
 popd
 popd
 

@@ -399,9 +399,9 @@ udpDebug: 0
 # Check sequence of UDP traffic
 udpSequenceCheck: on
 
-# How much updates to send/receive
-# 1-10 range
-updatesPerSec: 10
+# How many updates per second to request
+# 1-50 range
+updatesPerSec: 50
 
 # Display other ships to 256 directions instead of 16
 # by using long ship packets instead of short ship packets,

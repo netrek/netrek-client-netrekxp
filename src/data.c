@@ -228,7 +228,9 @@ int recv_warn = 1;
 
 #endif
 
-int updatesPerSec = 10;
+int updatesPerSec = 50;	/* client requested updates per second */
+int server_ups = 50;	/* server responded updates per second */
+int server_fps = 50;	/* server configured frames per second */
 
 #ifdef META
 /* Metaservers list - comma delimited  */
@@ -679,8 +681,6 @@ int F_dead_warp = 0;
 #ifdef UDP_PORTSWAP
 int portSwap = 0;
 #endif
-
-int fps = 10;
 
 // Load Ship Bitmaps from .BMP files
 char *fed_ship_bmp;

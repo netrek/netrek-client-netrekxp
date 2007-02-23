@@ -58,7 +58,7 @@ void litedefaults(void)
 
 void liteplanet(struct planet *l)
 {
-    beep_lite_cycle_time_planet = 10 * fps / 10;
+    beep_lite_cycle_time_planet = 10 * server_ups / 10;
     emph_planet_seq_n[l->pl_no] = beep_lite_cycle_time_planet;
     l->pl_flags |= PLREDRAW;			 /* Leave redraw on until * * 
 						  * done highlighting */
@@ -73,7 +73,7 @@ void liteplayer(struct player *j)
 
     redrawPlayer[j->p_no] = 1;
 
-    beep_lite_cycle_time_player = 10 * fps / 10;
+    beep_lite_cycle_time_player = 10 * server_ups / 10;
     emph_player_seq_n[j->p_no] = beep_lite_cycle_time_player;
 }
 
@@ -81,7 +81,7 @@ void liteplayer(struct player *j)
 /* small permutation on makedistress.  Searches for the highliting *
  * arguments, ignores everything else. */
 
-makelite(struct distress * dist, char *pm)
+int makelite(struct distress * dist, char *pm)
 /* the info */
 /* macro to parse, used for distress and macro */
 {
@@ -298,7 +298,7 @@ makelite(struct distress * dist, char *pm)
 		    for (tts_len = 0; (*pm != '|' && tts_len < tts_max_len); tts_len++)
 		      lastIn[tts_len] = *pm++;
 		    lastIn[tts_len] = '\0';
-		    tts_timer = tts_time * fps / 10;
+		    tts_timer = tts_time * server_ups / 10;
 		}
 	        break;
 

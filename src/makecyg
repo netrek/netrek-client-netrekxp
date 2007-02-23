@@ -1,0 +1,106 @@
+#
+# This makefile is written for Cygwin
+#
+
+#DEBUG = 1
+RSA = 1
+
+# Cygwin
+cc     = gcc
+rc     = gcc
+link   = gcc
+compileandlink = gcc
+
+# Compiler and linker flags
+ifndef DEBUG
+cflags = -O2 -v -DWIN32 -DBorland -mwindows
+ccompileonly = -c
+ldebug =  -v 
+DEBUGDEFS = -DDEBUG
+else
+cflags = -O2 -DWIN32 -DBorland -mwindows
+ccompileonly = -c
+ldebug = -w-dup
+endif
+
+# Libs
+LIBOPTS = -L/cygdrive/c/netrekxp/win32/lib/VCC
+
+LIBS = /cygdrive/c/netrekxp/win32/lib/VCC/SDL.LIB \
+       /cygdrive/c/netrekxp/win32/lib/VCC/SDL_mixer.LIB \
+       /cygdrive/c/netrekxp/win32/lib/VCC/SDLmain.LIB \
+#      "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/LibCW32mt.LIB" \
+#      "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/IMPORT32.LIB" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/User32.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Gdi32.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Wsock32.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Kernel32.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Shell32.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Winmm.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Mpr.lib" \
+       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Msimg32.lib" \
+       $(GMPLIB)
+
+INCS = -I/cygdrive/c/netrekxp/include -I/cygdrive/c/netrekxp/win32 -I/cygdrive/c/netrekxp/win32/h -I/cygdrive/c/netrekxp/win32/SDL/
+
+ROBJ            = beeplite.o check.o colors.o console.o data.o death.o defaults.o dmessage.o\
+                  enter.o findslot.o getname.o getship.o helpwin.o hintwin.o inform.o\
+                  interface.o newwin.o option.o planetlist.o macrowin.o\
+                  map.o playerlist.o ranklist.o reserved.o sintab.o\
+                  smessage.o socket.o stats.o util.o war.o warning.o\
+                  udpopt.o ping.o pingstats.o rotate.o parsemeta.o\
+                  spopt.o dashboard.o dashboard3.o\
+                  short.o distress.o senddist.o defwin.o tools.o sound.o\
+                  docwin.o feature.o\
+                  string_util.o local.o cowmain.o playback.o
+
+RSRC            = beeplite.c check.c colors.c console.c data.c death.c defaults.c dmessage.c\
+                  enter.c findslot.c getname.c getship.c helpwin.c hintwin.c inform.c\
+                  input.c interface.c newwin.c option.c planetlist.c\
+                  macrowin.c map.c playerlist.c ranklist.c redraw.c\
+                  smessage.c parsemeta.c socket.c stats.c util.c war.c\
+                  warning.c udpopt.c sintab.c ping.c pingstats.c rotate.c\
+                  spopt.c dashboard.c dashboard3.c\
+                  short.c distress.c senddist.c defwin.c tools.c sound.c\
+                  docwin.c feature.c reserved.c\
+                  string_util.c local.c cowmain.c playback.c
+
+INPUTOBJ        = input.o redraw.o 
+MAINOBJ         = main.o
+MAINSRC         = main.c
+
+ifndef RSA
+GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib
+RSADEFS = -DRSA
+RSASRC = rsa_box.c rsa_box_0.c rsa_box_1.c rsa_box_2.c\
+                  rsa_box_3.c rsa_box_4.c
+RSAOBJ = rsa_box.o rsa_box_0.o rsa_box_1.o rsa_box_2.o\
+                  rsa_box_3.o rsa_box_4.o
+endif
+
+WIN32_SRCS = winmain.c mswindow.c winsndlib.c
+WIN32_OBJS = winmain.o mswindow.o winsndlib.o
+
+INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
+                  oldbitmaps.h tngbitmaps.h hullbitmaps.h rabbitbitmaps.h\
+                  sound.h audio.h litebitmaps.h copyright2.h Wlib.h\
+                  playerlist.h version.h moobitmaps.h\
+                  parsemeta.h spopt.h map.h string_util.h wtext.h local.h
+
+all: netrek.exe
+
+OBJS = $(ROBJ) $(MAINOBJ) $(RSAOBJ) $(INPUTOBJ) $(WIN32_OBJS)
+.c.o:
+	$(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(RSADEFS) $(DEBUGDEFS) $(INCS) $<
+
+#RESOURCES = bccnetrek.res
+
+#$(RESOURCES): bccnetrek.rc
+#	$(rc) bccnetrek.rc
+
+netrek.exe:  $(OBJS) $(RESOURCES) main.ico
+		$(link) $(ldebug) $(LIBOPTS) $(OBJS) $(LIBS) $(RESOURCES)
+
+clean:
+	rm *.o
+	rm netrek.exe netrek.ilc netrek.ild netrek.ild netrek.ilf netrek.ils netrek.map bccnetrek.res netrek.tds

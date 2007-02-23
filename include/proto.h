@@ -27,7 +27,7 @@ void rcdlite (struct distress *dist);
 void litedefaults (void);
 void liteplanet (struct planet *l);
 void liteplayer (struct player *j);
-makelite (struct distress * dist, char *pm);
+int makelite (struct distress * dist, char *pm);
 
 /******************************************************************************/
 /***  check.c                                                               ***/
@@ -95,7 +95,9 @@ char *getdefault (char *str);
 char *getServerNick (char *srvName);
 int getServerType (char *srvName);
 #ifndef __BORLANDC__
+#ifndef CYGWIN
 int strncmpi (char *str1, char *str2, int max);
+#endif
 #endif
 int booleanDefault (char *def, int preferred);
 int intDefault (char *def, int preferred);

@@ -137,7 +137,9 @@ extern int old_rotate;
 extern int old_rotate_deg;
 #endif
 
-extern int updatesPerSec;
+extern int updatesPerSec;	/* client requested updates per second */
+extern int server_ups;		/* server responded updates per second */
+extern int server_fps;		/* server configured frames per second */
 
 extern int SBhours;
 
@@ -574,8 +576,6 @@ extern int F_dead_warp;
 #ifdef UDP_PORTSWAP
 extern int portSwap;
 #endif
-
-extern int fps;
 
 // Load Ship Bitmaps from .BMP files
 extern char *fed_ship_bmp;

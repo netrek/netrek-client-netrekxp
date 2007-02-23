@@ -2,7 +2,7 @@
 # This makefile is written for Borland C++ 5.5
 #
 
-#DEBUG = 1
+DEBUG = 1
 RSA = 1
 
 # Borland C++ 5.5

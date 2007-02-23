@@ -30,6 +30,10 @@
 #include "data.h"
 #include "proto.h"
 
+#ifdef CYGWIN
+#include <sys/time.h>
+#endif
+
 static char tempname[16];
 static char password1[16];
 static char password2[16];

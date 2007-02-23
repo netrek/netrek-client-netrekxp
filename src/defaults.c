@@ -776,8 +776,8 @@ struct save_options save_options[] = {
     },
     {"updatesPerSec", &updatesPerSec, RC_INT,
         {
-            "How much updates to send/receive",
-            "1-10 range",
+            "How many updates per second to request",
+            "1-50 range",
             NULL
         }
     },
@@ -1372,6 +1372,7 @@ getServerType (char *srvName)
 }
 
 #ifndef __BORLANDC__
+#ifndef CYGWIN
 /******************************************************************************/
 /***  strncmpi()                                                            ***/
 /***  grr... are you telling me this sort of function isn't in the std      ***/
@@ -1409,6 +1410,7 @@ strncmpi (char *str1, char *str2, int max)
     }
     return (0);
 }
+#endif
 #endif
 
 /******************************************************************************/

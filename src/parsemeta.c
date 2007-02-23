@@ -1977,8 +1977,10 @@ int metaPing_waitForEchoReply(SOCKET s, int waittime)
 	// wait in periods of maximum 250ms. Better for menu responsiveness ;-)
 	if (waittime > 250) waittime = 250;
 
+#ifndef CYGWIN
 	readfds.fd_count = 1;
 	readfds.fd_array[0] = s;
+#endif
 	Timeout.tv_sec = waittime / 1000;
 	Timeout.tv_usec = waittime % 1000;
 

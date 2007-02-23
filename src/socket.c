@@ -1098,7 +1098,7 @@ handleTorp (struct torp_spacket *packet)
     thetorp->t_x = ntohl (packet->x);
     thetorp->t_y = ntohl (packet->y);
     thetorp->t_dir = packet->dir;
-    thetorp->t_updateFuse = TORP_UPDATE_FUSE * fps / 10;
+    thetorp->t_updateFuse = TORP_UPDATE_FUSE * server_ups / 10;
 
 
 #ifdef ROTATERACE
@@ -1126,7 +1126,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
 
     weaponUpdate = 1;
     thetorp = &torps[ntohs (packet->tnum)];
-    thetorp->t_updateFuse = TORP_UPDATE_FUSE * fps / 10;
+    thetorp->t_updateFuse = TORP_UPDATE_FUSE * server_ups / 10;
 
     if (packet->status == TEXPLODE && thetorp->t_status == TFREE)
     {
@@ -1158,7 +1158,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
         thetorp->t_status = packet->status;
         if (thetorp->t_status == TEXPLODE)
         {
-            thetorp->t_fuse = BMP_TORPDET_FRAMES * fps / 10;
+            thetorp->t_fuse = BMP_TORPDET_FRAMES * server_ups / 10;
         }
     }
 }
@@ -1608,7 +1608,7 @@ handlePhaser (struct phaser_spacket *packet)
     phas->ph_y = ntohl (packet->y);
     phas->ph_target = (short) (ntohl (packet->target));
     phas->ph_fuse = 0;          /* NEW */
-    phas->ph_updateFuse = PHASER_UPDATE_FUSE * fps / 10;
+    phas->ph_updateFuse = PHASER_UPDATE_FUSE * server_ups / 10;
     /* normalized maxfuse */
     phas->ph_maxfuse = (players[packet->pnum].p_ship.s_phaserfuse * updatesPerSec) / 10;
 
@@ -1757,7 +1757,7 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
 
     weaponUpdate = 1;
     thetorp = &plasmatorps[ntohs (packet->pnum)];
-    thetorp->pt_updateFuse = PLASMA_UPDATE_FUSE * fps / 10;
+    thetorp->pt_updateFuse = PLASMA_UPDATE_FUSE * server_ups / 10;
     if (packet->status == PTEXPLODE && thetorp->pt_status == PTFREE)
     {
         /* FAT: redundant explosion; don't update p_nplasmatorp */
@@ -1778,7 +1778,7 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
         thetorp->pt_status = packet->status;
         if (thetorp->pt_status == PTEXPLODE)
         {
-            thetorp->pt_fuse = BMP_TORPDET_FRAMES * fps / 10;
+            thetorp->pt_fuse = BMP_TORPDET_FRAMES * server_ups / 10;
         }
     }
 }
@@ -1800,7 +1800,7 @@ handlePlasma (struct plasma_spacket *packet)
     thetorp = &plasmatorps[ntohs (packet->pnum)];
     thetorp->pt_x = ntohl (packet->x);
     thetorp->pt_y = ntohl (packet->y);
-    thetorp->pt_updateFuse = PLASMA_UPDATE_FUSE * fps / 10;
+    thetorp->pt_updateFuse = PLASMA_UPDATE_FUSE * server_ups / 10;
 
 #ifdef ROTATERACE
     if (rotate)
