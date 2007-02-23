@@ -174,7 +174,7 @@ checkFeature (struct feature_cpacket *packet)
     if (strcmpi (packet->name, "FPS") == 0 && value != -1)
     {
         fps = value;
-        LineToConsole("Receiving %d frames per second from the server.\n", fps);
+        LineToConsole("Server plans to send at %d frames per second.\n", fps);
     }
 
     if ((strcmpi (packet->name, "RC_DISTRESS") == 0) && gen_distress)
