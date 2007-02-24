@@ -18,6 +18,23 @@
  * the use of it.)
  * 
  * $Log: defwin.c,v $
+ * Revision 1.6  2007/02/24 10:19:55  modemhero
+ * Cygwin makefile changes: fixed up a bunch of problems to get build to work, still not
+ * perfect as libdir not resolving correctly.  Also removed CYGWIN define from code and
+ * placed it as a compiler runtime define.  Progress of Cygwin build is that client runs, but
+ * select() is broken.  Most likely related to struct fd_set definition.
+ * Added observer support for shrink phasers, color phaser, warn and vary shields, and
+ * removed observer support for detcircle.
+ * Fixed detcircle so turning it off really does turn it off (oops).
+ * Fixed color phaser with regards to FPS changes, so it works at all framerates.
+ * Added observer support for showArmy for locking onto planets.
+ * Split varyShields into 2 netrekrc options, varyShields and varyShieldsColor, to be
+ * able to vary either/neither/both shield graphic and shield color with damage.
+ * Changed defaults for FPS client/server values back to 10 from 50.  Let the user
+ * have it in netrekrc if they want to request a higher rate, and don't assume servers
+ * are running at 50 FPS.  Require that feature packet to be sent to increase the
+ * update rate.
+ *
  * Revision 1.5  2006/05/14 02:14:54  modemhero
  * New planet bitmaps!  Using Defcom's art.  Changeable via planets menu.
  * New netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
@@ -105,6 +122,8 @@ static struct def
     values[10];
 }
 
+/* This structure is for XTREKRC_HELP, which is OFF by default.
+   Netrekrc options are now processed by save_options in defaults.c */
 def_messages[] =
 {
     {
@@ -398,7 +417,7 @@ def_messages[] =
 #endif
 #ifdef VSHIELD_BITMAPS
     {
-        "varyShields", BOOL_DEF, "Vary shields base on damage",
+        "varyShields", BOOL_DEF, "Vary shields based on damage",
             &varyShields,
         {
             {0, NULL, ""},

@@ -47,8 +47,8 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
-11) if galaxy is rotated, have your ship spawn facing your t mode (or most populated enemy)
-homeworld, not just facing the same degree of galaxy rotation
+11) Problem with enemy phaser sounds in general..they play repeatedly ever
+local redraw.  Most noticeable at 50 fps.
 
 Stas's list:
 - color coded playerlist.

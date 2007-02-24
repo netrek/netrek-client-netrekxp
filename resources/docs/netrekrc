@@ -298,7 +298,7 @@ shiftedMouse: on
 # Server god decides whether to enable it on server
 showAllTractorPressor: on
 
-# Show army count of planet you are orbiting
+# Show army count of planet you are orbiting (or locked on as observer)
 showArmy: on
 
 # Show hints window
@@ -417,8 +417,11 @@ defLite: on
 # Use RSA verification
 useRsa: on
 
-# Change shields color on ship damage
+# Change shields graphic on shield damage
 varyShields: on
+
+# Change shields color on shield damage
+varyShieldsColor: on
 
 # Show limits of tactical display on galaxy
 viewBox: on
@@ -426,7 +429,7 @@ viewBox: on
 # Warn hull state based on damage
 warnHull: off
 
-# Change shields color on enemy approach
+# Change shields color on enemy approach, overrides varyShieldsColor
 warnShields: off
 
 # Draw warp streaks while transwarping to starbase

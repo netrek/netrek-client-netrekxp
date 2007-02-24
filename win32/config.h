@@ -21,7 +21,6 @@
 */
 
 #define CBUGS "Send bugs/suggestion to: billbalcerski@hotmail.com"
-//#define CYGWIN /* For compiling with Cygwin */
 
 /* 
 ################################################################################

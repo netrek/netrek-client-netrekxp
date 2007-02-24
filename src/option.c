@@ -187,7 +187,7 @@ struct option
                                  * (optional) */
     char **op_array;            /* array of strings to
                                  * switch between */
-    struct int_range *op_range; /* struct definint an
+    struct int_range *op_range; /* struct defining an
                                  * integer range option */
 };
 
@@ -248,7 +248,8 @@ struct option Ship_Menu[] = {
     {1, "", &colorClient, 0, 0, 0, bitmaptypemess, &bitmap_range},
     {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
 #ifdef VSHIELD_BITMAPS
-    {1, "vary shields bitmap", &varyShields, 0, 0, 0, NULL, NULL},
+    {1, "vary shields bitmap w/ dam", &varyShields, 0, 0, 0, NULL, NULL},
+    {1, "vary shields color w/ dam", &varyShieldsColor, 0, 0, 0, NULL, NULL},
 #endif
     {1, "use warning shields", &warnShields, 0, 0, 0, NULL, NULL},
     {1, "use warning hull", &vary_hull, 0, 0, 0, NULL, NULL},

@@ -588,7 +588,7 @@ struct save_options save_options[] = {
     },
     {"showArmy", &showArmy, RC_BOOL,
         {
-            "Show army count of planet you are orbiting",
+            "Show army count of planet you are orbiting (or locked on as observer)",
             NULL
         }
     },
@@ -814,7 +814,13 @@ struct save_options save_options[] = {
 #ifdef VSHIELD_BITMAPS
     {"varyShields", &varyShields, RC_BOOL,
         {
-            "Change shields color on ship damage",
+            "Change shields graphic on shield damage",
+            NULL
+        }
+    },
+    {"varyShieldsColor", &varyShieldsColor, RC_BOOL,
+        {
+            "Change shields color on shield damage",
             NULL
         }
     },
@@ -833,7 +839,7 @@ struct save_options save_options[] = {
     },
     {"warnShields", &warnShields, RC_BOOL,
         {
-            "Change shields color on enemy approach",
+            "Change shields color on enemy approach, overrides varyShieldsColor",
             NULL
         }
     },
@@ -1599,6 +1605,7 @@ resetdefaults (void)
 
 #ifdef VSHIELD_BITMAPS
     varyShields = booleanDefault ("varyShields", varyShields);
+    varyShieldsColor = booleanDefault ("varyShieldsColor", varyShieldsColor);
 #endif
 
     warnShields = booleanDefault ("warnShields", warnShields);

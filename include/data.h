@@ -285,6 +285,7 @@ extern W_Icon eplasmatorp, mplasmatorp;
 extern W_Icon base_vshield;
 extern W_Icon shield[SHIELD_FRAMES], cloakicon;
 extern int varyShields;
+extern int varyShieldsColor;
 
 #else
 extern W_Icon shield, cloakicon;

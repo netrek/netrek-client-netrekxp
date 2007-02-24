@@ -7,18 +7,18 @@ RSA = 1
 
 # Cygwin
 cc     = gcc
-rc     = gcc
+rc     = windres
 link   = gcc
 compileandlink = gcc
 
 # Compiler and linker flags
 ifndef DEBUG
-cflags = -O2 -v -DWIN32 -DBorland -mwindows
+cflags = -O2 -g -v -DWIN32 -DCYGWIN -mwindows
 ccompileonly = -c
 ldebug =  -v 
 DEBUGDEFS = -DDEBUG
 else
-cflags = -O2 -DWIN32 -DBorland -mwindows
+cflags = -O2 -g -DWIN32 -DCYGWIN -mwindows
 ccompileonly = -c
 ldebug = -w-dup
 endif
@@ -29,16 +29,14 @@ LIBOPTS = -L/cygdrive/c/netrekxp/win32/lib/VCC
 LIBS = /cygdrive/c/netrekxp/win32/lib/VCC/SDL.LIB \
        /cygdrive/c/netrekxp/win32/lib/VCC/SDL_mixer.LIB \
        /cygdrive/c/netrekxp/win32/lib/VCC/SDLmain.LIB \
-#      "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/LibCW32mt.LIB" \
-#      "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/IMPORT32.LIB" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/User32.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Gdi32.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Wsock32.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Kernel32.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Shell32.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Winmm.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Mpr.lib" \
-       "/cygdrive/c/Program Files/Microsoft Platform SDK/Lib/Msimg32.lib" \
+       /cygdrive/c/netrekxp/win32/lib/VCC/User32.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Gdi32.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Wsock32.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Kernel32.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Shell32.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Winmm.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Mpr.lib \
+       /cygdrive/c/netrekxp/win32/lib/VCC/Msimg32.lib \
        $(GMPLIB)
 
 INCS = -I/cygdrive/c/netrekxp/include -I/cygdrive/c/netrekxp/win32 -I/cygdrive/c/netrekxp/win32/h -I/cygdrive/c/netrekxp/win32/SDL/
@@ -70,7 +68,7 @@ MAINOBJ         = main.o
 MAINSRC         = main.c
 
 ifndef RSA
-GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib
+GMPLIB = ..\Win32\lib\libgmp.lib
 RSADEFS = -DRSA
 RSASRC = rsa_box.c rsa_box_0.c rsa_box_1.c rsa_box_2.c\
                   rsa_box_3.c rsa_box_4.c
@@ -93,10 +91,10 @@ OBJS = $(ROBJ) $(MAINOBJ) $(RSAOBJ) $(INPUTOBJ) $(WIN32_OBJS)
 .c.o:
 	$(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(RSADEFS) $(DEBUGDEFS) $(INCS) $<
 
-#RESOURCES = bccnetrek.res
+RESOURCES = vccnetrek.o
 
-#$(RESOURCES): bccnetrek.rc
-#	$(rc) bccnetrek.rc
+$(RESOURCES): vccnetrek.rc
+	$(rc) -o vccnetrek.o vccnetrek.rc
 
 netrek.exe:  $(OBJS) $(RESOURCES) main.ico
 		$(link) $(ldebug) $(LIBOPTS) $(OBJS) $(LIBS) $(RESOURCES)

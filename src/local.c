@@ -533,9 +533,12 @@ DrawPlanets (void)
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
         }
-        
-        if (showArmy && (me->p_flags & PFORBIT)
-        && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+
+        /* Allow army display if player/observer is orbitting a planet, or alternatively
+           if observer is locked onto a planet */
+        if (showArmy &&
+           ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+          || ((me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) )
         {
             char armbuf[4];
             int armbuflen;
@@ -1085,14 +1088,19 @@ DrawShips (void)
 #ifdef VSHIELD_BITMAPS
                 int shieldnum;
 
-                if (j == me && varyShields)
+                if ((myPlayer(j) || isObsLockPlayer(j)) && varyShields)
                 {
-                    int value;
-
                     shieldnum =
                         SHIELD_FRAMES * me->p_shield / me->p_ship.s_maxshield;
                     if (shieldnum >= SHIELD_FRAMES)
                         shieldnum = SHIELD_FRAMES - 1;
+                }
+                else
+                    shieldnum = 2;
+
+                if ((myPlayer(j) || isObsLockPlayer(j)) && varyShieldsColor)
+                {
+                    int value;
                     value = (100 * me->p_shield) / me->p_ship.s_maxshield;
                     if (value <= 33)
                         color = rColor;
@@ -1102,13 +1110,10 @@ DrawShips (void)
                        color = gColor;
                 }
                 else
-                {
                     color = playerColor (j);
-                    shieldnum = 2;
-                }
 #endif
 
-                if (warnShields && j == me)
+                if (warnShields && (myPlayer(j) || isObsLockPlayer(j)))
                 {
                     switch (me->p_flags & (PFGREEN | PFYELLOW | PFRED))
                     {
@@ -1193,9 +1198,9 @@ DrawShips (void)
                 }
             }
             /* Det circle */
-            if (showdetCircle)
+            if (detCircle && showdetCircle)
             {
-            	if (myPlayer(j) || isObsLockPlayer(j))
+            	if (myPlayer(j))
             	{
                     W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, W_Red);         
                     clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
@@ -1517,7 +1522,7 @@ DrawShips (void)
 
                 if (shrinkPhaserOnMiss || php->ph_status != PHMISS)
                 {
-                    if (j == me)
+                    if (myPlayer(j) || isObsLockPlayer(j))
                     {
                         if (phaserShrinkStyle == 1)
                         {
@@ -1553,7 +1558,7 @@ DrawShips (void)
                 if (friendlyPlayer (j))
                 {
 #ifdef JUBILEE_PHASERS
-                    if (j == me && php->ph_status == PHHIT && colorfulPhasers)
+                    if ((myPlayer(j) || isObsLockPlayer(j)) && php->ph_status == PHHIT && colorfulPhasers)
                     {
                         int col;
 
@@ -1579,7 +1584,7 @@ DrawShips (void)
                             col = shipCol[remap[j->p_team]];
                             break;
                         }
-                        ph_col += (100/j->p_ship.s_phaserfuse/updatesPerSec);
+                        ph_col += (10/j->p_ship.s_phaserfuse);
                         scaled_ph_col = ph_col * 10 / server_ups;
                         if (phaserShrinkStyle == 1)
                         {
@@ -1595,7 +1600,7 @@ DrawShips (void)
                     {
                         if (php->ph_status != PHMISS)
                         {
-                            if (phaserShrinkStyle == 1 && j == me)
+                            if (phaserShrinkStyle == 1 && (myPlayer(j) || isObsLockPlayer(j)))
                             {
                                 get_shrink_phaser_coords(&new_dx, &new_dy,
                                                         px, py, tx, ty, 

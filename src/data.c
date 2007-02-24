@@ -228,9 +228,9 @@ int recv_warn = 1;
 
 #endif
 
-int updatesPerSec = 50;	/* client requested updates per second */
-int server_ups = 50;	/* server responded updates per second */
-int server_fps = 50;	/* server configured frames per second */
+int updatesPerSec = 10;	/* client requested updates per second */
+int server_ups = 10;	/* server responded updates per second */
+int server_fps = 10;	/* server configured frames per second */
 
 #ifdef META
 /* Metaservers list - comma delimited  */
@@ -286,6 +286,7 @@ W_Icon eplasmatorp, mplasmatorp;
 W_Icon base_vshield;
 W_Icon shield[SHIELD_FRAMES], cloakicon;
 int varyShields = 1;
+int varyShieldsColor = 1;
 
 #else
 W_Icon shield, cloakicon;

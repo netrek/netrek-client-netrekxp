@@ -2,8 +2,8 @@ set RSAKey="\netrek_files\rsa\NetrekXP-2006-RSA-Key-Win32.secret"
 set InstCWD="\netrek_files"
 set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
 rem set Compiler=VCC
-set Compiler=BCC
-rem set Compiler=CYGWIN
+rem set Compiler=BCC
+set Compiler=CYGWIN
 
 @echo off
 Set MyCWD=%cd%
