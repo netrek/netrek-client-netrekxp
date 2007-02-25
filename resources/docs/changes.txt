@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- changed keepInfo netrekrc option from updates to tenths of seconds, so info wins
+  remain up at a controllable time regardless of server update rate
 - full support for server FPS feature, allowing client to receive up to 50 updates/second!
   In specific, all redraw animations (phaser cycling, torp/plasma spin, torp/plasma det,
   explosions, cloaking, beeplite, warpstreaks, planet rotation) had to be modified so that

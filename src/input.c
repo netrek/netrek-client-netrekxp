@@ -1700,7 +1700,7 @@ buttonaction (W_Event * data)
         if (!infomapped)
         {
             inform (data->Window, data->x, data->y, 'i');
-            opened_info = keepInfo;     /* 5/31/93 LAB */
+            opened_info = keepInfo * server_ups / 10;     /* 5/31/93 LAB */
         }
         else
         {
@@ -2635,7 +2635,7 @@ Key73 (W_Event * data)
     if (!infomapped)
     {
         inform (data->Window, data->x, data->y, key);
-        opened_info = keepInfo; /* 5/31/93 LAB */
+        opened_info = keepInfo * server_ups / 10;
     }
     else
     {
@@ -3113,7 +3113,7 @@ Key105 (W_Event * data)
     if (!infomapped)
     {
         inform (data->Window, data->x, data->y, key);
-        opened_info = keepInfo; /* 5/31/93 LAB */
+        opened_info = keepInfo * server_ups / 10;
     }
     else
     {

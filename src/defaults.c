@@ -203,7 +203,7 @@ struct save_options save_options[] = {
     },
     {"keepInfo", &keepInfo, RC_INT,
         {
-            "How many updates to keep info window on (default 15)",
+            "How many tenths of seconds to keep info window on (default 15)",
             NULL
         }
     },

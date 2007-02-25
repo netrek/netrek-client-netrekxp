@@ -38,8 +38,7 @@ int ghoststart = 0;             /* is this a ghostbust
                                  * restart? */
 int ghost_pno = 0;              /* is this a ghostbust
                                  * restart? */
-int keepInfo = 15;              /* how many updates to keep
-                                 * infowins 6/1/93 LAB */
+int keepInfo = 15;              /* how many tenths of seconds to keep infowins */
 int showPlanetOwner = 0;
 
 int phaserShrink = 0;

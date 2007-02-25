@@ -374,7 +374,7 @@ struct option Visual_Menu[] = {
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &newDashboard, 0, 0, 0, dashboardoptions, NULL},
     {1, "", &timerType, 0, 0, 0, timermess, NULL},
-    {1, "keep info %d upds (0=don't remove)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
+    {1, "keep info on for %d x .1s (0=perm)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
 #ifdef BEEPLITE
     {1, "use beeplite", &useLite, 0, 0, 0, NULL, NULL},
 #endif

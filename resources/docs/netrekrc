@@ -101,7 +101,7 @@ highlightFriendlyPhasers: on
 # Ignore Caps Lock key state
 ignoreCaps: on
 
-# How many updates to keep info window on (default 15)
+# How many tenths of seconds to keep info window on (default 15)
 keepInfo: 15
 
 # Keep peace with enemy team after death
