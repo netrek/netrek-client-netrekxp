@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- full support for server FPS feature, allowing client to receive up to 50 updates/second!
+  In specific, all redraw animations (phaser cycling, torp/plasma spin, torp/plasma det,
+  explosions, cloaking, beeplite, warpstreaks, planet rotation) had to be modified so that
+  they all properly redraw no matter what update rate the client is running at.
 - fixed bug with phaser sounds that were causing others' phasers to play repeatedly
   during the duration of their phaser cycle
 - the showArmy option now allows observers to lock onto a planet and see the army count

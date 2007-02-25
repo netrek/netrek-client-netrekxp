@@ -36,6 +36,9 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 #endif
 static int planet_frame = 0;
+static int star_updates = 0;
+static int last_speed = 0;
+static int streaks_on = 0;
 #ifdef SOUND
 static int sound_torps = 0;
 static int sound_other_torps = 0;
@@ -120,7 +123,16 @@ DrawStars()
     int sector_offx = me->p_x - sectorx * (fullview);
     int sector_offy = me->p_y - sectory * (fullview);
     int l = 0, r = 0, t = 0, b = 0;
-
+    
+    if (warpStreaks && streaks_on)
+    /* Streaks_on is toggled on by redrawStarSector with a change in warp state,
+       and toggled off after certain conditions are met.  Only need to track
+       count of DrawStars() calls and ship's previous speed during this time. */
+    {
+    	star_updates++;
+        last_speed = me->p_speed;
+    }
+        
     if (sector_offx < 0)
     {  /* goddamn rounding towards 0 */
         sectorx--;
@@ -197,7 +209,6 @@ redrawStarSector (int sectorx, int sectory)
     register int ybase = sectory * fullview;
     register struct _star *s;
     static unsigned int warpflag = 0;    /* assume starting out not in warp */
-    static int streaksOn = 0, lastspeed = 0, lastsubspeed = 0, updates = 0;
     static int streaklength = 1;
     static int mydir = -1;
     struct _star *star_sector = stars[sectorx][sectory];
@@ -206,57 +217,52 @@ redrawStarSector (int sectorx, int sectory)
     {
         if (warpflag != (me->p_flags & PFTWARP))
         {   /* change in warp state */
-            streaksOn = 1;
+            streaks_on = 1;
             warpflag = (me->p_flags & PFTWARP);
         }
 
         if (warpflag)
             mydir = me->p_dir;
 
-        if (streaksOn)
+        if (streaks_on)
         {
-            if (warpflag && (me->p_speed < lastspeed ||
-                (me->p_speed == lastspeed && me->p_subspeed <= lastsubspeed)))
+            if (warpflag && me->p_speed <= last_speed)
             {
-                /* finished accelerating */
-                updates++;
-                if (updates > 5)
+                /* finished accelerating, normalize # of frames to keep drawing streaks */
+                if ((star_updates * 10 / server_ups)> 5)
                 {
-                    lastspeed = me->p_speed;
-                    lastsubspeed = me->p_subspeed;
-                    updates = 0;
-                    streaksOn = 0;
+                    star_updates = 0;
+                    streaks_on = 0;
                     redrawStarSector (sectorx, sectory);
                     return;
                 }
             }
-            else if (streaklength == 1 || (!warpflag && ((me->p_speed > lastspeed) ||
-                    (me->p_speed == lastspeed && me->p_subspeed >= lastsubspeed))))
+            else if (streaklength == 1 || (!warpflag && (me->p_speed >= last_speed)))
             {
-                /* finished decelerating */
-                updates++;
-                if (updates > 5)
+                /* finished decelerating, normalize # of frames to keep drawing streaks */
+                if ((star_updates * 10 / server_ups) > 5)
                 {
-                    lastspeed = me->p_speed;
-                    lastsubspeed = me->p_subspeed;
-                    updates = 0;
-                    streaksOn = 0;
+                    star_updates = 0;
+                    streaks_on = 0;
                     streaklength = 1;
                     redrawStarSector (sectorx, sectory);
                     return;
                 }
             }
             else
-                updates = 0;
-            lastspeed = me->p_speed;
-            lastsubspeed = me->p_subspeed;
+                star_updates = 0;
+
             /* draw the streaks */
             if (warpflag)
-                streaklength += 3;
+                streaklength += 30 * 10 / server_ups;
             else
-                streaklength--;
-            dxx = (int) (Cos[mydir] * streaklength);
-            dyy = (int) (Sin[mydir] * streaklength);
+            {
+                streaklength -= 10 * 10 / server_ups;
+                if (streaklength < 1)
+                    streaklength = 1;
+            }
+            dxx = (int) (Cos[mydir] * streaklength / 10);
+            dyy = (int) (Sin[mydir] * streaklength / 10);
             for (i = 0, s = star_sector; i < 16; i++, s++)
             {
                 dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
