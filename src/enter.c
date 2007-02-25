@@ -78,7 +78,12 @@ openmem (void)
         torps[i].t_owner = (short) (i / MAXTORP);
     }
     for (i = 0; i < MAXPLAYER; i++)
+    {
         phasers[i].ph_status = PHFREE;
+#ifdef SOUND
+        phasers[i].sound_phaser = 0;
+#endif
+    }
 
     for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
     {

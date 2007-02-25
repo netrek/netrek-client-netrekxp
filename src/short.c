@@ -2003,8 +2003,12 @@ handleVPhaser (unsigned char *sbuf)
     phas->ph_y = y;
     phas->ph_target = (short) target;
     phas->ph_fuse = 0;
+#ifdef SOUND
+    phas->sound_phaser = 1;
+#endif
+    /* normalized fuses */
     phas->ph_updateFuse = PHASER_UPDATE_FUSE * server_ups / 10;
-    phas->ph_maxfuse = (players[pnum].p_ship.s_phaserfuse * updatesPerSec) / 10;
+    phas->ph_maxfuse = (players[pnum].p_ship.s_phaserfuse * server_ups) / 10;
 
 #ifdef ROTATERACE
     if (rotate)

@@ -354,6 +354,9 @@ struct phaser
     short ph_fuse;              /* Life left for drawing */
     int ph_x, ph_y;             /* For when it hits a torp */
     int ph_maxfuse;             /* maxfuse normalized for updates per sec */
+#ifdef SOUND
+    int sound_phaser;		/* If phaser sound should be played or not */
+#endif
 };
 
 

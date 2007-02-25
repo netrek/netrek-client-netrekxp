@@ -37,8 +37,6 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 #endif
 static int planet_frame = 0;
 #ifdef SOUND
-static int sound_phaser = 0;
-static int sound_other_phaser = 0;
 static int sound_torps = 0;
 static int sound_other_torps = 0;
 static int num_other_torps = 0;
@@ -1249,17 +1247,9 @@ DrawShips (void)
             }
 #endif
 
-            /* When cloaked, stop here.  But need to reset the sound_phaser counter
-               to 0, otherwise other people's phaser sounds don't play while you are
-               cloaked.  Not necessary to check against phaser PHFREE status.*/
+            /* When cloaked, stop here. */
             if (j->p_flags & PFCLOAK)
-            {
-#ifdef SOUND
-                if (myPlayer(j) || isObsLockPlayer(j))
-                    sound_phaser = 0;
-#endif
                 continue;
-            }
 
             {
                 int color = playerColor (j);
@@ -1437,7 +1427,7 @@ DrawShips (void)
         {
 
 #ifdef SOUND
-            if (!sound_phaser)
+            if (php->sound_phaser)
             {           
                 if (newSound)
                 {
@@ -1474,7 +1464,7 @@ DrawShips (void)
                     Play_Sound((myPlayer(j) || isObsLockPlayer(j))
                                ? PHASER_SOUND : OTHER_PHASER_SOUND);
                 
-                sound_phaser++;
+                php->sound_phaser = 0;
             }
 #endif
 
@@ -1482,6 +1472,9 @@ DrawShips (void)
             {
                 /* Expire the phaser */
                 php->ph_status = PHFREE;
+#ifdef SOUND
+                php->sound_phaser = 0;
+#endif
             }
             else
             {
@@ -1698,11 +1691,6 @@ DrawShips (void)
                 }
             }
         }
-
-#ifdef SOUND
-        else if (myPlayer(j) || isObsLockPlayer(j))
-            sound_phaser = 0;
-#endif
 
         /* ATM - show tractor/pressor beams (modified by James Collins) */
         /* showTractorPressor is a variable set by xtrekrc. */

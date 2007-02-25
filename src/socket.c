@@ -1607,10 +1607,13 @@ handlePhaser (struct phaser_spacket *packet)
     phas->ph_x = ntohl (packet->x);
     phas->ph_y = ntohl (packet->y);
     phas->ph_target = (short) (ntohl (packet->target));
-    phas->ph_fuse = 0;          /* NEW */
+    phas->ph_fuse = 0;
+#ifdef SOUND
+    phas->sound_phaser = 1;
+#endif
+    /* normalized fuses */
     phas->ph_updateFuse = PHASER_UPDATE_FUSE * server_ups / 10;
-    /* normalized maxfuse */
-    phas->ph_maxfuse = (players[packet->pnum].p_ship.s_phaserfuse * updatesPerSec) / 10;
+    phas->ph_maxfuse = (players[packet->pnum].p_ship.s_phaserfuse * server_ups) / 10;
 
 #ifdef ROTATERACE
     if (rotate)

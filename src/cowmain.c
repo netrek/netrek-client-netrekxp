@@ -1073,7 +1073,7 @@ cowmain (char *server,
         /* `=' style update to get the kills in the playerlist right */
         sendUdpReq (COMM_UPDATE);
 #endif
-        /* Send request for updatesPerSec.  New servers now support 10 u/s */
+        /* Send request for updatesPerSec.  New servers now support 50 u/s */
         sendUpdatePacket (1000000 / updatesPerSec);
 
         isFirstEntry = 0;
