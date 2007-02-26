@@ -3139,9 +3139,14 @@ Key107 (W_Event * data)
 {
     unsigned char course;
 
-    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
-    set_course (course);
-    me->p_flags &= ~(PFPLOCK | PFPLLOCK);
+    /* Observers can't move.  Also incorrectly removes the lock flag even though
+       you are still locked */
+    if (!(me->p_flags & PFOBSERV))
+    {
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+        set_course (course);
+        me->p_flags &= ~(PFPLOCK | PFPLLOCK);
+    }
 }
 
 /******************************************************************************/

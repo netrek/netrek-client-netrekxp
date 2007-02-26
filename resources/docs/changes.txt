@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- fixed bug where observers who right-mouse click lose their lock icon
 - changed warning message timer to be in tenths of seconds rather than updates/sec
 - changed keepInfo netrekrc option from updates to tenths of seconds, so info wins
   remain up at a controllable time regardless of server update rate
