@@ -207,12 +207,13 @@ WinMainCleanup (void)
 //***************************************************************************//
 
 //Get process ID
+/*
 int
 getpid ()
 {
     return (int) GetCurrentProcessId ();
 }
-
+*/
 
 //getpwuid() function - does it for real under NT. Just copies the given string...
 struct passwd *
@@ -261,12 +262,13 @@ rint (double r)
 
 
 //A more useful perror(), reports last winsock error as well
+/*
 void
 perror (const char *str)
 {
     LineToConsole ("%s: errno = %d, WSALast = %d\n", str, errno, WSAGetLastError ());
 }
-
+*/
 
 #ifdef NEW_SELECT
 // ********************************* select ********************************

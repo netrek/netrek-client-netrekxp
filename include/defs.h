@@ -71,8 +71,6 @@
                                  * person can go into orbit */
 #define PFIREDIST 1500          /* At this range a planet
                                  * will shoot at a player */
-#define UPDATE 100000           /* Update time is 100000
-                                 * micro-seconds */
 
 /* 6 minutes is maximum for autoquit -- anything more causes problems in the
  * server.  (?) */
@@ -132,9 +130,9 @@
 /* * These are random configuration variables */
 #define VICTORY 3               /* Number of systems needed
                                  * to conquer the galaxy */
-#define WARNTIME 30             /* Number of updates to have
+#define WARNTIME 30             /* Number of 1/10th seconds to have
                                  * a warning on the screen */
-#define MESSTIME 30             /* Number of updates to have
+#define MESSTIME 30             /* Number of 1/10th seconds to have
                                  * a message on the screen */
                                  
 /* These are server defined times */

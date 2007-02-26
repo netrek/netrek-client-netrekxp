@@ -426,6 +426,10 @@ typedef short SHORT;
 #define stricmp _stricmp
 #endif
 
+#ifndef getpid
+#define getpid _getpid
+#endif
+
 /* For math.h, really */
 #define hypot _hypot
 /* for io.h */

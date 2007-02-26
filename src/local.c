@@ -56,8 +56,6 @@ static int other_plasma_angle = 0;
 static int warpchange = 0;
 static unsigned int twarpflag = 0;
 static int cloak_phases = 0;
-static int bmp_torpdet_frames = 0;
-static int bmp_torp_frames = 0;
 #endif
 
 /* Background Stars Definitions */
@@ -1415,8 +1413,8 @@ DrawShips (void)
                     clearzone[3][clearcount] = BMP_SHIPEXPL_HEIGHT;
                 }
                 clearcount++;
-                j->p_explode++;
             }
+            j->p_explode++;
         }
 
         /* Now draw his phaser (if it exists) */
@@ -1909,8 +1907,8 @@ DrawTorps (void)
             if (k->t_status == TEXPLODE)
             {
                 k->t_fuse--;
-                bmp_torpdet_frames = BMP_TORPDET_FRAMES * server_ups / 10;
                 frame = k->t_fuse * 10 / server_ups;
+                
                 if (k->t_fuse <= 0)
                 {
                     k->t_status = TFREE;
@@ -1918,13 +1916,11 @@ DrawTorps (void)
                     continue;
                 }
 
-                if (k->t_fuse >= bmp_torpdet_frames)
-                {
-                    k->t_fuse = bmp_torpdet_frames - 1;
-                }
+                if (frame >= BMP_TORPDET_FRAMES)
+                    frame = BMP_TORPDET_FRAMES - 1;
 
 #ifdef SOUND
-                if (k->t_fuse == bmp_torpdet_frames - 1)
+                if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
                 {
                     if (newSound)
                     {
@@ -1956,7 +1952,6 @@ DrawTorps (void)
                         Play_Sound(TORP_HIT_SOUND);
                 }
 #endif
-
                 if (colorWeapons)
                 {
                     if (myPlayer(j))
@@ -2008,12 +2003,13 @@ DrawTorps (void)
             	{
             	    k->t_fuse++;
 
-                    bmp_torp_frames = BMP_TORP_FRAMES * server_ups / 10;
                     frame = k->t_fuse * 10 / server_ups;
 
-                    if ((k->t_fuse >= bmp_torp_frames - 1) || (k->t_fuse < 0))
-                        k->t_fuse = 0;
-        
+                    if ((frame > BMP_TORP_FRAMES - 1) || (frame < 0))
+                    {
+                    	k->t_fuse = 0;
+                        frame = 0;
+                    }
                     if (myPlayer(j))
                         torpTeam = 0;
                     else
@@ -2178,22 +2174,20 @@ DrawPlasmaTorps (void)
         if (pt->pt_status == PTEXPLODE)
         {
             pt->pt_fuse--;
-            bmp_torpdet_frames = BMP_TORPDET_FRAMES * server_ups / 10;
+
             frame = pt->pt_fuse * 10 / server_ups;
+
             if (pt->pt_fuse <= 0)
             {
                 pt->pt_status = PTFREE;
                 players[pt->pt_owner].p_nplasmatorp--;
                 continue;
             }
-
-            if (pt->pt_fuse >= bmp_torpdet_frames)
-            {
-                pt->pt_fuse = bmp_torpdet_frames - 1;
-            }
+            if (frame >= BMP_TORPDET_FRAMES)
+                frame = BMP_TORPDET_FRAMES - 1;
 
 #ifdef SOUND
-            if (pt->pt_fuse == bmp_torpdet_frames - 1)
+            if (pt->pt_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
             {
                 if (newSound)
                 {
@@ -2278,12 +2272,13 @@ DrawPlasmaTorps (void)
             {
                 pt->pt_fuse++;
 
-                bmp_torp_frames = BMP_TORP_FRAMES * server_ups / 10;
                 frame = pt->pt_fuse * 10 / server_ups;
 
-                if ((pt->pt_fuse >= bmp_torp_frames - 1) || (pt->pt_fuse < 0))
+                if ((frame > BMP_TORP_FRAMES - 1) || (frame < 0))
+                {
+                    frame = 0;
                     pt->pt_fuse = 0;
-        
+                }
                 if (pt->pt_owner == me->p_no)
                     ptorpTeam = 0;
                 else
@@ -2728,7 +2723,7 @@ local (void)
 
     weaponUpdate = 0;
     DrawMisc ();
- 
+
 #ifdef RECORDGAME
     if (doubleBuffering && !inplayback)
         W_Mem2Win (localSDB);

@@ -19,6 +19,7 @@
 #include <ctype.h>
 #include <setjmp.h>
 #include <winsock.h>
+#include <process.h>
 
 #include "Wlib.h"
 #include "defs.h"

@@ -47,6 +47,8 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
+11) Observer bug - right mouse click and you lose lock icon, have to click on a player
+to get it back.  Messes up planet army count cause observer isn't locked
 
 Stas's list:
 - color coded playerlist.

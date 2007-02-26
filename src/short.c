@@ -273,7 +273,9 @@ handleVTorp (unsigned char *sbuf)
     thetorp = &torps[((unsigned char) *which * 8)];
     for (shift = 0, i = 0; i < 8; i++, thetorp++, bitset >>= 1)
     {
-        thetorp->t_updateFuse = TORP_UPDATE_FUSE * server_ups / 10;
+        /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
+        before drawing torp in local.c */
+        thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
 
         if (bitset & 01)
         {
@@ -998,7 +1000,9 @@ handleVTorpInfo (unsigned char *sbuf)
     for (shift = 0, i = 0; i < 8;
          thetorp++, *bitset >>= 1, *infobitset >>= 1, i++)
     {
-        thetorp->t_updateFuse = TORP_UPDATE_FUSE * server_ups / 10;
+    	/* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
+        before drawing torp in local.c */
+        thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
 
         if (*bitset & 01)
         {
@@ -1094,7 +1098,9 @@ handleVTorpInfo (unsigned char *sbuf)
                 thetorp->t_status = status;
                 if (thetorp->t_status == TEXPLODE)
                 {
-                    thetorp->t_fuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                    /* Fuse requires minimum value of 2 to ensure a redraw, fuse decremented
+                    before drawing torp in local.c */
+                    thetorp->t_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 10);
                 }
             }
         }                       /* if */
@@ -2007,8 +2013,10 @@ handleVPhaser (unsigned char *sbuf)
     phas->sound_phaser = 1;
 #endif
     /* normalized fuses */
-    phas->ph_updateFuse = PHASER_UPDATE_FUSE * server_ups / 10;
-    phas->ph_maxfuse = (players[pnum].p_ship.s_phaserfuse * server_ups) / 10;
+    /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
+       before drawing phaser in local.c */
+    phas->ph_updateFuse = MAX(2, PHASER_UPDATE_FUSE * server_ups / 10);
+    phas->ph_maxfuse = MAX(1, (players[pnum].p_ship.s_phaserfuse * server_ups) / 10);
 
 #ifdef ROTATERACE
     if (rotate)

@@ -1250,11 +1250,11 @@ void warning (char *text);
 int main (int argc,
           char *argv[]);
 void WinMainCleanup (void);
-int getpid ();
+//int getpid ();
 struct passwd *getpwuid ();
 void sleep (int seconds);
 double rint (double r);
-void perror (const char *str);
+//void perror (const char *str);
 #ifdef NEW_SELECT
 int PASCAL select (int nfds,
                    fd_set * readfds,

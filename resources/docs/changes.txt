@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- changed warning message timer to be in tenths of seconds rather than updates/sec
 - changed keepInfo netrekrc option from updates to tenths of seconds, so info wins
   remain up at a controllable time regardless of server update rate
 - full support for server FPS feature, allowing client to receive up to 50 updates/second!

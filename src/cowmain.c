@@ -16,6 +16,7 @@
 #include <pwd.h>
 #include <time.h>
 #include <winsock.h>
+#include <process.h>
 
 #include "copyright.h"
 #include "config.h"

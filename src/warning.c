@@ -116,7 +116,7 @@ warning (char *text)
     else
 #endif
         W_WriteText (warnw, 5, 5, textColor, text, warncount, W_RegularFont);
-    warntimer = udcounter + WARNTIME;   /* set the line to be
+    warntimer = udcounter + WARNTIME * server_ups / 10;   /* set the line to be
                                          * cleared */
 
 
