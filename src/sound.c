@@ -171,6 +171,25 @@ int loadMusic(void) {
   return(1);
 }
 
+extern void sound_cleanup (void)
+{
+    int i;
+    
+    //Free the sound effects
+    for (i = 0; i < NUM_WAVES; i++)
+    	Mix_FreeChunk(newsounds[i]);
+
+    //Free the music
+    for (i = 0; i < NUM_MUSIC; i++)
+        Mix_FreeMusic(newmusic[i]);
+    
+    //Quit SDL_mixer
+    Mix_CloseAudio();
+
+    //Quit SDL
+    SDL_Quit();
+}
+
 extern void Exit_Sound (void)
 {
     if (sound_init)
@@ -211,7 +230,7 @@ extern void Init_Sound (void)
     	    if (SDL_Init(SDL_INIT_AUDIO) < 0)
       		LineToConsole("Couldn't initialize SDL: %s\n",SDL_GetError());
 
-    	    atexit(SDL_Quit);
+    	    atexit(sound_cleanup);
 
     	    /* Open the audio device at 22050 Hz 8 bit Microsoft PCM with stereo */
     	    if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024) < 0)

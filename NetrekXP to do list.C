@@ -47,7 +47,6 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
-11) server resets update rate to max/default on death and doesn't tell you
 
 Stas's list:
 - color coded playerlist.
