@@ -2580,11 +2580,21 @@ DrawMisc (void)
             break;
         }
     }
-    /* Force a border redraw */
-    else
+    /* Force a border redraw? Only needed for bitmaps rotated realtime, due 
+       to the overwriting border issue.  Also, very CPU expensive to write
+       rectangles (drawborder function) to the active window, especially if double
+       buffering is off, so let's slow down redraws to at most 10 per second */
+    else if (colorClient == 4)
     {
-    	W_ChangeBorder (w, alertBorderColor);
-    	W_ChangeBorder (mapw, alertBorderColor);
+    	static int border_refresh = 0;
+
+    	border_refresh++;
+        if ((border_refresh * 10 / server_ups) >= 1)
+        {
+    	    W_ChangeBorder (w, alertBorderColor);
+    	    W_ChangeBorder (mapw, alertBorderColor);
+    	    border_refresh = 0;
+        }
     }
 
 #if defined(SOUND)

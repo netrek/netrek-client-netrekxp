@@ -23,7 +23,7 @@ to somehow relay phaser damage values for other ships, perhaps in generic_32?
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
-is rotated.  Only solution so far is to ignore borders with scaled bitmaps.
+is rotated.  Only solution so far is to moderate border refresh with scaled bitmaps.
 2) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
 3) planet resource placement and refresh (for new planet bitmaps) will need adjusting if 

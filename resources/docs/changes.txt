@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- border refresh now works slightly differently for those using the new color bitmaps
+  (colorClient = 4), ships can now be seen along the border edges that were normally
+  not drawn, allowing players to get a slightly increased viewable tactical range.
 - fixed bug where observers who right-mouse click lose their lock icon
 - changed warning message timer to be in tenths of seconds rather than updates/sec
 - changed keepInfo netrekrc option from updates to tenths of seconds, so info wins
