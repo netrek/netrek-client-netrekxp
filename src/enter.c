@@ -215,6 +215,7 @@ int hockey_mode (void)
     static int first_run = 1;
 
     if (first_run)
+    {
         for (i = 0; i < MAXPLAYER; i++)
         {
             if (strcmp(players[i].p_name, "Puck") == 0 &&
@@ -223,9 +224,10 @@ int hockey_mode (void)
                 players[i].p_ship.s_type == SCOUT)
             {
                 playing_hockey = 1;
-                first_run = 0;
             }
         }
+        first_run = 0;
+    }
 
     return playing_hockey;
 }

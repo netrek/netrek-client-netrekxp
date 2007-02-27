@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C++ Express 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "clientr", "clientr.vcproj", "{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winkey", "src\winkey\winkey.vcproj", "{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curslib", "src\cursors\curslib.vcproj", "{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -17,14 +13,6 @@ Global
 		{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}.Debug|Win32.Build.0 = Debug|Win32
 		{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}.Release|Win32.ActiveCfg = Release|Win32
 		{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}.Release|Win32.Build.0 = Release|Win32
-		{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}.Debug|Win32.Build.0 = Debug|Win32
-		{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}.Release|Win32.ActiveCfg = Release|Win32
-		{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}.Release|Win32.Build.0 = Release|Win32
-		{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}.Debug|Win32.Build.0 = Debug|Win32
-		{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}.Release|Win32.ActiveCfg = Release|Win32
-		{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

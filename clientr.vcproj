@@ -45,9 +45,10 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/D &quot;_CRT_SECURE_NO_DEPRECATE&quot;&#x0D;&#x0A;/D &quot;_CRT_NONSTDC_NO_DEPRECATE&quot;"
 				Optimization="0"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="win32;win32\h;win32\SDL;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;DEBUG;RSA;_CONSOLE"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile="\netrek_files\tmp\src\Debug/clientr.pch"
 				AssemblerListingLocation="\netrek_files\tmp\src\Debug/"
@@ -80,6 +81,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="\netrek_files\tmp\src\Debug/netrek.pdb"
+				GenerateMapFile="false"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -150,6 +152,7 @@
 				AdditionalIncludeDirectories="win32;win32\h;include;win32\SDL"
 				PreprocessorDefinitions="WIN32;NDEBUG;RSA;_CONSOLE"
 				StringPooling="true"
+				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile="\netrek_files\tmp\src\Release/clientr.pch"
@@ -159,6 +162,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -181,6 +185,8 @@
 				AdditionalLibraryDirectories="win32\lib;win32\lib\VCC"
 				IgnoreAllDefaultLibraries="true"
 				EmbedManagedResourceFile="main.ico"
+				GenerateDebugInformation="false"
+				AssemblyDebug="0"
 				SubSystem="1"
 				TargetMachine="1"
 			/>

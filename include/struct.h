@@ -616,6 +616,11 @@ struct key_list
 #define WAM_ALL     0x08
 #define WAM_PHASER  0x10
 
+/* SDB flags for windows that use double buffering */
+#define SDB_FLAG_NONE	0x00
+#define SDB_FLAG_LOCAL	0x01
+#define SDB_FLAG_MAP	0x02
+
 typedef struct tagWindow
 {
     HWND hwnd;
@@ -644,6 +649,7 @@ typedef struct tagWindow
     int orig_width;
     int orig_height;
     int wam;                    /* Window Allowed Messages */
+    int sdb_flags;              /* SDB flags */
 }
 Window;
 

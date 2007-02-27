@@ -1215,7 +1215,7 @@ DrawShips (void)
             }
 #ifdef HOCKEY_LINES
             /* Puck circle */
-            if (puckCircle && hockey_mode)
+            if (puckCircle && hockey_mode ())
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{

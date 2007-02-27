@@ -5609,6 +5609,10 @@ W_InitSDB (W_Window window)
     if (win->hwnd == NULL)
         return NULL;
 
+    if (strcmpi (win->name, "local") == 0)
+        win->sdb_flags = SDB_FLAG_LOCAL;
+    else if (strcmpi (win->name, "map") == 0)
+        win->sdb_flags = SDB_FLAG_MAP;
     sdb = (SDBUFFER *) malloc (sizeof (SDBUFFER));
     sdb->window = (W_Window) malloc (sizeof (Window));
 
@@ -5643,9 +5647,9 @@ SDB_lookup (W_Window window)
 
     if (win->hwnd == NULL)
         return NULL;
-    if (strcmpi (win->name, "local") == 0)
+    if (win->sdb_flags == SDB_FLAG_LOCAL)
         return localSDB;
-    else if (strcmpi (win->name, "map") == 0)
+    else if (win->sdb_flags == SDB_FLAG_MAP)
         return mapSDB;
     else
         return NULL;
