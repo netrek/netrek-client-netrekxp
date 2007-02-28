@@ -255,6 +255,17 @@ soundMusic:               (on/off) play music
 soundMusicBkgd:           (on/off) play theme music in background
                           (this option requires soundMusic to be on)
 soundAngles:              (on/off) use 3D sound effects
+soundExclude:             [ewamicso]
+# Allow specific sound types to be turned off
+# e - explosion sounds
+# w - weapon sounds
+# a - alert sounds
+# m - message sounds
+# i - info sounds
+# c - cloak sounds
+# s - shield sounds
+# o - other's sounds
+
 soundDir:                 (path) path to directory containing sound files
 theirPhaserShrink:        (0-16) shrink enemy phaser by x/16 of its length
 timerType:                (0-4) type of timer on dashboard window
