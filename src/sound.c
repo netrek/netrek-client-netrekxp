@@ -28,6 +28,7 @@
 #include "proto.h"
 
 static void soundrefresh (int i);
+static void Init_sound_flags (void);
 
 static Mix_Chunk *sounds[NUM_WAVES];
 static Mix_Music *music[NUM_MUSIC];
@@ -184,8 +185,8 @@ extern void Init_Sound (void)
         Mix_Volume(-1, volume);
         Mix_VolumeMusic(mvolume);
 
-        /* Set sound flags to on. TODO: use netrekrc values */
-        sound_flags = SF_EXPLOSIONS|SF_WEAPONS|SF_ALERT|SF_MESSAGE|SF_INFO|SF_CLOAKING|SF_SHIELD|SF_OTHER;
+        /* Set sound flags */
+        Init_sound_flags();
 
         /* Toggle on sound, and load sound files */
       	sound_toggle = 1;
@@ -198,6 +199,57 @@ extern void Init_Sound (void)
 
       	/* Default of 8 channels not enough */
        	Mix_AllocateChannels(16);
+    }
+}
+
+void Init_sound_flags(void)
+{
+    unsigned int i;
+    char *tmp;
+
+    /* Turn them all on first */
+    sound_flags = SF_EXPLOSIONS|SF_WEAPONS|SF_ALERT|SF_MESSAGE|SF_INFO|SF_CLOAKING|SF_SHIELD|SF_OTHER;
+
+    if ((tmp = stringDefault ("soundExclude")) != NULL)
+    {
+        for (i = 0; i < strlen (tmp); i++)
+        {
+            switch (tmp[i])
+            {
+            case 'E':
+            case 'e':
+                sound_flags &= ~(SF_EXPLOSIONS);
+                break;
+            case 'W':
+            case 'w':
+                sound_flags &= ~(SF_WEAPONS);
+                break;
+            case 'A':
+            case 'a':
+                sound_flags &= ~(SF_ALERT);
+                break;
+            case 'M':
+            case 'm':
+                sound_flags &= ~(SF_MESSAGE);
+                break;
+            case 'I':
+            case 'i':
+                sound_flags &= ~(SF_INFO);
+                break;
+            case 'C':
+            case 'c':
+                sound_flags &= ~(SF_CLOAKING);
+                break;
+            case 'S':
+            case 's':
+                sound_flags &= ~(SF_SHIELD);
+                break;
+            case 'O':
+            case 'o':
+                sound_flags &= ~(SF_OTHER);
+                break;
+            }
+        }
     }
 }
 

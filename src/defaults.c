@@ -1942,6 +1942,7 @@ saveOptions ()
     struct dmacro_list *dm;
     unsigned int i;
     unsigned char c;
+    char *adefault;
     char macroKey[3] = "";
 
     if (!saveFile)
@@ -2125,6 +2126,21 @@ saveOptions ()
         fputs ("\n", fp);
 
 #ifdef SOUND
+    // excluded sound categories
+    if ((adefault = stringDefault ("soundExclude")) != NULL)
+    {
+    	if (saveBig)
+    	{
+    	    fputs ("# Sound categories to turn off\n", fp);
+    	    fputs ("# e=explosions, w=weapons, a=alerts,\n", fp);
+    	    fputs ("# m=messages, i=info, c=cloaking,\n", fp);
+    	    fputs ("# s=shield, o=other ships\n", fp);
+    	}
+        sprintf (str, "soundExclude: %s\n", adefault);
+        fputs (str, fp);
+        if (saveBig)
+            fputs ("\n", fp);
+    }
     // sound directory
     if (sounddir != NULL)
     {
@@ -2203,8 +2219,6 @@ saveOptions ()
     // Window placements
     if (saveWindow)
     {
-    	char *adefault;
-    	
     	if (saveBig)
     	{
     	    fputs ("# Window placements section\n", fp);

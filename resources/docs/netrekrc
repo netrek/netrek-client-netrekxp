@@ -442,6 +442,12 @@ windowMove: on
 # Two characters to show cloaked player on map window
 cloakChars: ??
 
+# Sound categories to turn off
+# e=explosions, w=weapons, a=alerts,
+# m=messages, i=info, c=cloaking,
+# s=shield, o=other ships
+soundExclude:
+
 # Sound directory
 sounddir: .\sounds
 

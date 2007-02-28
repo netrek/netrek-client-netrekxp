@@ -1,6 +1,17 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
-- sound menu now has ability to turn sounds off by type, i.e. to turn all explosion sounds
-  off, all message sounds off, etc.
+- both sound menu and netrekrc now have ability to turn sounds off by type, i.e. to turn
+  all explosion sounds off, all message sounds off, etc.
+  The netrekrc option is called "soundExclude", and the valid sound types are:
+        e - explosion sounds
+        w - weapon sounds
+        a - alert sounds
+        m - message sounds
+        i - info sounds
+        c - cloak sounds
+        s - shield sounds
+        o - other's sounds
+  For example, to turn off explosions and alerts, you would have the line
+  "soundExclude: wa" in your netrekrc.
 - added "soundVolume: #" where the number is the starting sound volume.  Valid range
   is 0-128.
 - all "newSound" options have just been renamed "sound".  The old sound playback (newSound
