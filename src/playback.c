@@ -293,7 +293,6 @@ pbmain (char *name)
 #endif
 
 #ifdef SOUND
-    newsoundwin (display_host, name);
     Init_Sound ();
 #endif
 
@@ -306,11 +305,6 @@ pbmain (char *name)
     i = setjmp (env);           /* Reentry point of game */
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
-
-#if defined(SOUND)
-    if (!newSound)
-        Abort_Sound(ENGINE_SOUND);
-#endif
 
 //#ifdef nodef
     /* Code from entrywindow() */
@@ -352,16 +346,8 @@ pbmain (char *name)
         redrawPStats ();
 
 #ifdef SOUND
-    if (newSound)
-    { 
-        Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
-        Play_Sound(ENTER_SHIP_WAV);
-    }
-    else
-    {
-        Play_Sound(ENTER_SHIP_SOUND);
-        Play_Sound(ENGINE_SOUND);
-    }
+    Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+    Play_Sound(ENTER_SHIP_WAV);
 #endif
 
     while (1)

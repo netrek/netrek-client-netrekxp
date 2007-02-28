@@ -794,10 +794,9 @@ WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
 int richText = 0;   		/* temporary variable to select rich text message windows */
 int newQuit = 0;    		/* new quit clock */
-int newSound = 1;   		/* Use new SDL sound interface */
-int newSoundEffects = 1;	/* Use SDL sound effects playback */
-int newSoundMusic = 1;		/* Use SDL music playback */
-int newSoundMusicBkgd = 0;	/* Play random background music continuously */
-int newSoundAngles = 1; 	/* Use SDL with angular 3D sound */
+int soundEffects = 1;		/* Use sound effects playback */
+int soundMusic = 1;		/* Use music playback */
+int soundMusicBkgd = 0;		/* Play random background music continuously */
+int soundAngles = 0; 		/* Use 3D sound */
 
 int useFullShipInfo = 1;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */

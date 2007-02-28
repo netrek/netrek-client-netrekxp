@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- all "newSound" options have just been renamed "sound".  The old sound playback (newSound
+  off) is no longer supported.  Thus the newSound netrekrc option is no longer.
 - border refresh now works slightly differently for those using the new color bitmaps
   (colorClient = 4), ships can now be seen along the border edges that were normally
   not drawn, allowing players to get a slightly increased viewable tactical range.
@@ -26,18 +28,16 @@ Netrek XP 2006, Version 1.2: (Released Feb-2007)
   in the player list.
 - fixed cloak/decloak cycling so that it animates properly at 10 updates/second.
 - sound and music volume are now independent of Windows sound volume, i.e. changing
-  game volume with the in game raise/lower volume keys does not change system WAV volume
-  (newSound only).
-- three new netrekrc options, which are newSoundEffects, newSoundMusic, and newSoundMusicBkgd.
+  game volume with the in game raise/lower volume keys does not change system WAV volume.
+- three new netrekrc options, which are soundEffects, soundMusic, and soundMusicBkgd.
   The first toggles sound effects on/off, the second toggles music on/off, the third plays
   a mix of star trek theme music continually in the background.  Thus, if you wish to play
   with only music, you can.  If you want to play with only sound effects, you can.  Or both.
-  Or neither.  Defaults are on for sound effects and music, and off for background music
-  (newSound only).
+  Or neither.  Defaults are on for sound effects and music, and off for background music.
 - the client can now play music files, 10 star trek themed music files from the various
   star trek series and movies have been added.  Random intro themes will play on client connect,
   and random end credits themes will play on genocide.  These new music files are in the .ogg
-  format (newSound only).
+  format.
 - servers that don't respond to metaping are not saved in the UDPcache, as they are likely
   defunct
 - fixed some bugs relating to message windows, most noticeably, messages that are
@@ -49,7 +49,7 @@ Netrek XP 2006, Version 1.2: (Released Feb-2007)
   not used in normal gameplay though
 - changed default beeplite settings to include highlighting and sound effects for
   carrying, take and escorting RCDs.
-- sound now fades out over 1 second upon quitting (newSound only)
+- sound now fades out over 1 second upon quitting
 - support for new server feature packet SP_GENERIC_32.  This is a great upgrade to the server
   as it allows for future data to be sent in this packet (lots of empty room).  Currently
   it sends your ship's repair time..removing the need for the client side repair time

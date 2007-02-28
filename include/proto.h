@@ -779,8 +779,6 @@ void W_Mem2Win (SDBUFFER * sdb);
 //static void handleMessageWindowButton(W_Event * event);
 void newwin (char *hostmon,
         char *progname);
-void newsoundwin (char *hostmon,
-        char *progname);
 void mapAll (void);
 void savebitmaps (void);
 void entrywindow (int *team,
@@ -1266,18 +1264,4 @@ char *GetExeDir ();
 void HideConsoleWindow (void);
 BOOL CALLBACK EnumWindowsProc (HWND hwnd, LPARAM lparam);
 
-/******************************************************************************/
-/***  winsndlib.c
-/******************************************************************************/
-int ParseSoundFile (char *fname,
-                    PCMWAVEFORMAT * header,
-                    DWORD * datalen,
-                    char **data);
-struct sound *GetSound (char *name);
-void ExitSound ();
-int InitSound ();
-void StopSound ();
-int StartSound (char *name);
-int SoundPlaying ();
-void CheckVolumeSettings ();
 #endif /* __INCLUDED_proto_h__ */

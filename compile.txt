@@ -18,6 +18,10 @@ HelpCompiler = path to hhc.exe from Microsoft's HTML Help Workshop (available fr
 
 Step 2:
 --------
+
+First off, you will need the development package for SDL, as well as SDL-mixer.
+Refer to the SDL website for how to install it with your compiler/IDE.
+
 If you're building with MS Visual C++:
 
 - Edit clientr.dsp and change \netrek_files to be same as InstCWD

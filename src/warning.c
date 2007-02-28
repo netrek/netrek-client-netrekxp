@@ -47,10 +47,7 @@ warning (char *text)
     if (doRefit)
     {
 #ifdef SOUND
-        if (newSound)
-            Play_Sound(ENTER_SHIP_WAV);
-        else
-            Play_Sound(ENTER_SHIP_SOUND);
+        Play_Sound(ENTER_SHIP_WAV);
 #endif
        rdelay = time (0) + REFITTIME;
     }

@@ -217,12 +217,7 @@ dmessage (char *message,
 #ifdef SOUND          
             if (why_dead &&
                (instr (message, "[plasma]") || instr (message, "[zapped plasma]")))
-            {
-            	if (newSound)
-            	    Play_Sound(PLASMA_KILL_WAV);
-            	else          	
-            	    Play_Sound(PLASMA_KILL_SOUND);
-            }
+            	Play_Sound(PLASMA_KILL_WAV);
 #endif
 
         }
@@ -279,12 +274,7 @@ dmessage (char *message,
 #ifdef SOUND          
             if (why_dead &&
                (instr (message, "[plasma]") || instr (message, "[zapped plasma]")))
-            {
-            	if (newSound)
-            	    Play_Sound(PLASMA_KILL_WAV);
-            	else          	
-            	    Play_Sound(PLASMA_KILL_SOUND);
-            }
+                Play_Sound(PLASMA_KILL_WAV);
 #endif
 
             if (logging)

@@ -28,9 +28,6 @@
 #include "spopt.h"
 #include "map.h"
 #include "proto.h"
-#ifdef SOUND
-#include "audio.h"
-#endif
 
 #ifdef __BORLANDC__
 #ifndef CYGWIN
@@ -1521,10 +1518,7 @@ buttonaction (W_Event * data)
             /* Here we will have to enter message_on () followed by
                smessage to player */
 #ifdef SOUND
-            if (newSound)
-                Play_Sound(MESSAGE_WAV);
-            else
-                Play_Sound(MESSAGE_SOUND);
+            Play_Sound(MESSAGE_WAV);
 #endif
             message_on ();
             data->key = players[target->o_num].p_mapchars[1];
@@ -1538,10 +1532,7 @@ buttonaction (W_Event * data)
             /* Here we will have to enter message_on () followed by
                smessage to player */
 #ifdef SOUND
-            if (newSound)
-                Play_Sound(MESSAGE_WAV);
-            else
-                Play_Sound(MESSAGE_SOUND);
+            Play_Sound(MESSAGE_WAV);
 #endif
             message_on ();
             data->key = 'T';
@@ -1555,10 +1546,7 @@ buttonaction (W_Event * data)
            /* Here we will have to enter message_on () followed by
               smessage to player */
 #ifdef SOUND
-           if (newSound)
-               Play_Sound(MESSAGE_WAV);
-           else
-               Play_Sound(MESSAGE_SOUND);
+           Play_Sound(MESSAGE_WAV);
 #endif
            message_on ();
            data->key = 'A';
@@ -2765,10 +2753,7 @@ Key81 (void)
 {
 
 #ifdef SOUND
-    if (newSound)
-        Play_Sound(SELF_DESTRUCT_WAV);
-    else
-        Play_Sound(SELF_DESTRUCT_SOUND);
+    Play_Sound(SELF_DESTRUCT_WAV);
 #endif
 
     sendQuitReq ();
@@ -2849,10 +2834,7 @@ void
 Key86 (void)
 {
 #ifdef SOUND
-    if (newSound)
-        ChangeNewsoundVolume (1);
-    else
-        ChangeVolume (1);
+    ChangeVolume (1);
 #else
     emptyKey ();
 #endif
@@ -3196,10 +3178,7 @@ Key109 (void)
 {
 
 #ifdef SOUND
-    if (newSound)
-        Play_Sound(MESSAGE_WAV);
-    else
-        Play_Sound(MESSAGE_SOUND);
+    Play_Sound(MESSAGE_WAV);
 #endif
 
     message_on ();
@@ -3263,10 +3242,7 @@ Key113 (void)
 {
 
 #ifdef SOUND
-    if (newSound)
-        Play_Sound(SELF_DESTRUCT_WAV);
-    else
-        Play_Sound(SELF_DESTRUCT_SOUND);
+    Play_Sound(SELF_DESTRUCT_WAV);
 #endif
 
     fastQuit = 1;
@@ -3331,10 +3307,7 @@ void
 Key118 (W_Event * data)
 {
 #ifdef SOUND
-    if (newSound)
-        ChangeNewsoundVolume (-1);
-    else
-        ChangeVolume (-1);
+    ChangeVolume (-1);
 #else
     emptyKey ();
 #endif

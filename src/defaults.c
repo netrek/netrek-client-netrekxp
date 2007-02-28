@@ -341,36 +341,6 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"newSound", &newSound, RC_BOOL,
-        {
-            "Use new layered, stereo sound",
-            NULL
-        }
-    },
-    {"newSoundEffects", &newSoundEffects, RC_BOOL,
-        {
-            "Play sound effects (newSound only)",
-            NULL
-        }
-    },
-    {"newSoundMusic", &newSoundMusic, RC_BOOL,
-        {
-            "Play music (newSound only)",
-            NULL
-        }
-    },
-    {"newSoundMusicBkgd", &newSoundMusicBkgd, RC_BOOL,
-        {
-            "Play theme music in background (requires newSound and newSoundMusic)",
-            NULL
-        }
-    },
-    {"newSoundAngles", &newSoundAngles, RC_BOOL,
-        {
-            "Use 3D sound effects (only works if newSound is on)",
-            NULL
-        }
-    },
     {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
             "Omit team letter on galaxy",
@@ -700,7 +670,31 @@ struct save_options save_options[] = {
 #ifdef SOUND
     {"sound", &sound_init, RC_BOOL,
         {
-            "Enable sound",
+            "Enable layered, stereo sound",
+            NULL
+        }
+    },
+    {"soundEffects", &soundEffects, RC_BOOL,
+        {
+            "Play sound effects",
+            NULL
+        }
+    },
+    {"soundMusic", &soundMusic, RC_BOOL,
+        {
+            "Play music",
+            NULL
+        }
+    },
+    {"soundMusicBkgd", &soundMusicBkgd, RC_BOOL,
+        {
+            "Play theme music in background (requires soundMusic)",
+            NULL
+        }
+    },
+    {"soundAngles", &soundAngles, RC_BOOL,
+        {
+            "Use 3D sound effects",
             NULL
         }
     },
@@ -1537,11 +1531,10 @@ resetdefaults (void)
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
-    newSound = booleanDefault ("newSound", newSound);
-    newSoundEffects= booleanDefault ("newSoundEffects", newSoundEffects);
-    newSoundMusic = booleanDefault ("newSoundMusic", newSoundMusic);
-    newSoundMusicBkgd = booleanDefault ("newSoundMusicBkgd", newSoundMusicBkgd);
-    newSoundAngles = booleanDefault ("newSoundAngles", newSoundAngles);
+    soundEffects= booleanDefault ("soundEffects", soundEffects);
+    soundMusic = booleanDefault ("soundMusic", soundMusic);
+    soundMusicBkgd = booleanDefault ("soundMusicBkgd", soundMusicBkgd);
+    soundAngles = booleanDefault ("soundAngles", soundAngles);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);

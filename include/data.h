@@ -697,11 +697,10 @@ extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our rich
 
 extern int richText;    	/* temporary variable to enable/disable rich text windows */
 extern int newQuit;     	/* new quit clock */
-extern int newSound;		/* Use new SDL sound interface */
-extern int newSoundEffects;	/* Use SDL sound effects playback */
-extern int newSoundMusic;	/* Use SDL music playback */
-extern int newSoundMusicBkgd;	/* Play random background music continuously */
-extern int newSoundAngles;	/* Use SDL with angular 3D sound */
+extern int soundEffects;	/* Use sound effects playback */
+extern int soundMusic;		/* Use music playback */
+extern int soundMusicBkgd;	/* Play random background music continuously */
+extern int soundAngles;		/* Use 3D sound */
 
 extern int useFullShipInfo;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
 #endif /* _h_data */

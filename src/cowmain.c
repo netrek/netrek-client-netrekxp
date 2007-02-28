@@ -804,9 +804,9 @@ cowmain (char *server,
     savebitmaps ();
     
 #if defined(SOUND)
-    newsoundwin (display_host, name);
-    if (newSound)
-        Init_Sound();
+    /* Moved sound initialization to right after readdefaults() so
+     * the intro can start playing ASAP */
+    Init_Sound();
 #endif
 
     /* open memory...? */
@@ -932,24 +932,11 @@ cowmain (char *server,
     init_hockey_lines ();
 #endif
 
-  /* Moved SDL sound initialization to right after readdefaults() so
-   * the intro can start playing ASAP */
-#if defined(SOUND)
-    if (!newSound)
-        Init_Sound();
-#endif
-
-
     isFirstEntry = 1;           /* First entry into game */
 
     i = setjmp (env);           /* Reentry point of game */
     if (i >= RETURNBASE)
         return (i - RETURNBASE);        /* Terminate with retcode */
-
-#if defined(SOUND)
-    if (!newSound)
-        Abort_Sound(ENGINE_SOUND);
-#endif
 
     /* give the player the motd and find out which team he wants */
 
@@ -994,13 +981,6 @@ cowmain (char *server,
 #endif
 
         sendByeReq ();
-
-#if defined(SOUND)
-        if (!newSound)
-            Exit_Sound();
-        else
-            Mix_CloseAudio();
-#endif
 
         sleep (1);
         if (logFile != NULL)
@@ -1086,24 +1066,16 @@ cowmain (char *server,
 
 
 #ifdef SOUND
-    if (newSound)
+    /* Kill all currently playing sounds when entering game */
+    Mix_HaltChannel(-1);
+    /* Fade out any music playing over 5 seconds */
+    if (Mix_PlayingMusic())
     {
-        /* Kill all currently playing sounds when entering game */
-        Mix_HaltChannel(-1);
-        /* Fade out any music playing over 5 seconds */
-        if (Mix_PlayingMusic())
-        {
-            Mix_FadeOutMusic(5000);
-            /* Attempt to start background music once fadeout done */
-            Mix_HookMusicFinished(Play_Music_Bkgd);
-        }
-        Play_Sound(ENTER_SHIP_WAV);
+        Mix_FadeOutMusic(5000);
+        /* Attempt to start background music once fadeout done */
+        Mix_HookMusicFinished(Play_Music_Bkgd);
     }
-    else
-    {
-        Play_Sound(ENTER_SHIP_SOUND);
-        Play_Sound(ENGINE_SOUND);
-    }
+    Play_Sound(ENTER_SHIP_WAV);
 #endif
     promoted = 0;
     ingame = 1;

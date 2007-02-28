@@ -122,12 +122,6 @@ newPlist:                 (on/off) compatibility variable for player list
 # off - old style
 
 newQuit:                  (on/off) use new quit window
-newSound:                 (on/off) use layered, stereo sound
-newSoundEffects:          (on/off) play sound effects (newSound only)
-newSoundMusic:            (on/off) play music (newSound only)
-newSoundMusicBkgd:        (on/off) play theme music in background
-                          (this option requires newSound and newSoundMusic to be on)
-newSoundAngles:           (on/off) use 3D sound effects (only works if newSound is on)
 omitTeamLetter:           (on/off) omit team letter on galaxy
 orishipbmpfile:           (path) - old color bitmaps
 oriship1bmpfile:          (path) - new color bitmaps
@@ -254,7 +248,12 @@ shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
 singleMacro:              (string) macro keys that will trigger macro without macro mode
 sortMyTeamFirst:          (on/off) show my team first in the player list
 sortPlayers:              (on/off) sort players by teams
-sound:                    (on/off) enable sound
+sound:                    (on/off) enable layered, stereo sound
+soundEffects:             (on/off) play sound effects
+soundMusic:               (on/off) play music
+soundMusicBkgd:           (on/off) play theme music in background
+                          (this option requires soundMusic to be on)
+soundAngles:              (on/off) use 3D sound effects
 soundDir:                 (path) path to directory containing sound files
 theirPhaserShrink:        (0-16) shrink enemy phaser by x/16 of its length
 timerType:                (0-4) type of timer on dashboard window

@@ -173,21 +173,6 @@ newDistress: off
 # Use new quit window
 newQuit: on
 
-# Use new layered, stereo sound
-newSound: on
-
-# Play sound effects (newSound only)
-newSoundEffects: on
-
-# Play music (newSound only)
-newSoundMusic: on
-
-# Play theme music in background (requires newSound and newSoundMusic)
-newSoundMusicBkgd: off
-
-# Use 3D sound effects (only works if newSound is on)
-newSoundAngles: off
-
 # Omit team letter on galaxy
 omitTeamLetter: off
 
@@ -356,8 +341,20 @@ sortMyTeamFirst: off
 # Sort players by team
 sortPlayers: on
 
-# Enable sound
+# Enable layered, stereo sound
 sound: on
+
+# Play sound effects
+soundEffects: on
+
+# Play music
+soundMusic: on
+
+# Play theme music in background (requires soundMusic)
+soundMusicBkgd: off
+
+# Use 3D sound effects
+soundAngles: off
 
 # Shrink enemy phaser by x/16 of its length
 # 1-16 range

@@ -927,6 +927,14 @@ newwin (char *hostmon,
     W_SetWindowButtonHandler (spWin, spaction);
 #endif
 
+#if defined(SOUND)
+    soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 33,
+                        7, NULL, 2);
+    W_SetWindowKeyDownHandler(soundWin, soundaction);
+    W_SetWindowButtonHandler(soundWin, soundaction);
+    W_DefineArrowCursor(soundWin);
+#endif
+
 #ifdef TOOLS
     toolsWin = W_MakeScrollingWindow ("tools", WINSIDE + BORDER, BORDER,
                                         80, TOOLSWINLEN, NULL, BORDER);
@@ -1001,33 +1009,6 @@ newwin (char *hostmon,
 
     getResources (progname);
 }
-
-#if defined(SOUND)
-/******************************************************************************/
-/***  newsoundwin() - Need to map it after reset_defaults, so pulled out of newwin
-/******************************************************************************/
-void
-newsoundwin (char *hostmon,
-        char *progname)
-{
-    if (newSound)
-    {
-        soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 33,
-                        6, NULL, 2);
-        W_SetWindowKeyDownHandler(soundWin, sdlsoundaction);
-        W_SetWindowButtonHandler(soundWin, sdlsoundaction);
-        W_DefineArrowCursor(soundWin);
-    }
-    else
-    {
-        soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 30,
-			MESSAGE_SOUND + 4, NULL, 2);
-        W_SetWindowKeyDownHandler(soundWin, soundaction);
-        W_SetWindowButtonHandler(soundWin, soundaction);
-        W_DefineArrowCursor(soundWin);
-    }
-}
-#endif
 
 /******************************************************************************/
 /***  mapAll()

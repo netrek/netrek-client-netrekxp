@@ -153,11 +153,8 @@ death (void)
                 break;
         }
 #ifdef SOUND
-        if (newSound)
-        {
-            i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
-            Play_Music(i);
-        }
+        i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
+        Play_Music(i);
 #endif
         break;
     case KGHOST:
@@ -184,11 +181,8 @@ death (void)
                 break;
         }
 #ifdef SOUND
-        if (newSound)
-        {
-            i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
-            Play_Music(i);
-        }
+        i = MUSIC_OFFSET + (RANDOM() % (NUM_MUSIC - MUSIC_OFFSET)); // Play random end theme
+        Play_Music(i);
 #endif
         break;
     case KPROVIDENCE:

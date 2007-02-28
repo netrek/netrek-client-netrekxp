@@ -113,14 +113,6 @@ findslot (void)
         socketPause ();
         if (isServerDead ())
         {
-        	
-#if defined(SOUND)
-            if (!newSound)
-                Exit_Sound();
-            else
-                Mix_CloseAudio();
-#endif
-
             LineToConsole ("Shit!  Ghostbusted!\n");
             terminate (0);
         }
@@ -162,14 +154,6 @@ findslot (void)
         readFromServer (NULL);
         if (isServerDead ())
         {
-
-#if defined(SOUND)
-            if (!newSound)
-                Exit_Sound();
-            else
-                Mix_CloseAudio();
-#endif
-
             LineToConsole ("Damn, We've been ghostbusted!\n");
             terminate (0);
         }
@@ -224,14 +208,6 @@ findslot (void)
                 }
                 else if (event.Window == waitqWin)
                 {
-
-#if defined(SOUND)
-                    if (!newSound)
-                        Exit_Sound();
-                    else
-                        Mix_CloseAudio();
-#endif
-
                     LineToConsole ("OK, bye!\n");
                     terminate (0);
                 }

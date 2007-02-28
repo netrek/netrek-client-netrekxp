@@ -61,10 +61,8 @@ extern void Play_Sound (int type);
 extern void Play_Sound_Loc (int type, int angle, int distance);
 extern void Play_Music (int type);
 extern void Play_Music_Bkgd (void);
-extern void ChangeNewsoundVolume (int vol);
-extern void Abort_Sound (int type);
+extern void ChangeVolume (int vol);
 extern void Init_Sound (void);
-extern void Exit_Sound (void);
 
 enum {
   CLOAKED_WAV,

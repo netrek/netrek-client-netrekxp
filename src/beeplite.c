@@ -193,15 +193,10 @@ int makelite(struct distress * dist, char *pm)
 		{
 
 #if defined(SOUND)
-                    if (newSound)
+                    if (sound_toggle)
                         Play_Sound(MESSAGE_WAV);
                     else
-                    {
-                        if (sound_toggle)
-                            Play_Sound(MESSAGE_SOUND);
-                        else
-		            W_Beep();
-                    }
+		        W_Beep();
 #endif
 		}
 	        break;
@@ -210,84 +205,39 @@ int makelite(struct distress * dist, char *pm)
 #ifdef SOUND
 	    case '1':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE1_WAV);
-	          else
-		    Play_Sound(MESSAGE1_SOUND);
-		}
+	          Play_Sound(MESSAGE1_WAV);
 	        break;
 	    case '2':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE2_WAV);
-	          else
-		    Play_Sound(MESSAGE2_SOUND);
-		}
+	          Play_Sound(MESSAGE2_WAV);
 	        break;
 	    case '3':
   	        if (F_beeplite_flags & LITE_SOUNDS)
-  	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE3_WAV);
-	          else
-		    Play_Sound(MESSAGE3_SOUND);
-		}
+	          Play_Sound(MESSAGE3_WAV);
 	        break;
 	    case '4':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE4_WAV);
-	          else
-		    Play_Sound(MESSAGE4_SOUND);
-		}
+	          Play_Sound(MESSAGE4_WAV);
 	        break;
 	    case '5':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE5_WAV);
-	          else
-		    Play_Sound(MESSAGE5_SOUND);
-		}
+	          Play_Sound(MESSAGE5_WAV);
 	        break;
 	    case '6':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE6_WAV);
-	          else
-		    Play_Sound(MESSAGE6_SOUND);
-		}
+	          Play_Sound(MESSAGE6_WAV);
 	        break;
 	    case '7':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE7_WAV);
-	          else
-		    Play_Sound(MESSAGE7_SOUND);
-		}
+	          Play_Sound(MESSAGE7_WAV);
 	        break;
 	    case '8':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
-	          else
-		    Play_Sound(MESSAGE8_SOUND);
-		}
+	          Play_Sound(MESSAGE_WAV);
 	        break;
 	    case '9':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	        {
-	          if (newSound)
-	            Play_Sound(MESSAGE_WAV);
-	          else
-		    Play_Sound(MESSAGE9_SOUND);
-		}
+	          Play_Sound(MESSAGE_WAV);
 	        break;
 #endif
 

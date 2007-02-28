@@ -814,8 +814,6 @@ map (void)
             	/* Just increment the counter instead */
                 lastRedraw[i]++;
             }
-            if (&players[i] == me)
-            LineToConsole("Last redraw %d ", lastRedraw[i]);
         }
     }
 
