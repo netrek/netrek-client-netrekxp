@@ -648,7 +648,7 @@ int showHockeyLinesLocal = 0;
 struct s_line local_hockey_lines[NUM_HOCKEY_LINES + 1];
 int showHockeyLinesMap = 0;
 struct s_line map_hockey_lines[NUM_HOCKEY_LINES + 1];
-
+int playing_hockey = 0;
 #endif
 
 #ifdef MULTILINE_MACROS

@@ -5639,7 +5639,7 @@ W_InitSDB (W_Window window)
     return sdb;
 }
 
-SDBUFFER *
+inline SDBUFFER *
 SDB_lookup (W_Window window)
 {
     Window * win;

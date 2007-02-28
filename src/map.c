@@ -695,7 +695,6 @@ map (void)
  */
 {
     register int i;
-    register unsigned char *update;
     register struct player *j;
     register struct planet *l;
     register int dx, dy;
@@ -703,7 +702,7 @@ map (void)
     static char clearlock = 0;
     static int mclearzone[6][MAXPLAYER];
     static int clearlmark[4];
-    static unsigned char lastUpdate[MAXPLAYER];
+    static unsigned int lastRedraw[MAXPLAYER];
 
     static int viewx = 0, viewy = 0;
     static char clearviewbox = 0;
@@ -744,7 +743,7 @@ map (void)
 
         for (i = 0; i < MAXPLAYER; i++)
         {
-            lastUpdate[i] = 0;
+            lastRedraw[i] = 0;
             mclearzone[2][i] = 0;
             redrawPlayer[i] = 1;
         }
@@ -786,15 +785,14 @@ map (void)
         }
 
         /* Erase the ships */
-        for (i = 0, update = lastUpdate; i < MAXPLAYER; i++, update++)
+        for (i = 0; i < MAXPLAYER; i++)
         {
+            /* Erase the player if redrawPlayer[i] is set and there
+               is an active clearzone */
             if (redrawPlayer[i])
             {
-                /* Erase the player if redrawPlayer[i] is set
-                   or lastUpdate allows it. */
                 if (mclearzone[2][i])
                 {
-                    /* XFIX */
                     W_ClearArea (mapw, mclearzone[0][i], mclearzone[1][i],
                                  mclearzone[2][i], mclearzone[3][i]);
                     /* Redraw the hole just left next update */
@@ -802,16 +800,22 @@ map (void)
                     mclearzone[2][i] = 0;
                 }
                 /* Reset the last redrawn counter */
-                *update = 0;
+                lastRedraw[i] = 0;
             }
-            else if (*update == 10)
+
+            if (lastRedraw[i] == 10)
             {
                 /* Redraw stationary ships every update so that these
                    ships are not hidden by planet updates. */
                 redrawPlayer[i] = 1;
             }
             else
-                ++(*update);
+            {
+            	/* Just increment the counter instead */
+                lastRedraw[i]++;
+            }
+            if (&players[i] == me)
+            LineToConsole("Last redraw %d ", lastRedraw[i]);
         }
     }
 
@@ -842,7 +846,7 @@ map (void)
     }
 
 #ifdef HOCKEY_LINES
-    if (hockey_mode ())
+    if (playing_hockey)
     {
         /* Draw Hockey Lines */
 	if (showHockeyLinesMap)
@@ -858,7 +862,7 @@ map (void)
 
     for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
     {
-        /* lastUpdate[i] has been set to 0 if redrawall or the ship has
+        /* redrawPlayer[i] has been set to 1 if redrawall or the ship has
          * been erased or a redraw has not taken place for a while.  These
          * decisions are made at the top of the file.             */
 

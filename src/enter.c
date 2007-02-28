@@ -206,30 +206,22 @@ drawTstats (void)
 
 #ifdef HOCKEY_LINES
 /******************************************************************************/
-/***  hockey_mode()                                                         ***/
+/***  check_hockey_mode() - checked on initial entry into game              ***/
 /******************************************************************************/
-int hockey_mode (void)
+void check_hockey_mode (void)
 {
     int i;
-    static int playing_hockey = 0;
-    static int first_run = 1;
 
-    if (first_run)
+    for (i = 0; i < MAXPLAYER; i++)
     {
-        for (i = 0; i < MAXPLAYER; i++)
+        if (strcmp(players[i].p_name, "Puck") == 0 &&
+            strcmp(players[i].p_login, "Robot") == 0 &&
+            players[i].p_team == NOBODY &&
+            players[i].p_ship.s_type == SCOUT)
         {
-            if (strcmp(players[i].p_name, "Puck") == 0 &&
-                strcmp(players[i].p_login, "Robot") == 0 &&
-                players[i].p_team == NOBODY &&
-                players[i].p_ship.s_type == SCOUT)
-            {
-                playing_hockey = 1;
-            }
+            playing_hockey = 1;
         }
-        first_run = 0;
     }
-
-    return playing_hockey;
 }
 
 /******************************************************************************/

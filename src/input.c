@@ -2592,7 +2592,7 @@ void
 Key71 (W_Event * data)
 {
 #ifdef HOCKEY_LINES
-    if (!hockey_mode ())
+    if (!playing_hockey)
         return;
 
     showHockeyLinesMap = !showHockeyLinesMap;
@@ -2613,7 +2613,7 @@ void
 Key72 (W_Event * data)
 {
 #ifdef HOCKEY_LINES
-    if (!hockey_mode ())
+    if (!playing_hockey)
         return;
 
     showHockeyLinesLocal = !showHockeyLinesLocal;
@@ -3141,12 +3141,11 @@ Key107 (W_Event * data)
 
     /* Observers can't move.  Also incorrectly removes the lock flag even though
        you are still locked */
-    if (!(me->p_flags & PFOBSERV))
-    {
-        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
-        set_course (course);
-        me->p_flags &= ~(PFPLOCK | PFPLLOCK);
-    }
+    if (me->p_flags & PFOBSERV) return;
+
+    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+    set_course (course);
+    me->p_flags &= ~(PFPLOCK | PFPLLOCK);
 }
 
 /******************************************************************************/

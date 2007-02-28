@@ -831,25 +831,25 @@ optionaction (W_Event * data)
         {
             // We definitely don't want to be able to
             // change this option on non hockey server
-            if (showHockeyLinesMap && !hockey_mode ())
+            if (showHockeyLinesMap && !playing_hockey)
                 showHockeyLinesMap = 0;
         }
         else if (op->op_option == &showHockeyLinesLocal)
         {
             // same as above
-            if (showHockeyLinesLocal && !hockey_mode ())
+            if (showHockeyLinesLocal && !playing_hockey)
                 showHockeyLinesLocal = 0;
         }
         else if (op->op_option == &showHockeyScore)
         {
             // same as above
-            if (showHockeyScore && !hockey_mode ())
+            if (showHockeyScore && !playing_hockey)
                 showHockeyScore = 0;
         }
         else if (op->op_option == &puckCircle)
         {
             // same as above
-            if (puckCircle && !hockey_mode ())
+            if (puckCircle && !playing_hockey)
                 puckCircle = 0;
         }
 #endif

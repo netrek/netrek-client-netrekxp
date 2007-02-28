@@ -1215,7 +1215,7 @@ DrawShips (void)
             }
 #ifdef HOCKEY_LINES
             /* Puck circle */
-            if (puckCircle && hockey_mode ())
+            if (puckCircle && playing_hockey)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
@@ -1260,7 +1260,7 @@ DrawShips (void)
 
 #ifdef HOCKEY_LINES
                 /* Do we want to see puck's letter ? Nah. */
-                if (hockey_mode () && 
+                if (playing_hockey && 
                     strcmp(j->p_name, "Puck") == 0 &&
                     strcmp(j->p_login, "Robot") == 0 &&
                     j->p_team == NOBODY &&
@@ -2365,7 +2365,7 @@ DrawMisc (void)
 #endif
 
 #ifdef HOCKEY_LINES
-    if (showHockeyLinesLocal && hockey_mode ())
+    if (showHockeyLinesLocal && playing_hockey)
         for (sl = local_hockey_lines + NUM_HOCKEY_LINES - 1;
              sl >= local_hockey_lines; --sl)
         {

@@ -165,7 +165,7 @@ void openmem (void);
 void rotateTeams (void);
 void drawTstats (void);
 #ifdef HOCKEY_LINES
-int hockey_mode (void);
+void check_hockey_mode (void);
 void init_hockey_lines (void);
 #endif
 

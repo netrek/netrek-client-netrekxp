@@ -1077,6 +1077,10 @@ cowmain (char *server,
         /* Send request for updatesPerSec.  New servers now support 50 u/s */
         sendUpdatePacket (1000000 / updatesPerSec);
 
+#ifdef HOCKEY_LINES
+        /* Playing hockey? */
+        check_hockey_mode();
+#endif
         isFirstEntry = 0;
     }
 

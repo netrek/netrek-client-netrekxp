@@ -544,7 +544,7 @@ extern struct s_line local_hockey_lines[NUM_HOCKEY_LINES + 1];
 extern struct s_line map_hockey_lines[NUM_HOCKEY_LINES + 1];
 extern int showHockeyLinesLocal;
 extern int showHockeyLinesMap;
-
+extern int playing_hockey;
 #endif
 
 #ifdef MULTILINE_MACROS

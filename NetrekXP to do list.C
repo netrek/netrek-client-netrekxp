@@ -47,6 +47,11 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
+11) ships orbiting and galactip map refresh..blinking..server not sending orbiters
+until every 4th packet? at 50 fps? and every other packet at 20 fps.  Where's the 
+code that makes vplayer not get sent if not moving/in orbit?
+12) remove old sound, all new sound..add sound menu options to turn off sounds
+by category (cloak, weapons, explosions), add rc option for those settings
 
 Stas's list:
 - color coded playerlist.

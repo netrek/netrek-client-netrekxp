@@ -132,8 +132,6 @@
                                  * to conquer the galaxy */
 #define WARNTIME 30             /* Number of 1/10th seconds to have
                                  * a warning on the screen */
-#define MESSTIME 30             /* Number of 1/10th seconds to have
-                                 * a message on the screen */
                                  
 /* These are server defined times */
 #define REFITTIME 5             /* Number of seconds it takes

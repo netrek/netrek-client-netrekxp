@@ -28,8 +28,8 @@
 #include "audio.h"
 #include "proto.h"
 
-Mix_Chunk *newsounds[NUM_WAVES];
-Mix_Music *newmusic[NUM_MUSIC];
+static Mix_Chunk *newsounds[NUM_WAVES];
+static Mix_Music *newmusic[NUM_MUSIC];
 /* Each sound has a priority which controls what can override what
    Currently these are set as follows:
 
