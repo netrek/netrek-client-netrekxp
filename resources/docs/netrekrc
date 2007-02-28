@@ -344,6 +344,10 @@ sortPlayers: on
 # Enable layered, stereo sound
 sound: on
 
+# Starting sound volume
+# 0-128 range
+soundVolume: 64
+
 # Play sound effects
 soundEffects: on
 

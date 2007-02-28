@@ -1183,9 +1183,9 @@ handleStatus (struct status_spacket *packet)
       if (!inplayback) {
 #endif
         if (status->tourn)
-            Play_Sound(START_TMODE_WAV);
+            Play_Sound(START_TMODE_WAV, SF_INFO);
         else
-            Play_Sound(STOP_TMODE_WAV);
+            Play_Sound(STOP_TMODE_WAV, SF_INFO);
 #ifdef RECORDGAME
       }
 #endif	

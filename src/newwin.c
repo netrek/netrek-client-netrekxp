@@ -929,7 +929,7 @@ newwin (char *hostmon,
 
 #if defined(SOUND)
     soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 33,
-                        7, NULL, 2);
+                        14, NULL, 2);
     W_SetWindowKeyDownHandler(soundWin, soundaction);
     W_SetWindowButtonHandler(soundWin, soundaction);
     W_DefineArrowCursor(soundWin);

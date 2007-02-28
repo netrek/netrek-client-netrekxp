@@ -50,20 +50,7 @@ rect doesn't take these into account.
 11) ships orbiting and galactip map refresh..blinking..server not sending orbiters
 until every 4th packet? at 50 fps? and every other packet at 20 fps.  Where's the 
 code that makes vplayer not get sent if not moving/in orbit?
-12)Add sound menu options to turn off sounds
-by category (cloak, weapons, explosions), add rc option for those settings
-   11: death sounds
-   10: explosion
-   9: phaser,plasma
-   8: torp/plasma hit
-   7: torp fire, cloak
-   6: alert
-   4: "informational" sounds (self destruct, enter ship, message, etc.)
-   3: shield up/down, other people's sounds (phaser, torp, plasma, explode)
-   0: background or ambient (engine?)
-
-Also to turn off other ship's sounds.
-Also add option for starting sound volume.
+12) Add netrekrc option to turn off sounds by category
 
 Stas's list:
 - color coded playerlist.

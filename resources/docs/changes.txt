@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- sound menu now has ability to turn sounds off by type, i.e. to turn all explosion sounds
+  off, all message sounds off, etc.
+- added "soundVolume: #" where the number is the starting sound volume.  Valid range
+  is 0-128.
 - all "newSound" options have just been renamed "sound".  The old sound playback (newSound
   off) is no longer supported.  Thus the newSound netrekrc option is no longer.
 - border refresh now works slightly differently for those using the new color bitmaps

@@ -76,12 +76,12 @@ RSAOBJ = rsa_box.o rsa_box_0.o rsa_box_1.o rsa_box_2.o\
                   rsa_box_3.o rsa_box_4.o
 endif
 
-WIN32_SRCS = winmain.c mswindow.c winsndlib.c
-WIN32_OBJS = winmain.o mswindow.o winsndlib.o
+WIN32_SRCS = winmain.c mswindow.c
+WIN32_OBJS = winmain.o mswindow.o
 
 INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
                   oldbitmaps.h tngbitmaps.h hullbitmaps.h rabbitbitmaps.h\
-                  sound.h audio.h litebitmaps.h copyright2.h Wlib.h\
+                  sound.h litebitmaps.h copyright2.h Wlib.h\
                   playerlist.h version.h moobitmaps.h\
                   parsemeta.h spopt.h map.h string_util.h wtext.h local.h
 

@@ -249,6 +249,7 @@ singleMacro:              (string) macro keys that will trigger macro without ma
 sortMyTeamFirst:          (on/off) show my team first in the player list
 sortPlayers:              (on/off) sort players by teams
 sound:                    (on/off) enable layered, stereo sound
+soundVolume:              (0-128) starting sound volume
 soundEffects:             (on/off) play sound effects
 soundMusic:               (on/off) play music
 soundMusicBkgd:           (on/off) play theme music in background

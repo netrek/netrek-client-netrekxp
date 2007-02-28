@@ -640,7 +640,7 @@ int sound_toggle = 0;
 int music_toggle = 0;
 char *sounddir = NULL;
 W_Window soundWin = NULL;
-
+unsigned int sound_flags = 0;
 #endif
 
 #ifdef HOCKEY_LINES
@@ -794,6 +794,7 @@ WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
 int richText = 0;   		/* temporary variable to select rich text message windows */
 int newQuit = 0;    		/* new quit clock */
+int soundVolume = 64;		/* Starting sound volume (0-128 range) */
 int soundEffects = 1;		/* Use sound effects playback */
 int soundMusic = 1;		/* Use music playback */
 int soundMusicBkgd = 0;		/* Play random background music continuously */

@@ -1142,25 +1142,6 @@ char *strcpy_return (register char *s1,
                      register char *s2);
 
 /******************************************************************************/
-/***  sound.c
-/******************************************************************************/
-     extern void Exit_Sound (void);
-     extern void Init_Sound (void);
-     extern void Play_Sound (int type);
-     extern void Play_Sound_Loc (int type, int angle, int distance);
-     extern void Play_Music (int type);
-     extern void Play_Music_Bkgd (void);
-     void Group_Sound (int type, int channel);
-     extern void Abort_Sound (int type);
-     extern void soundwindow (void);
-//static void soundrefresh(int i);
-#if defined(SOUND)
-     void soundaction (W_Event * data);
-     void sdlsoundaction (W_Event * data);
-#endif
-     extern void sounddone (void);
-
-/******************************************************************************/
 /***  spopt.c
 /******************************************************************************/
      void sprefresh (int i);

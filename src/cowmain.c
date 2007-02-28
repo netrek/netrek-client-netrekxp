@@ -1075,7 +1075,7 @@ cowmain (char *server,
         /* Attempt to start background music once fadeout done */
         Mix_HookMusicFinished(Play_Music_Bkgd);
     }
-    Play_Sound(ENTER_SHIP_WAV);
+    Play_Sound(ENTER_SHIP_WAV, SF_INFO);
 #endif
     promoted = 0;
     ingame = 1;

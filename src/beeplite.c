@@ -194,7 +194,7 @@ int makelite(struct distress * dist, char *pm)
 
 #if defined(SOUND)
                     if (sound_toggle)
-                        Play_Sound(MESSAGE_WAV);
+                        Play_Sound(MESSAGE_WAV, SF_MESSAGE);
                     else
 		        W_Beep();
 #endif
@@ -205,39 +205,39 @@ int makelite(struct distress * dist, char *pm)
 #ifdef SOUND
 	    case '1':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE1_WAV);
+	          Play_Sound(MESSAGE1_WAV, SF_MESSAGE);
 	        break;
 	    case '2':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE2_WAV);
+	          Play_Sound(MESSAGE2_WAV, SF_MESSAGE);
 	        break;
 	    case '3':
   	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE3_WAV);
+	          Play_Sound(MESSAGE3_WAV, SF_MESSAGE);
 	        break;
 	    case '4':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE4_WAV);
+	          Play_Sound(MESSAGE4_WAV, SF_MESSAGE);
 	        break;
 	    case '5':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE5_WAV);
+	          Play_Sound(MESSAGE5_WAV, SF_MESSAGE);
 	        break;
 	    case '6':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE6_WAV);
+	          Play_Sound(MESSAGE6_WAV, SF_MESSAGE);
 	        break;
 	    case '7':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE7_WAV);
+	          Play_Sound(MESSAGE7_WAV, SF_MESSAGE);
 	        break;
 	    case '8':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE_WAV);
+	          Play_Sound(MESSAGE_WAV, SF_MESSAGE);
 	        break;
 	    case '9':
 	        if (F_beeplite_flags & LITE_SOUNDS)
-	          Play_Sound(MESSAGE_WAV);
+	          Play_Sound(MESSAGE_WAV, SF_MESSAGE);
 	        break;
 #endif
 

@@ -674,6 +674,13 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"soundVolume", &soundVolume, RC_INT,
+        {
+            "Starting sound volume",
+            "0-128 range",
+            NULL
+        }
+    },
     {"soundEffects", &soundEffects, RC_BOOL,
         {
             "Play sound effects",
@@ -1531,6 +1538,7 @@ resetdefaults (void)
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
+    soundVolume= intDefault ("soundVolume", soundVolume);
     soundEffects= booleanDefault ("soundEffects", soundEffects);
     soundMusic = booleanDefault ("soundMusic", soundMusic);
     soundMusicBkgd = booleanDefault ("soundMusicBkgd", soundMusicBkgd);

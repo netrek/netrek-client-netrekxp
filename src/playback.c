@@ -347,7 +347,7 @@ pbmain (char *name)
 
 #ifdef SOUND
     Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
-    Play_Sound(ENTER_SHIP_WAV);
+    Play_Sound(ENTER_SHIP_WAV, SF_INFO);
 #endif
 
     while (1)

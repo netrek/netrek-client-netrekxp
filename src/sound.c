@@ -32,9 +32,12 @@ static void soundrefresh (int i);
 static Mix_Chunk *sounds[NUM_WAVES];
 static Mix_Music *music[NUM_MUSIC];
 
-static int sound_other = 1;     /* Play other ship's sounds? */
-
 static char sound_prefix[PATH_MAX];
+
+/* For tracking current volume levels, new channels need to be
+   told what volume to use */
+static int mvolume = 0;
+static int volume = 0;
 
 char *DATAFILE(const char* wav) {    
     strcpy(sound_prefix, sounddir);
@@ -56,11 +59,8 @@ int loadSounds(void) {
   sounds[EXIT_WARP_WAV] = Mix_LoadWAV(DATAFILE("nt_exit_warp.wav"));
   sounds[EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion.wav"));
   sounds[BASE_EXPLOSION_WAV] = Mix_LoadWAV(DATAFILE("nt_base_explosion.wav"));
-  sounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
   sounds[FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma.wav"));
-  sounds[OTHER_FIRE_PLASMA_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma_other.wav"));
   sounds[FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp.wav"));
-  sounds[OTHER_FIRE_TORP_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
   sounds[INTRO_WAV] = Mix_LoadWAV(DATAFILE("nt_intro.wav"));
   sounds[MESSAGE_WAV] = Mix_LoadWAV(DATAFILE("nt_message.wav"));
   sounds[MESSAGE1_WAV] = Mix_LoadWAV(DATAFILE("nt_message1.wav"));
@@ -71,7 +71,6 @@ int loadSounds(void) {
   sounds[MESSAGE6_WAV] = Mix_LoadWAV(DATAFILE("nt_message6.wav"));
   sounds[MESSAGE7_WAV] = Mix_LoadWAV(DATAFILE("nt_message7.wav"));
   sounds[PHASER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser.wav"));
-  sounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
   sounds[PLASMA_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_hit.wav"));
   sounds[PLASMA_KILL_WAV] = Mix_LoadWAV(DATAFILE("nt_plasma_kill.wav"));
   sounds[RED_ALERT_WAV] = Mix_LoadWAV(DATAFILE("nt_red_alert.wav"));
@@ -83,6 +82,10 @@ int loadSounds(void) {
   sounds[TORP_HIT_WAV] = Mix_LoadWAV(DATAFILE("nt_torp_hit.wav"));
   sounds[UNCLOAK_WAV] = Mix_LoadWAV(DATAFILE("nt_uncloak.wav"));
   sounds[WARNING_WAV] = Mix_LoadWAV(DATAFILE("nt_warning.wav"));
+  sounds[EXPLOSION_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_explosion_other.wav"));
+  sounds[FIRE_PLASMA_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_plasma_other.wav"));
+  sounds[FIRE_TORP_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_fire_torp_other.wav"));
+  sounds[PHASER_OTHER_WAV] = Mix_LoadWAV(DATAFILE("nt_phaser_other.wav"));
 
   for (i=0; i < NUM_WAVES; i++) {
     if (!sounds[i]) {
@@ -176,16 +179,20 @@ extern void Init_Sound (void)
             return;
         }
 
-        /* Set sound and music volume to half (128 is MAXVOLUME) */
-        Mix_Volume(-1, 64);
-        Mix_VolumeMusic(64);
+        /* Set sound and music volume */
+        mvolume = volume = soundVolume;
+        Mix_Volume(-1, volume);
+        Mix_VolumeMusic(mvolume);
+
+        /* Set sound flags to on. TODO: use netrekrc values */
+        sound_flags = SF_EXPLOSIONS|SF_WEAPONS|SF_ALERT|SF_MESSAGE|SF_INFO|SF_CLOAKING|SF_SHIELD|SF_OTHER;
 
         /* Toggle on sound, and load sound files */
       	sound_toggle = 1;
       	loadSounds();
 
       	/* Load music files, and play random intro music */
-      	loadMusic();
+        loadMusic();
         i = RANDOM() % MUSIC_OFFSET;
         Play_Music(i);
 
@@ -194,17 +201,17 @@ extern void Init_Sound (void)
     }
 }
 
-extern void Play_Sound (int type)
+extern void Play_Sound (int type, u_int flag)
 {
     int channel;
-    	
+
     if (!sound_init || !soundEffects || !sound_toggle)
         return;
 
-    /*  Don't play other ship's sounds if turned off */
-    if (type > OTHER_SOUND_OFFSET && !sound_other)
+    /* Don't play sound types you have turned off */
+    if (flag != (sound_flags & flag))
         return;
-
+ 
     if ((type >= NUM_WAVES) || (type < 0))
     {
         LineToConsole("Invalid sound type %d\n", type);
@@ -219,17 +226,23 @@ extern void Play_Sound (int type)
 #endif
         return;
     }
-            
+    /* Now that we know the channel, set the volume */
+    Mix_Volume(channel, volume);
+
     Group_Sound(type, channel);
 }
 
-extern void Play_Sound_Loc (int type, int angle, int distance)
+extern void Play_Sound_Loc (int type, u_int flag, int angle, int distance)
 {
     int channel;
     
     if (!sound_init || !soundEffects || !sound_toggle)
         return;
 
+    /* Don't play sound types you have turned off */
+    if (flag != (sound_flags & flag))
+        return;
+
     if ((type >= NUM_WAVES) || (type < 0))
     {
         LineToConsole("Invalid sound type %d\n", type);
@@ -244,6 +257,9 @@ extern void Play_Sound_Loc (int type, int angle, int distance)
 #endif
         return;
     }
+    /* Now that we know the channel, set the volume */
+    Mix_Volume(channel, volume);
+
     /* Make sure distance in boundary range that function accepts */
     if (distance < 0)
     	distance = 0;
@@ -350,11 +366,9 @@ void Group_Sound (int type, int channel)
 
 extern void ChangeVolume (int vol)
 {
-    int mvolume, volume;
-    
     // Get current average sound volume and music volume
-    volume = Mix_Volume(-1, -1);
-    mvolume = Mix_VolumeMusic(-1);
+    //volume = Mix_Volume(-1, -1);
+    //mvolume = Mix_VolumeMusic(-1);
 
     // Change sound volume for all channels, range is 0 to 128
     volume = volume + 10*vol;
@@ -376,8 +390,15 @@ extern void ChangeVolume (int vol)
 #define MUSIC_TOGGLE 2
 #define MUSIC_BKGD 3
 #define SOUND_ANGLE 4
-#define SOUND_OTHER 5
-#define SOUND_DONE 6
+#define SOUND_EXPLOSIONS 5
+#define SOUND_WEAPONS 6
+#define SOUND_ALERT 7
+#define SOUND_MESSAGE 8
+#define SOUND_INFO 9
+#define SOUND_CLOAKING 10
+#define SOUND_SHIELD 11
+#define SOUND_OTHER 12
+#define SOUND_DONE 13
 
 extern void soundwindow (void)
 {
@@ -419,10 +440,45 @@ static void soundrefresh (int i)
         sprintf (buf, "Angular sound is turned %s",
                  (soundAngles) ? "ON" : "OFF");
     }
+    else if (i == SOUND_EXPLOSIONS)
+    {
+        sprintf (buf, "Explosion sounds are turned %s",
+                 (sound_flags & SF_EXPLOSIONS) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_WEAPONS)
+    {
+        sprintf (buf, "Weapon sounds are turned %s",
+                 (sound_flags & SF_WEAPONS) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_ALERT)
+    {
+        sprintf (buf, "Alert sounds are turned %s",
+                 (sound_flags & SF_ALERT) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_MESSAGE)
+    {
+        sprintf (buf, "Message sounds are turned %s",
+                 (sound_flags & SF_MESSAGE) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_INFO)
+    {
+        sprintf (buf, "Info sounds are turned %s",
+                 (sound_flags & SF_INFO) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_CLOAKING)
+    {
+        sprintf (buf, "Cloaking sounds are turned %s",
+                 (sound_flags & SF_CLOAKING) ? "ON" : "OFF");
+    }
+    else if (i == SOUND_SHIELD)
+    {
+        sprintf (buf, "Shield sounds are turned %s",
+                 (sound_flags & SF_SHIELD) ? "ON" : "OFF");
+    }
     else if (i == SOUND_OTHER)
     {
         sprintf (buf, "Other ship's sound is turned %s",
-                 (sound_other) ? "ON" : "OFF");
+                 (sound_flags & SF_OTHER) ? "ON" : "OFF");
     }
     else if (i == SOUND_DONE)
     {
@@ -485,10 +541,45 @@ void soundaction (W_Event * data)
     	soundAngles = (soundAngles) ? 0 : 1;
     	soundrefresh (SOUND_ANGLE);
     }
+    else if (i == SOUND_EXPLOSIONS)
+    {
+        sound_flags ^= SF_EXPLOSIONS;
+        soundrefresh (SOUND_EXPLOSIONS);
+    }
+    else if (i == SOUND_WEAPONS)
+    {
+        sound_flags ^= SF_WEAPONS;
+        soundrefresh (SOUND_WEAPONS);
+    }
+    else if (i == SOUND_ALERT)
+    {
+        sound_flags ^= SF_ALERT;
+        soundrefresh (SOUND_ALERT);
+    }
+    else if (i == SOUND_MESSAGE)
+    {
+        sound_flags ^= SF_MESSAGE;
+        soundrefresh (SOUND_MESSAGE);
+    }
+    else if (i == SOUND_INFO)
+    {
+        sound_flags ^= SF_INFO;
+        soundrefresh (SOUND_INFO);
+    }
+    else if (i == SOUND_CLOAKING)
+    {
+        sound_flags ^= SF_CLOAKING;
+        soundrefresh (SOUND_CLOAKING);
+    }
+    else if (i == SOUND_SHIELD)
+    {
+        sound_flags ^= SF_SHIELD;
+        soundrefresh (SOUND_SHIELD);
+    }
     else if (i == SOUND_OTHER)
     {
-    	sound_other = (sound_other) ? 0 : 1;
-    	soundrefresh (SOUND_OTHER);
+        sound_flags ^= SF_OTHER;
+        soundrefresh (SOUND_OTHER);
     }
     else
     {
