@@ -56,7 +56,6 @@ Stas's list:
 ! server: ita won't block RCDs (why not ?)
 ! after res if there cloaker around he will be seen briefly (speed 0 bug)
 - add "reset to defaults" to options menu
-- add bitmap themes option (change default bitmap naming and processing)
 - add shiftMouse, controlMouse on/off
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages

@@ -333,6 +333,111 @@ static short fSpeed, fDirection, fShield, fOrbit, fRepair, fBeamup, fBeamdown,
     fCloak, fBomb, fDockperm, fPhaser, fPlasma, fPlayLock, fPlanLock,
     fTractor, fRepress;
 
+/* print the SP_S_TORP* packets.  */
+/* sbuf = pointer to packet buff  */
+/* type=1 print SP_S_TORP         */
+/* type=2 print SP_S_8_TORP       */
+/* type=3 print SP_S_TORP_INFO    */
+void print_sp_s_torp(char *sbuf, int type)
+{
+  unsigned char which, *data, infobitset, *infodata;
+  unsigned char bitset;         
+  int     dx, dy;
+  int     shiftvar;
+  int     i;
+  char    status, war;
+  register int shift = 0;                      /* How many torps are 
+                                                * * extracted (for shifting) */
+  if ( (type == 1) || (type == 2) )
+    {
+      /* now we must find the data ... :-) */
+      if (sbuf[0] == SP_S_8_TORP)
+	{						 /* MAX packet */
+	  bitset = 0xff;
+	  which = sbuf[1];
+	  data = &sbuf[2];
+	}
+      else
+	{						 /* Normal Packet */
+	  bitset = sbuf[1];
+	  which = sbuf[2];
+	  data = &sbuf[3];
+	}
+      LineToConsole("  bitset=0x%0X, which=%d, ", bitset, which);
+#ifdef CORRUPTED_PACKETS
+      /* we probably should do something clever here - jmn */
+#endif
+      for (shift = 0, i = 0; i < 8; i++, bitset >>= 1)
+	{
+	  if (bitset & 01)
+	    {
+	      dx = (*data >> shift);
+	      data++;
+	      shiftvar = (unsigned char) *data;	 /* to silence gcc */
+	      shiftvar <<= (8 - shift);
+	      dx |= (shiftvar & 511);
+	      shift++;
+	      dy = (*data >> shift);
+	      data++;
+	      shiftvar = (unsigned char) *data;	 /* to silence gcc */
+	      shiftvar <<= (8 - shift);
+	      dy |= (shiftvar & 511);
+	      shift++;
+	      if (shift == 8)
+		{
+		  shift = 0;
+		  data++;
+		}
+	      LineToConsole("dx=%d, dy=%d, ",dx, dy);
+	    }
+	}
+    }
+  else if (type == 3)
+    {
+      /* now we must find the data ... :-) */
+      bitset = sbuf[1];
+      which = sbuf[2];
+      infobitset = sbuf[3];
+      /* Where is the data ? */
+      data = &sbuf[4];
+      LineToConsole("  bitset=0x%0X, which=%d, infobitset=0x%0X, ",
+	      bitset, which, infobitset);
+      infodata = &sbuf[vtisize[numofbits[(unsigned char) sbuf[1]]]];
+      for (shift = 0, i = 0; i < 8; bitset >>= 1, infobitset >>= 1, i++)
+	{
+	  if (bitset & 01)
+	    {
+	      dx = (*data >> shift);
+	      data++;
+	      shiftvar = (unsigned char) *data;	 /* to silence gcc */
+	      shiftvar <<= (8 - shift);
+	      dx |= (shiftvar & 511);
+	      shift++;
+	      dy = (*data >> shift);
+	      data++;
+	      shiftvar = (unsigned char) *data;	 /* to silence gcc */
+	      shiftvar <<= (8 - shift);
+	      dy |= (shiftvar & 511);
+	      shift++;
+	      if (shift == 8)
+		{
+		  shift = 0;
+		  data++;
+		}
+	      LineToConsole("dx=%d, dy=%d, ",dx, dy);
+	    } 
+	  /* Now the TorpInfo */
+	  if (infobitset & 01)
+	    {
+	      war = (unsigned char) *infodata & 15 /* 0x0f */ ;
+	      status = ((unsigned char) *infodata & 0xf0) >> 4;
+	      infodata++;
+	      LineToConsole("war=0x%0X, status=0x%0X, ", war, status);
+	    }					 /* if */
+	}						 /* for */
+    }
+}
+
 /* reset all the "force command" variables */
 void
 resetForce (void)
@@ -1045,7 +1150,10 @@ doRead (int asock)
 
 #ifdef PACKET_LOG
                 if (log_packets)
+                {
                     (void) Log_Packet ((char) (*bufptr), size);
+                    print_packet(bufptr, size);
+                }
 #endif
 
                 if (asock == udpSock)
@@ -1430,7 +1538,10 @@ sendServerPacket (struct player_spacket *packet)
 
 #ifdef PACKET_LOG
     if (log_packets)
+    {
         Log_OPacket (packet->type, size);
+        print_opacket((char *) packet,size);
+    }
 #endif
 
     if (commMode == COMM_UDP)
@@ -3249,6 +3360,855 @@ Dump_Packet_Log_Info (void)
                         (float) (calc_temp * 100 / outtotal_bytes));
     }
 #endif
+}
+
+void print_packet(char *packet, int size)
+{
+   int i;                        /* lcv */
+   unsigned int j;
+   unsigned char *data;
+   int kills, pnum, nplanets;
+   struct planet_s_spacket *plpacket;
+   if(log_packets == 0) return;
+   switch ( packet[0] )
+     {
+       case SP_MESSAGE:
+         LineToConsole("\nS->C SP_MESSAGE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  m_flags=0x%0X, m_recpt=%d, m_from=%d, mesg=\"%s\",", 
+		   ((struct mesg_spacket *) packet)->m_flags, 
+		   ((struct mesg_spacket *) packet)->m_recpt, 
+		   ((struct mesg_spacket *) packet)->m_from, 
+		   ((struct mesg_spacket *) packet)->mesg );
+	 break;
+       case SP_PLAYER_INFO  :                   /* general player info not */ 
+						/* * elsewhere */
+	 LineToConsole("\nS->C SP_PLAYER_INFO\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, shiptype=%d, team=%d,",
+		   ((struct plyr_info_spacket *) packet)->pnum,
+		   ((struct plyr_info_spacket *) packet)->shiptype,
+		   ((struct plyr_info_spacket *) packet)->team );
+         break;
+       case SP_KILLS        :                   /* # kills a player has */
+	 LineToConsole("\nS->C SP_KILLS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, kills=%u,",
+		   ((struct kills_spacket *) packet)->pnum,
+		   ntohl(((struct kills_spacket *) packet)->kills) );
+	 break;
+       case SP_PLAYER       :                   /* x,y for player */
+	 LineToConsole("\nS->C SP_PLAYER\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, dir=%u, speed=%d,x=%ld, y=%d,",
+		   ((struct player_spacket *) packet)->pnum,
+		   ((struct player_spacket *) packet)->dir,
+		   ((struct player_spacket *) packet)->speed,
+		   ntohl(((struct player_spacket *) packet)->x),
+		   ntohl(((struct player_spacket *) packet)->y) );
+	 break;
+       case SP_TORP_INFO    :                   /* torp status */
+	 LineToConsole("\nS->C SP_TORP_INFO\t");
+	 if (log_packets > 1)
+	   LineToConsole("  war=%d, status=%d, tnum=%u,",
+		   ((struct torp_info_spacket *) packet)->war,
+		   ((struct torp_info_spacket *) packet)->status,
+		   ntohs(((struct torp_info_spacket *) packet)->tnum) );
+	 break;
+       case SP_TORP         :                   /* torp location */
+	 LineToConsole("\nS->C SP_TORP\t");
+	 if (log_packets > 1)
+	   LineToConsole("  dir=%d, tnum=%u, x=%u, y=%u,",
+		   ((struct torp_spacket *) packet)->dir,
+		   ntohs(((struct torp_spacket *) packet)->tnum),
+		   ntohl(((struct torp_spacket *) packet)->x),
+		   ntohl(((struct torp_spacket *) packet)->y) );
+	 break;
+       case SP_PHASER       :                   /* phaser status and * *
+						 * direction */
+	 LineToConsole("\nS->C SP_PHASER\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, status=%d, dir=%u, x=%ld, y=%ld, target=%ld,",
+		   ((struct phaser_spacket *) packet)->pnum,
+		   ((struct phaser_spacket *) packet)->status,
+		   ((struct phaser_spacket *) packet)->dir,
+		   ntohl(((struct phaser_spacket *) packet)->x),
+		   ntohl(((struct phaser_spacket *) packet)->y),
+		   ntohl(((struct phaser_spacket *) packet)->target) );
+	 break;
+       case SP_PLASMA_INFO  :                  /* player login information */
+	 LineToConsole("\nS->C SP_PLASMA_INFO\t");
+	 if (log_packets > 1)
+	   LineToConsole("  war=%d, status=%d  pnum=%u,",
+		   ((struct plasma_info_spacket *) packet)->war,
+		   ((struct plasma_info_spacket *) packet)->status,
+		   ntohs(((struct plasma_info_spacket *) packet)->pnum) );
+	 break;
+       case SP_PLASMA       :                  /* like SP_TORP */
+	 LineToConsole("\nS->C SP_PLASMA\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%u, x=%ld, y=%ld,",
+		   ntohs(((struct plasma_spacket *) packet)->pnum),
+		   ntohl(((struct plasma_spacket *) packet)->x),
+		   ntohl(((struct plasma_spacket *) packet)->y) );
+	 break;
+       case SP_WARNING      :                  /* like SP_MESG */
+	 fprintf(stderr,"\nS->C SP_WARNING\t");
+	 if (log_packets > 1)
+	   LineToConsole("  mesg=\"%s\",",
+		   ((struct warning_spacket *) packet)->mesg);
+	 break;
+       case SP_MOTD         :                  /* line from .motd screen */
+	 fprintf(stderr,"\nS->C SP_MOTD\t");
+	 if (log_packets > 1)
+	   LineToConsole("  line=\"%s\",",
+		   ((struct motd_spacket *) packet)->line);
+	 break;
+       case SP_YOU          :                  /* info on you? */
+	 LineToConsole("\nS->C SP_YOU\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, hostile=%d, swar=%d, armies=%d, flags=0x%0X, damage=%ld, shield=%ld, fuel=%ld, etemp=%u, wtemp=%u, whydead=%u, whodead=%u,",
+		   ((struct you_spacket *) packet)->pnum,
+		   ((struct you_spacket *) packet)->hostile,
+		   ((struct you_spacket *) packet)->swar,
+		   ((struct you_spacket *) packet)->armies,
+		   ntohs(((struct you_spacket *) packet)->flags),
+		   ntohl(((struct you_spacket *) packet)->damage),
+		   ntohl(((struct you_spacket *) packet)->shield),
+		   ntohl(((struct you_spacket *) packet)->fuel),
+		   ntohs(((struct you_spacket *) packet)->etemp),
+		   ntohs(((struct you_spacket *) packet)->wtemp),
+		   ntohs(((struct you_spacket *) packet)->whydead),
+		   ntohs(((struct you_spacket *) packet)->whodead) );
+	 break;
+       case SP_QUEUE        :                  /* estimated loc in queue? */
+	 LineToConsole("\nS->C SP_QUEUE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pos=%u,",
+		   ntohs(((struct queue_spacket *) packet)->pos) );
+	 break;
+       case SP_STATUS       :                  /* galaxy status numbers */
+	 LineToConsole("\nS->C SP_STATUS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  tourn=%d, armsbomb=%u, planets=%u, kills=%u, losses=%u, time=%u, timeprod=%lu,",
+		   ((struct status_spacket *) packet)->tourn,
+		   ntohl(((struct status_spacket *) packet)->armsbomb),
+		   ntohl(((struct status_spacket *) packet)->planets),
+		   ntohl(((struct status_spacket *) packet)->kills),
+		   ntohl(((struct status_spacket *) packet)->losses),
+		   ntohl(((struct status_spacket *) packet)->time),
+		   ntohl(((struct status_spacket *) packet)->timeprod) );
+	 break;
+       case SP_PLANET       :                  /* planet armies & * *
+						* facilities */
+	 LineToConsole("\nS->C SP_PLANET\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, owner=%d, info=%d, flags=0x%0X, armies=%ld,",
+		   ((struct planet_spacket *) packet)->pnum,
+		   ((struct planet_spacket *) packet)->owner,
+		   ((struct planet_spacket *) packet)->info,
+		   ntohs(((struct planet_spacket *) packet)->flags),
+		   ntohl(((struct planet_spacket *) packet)->armies) );
+	 break;
+       case SP_PICKOK       :                  /* your team & ship was * *
+						* accepted */
+	 LineToConsole("\nS->C SP_PICKOK\t");
+	 if (log_packets > 1)
+	   LineToConsole("  state=%d,",
+		   ((struct pickok_spacket *) packet)-> state );
+	 break;
+       case SP_LOGIN        :                  /* login response */
+	 LineToConsole("\nS->C SP_LOGIN\t");
+	 if (log_packets > 1)
+	   LineToConsole("  accept=%d, flags=0x%0X, keymap=\"%s\",",
+		   ((struct login_spacket *) packet)->accept,
+		   ntohl(((struct login_spacket *) packet)->flags),
+		   ((struct login_spacket *) packet)->keymap );
+	 break;
+       case SP_FLAGS        :                  /* give flags for a player */
+	 LineToConsole("\nS->C SP_FLAGS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, flags=0x%0X,",
+		   ((struct flags_spacket *) packet)->pnum,
+		   ntohl(((struct flags_spacket *) packet)->flags) );
+	 break;
+       case SP_MASK         :                  /* tournament mode mask */
+	 LineToConsole("\nS->C SP_MASK\t");
+	 if (log_packets > 1)
+	   LineToConsole("  mask=%d,",
+		   ((struct mask_spacket *) packet)->mask );
+	 break;
+       case SP_PSTATUS      :                  /* give status for a player */
+	 LineToConsole("\nS->C SP_PSTATUS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, status=%d,",
+		   ((struct pstatus_spacket *) packet)->pnum,
+		   ((struct pstatus_spacket *) packet)->status );
+	 break;
+       case SP_BADVERSION   :                  /* invalid version number */
+	 LineToConsole("\nS->C SP_BADVERSION\t");
+	 if (log_packets > 1)
+	   LineToConsole("  why=%d,",
+		   ((struct badversion_spacket *) packet)->why );
+	 break;
+       case SP_HOSTILE      :                  /* hostility settings for a
+						* * * player */
+	 LineToConsole("\nS->C SP_HOSTILE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, war=%d, hostile=%d,",
+		   ((struct hostile_spacket *) packet)->pnum,
+		   ((struct hostile_spacket *) packet)->war,
+		   ((struct hostile_spacket *) packet)->hostile );
+	 break;
+       case SP_STATS        :                  /* a player's statistics */
+	 LineToConsole("\nS->C SP_STATS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, tkills=%ld, tlosses=%ld, kills=%ld, losses=%ld, tticks=%ld, tplanets=%ld, tarmies=%ld, sbkills=%ld, sblosses=%ld, armies=%ld, planets=%ld, maxkills=%ld, sbmaxkills=%ld,",
+		   ((struct stats_spacket *) packet)->pnum,
+		   ntohl(((struct stats_spacket *) packet)->tkills),
+		   ntohl(((struct stats_spacket *) packet)->tlosses),
+		   ntohl(((struct stats_spacket *) packet)->kills),
+		   ntohl(((struct stats_spacket *) packet)->losses),
+		   ntohl(((struct stats_spacket *) packet)->tticks),
+		   ntohl(((struct stats_spacket *) packet)->tplanets),
+		   ntohl(((struct stats_spacket *) packet)->tarmies),
+		   ntohl(((struct stats_spacket *) packet)->sbkills),
+		   ntohl(((struct stats_spacket *) packet)->sblosses),
+		   ntohl(((struct stats_spacket *) packet)->armies),
+		   ntohl(((struct stats_spacket *) packet)->planets),
+		   ntohl(((struct stats_spacket *) packet)->maxkills),
+		   ntohl(((struct stats_spacket *) packet)->sbmaxkills) );
+	 break;
+       case SP_PL_LOGIN     :                  /* new player logs in */
+	 LineToConsole("\nS->C SP_PL_LOGIN\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, rank=%d, name=\"%s\", monitor=\"%s\", login=\"%s\",",
+		   ((struct plyr_login_spacket *) packet)->pnum,
+		   ((struct plyr_login_spacket *) packet)->rank,
+		   ((struct plyr_login_spacket *) packet)->name,
+		   ((struct plyr_login_spacket *) packet)->monitor,
+		   ((struct plyr_login_spacket *) packet)->login );
+	 break;
+       case SP_RESERVED     :                  /* for future use */
+	 LineToConsole("\nS->C SP_RESERVED\t");
+         if (log_packets > 1)
+           {
+             LineToConsole("  data=");
+             for( i = 0; i < 16; i++)
+               LineToConsole("0x%0X ", (unsigned char)((struct reserved_spacket *) packet)->data[i]);
+             LineToConsole(",");
+           }
+	 break;
+       case SP_PLANET_LOC   :                  /* planet name, x, y */
+	 LineToConsole("\nS->C SP_PLANET_LOC\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, x=%ld, y=%ld, name=\"%s\",",
+		   ((struct planet_loc_spacket *) packet)->pnum,
+		   ntohl(((struct planet_loc_spacket *) packet)->x),
+		   ntohl(((struct planet_loc_spacket *) packet)->y),
+		   ((struct planet_loc_spacket *) packet)->name );
+	 break;
+#ifdef INCLUDE_SCAN
+       /* NOTE: not implemented */
+       case SP_SCAN         :                  /* ATM: results of player *
+						* * scan */
+	 LineToConsole("\nS->C SP_SCAN\t");
+	 if(log_packets > 1)
+	   LineToConsole("not implemented,");
+	 break;
+#endif
+       case SP_UDP_REPLY    :                  /* notify client of UDP * *
+						* status */
+	 LineToConsole("\nS->C SP_UDP_REPLY\t");
+	 if (log_packets > 1)
+	   LineToConsole("  reply=%d, port=%d,",
+		   ((struct udp_reply_spacket *) packet)->reply,
+		   ntohl(((struct udp_reply_spacket *) packet)->port) );
+	 break;
+       case SP_SEQUENCE     :                  /* sequence # packet */
+	 LineToConsole("\nS->C SP_SEQUENCE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  flag8=0x%0X, sequence=%u,",
+		   ((struct sequence_spacket *) packet)->flag8,
+		   ntohs(((struct sequence_spacket *) packet)->sequence) );
+	 break;
+       case SP_SC_SEQUENCE  :                  /* this trans is * *
+						* semi-critical info */
+	 LineToConsole("\nS->C SP_SC_SEQUENCE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  sequence=%u,",
+		   ntohs(((struct sc_sequence_spacket *) packet)->sequence) );
+	 break;
+#ifdef RSA
+       case SP_RSA_KEY      :                  /* handles binary * *
+						* verification */
+	 LineToConsole("\nS->C SP_RSA_KEY\t");
+	 if(log_packets > 1)
+	   {
+	     LineToConsole("  data=");
+	     for(i = 0; i < KEY_SIZE; i++)
+	       LineToConsole("0x%0X ",((struct rsa_key_spacket *) packet)->data[i]);
+	     LineToConsole(",");
+	   }
+	 break;
+#endif
+       case SP_SHIP_CAP     :                   /* Handles server ship mods */
+	 LineToConsole("\nS->C SP_SHIP_CAP\t");
+	 if (log_packets > 1)
+	   LineToConsole("  operation=%d, s_type=%u, s_torpspeed=%u, s_phaserrange=%u, s_maxspeed=%d, s_maxfuel=%d, s_maxshield=%d, s_maxdamage=%d, s_maxwpntemp=%d, s_maxegntemp=%d, s_width=%u, s_height=%d, s_maxarmies=%d, s_letter=%d, s_name=\"%s\", s_desig1=%c, s_desig2=%c, s_bitmap=%u,",
+		   ((struct ship_cap_spacket *) packet)->operation,
+		   ntohs(((struct ship_cap_spacket *) packet)->s_type),
+		   ntohs(((struct ship_cap_spacket *) packet)->s_torpspeed),
+		   ntohs(((struct ship_cap_spacket *) packet)->s_phaserrange),
+		   ((struct ship_cap_spacket *) packet)->s_maxspeed,
+		   ((struct ship_cap_spacket *) packet)->s_maxfuel,
+		   ((struct ship_cap_spacket *) packet)->s_maxshield,
+		   ((struct ship_cap_spacket *) packet)->s_maxdamage,
+		   ((struct ship_cap_spacket *) packet)->s_maxwpntemp,
+		   ((struct ship_cap_spacket *) packet)->s_maxegntemp,
+		   ntohs(((struct ship_cap_spacket *) packet)->s_width),
+		   ntohs(((struct ship_cap_spacket *) packet)->s_height),
+		   ntohs(((struct ship_cap_spacket *) packet)->s_maxarmies),
+		   ((struct ship_cap_spacket *) packet)->s_letter,
+		   ((struct ship_cap_spacket *) packet)->s_name,
+		   ((struct ship_cap_spacket *) packet)->s_desig1,
+		   ((struct ship_cap_spacket *) packet)->s_desig2,
+		   ntohs(((struct ship_cap_spacket *) packet)->s_bitmap) );
+	 break;
+#ifdef SHORT_PACKETS
+       case SP_S_REPLY      :                  /* reply to send-short * *
+						* request */
+	 LineToConsole("\nS->C SP_S_REPLY\t");
+	 if (log_packets > 1)
+	   fprintf(stderr,"  repl=%d, windside=%u, gwidth=%ld,",
+		   ((struct shortreply_spacket *) packet)->repl,
+		   ntohs(((struct shortreply_spacket *) packet)->winside),
+		   ntohl(((struct shortreply_spacket *) packet)->gwidth) );
+	 break;
+       case SP_S_MESSAGE    :                  /* var. Message Packet */
+	 LineToConsole("\nS->C SP_S_MESSAGE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  m_flags=0x%0X, m_recpt=%u, m_from=%u, length=%u, mesg=\"%s\",",
+	    	   ((struct mesg_s_spacket *) packet)->m_flags,
+		   ((struct mesg_s_spacket *) packet)->m_recpt,
+		   ((struct mesg_s_spacket *) packet)->m_from,
+		   ((struct mesg_s_spacket *) packet)->length,
+		   &( ((struct mesg_s_spacket *) packet)->mesg ) );
+	 break;
+       case SP_S_WARNING    :                  /* Warnings with 4  Bytes */
+	 LineToConsole("\nS->C SP_S_WARNING\t");
+	 if (log_packets > 1)
+	   LineToConsole("  whichmessage=%u, argument=%d, argument2=%d,",
+		   ((struct warning_s_spacket *) packet)->whichmessage,
+		   ((struct warning_s_spacket *) packet)->argument,
+		   ((struct warning_s_spacket *) packet)->argument2 );
+	 break;
+       case SP_S_YOU        :                  /* hostile,armies,whydead,etc
+						* * * .. */
+	 LineToConsole("\nS->C SP_S_YOU\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, hostile=%d, swar=%d, armies=%d, whydead=%d, whodead=%d, flags=0x%0X,",
+		   ((struct youshort_spacket *) packet)->pnum,
+		   ((struct youshort_spacket *) packet)->hostile,
+		   ((struct youshort_spacket *) packet)->swar,
+		   ((struct youshort_spacket *) packet)->armies,
+		   ((struct youshort_spacket *) packet)->whydead,
+		   ((struct youshort_spacket *) packet)->whodead,
+		   ntohl(((struct youshort_spacket *) packet)->flags) );
+	 break;
+       case SP_S_YOU_SS     :                  /* your ship status */
+	 LineToConsole("\nS->C SP_S_YOU_SS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  ddamage=%u, shield=%u, fuel=%u, etemp=%u, wtemp=%u,",
+		   ntohs(((struct youss_spacket *) packet)->damage),
+		   ntohs(((struct youss_spacket *) packet)->shield),
+		   ntohs(((struct youss_spacket *) packet)->fuel),
+		   ntohs(((struct youss_spacket *) packet)->etemp),
+		   ntohs(((struct youss_spacket *) packet)->wtemp) );
+	 break;
+       case SP_S_PLAYER     :                  /* variable length player *
+						* * packet */
+	 LineToConsole("\nS->C SP_S_PLAYER\t");
+	 if (log_packets > 1)
+	   LineToConsole("  packets=%d, dir=%u, speed=%d, x=%ld, y=%ld,",
+		   ((struct player_s_spacket *) packet)->packets,
+		   ntohl(((struct player_s_spacket *) packet)->dir),
+		   ((struct player_s_spacket *) packet)->speed,
+		   ntohl(((struct player_s_spacket *) packet)->x),
+		   ntohl(((struct player_s_spacket *) packet)->y) );
+	 break;
+#endif
+#ifdef PING
+       case SP_PING         :                  /* ping packet */
+	 LineToConsole("\nS->C SP_PING\t");
+	 if (log_packets > 1)
+	   LineToConsole("  number=%u, lag=%u, tloss_sc=%u, tloss_cs=%u, iloss_sc=%u, iloss_cs=%u,",
+		   ((struct ping_spacket *) packet)->number,
+		   ((struct ping_spacket *) packet)->lag,
+		   ((struct ping_spacket *) packet)->tloss_sc,
+		   ((struct ping_spacket *) packet)->tloss_cs,
+		   ((struct ping_spacket *) packet)->iloss_sc,
+		   ((struct ping_spacket *) packet)->iloss_cs );
+	 break;
+#endif
+#ifdef FEATURE_PACKETS
+       case SP_FEATURE      :
+	 LineToConsole("\nS->C SP_FEATURE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  feature_type=%c, arg1=%d, arg2=%d, value=%d, name=\"%s\",",
+		   ((struct feature_cpacket *) packet)->feature_type,
+		   ((struct feature_cpacket *) packet)->arg1,
+		   ((struct feature_cpacket *) packet)->arg2,
+		   ntohl(((struct feature_cpacket *) packet)->value),
+		   ((struct feature_cpacket *) packet)->name );
+	 break;
+#endif       
+#ifdef SHORT_PACKETS
+       case SP_S_TORP       :                  /* variable length torp * *
+						* packet */
+	 LineToConsole("\nS->C SP_S_TORP\t");
+	 if (log_packets > 1)
+	   print_sp_s_torp(packet, 1);
+	 break;
+       case SP_S_TORP_INFO  :                  /* SP_S_TORP with TorpInfo */
+	 LineToConsole("\nS->C SP_S_TORP_INFO\t");
+	 if (log_packets > 1)         /* struct built by hand in handleVTorp */
+	   print_sp_s_torp(packet, 3);
+	 break;
+       case SP_S_8_TORP     :                  /* optimized SP_S_TORP */
+	 LineToConsole("\nS->C SP_S_8_TORP\t");
+	 if (log_packets > 1)
+	   print_sp_s_torp(packet, 2);
+	 break;
+       case SP_S_PLANET     :                  /* see SP_PLANET */
+	 LineToConsole("\nS->C SP_S_PLANET\t"); 
+	 if (log_packets > 1)
+	   {
+	     plpacket = (struct planet_s_spacket *) &packet[2];
+	     nplanets = packet[1];
+             LineToConsole("nplanets = %d, ", nplanets);
+             for(i = 0; i < nplanets; i++, plpacket++ )
+	       LineToConsole(
+		       "pnum = %d, pl_owner = %d, info = %d, flags = %d, armies = %d ", 
+		       plpacket->pnum, 
+		       plpacket->owner, 
+		       plpacket->info, 
+		       plpacket->armies,
+		       ntohs(plpacket->flags) );
+	   }
+	 fprintf(stderr,"\n");
+	 break;
+       /* S_P2 */
+       case SP_S_SEQUENCE   :                  /* SP_SEQUENCE for * *
+						* compressed packets */
+	 LineToConsole("\nS->C SP_S_SEQUENCE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  No struct defined,");
+	 break;
+       case SP_S_PHASER     :                  /* see struct */
+	 LineToConsole("\nS->C SP_S_PHASER\t");
+	 if (log_packets > 1)
+	   LineToConsole("  status=%d, pnum=%d, target=%d, dir=%d, x=%d, y=%d",
+		   ((((struct phaser_s_spacket *) packet)->status) & 0x0f),
+		   ((((struct phaser_s_spacket *) packet)->pnum) & 0x3f),
+		   ((struct phaser_s_spacket *) packet)->target,
+		   ((struct phaser_s_spacket *) packet)->dir,
+		   (SCALE * (ntohs(((struct phaser_s_spacket*) packet)->x))),
+		   (SCALE * (ntohs(((struct phaser_s_spacket*) packet)->y))) );
+	 break;
+       case SP_S_KILLS      :                  /* # of kills player have */
+	 LineToConsole("\nS->C SP_S_KILLS\t");
+	 if (log_packets > 1)
+	   {
+	     LineToConsole("  pnum=%d, ",
+		      (unsigned char) packet[1]);
+             data = &packet[2];
+             for (j = 0; j < (unsigned) packet[1]; j++) 
+	       {
+		 kills = (unsigned short) *data++;
+                 kills |= (unsigned short) ((*data & 0x03) << 8);
+                 pnum = (unsigned char) *data++ >> 2;
+                 LineToConsole("pnum = %d, kills = %d ",pnum, kills);
+	       }
+	   }
+	 fprintf(stderr,"\n");
+	 break;
+       case SP_S_STATS      :                  /* see SP_STATS */
+	 LineToConsole("\nS->C SP_S_STATS\t");
+	 if (log_packets > 1)
+	   LineToConsole("  pnum=%d, tplanets=%d, tkills=%d, tlosses=%d, kills=%d, losses=%d, tticks=%d, tarmies=%d, sbkills=%d, sblosses=%d, armies=%d, planets=%d, maxkills=%d, sbmaxkills=%d,",
+		   ((struct stats_spacket *) packet)->pnum,
+		   ntohl(((struct stats_spacket *) packet)->tplanets),
+		   ntohl(((struct stats_spacket *) packet)->tkills),
+		   ntohl(((struct stats_spacket *) packet)->tlosses),
+		   ntohl(((struct stats_spacket *) packet)->kills),
+		   ntohl(((struct stats_spacket *) packet)->losses),
+		   ntohl(((struct stats_spacket *) packet)->tticks),
+		   ntohl(((struct stats_spacket *) packet)->tarmies),
+		   ntohl(((struct stats_spacket *) packet)->sbkills),
+		   ntohl(((struct stats_spacket *) packet)->sblosses),
+		   ntohl(((struct stats_spacket *) packet)->armies),
+		   ntohl(((struct stats_spacket *) packet)->planets),
+		   ntohl(((struct stats_spacket *) packet)->maxkills),
+		   ntohl(((struct stats_spacket *) packet)->sbmaxkills) );
+	 break;
+#endif
+     default: 
+       LineToConsole("\nS->C UNKNOWN\t");
+       if(log_packets > 1)
+	 LineToConsole("  type=%d,",packet[0]);
+     }
+#ifdef nodef /* #ifdef SHORT_PACKETS */
+   switch( *((char *) packet) )
+     {
+       /* variable length packets */
+       case VPLAYER_SIZE    :
+	 LineToConsole("\nS->C VPLAYER_SIZE\t");
+	 if (log_packets > 1)
+	   LineToConsole("  No struct defined, same enum value as SP_PLAYER,");
+	 break;
+       case SHORTVERSION    :                   /* other number blocks, like
+						 * * * UDP Version */
+	 LineToConsole("\nS->C SHORTVERSION\t");
+	 if (log_packets > 1)
+	   LineToConsole("  No struct defined, same enum value as SP_MOTD,");
+	 break;
+       case OLDSHORTVERSION :                   /* S_P2 */
+	 LineToConsole("\nS->C OLDSHORTVERSION\t");
+	 if (log_packets > 1)
+	   LineToConsole("  No struct defined, same enum value as SP_WARNING,");
+	 break;
+     }
+#endif
+}
+void print_opacket(char *packet, int size)
+{
+  int i;  /* lcv */
+  switch(packet[0])
+    {
+      /* packets sent from remote client to xtrek server */
+    case CP_MESSAGE      :                    /* send a message */
+      LineToConsole("\nC->S CP_MESSAGE\t");
+      if (log_packets > 1)
+	LineToConsole("  group=%d, indiv=%d, mesg=\"%s\",",
+		((struct mesg_cpacket *) packet)->group,
+		((struct mesg_cpacket *) packet)->indiv,
+		((struct mesg_cpacket *) packet)->mesg );
+      break;
+    case CP_SPEED        :                    /* set speed */
+      LineToConsole("\nC->S CP_SPEED\t");
+      if (log_packets > 1)
+	LineToConsole("  speed=%d,",
+		((struct speed_cpacket *) packet)->speed );
+      break;
+    case CP_DIRECTION    :                    /* change direction */
+      LineToConsole("\nC->S CP_DIRECTION\t");
+      if (log_packets > 1)
+	LineToConsole("  dir=%u,",
+		((struct dir_cpacket *) packet)->dir );
+      break;
+    case CP_PHASER       :                    /* phaser in a direction */
+      LineToConsole("\nC->S CP_PHASER\t");
+      if (log_packets > 1)
+	LineToConsole("  dir=%u,",
+		((struct phaser_cpacket *) packet)-> dir );
+      break;
+    case CP_PLASMA       :                    /* plasma (in a direction) */
+      LineToConsole("\nC->S CP_PLAMSA\t");
+      if (log_packets > 1)
+	LineToConsole("  dir=%u,",
+		((struct plasma_cpacket *) packet)->dir );
+      break;
+    case CP_TORP         :                    /* fire torp in a direction */
+      LineToConsole("\nC->S CP_TORP\t");
+      if (log_packets > 1)
+	LineToConsole("  dir=%u,",
+		((struct torp_cpacket *) packet)->dir );
+      break;
+    case CP_QUIT         :                    /* self destruct */
+      LineToConsole("\nC->S CP_QUIT\t");
+      if (log_packets > 1)
+	LineToConsole("  no args,");
+      break;
+    case CP_LOGIN        :                    /* log in (name, password) */
+      LineToConsole("\nC->S CP_LOGIN\t");
+      if (log_packets > 1)
+	LineToConsole("  query=%d, name=\"%s\", password=\"%s\", login=\"%s\",",
+		((struct login_cpacket *) packet)->query,
+		((struct login_cpacket *) packet)->name,
+		((struct login_cpacket *) packet)->password,
+		((struct login_cpacket *) packet)->login );
+      break;
+    case CP_OUTFIT       :                    /* outfit to new ship */
+      LineToConsole("\nC->S CP_OUTFIT\t");
+      if (log_packets > 1)
+	LineToConsole("  team=%d, ship=%d,",
+		((struct outfit_cpacket *) packet)->team,
+		((struct outfit_cpacket *) packet)->ship );
+      break;
+    case CP_WAR          :                    /* change war status */
+      LineToConsole("\nC->S CP_WAR\t");
+      if (log_packets > 1)
+	LineToConsole("  newmask=0x%0X,",
+		((struct war_cpacket *) packet)->newmask );
+      break;
+    case CP_PRACTR       :                    /* create practice robot? */
+      LineToConsole("\nC->S CP_PRACTR\t");
+      if (log_packets > 1)
+	LineToConsole("  no args,");
+      break;
+    case CP_SHIELD       :                    /* raise/lower sheilds */
+      LineToConsole("\nC->S CP_SHIELD\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct shield_cpacket *) packet)->state );
+      break;
+    case CP_REPAIR       :                    /* enter repair mode */
+      LineToConsole("\nC->S CP_REPAIR\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct repair_cpacket *) packet)-> state );
+      break;
+    case CP_ORBIT        :                    /* orbit planet/starbase */
+      LineToConsole("\nC->S CP_ORBIT\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct orbit_cpacket *) packet)->state );
+      break;
+    case CP_PLANLOCK     :                    /* lock on planet */
+      LineToConsole("\nC->S CP_PLANLOCK\t");
+      if (log_packets > 1)
+	LineToConsole("  pnum = %d,",
+		((struct planlock_cpacket *) packet)->pnum );
+      break;
+    case CP_PLAYLOCK     :                    /* lock on player */
+      LineToConsole("\nC->S CP_PLAYLOCK\t");
+      if (log_packets > 1)
+	LineToConsole("  pnum=%d,",
+		((struct playlock_cpacket *) packet)->pnum );
+      break;
+    case CP_BOMB         :                    /* bomb a planet */
+      LineToConsole("\nC->S CP_BOMB\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct bomb_cpacket *) packet)->state );
+      break;
+    case CP_BEAM         :                    /* beam armies up/down */
+      LineToConsole("\nC->S CP_BEAM\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct beam_cpacket *) packet)->state );
+      break;
+    case CP_CLOAK        :                    /* cloak on/off */
+      LineToConsole("\nC->S CP_CLOAK\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct cloak_cpacket *) packet)->state );
+      break;
+    case CP_DET_TORPS    :                    /* detonate enemy torps */
+      LineToConsole("\nC->S CP_DET_TORPS\t");
+      if (log_packets > 1)
+	LineToConsole("  no args,");
+      break;
+    case CP_DET_MYTORP   :                    /* detonate one of my torps */
+      LineToConsole("\nC->S CP_DET_MYTORP\t");
+      if (log_packets > 1)
+	LineToConsole("  tnum=%u,",
+		ntohs(((struct det_mytorp_cpacket *) packet)->tnum) );
+      break;
+    case CP_COPILOT      :                    /* toggle copilot mode */
+      LineToConsole("\nC->S CP_COPILOT\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+                ((struct copilot_cpacket *) packet)->state );
+      break;
+    case CP_REFIT        :                    /* refit to different ship * 
+					       * 
+					       * * type */
+      LineToConsole("\nC->S CP_REFIT\t");
+      if (log_packets > 1)
+	LineToConsole("  ship=%d,",
+		((struct refit_cpacket *) packet)->ship );
+      break;
+    case CP_TRACTOR      :                    /* tractor on/off */
+      LineToConsole("\nC->S CP_TRACTOR\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d, pnum=%d,",
+		((struct tractor_cpacket *) packet)->state,
+		((struct tractor_cpacket *) packet)->pnum );
+      break;
+    case CP_REPRESS      :                    /* pressor on/off */
+      LineToConsole("\nC->S CP_REPRESS\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d, pnum=%d,",
+		((struct repress_cpacket *) packet)->state,
+		((struct repress_cpacket *) packet)->pnum );
+      break;
+    case CP_COUP         :                    /* coup home planet */
+      LineToConsole("\nC->S CP_COUP\t");
+      if (log_packets > 1)
+	LineToConsole("  no args,");
+      break;
+    case CP_SOCKET       :                    /* new socket for * *
+				               * reconnection */
+      LineToConsole("\nC->S CP_SOCKET\t");
+      if (log_packets > 1)
+	LineToConsole("  version=%d, udp_version=%d\n, socket=%u,",
+		((struct socket_cpacket *) packet)->version, 
+		((struct socket_cpacket *) packet)->udp_version,
+		ntohl(((struct socket_cpacket *) packet)->socket)  );
+      break;
+    case CP_OPTIONS      :                    /* send my options to be * * 
+					       * saved */
+      LineToConsole("\nC->S CP_OPTIONS\t");
+      if (log_packets > 1)
+	LineToConsole("  flags=0x%0X, keymap=\"%s\",",
+		ntohl(((struct options_cpacket *) packet)->flags),
+		((struct options_cpacket *) packet)->keymap );
+      break;
+    case CP_BYE          :                    /* I'm done! */
+      LineToConsole("\nC->S CP_BYE\t");
+      if (log_packets > 1)
+	LineToConsole("  no args,");
+      break;
+    case CP_DOCKPERM     :                    /* set docking permissions */
+      LineToConsole("\nC->S CP_DOCKPERM\t");
+      if (log_packets > 1)
+	LineToConsole("  state=%d,",
+		((struct dockperm_cpacket *) packet)->state );
+      break;
+    case CP_UPDATES      :                    /* set number of usecs per * 
+				               * 
+					       * * update */
+      LineToConsole("\nC->S CP_UPDATES\t");
+      if (log_packets > 1)
+	LineToConsole("  usecs=%u,",
+		ntohl(((struct updates_cpacket *) packet)->usecs) );
+      break;
+    case CP_RESETSTATS   :                    /* reset my stats packet */
+      LineToConsole("\nC->S CP_RESETSTATS\t");
+      if (log_packets > 1)
+	LineToConsole("  verify=%c,",
+		((struct resetstats_cpacket *) packet)->verify );
+      break;
+    case CP_RESERVED     :                    /* for future use */
+      LineToConsole("\nC->S CP_RESERVED\t");
+      if (log_packets > 1)
+	{
+	  LineToConsole("  data=" );
+	  for( i = 0; i < 16; i++) 
+            LineToConsole("0x%0X ",  (unsigned char)((struct reserved_cpacket *) packet)->data[i]);
+	  LineToConsole(", resp=" );
+	  for( i = 0; i < 16; i++) 
+            LineToConsole("0x%0X ",  (unsigned char)((struct reserved_cpacket *) packet)->resp[i]);
+	  LineToConsole(",");
+	}
+      break;
+#ifdef INCLUDE_SCAN
+      /* NOTE: not implemented. */
+    case CP_SCAN         :                    /* ATM: request for player * 
+					       * 
+					       * * scan */
+      LineToConsole("\nC->S CP_SCAN\t");
+      if (log_packets > 1)
+	LineToConsole("  not implemented," );
+      break;
+#endif
+    case CP_UDP_REQ      :                    /* request UDP on/off */
+      LineToConsole("\nC->S CP_UDP_REQ\t");
+      if (log_packets > 1)
+	LineToConsole("  request=%d, connmode=%d, port=%d,",
+		((struct udp_req_cpacket *) packet)->request,
+		((struct udp_req_cpacket *) packet)->connmode,
+		ntohl(((struct udp_req_cpacket *) packet)->port) );
+      break;
+    case CP_SEQUENCE     :                    /* sequence # packet */
+      LineToConsole("\nC->S CP_SEQUENCE\t");
+      if (log_packets > 1)
+	LineToConsole("  sequence=%u,",
+		ntohs(((struct sequence_cpacket *) packet)->sequence) );
+      break;
+#ifdef RSA
+    case CP_RSA_KEY      :                    /* handles binary * *
+					       * verification */
+      LineToConsole("\nC->S CP_RSA_KEY\t");
+      if (log_packets > 1)
+	{
+	LineToConsole("  global=");
+	for(i = 0; i < KEY_SIZE; i++)
+	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->global[i]);
+	fprintf(stderr,",");
+	LineToConsole("  public=");
+	for(i = 0; i < KEY_SIZE; i++)
+	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->public[i]);
+	fprintf(stderr,",");
+	LineToConsole("  resp=");
+	for(i = 0; i < KEY_SIZE; i++)
+	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->resp[i]);
+	fprintf(stderr,",");
+	}
+      break;
+#endif
+    case CP_PING_RESPONSE :                   /* client response */
+      LineToConsole("\nC->S CP_PING_RESPONSE\t");
+      if (log_packets > 1)
+	LineToConsole("  number=%u, pingme=%d, cp_sent=%lu, cp_recv=%lu",
+		((struct ping_cpacket *) packet)->number,
+		((struct ping_cpacket *) packet)->pingme,
+		ntohl(((struct ping_cpacket *) packet)->cp_sent),
+		ntohl(((struct ping_cpacket *) packet)->cp_recv) );
+      break;
+#ifdef SHORT_PACKETS
+    case CP_S_REQ        :          
+      LineToConsole("\nC->S CP_S_REQ\t");
+      if (log_packets > 1)
+	LineToConsole("  req=%d, version=%d,",
+		((struct shortreq_cpacket *) packet)->req,
+		((struct shortreq_cpacket *) packet)->version );
+      break;
+    case CP_S_THRS       :         
+      LineToConsole("\nC->S CP_S_THRS\t");
+      if (log_packets > 1)
+	LineToConsole("  thresh=%u,",
+		ntohs(((struct threshold_cpacket *) packet)->thresh) );
+      break;
+    case CP_S_MESSAGE    :                    /* vari. Message Packet */
+      LineToConsole("\nC->S CP_S_MESSAGE\t");
+      if (log_packets > 1)
+	LineToConsole("  size=%d, group=%d, indiv=%d, mess=\"%s\",",
+                ((struct mesg_cpacket *) packet)->pad1,
+                ((struct mesg_cpacket *) packet)->group,
+                ((struct mesg_cpacket *) packet)->indiv,
+                ((struct mesg_cpacket *) packet)->mesg );
+      break;
+    case CP_S_RESERVED   :      
+      LineToConsole("\nC->S CP_S_RESERVED\t");
+      if (log_packets > 1)
+	LineToConsole("  no struct defined,");
+      break;
+    case CP_S_DUMMY      :
+      LineToConsole("\nC->S CP_S_DUMMY\t");
+      if (log_packets > 1)
+	LineToConsole("  no struct defined,");
+      break;
+#endif
+#ifdef FEATURE_PACKETS
+    case CP_FEATURE      :  
+      LineToConsole("\nC->S CP_FEATURE\t");
+      if (log_packets > 1)
+	LineToConsole("  feature_type=%c, arg1=%d, arg2=%d, value=%d, name=\"%s\",",
+		((struct feature_cpacket *) packet)->feature_type,
+		((struct feature_cpacket *) packet)->arg1,
+		((struct feature_cpacket *) packet)->arg2,
+		ntohl(((struct feature_cpacket *) packet)->value),
+		((struct feature_cpacket *) packet)->name );
+      break;
+#endif
+    default             :
+       LineToConsole("\nC->S UNKNOWN\t");
+       if(log_packets > 1)
+	 LineToConsole("  type=%d,",packet[0]);
+    }
 }
 
 #endif

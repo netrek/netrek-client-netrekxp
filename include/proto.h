@@ -1134,6 +1134,8 @@ struct sequence_spacket;
 void handleSequence (struct sequence_spacket *packet);
 void Log_Packet (char type, int act_size);
 void Log_OPacket (int tpe, int size);
+void print_opacket (char *packet, int size);
+void print_packet (char *packet, int size); 
 void Dump_Packet_Log_Info (void);
 char *strcpyp_return (register char *s1,
                       register char *s2,

@@ -38,8 +38,8 @@ DisplayMessage ()
 
     W_ClearWindow (messagew);
 
-	if (length == 0)
-		return;
+    if (length == 0)
+        return;
 
     if (length > 80)
     {

@@ -1068,8 +1068,9 @@ cowmain (char *server,
 #ifdef SOUND
     /* Kill all currently playing sounds when entering game */
     Mix_HaltChannel(-1);
-    /* Fade out any music playing over 5 seconds */
-    if (Mix_PlayingMusic())
+    /* Fade out any music playing over 5 seconds if background
+       music is off (i.e fade out geno music) */
+    if (Mix_PlayingMusic() && !soundMusicBkgd)
     {
         Mix_FadeOutMusic(5000);
         /* Attempt to start background music once fadeout done */
