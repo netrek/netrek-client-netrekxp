@@ -316,7 +316,7 @@ extern void Play_Sound_Loc (int type, u_int flag, int angle, int distance)
     	distance = 0;
     if (distance > 255)
     	distance = 255;
-    if (soundAngles)
+    if (angle >= 0)
     {
         // Adjust volume with distance and angle
         if (Mix_SetPosition(channel, angle, distance) == 0)

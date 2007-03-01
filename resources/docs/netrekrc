@@ -96,7 +96,7 @@ forceDisplay: 1
 forceMono: off
 
 # Highlight friendly phasers
-highlightFriendlyPhasers: on
+highlightFriendlyPhasers: off
 
 # Ignore Caps Lock key state
 ignoreCaps: on

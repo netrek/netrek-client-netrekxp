@@ -741,7 +741,7 @@ DrawShips (void)
                             angle = 0;
                         // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
-                            Play_Sound(CLOAKED_WAV, SF_CLOAKING);
+                            Play_Sound_Loc(CLOAKED_WAV, SF_CLOAKING, -1, distance);
                         else
                             Play_Sound_Loc(CLOAKED_WAV, SF_CLOAKING, angle, distance);
                     }
@@ -780,7 +780,7 @@ DrawShips (void)
                             angle = 0;
                          // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
-                            Play_Sound(UNCLOAK_WAV, SF_CLOAKING);
+                            Play_Sound_Loc(UNCLOAK_WAV, SF_CLOAKING, -1, distance);
                         else
                             Play_Sound_Loc(UNCLOAK_WAV, SF_CLOAKING, angle, distance);
                     }
@@ -1319,9 +1319,9 @@ DrawShips (void)
                     if (!soundAngles || distance < SCALE/2)
                     {
                         if (j->p_ship.s_type == STARBASE)
-                            Play_Sound(BASE_EXPLOSION_WAV, SF_EXPLOSIONS);
+                            Play_Sound_Loc(BASE_EXPLOSION_WAV, SF_EXPLOSIONS, -1, distance);
                     	else
-                            Play_Sound(EXPLOSION_OTHER_WAV, SF_OTHER|SF_EXPLOSIONS);
+                            Play_Sound_Loc(EXPLOSION_OTHER_WAV, SF_OTHER|SF_EXPLOSIONS, -1, distance);
                     }
                     else
                     {
@@ -1403,7 +1403,7 @@ DrawShips (void)
                         angle = 0;
                     // At short distances, don't use angular sound
                     if (!soundAngles || distance < SCALE/2)
-                        Play_Sound(PHASER_OTHER_WAV, SF_OTHER|SF_WEAPONS);
+                        Play_Sound_Loc(PHASER_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, distance);
                     else
                         Play_Sound_Loc(PHASER_OTHER_WAV, SF_OTHER|SF_WEAPONS, angle, distance);
                 }
@@ -1881,7 +1881,7 @@ DrawTorps (void)
                         angle = 0;
                     // At short distances, don't use angular sound
                     if (!soundAngles || distance < SCALE/2)
-                        Play_Sound(TORP_HIT_WAV, SF_WEAPONS);
+                        Play_Sound_Loc(TORP_HIT_WAV, SF_WEAPONS, -1, distance);
                     else
                         Play_Sound_Loc(TORP_HIT_WAV, SF_WEAPONS, angle, distance);
                 }
@@ -2143,7 +2143,7 @@ DrawPlasmaTorps (void)
                     angle = 0;
                 // At short distances, don't use angular sound
                 if (!soundAngles || distance < SCALE/2)
-                    Play_Sound(PLASMA_HIT_WAV, SF_WEAPONS);
+                    Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, -1, distance);
                 else
                     Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, angle, distance);
             }
@@ -2514,7 +2514,7 @@ DrawMisc (void)
     if (sound_other_torps < num_other_torps)
     {
         if (!soundAngles || other_torp_dist < SCALE/2)
-            Play_Sound(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS);
+            Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, other_torp_dist);
         else
             Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_torp_angle, other_torp_dist);
     }
@@ -2523,7 +2523,7 @@ DrawMisc (void)
     if (sound_other_plasmas < num_other_plasmas)
     {
         if (!soundAngles || other_plasma_dist < SCALE/2)
-            Play_Sound(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS);
+            Play_Sound_Loc(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, other_plasma_dist);
         else
             Play_Sound_Loc(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_plasma_angle, other_plasma_dist);
     }
