@@ -291,7 +291,7 @@ udpClientSend:            (0-3) how to send data to server
 
 udpDebug:                 (0/1) debug UDP traffic
 udpSequenceCheck:         (on/off) check UDP sequence
-updatesPerSec:            (0-50) how many data updates per second to request from server
+updatesPerSec:            (1-50 generally) how many data updates per second to request from server
 useFullShipInfo:          (on/off) display other ships to 256 directions instead of 16
 useLite:                  (on/off) use beeplite
 defLite:                  (on/off) use default beeplite settings

@@ -171,7 +171,7 @@ checkFeature (struct feature_cpacket *packet)
         return;
     }
     if (strcmpi(packet->name, "UPS") == 0 && value != -1) {
-        updatesPerSec = server_ups = value;
+        lastUpdateSpeed = updatesPerSec = server_ups = value;
         LineToConsole("Server actually sending %d updates per second.\n", value);
         return;
     }

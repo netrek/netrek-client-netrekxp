@@ -401,7 +401,9 @@ udpDebug: 0
 udpSequenceCheck: on
 
 # How many updates per second to request
-# 1-50 range
+# 1-50 (or whatever server frame rate is)
+# Value may be constrained by server to be evenly divisible
+# by server frame rate
 updatesPerSec: 50
 
 # Display other ships to 256 directions instead of 16

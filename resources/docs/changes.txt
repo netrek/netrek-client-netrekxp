@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- changes updatesPerSec so it now only cycles over valid ranges as defined by the server.
+  For a server running at 10 fps, valid update/sec values are 1 2 5 and 10.  For a server
+  running at 50 fps, valid update/sec ranges are 1 2 5 10 25 and 50.
 - both sound menu and netrekrc now have ability to turn sounds off by type, i.e. to turn
   all explosion sounds off, all message sounds off, etc.
   The netrekrc option is called "soundExclude", and the valid sound types are:

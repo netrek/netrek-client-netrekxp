@@ -778,7 +778,9 @@ struct save_options save_options[] = {
     {"updatesPerSec", &updatesPerSec, RC_INT,
         {
             "How many updates per second to request",
-            "1-50 range",
+            "1-50 (or whatever server frame rate is)",
+            "Value may be constrained by server to be evenly divisible",
+            "by server frame rate",
             NULL
         }
     },
