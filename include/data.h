@@ -138,6 +138,7 @@ extern int old_rotate_deg;
 #endif
 
 extern int updatesPerSec;	/* client requested updates per second */
+extern int lastUpdateSpeed;	/* last update speed client requested */
 extern int server_ups;		/* server responded updates per second */
 extern int server_fps;		/* server configured frames per second */
 

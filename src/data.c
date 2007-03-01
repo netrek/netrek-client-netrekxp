@@ -227,9 +227,10 @@ int recv_warn = 1;
 
 #endif
 
-int updatesPerSec = 10;	/* client requested updates per second */
-int server_ups = 10;	/* server responded updates per second */
-int server_fps = 10;	/* server configured frames per second */
+int updatesPerSec = 10;		/* client requested updates per second */
+int lastUpdateSpeed = 10;	/* last update speed client requested */
+int server_ups = 10;		/* server responded updates per second */
+int server_fps = 10;		/* server configured frames per second */
 
 #ifdef META
 /* Metaservers list - comma delimited  */

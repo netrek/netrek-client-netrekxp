@@ -25,7 +25,6 @@
 
 int notdone;                    /* not done flag */
 
-static int lastUpdateSpeed = 10;
 static char newkeys[14];
 
 char *localmes[] = { "Show owner on local planets",
@@ -668,8 +667,8 @@ optionaction (W_Event * data)
          * a hack). */
         if (op->op_option == &colorClient)
         {
-        	if (!dynamicBitmaps)
-        		return;
+            if (!dynamicBitmaps)
+                return;
         }
         if (data->key == W_RBUTTON)
         {
@@ -790,9 +789,31 @@ optionaction (W_Event * data)
 #endif
     }
 
+    /* Is it a special non-linear option range? i.e updatesPerSec */
+    else if (op->op_range && op->op_option == &updatesPerSec)
+    {
+    	if (data->key == W_RBUTTON)
+    	{
+    	    if (++updatesPerSec > server_fps) ; /* Don't exceed server fps */
+    	    else 
+                while (server_fps % updatesPerSec != 0) updatesPerSec++;
+        }
+        else if (data->key == W_MBUTTON)
+            updatesPerSec = 1;
+        else if (data->key == W_LBUTTON)
+        {
+            if (--updatesPerSec < 1) ; /* Don't divide by 0 */
+            else
+                while (server_fps % updatesPerSec != 0) updatesPerSec--;
+        }
+        /* wrap value around within updatesPerSec range */
+        if (updatesPerSec > server_fps)
+            updatesPerSec = 1;
+        if (updatesPerSec < 1)
+            updatesPerSec = server_fps;
+    }
 
     /* Does the button have a range of values? */
-
     else if (op->op_range)
     {
         if (data->key == W_RBUTTON)
