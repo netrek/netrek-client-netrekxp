@@ -431,6 +431,7 @@ int newPlist = 0;
 int playerListBlankZeroKills = 1;
 int playerListHack = 0;
 int playerListMessaging = 1;
+int messageKeyOnly = 1;
 
 int showMySpeed = 0;
 

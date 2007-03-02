@@ -22,7 +22,6 @@
 #include <pwd.h>
 #include <math.h>
 #include <process.h>
-#include <errno.h>
 
 #include "Wlib.h"
 #include "defs.h"
@@ -262,13 +261,13 @@ rint (double r)
 
 
 //A more useful perror(), reports last winsock error as well
-/*
+
 void
 perror (const char *str)
 {
     LineToConsole ("%s: errno = %d, WSALast = %d\n", str, errno, WSAGetLastError ());
 }
-*/
+
 
 #ifdef NEW_SELECT
 // ********************************* select ********************************

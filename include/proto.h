@@ -1235,7 +1235,7 @@ void WinMainCleanup (void);
 struct passwd *getpwuid ();
 void sleep (int seconds);
 double rint (double r);
-//void perror (const char *str);
+void perror (const char *str);
 #ifdef NEW_SELECT
 int PASCAL select (int nfds,
                    fd_set * readfds,

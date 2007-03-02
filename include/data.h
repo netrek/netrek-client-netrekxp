@@ -653,6 +653,8 @@ extern int maxScrollLines;      /* maximum number of scroll lines in a window */
 extern int mainResizeable;      /* allow resize of netrek window */
 extern int mainTitleBar;        /* start netrek window with title bar on */
 extern int playerListMessaging; /* allow message zoom when clicking on player list */
+extern int messageKeyOnly;	/* only start messages with the actual message key(s),
+				   if cursor in message windows */
 extern int observerMode;        /* set observer mode variable */
 extern int observerPorts[];     /* predefined list of observer ports */
 extern int showHockeyScore;     /* show hockey score on map */

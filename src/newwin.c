@@ -769,7 +769,15 @@ void loadmplanetsC()
 static void
 handleMessageWindowKeyDown (W_Event * event)
 {
-    smessage (event->key);
+    if (messageKeyOnly && messageon == 0)
+    {
+    	if (mystats->st_keymap[(event->key)-32] != 109) /* Not a message key (Key109)*/
+    	    return;
+    	else /* It is a message key, allow them to start a message */
+    	    Key109();
+    }
+    else  /* Attempt to send message to whatever key was pressed */
+        smessage (event->key);
 }
 
 /******************************************************************************/

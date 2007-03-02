@@ -345,25 +345,20 @@ update_Help_to_Keymap (char *helpmessage)
 
 
     if (key < 32 || key > 126)
-    {
         return;
-    }
 
     if (strlen (helpmessage) < 6)
-    {
         return;
-    }
 
     for (i = 0; i < 96; i++)
     {
         if (mystats->st_keymap[i] != key)
             continue;
         if (i + 32 == key)
-		{
-			default_set = 1;
+	{
+	    default_set = 1;
             continue;
-		}						/* it's already there! don't
-                                 * add it! */
+	} /* it's already there! don't add it! */
 
         /* we've found a key mapped to key! */
         /* the key is i+32 */

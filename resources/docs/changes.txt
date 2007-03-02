@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.2: (Released Feb-2007)
+- added "messageKeyOnly: (on)/off" so that you will only start messages with the actual
+  message key(s) if the cursor is in the message windows.  Previously, pressing any key
+  while the cursor was over the message windows/warning window would attempt to send a
+  message, which sometimes leads to accidental messaging.
 - changes updatesPerSec so it now only cycles over valid ranges as defined by the server.
   For a server running at 10 fps, valid update/sec values are 1 2 5 and 10.  For a server
   running at 50 fps, valid update/sec ranges are 1 2 5 10 25 and 50.

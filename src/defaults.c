@@ -253,6 +253,13 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"messageKeyOnly", &messageKeyOnly, RC_BOOL,
+        {
+            "Only start messages with the actual message key(s)",
+            "if cursor is in the message windows",
+            NULL
+        }
+    },
 #endif
 #ifdef META
     {"metaPort", &metaPort, RC_INT,
@@ -1689,6 +1696,7 @@ resetdefaults (void)
     agriColor = intDefault ("agriColor", agriColor);
 
     playerListMessaging = booleanDefault ("playerListMessaging", playerListMessaging);
+    messageKeyOnly = booleanDefault ("messageKeyOnly", messageKeyOnly);
 
     highlightFriendlyPhasers = booleanDefault ("highlightFriendlyPhasers",
                                                highlightFriendlyPhasers);

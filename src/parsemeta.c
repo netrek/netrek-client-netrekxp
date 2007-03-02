@@ -1921,8 +1921,11 @@ int metaPing_sendEchoRequest(SOCKET s, LPSOCKADDR_IN lpstToAddr, u_short nSeq)
 				 (LPSOCKADDR)lpstToAddr,	/* destination */
 				 sizeof(SOCKADDR_IN));		/* address length */
 
-	if (nRet == SOCKET_ERROR) 
-	metaPing_ReportError("sendto()");
+	if (nRet == SOCKET_ERROR)
+	{
+	    metaPing_ReportError("sendto()");
+	    LineToConsole("IP address %s\n", lpstToAddr->sin_addr.s_addr);
+	}
 	return (nRet);
 }
 
@@ -1949,6 +1952,7 @@ int metaPing_recvEchoReply(SOCKET s,
 	if (nRet == SOCKET_ERROR) 
 	{
 		metaPing_ReportError("recvfrom()");
+		LineToConsole("IP address %s\n", lpsaFrom->sin_addr.s_addr);
 		return SOCKET_ERROR;
 	}
 

@@ -47,9 +47,9 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
-11) ships orbiting and galactip map refresh..blinking..server not sending orbiters
-until every 4th packet? at 50 fps? and every other packet at 20 fps.  Where's the 
-code that makes vplayer not get sent if not moving/in orbit?
+11) Server issue with ships in orbit at 50 fps.
+12) sendto() error: 10049 on metaserver connect to a bad server
+12a) Why getting recvfrom timeout errors from multicast metaserver connect?
 
 Stas's list:
 - color coded playerlist.
@@ -61,8 +61,6 @@ Stas's list:
 - add msg.phaser to enable formatting of phaser messages
 - add copy/paste possibility from message windows (richtext ?)
 - add clickable urls from message windows (richtext ?)
-- add "mKeyOnlyToStartMessages: on/off" to ignore keys [0-9][a-z][ATFOKRG] in message window when the messageon=0
 - scrollable player list
 - parse Announcer messages in hockey games
-- resize documentation window
 - pasting multiline prints \r\n instead of splitting lines
