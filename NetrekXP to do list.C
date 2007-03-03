@@ -47,20 +47,16 @@ Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
 10) Make sure all ping related fields are switched correctly via metasort.
-11) Server issue with ships in orbit at 50 fps.
-12) sendto() error: 10049 on metaserver connect to a bad server
-12a) Why getting recvfrom timeout errors from multicast metaserver connect?
+10a) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
+to hostname not resolving
 
 Stas's list:
-- color coded playerlist.
-! server: ita won't block RCDs (why not ?)
-! after res if there cloaker around he will be seen briefly (speed 0 bug)
+- color coded (?) and scrollable playerlist.
 - add "reset to defaults" to options menu
 - add shiftMouse, controlMouse on/off
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
 - add copy/paste possibility from message windows (richtext ?)
 - add clickable urls from message windows (richtext ?)
-- scrollable player list
 - parse Announcer messages in hockey games
 - pasting multiline prints \r\n instead of splitting lines

@@ -1586,7 +1586,6 @@ resetdefaults (void)
     detCircle = booleanDefault ("detCircle", detCircle);
     puckCircle = booleanDefault ("puckCircle", puckCircle);
     showArmy = booleanDefault ("showArmy", showArmy);
-    lastUpdateSpeed = updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);

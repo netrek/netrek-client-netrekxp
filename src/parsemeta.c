@@ -746,7 +746,8 @@ static int ReadMetasRecv(int x)
     if (bytes < 0) {
       /* Don't return on the initial call, allow time for other metaservers */
       if (x != -1) {
-        perror("ReadMetasRecv: recvfrom");
+        if (errno)
+          perror("ReadMetasRecv: recvfrom");
         return 0;
       }
     }
@@ -1924,7 +1925,7 @@ int metaPing_sendEchoRequest(SOCKET s, LPSOCKADDR_IN lpstToAddr, u_short nSeq)
 	if (nRet == SOCKET_ERROR)
 	{
 	    metaPing_ReportError("sendto()");
-	    LineToConsole("IP address %s\n", lpstToAddr->sin_addr.s_addr);
+	    LineToConsole("Error pinging %s\n", inet_ntoa(lpstToAddr->sin_addr));
 	}
 	return (nRet);
 }
@@ -1952,7 +1953,7 @@ int metaPing_recvEchoReply(SOCKET s,
 	if (nRet == SOCKET_ERROR) 
 	{
 		metaPing_ReportError("recvfrom()");
-		LineToConsole("IP address %s\n", lpsaFrom->sin_addr.s_addr);
+		LineToConsole("Error receiving ping from %s\n", inet_ntoa(lpsaFrom->sin_addr));
 		return SOCKET_ERROR;
 	}
 

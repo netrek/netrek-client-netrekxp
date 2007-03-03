@@ -1055,6 +1055,7 @@ cowmain (char *server,
         sendUdpReq (COMM_UPDATE);
 #endif
         /* Send request for updatesPerSec.  New servers now support 50 u/s */
+        lastUpdateSpeed = updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
         sendUpdatePacket (1000000 / updatesPerSec);
 
 #ifdef HOCKEY_LINES
