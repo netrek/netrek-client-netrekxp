@@ -2136,20 +2136,22 @@ saveOptions ()
 
 #ifdef SOUND
     // excluded sound categories
-    if ((adefault = stringDefault ("soundExclude")) != NULL)
+    adefault = stringDefault ("soundExclude");
+    if (saveBig)
     {
-    	if (saveBig)
-    	{
-    	    fputs ("# Sound categories to turn off\n", fp);
-    	    fputs ("# e=explosions, w=weapons, a=alerts,\n", fp);
-    	    fputs ("# m=messages, i=info, c=cloaking,\n", fp);
-    	    fputs ("# s=shield, o=other ships\n", fp);
-    	}
-        sprintf (str, "soundExclude: %s\n", adefault);
-        fputs (str, fp);
-        if (saveBig)
-            fputs ("\n", fp);
+    	fputs ("# Sound categories to turn off\n", fp);
+    	fputs ("# e=explosions, w=weapons, a=alerts,\n", fp);
+    	fputs ("# m=messages, i=info, c=cloaking,\n", fp);
+    	fputs ("# s=shield, o=other ships\n", fp);
     }
+    if (adefault == NULL)
+        sprintf (str, "soundExclude:\n");
+    else
+        sprintf (str, "soundExclude: %s\n", adefault);
+    fputs (str, fp);
+    if (saveBig)
+        fputs ("\n", fp);
+
     // sound directory
     if (sounddir != NULL)
     {

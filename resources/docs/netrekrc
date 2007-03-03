@@ -128,9 +128,9 @@ messageHoldThresh: 0
 # 2 - bottom of the window
 messageHUD: 0
 
-# Only start messages with the actual message key(s),
+# Only start messages with the actual message key(s)
 # if cursor is in the message windows
-messageKeyOnly: 1
+messageKeyOnly: on
 
 # Metaserver port
 metaPort: 3521
@@ -741,11 +741,11 @@ sound.mapped:           off
 # Keys that will trigger macro without going to macro mode
 singleMacro: EF
 
-macro.0.A:%    __    __   ______        __     Want to see some better graphics?
-macro.0.A:%   /  \  / /__/_  __/______ / /__   Want a better sounding client?
-macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/   
+macro.0.A:%    __    __   ______        __   256 ship positions, 50 FPS support,
+macro.0.A:%   /  \  / /__/_  __/______ / /__ all new music and sound, and a
+macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ whole lot more!  
 macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.2
-macro.0.A:%          Get it today at http://www.netrek.org
+macro.0.A:%          Get it today at http://www.playnetrek.org
 
 macro.a.A:.          o                        Just         |    Squeal boy...
 macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
