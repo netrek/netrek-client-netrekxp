@@ -2050,6 +2050,9 @@ DWORD WINAPI metaPing_thread(void)
 				saDest.sin_family = AF_INET;
 				saDest.sin_port = 0;
 				
+				// Address lookup failed somehow during init, don't ping
+				if (!saDest.sin_addr.s_addr) continue;
+
 				// Send ICMP echo request
 				//printf("\nPinging %s [%s]", serverlist[i].address, inet_ntoa(saDest.sin_addr));
 				if (metaPing_sendEchoRequest(rawSocket, &saDest, idx) == SOCKET_ERROR)
