@@ -1,6 +1,6 @@
 Netrek XP 2006, Version 1.3:
 
-Netrek XP 2006, Version 1.2: (Released Feb-2007)
+Netrek XP 2006, Version 1.2: (Released Mar-2007)
 - added "messageKeyOnly: (on)/off" so that you will only start messages with the actual
   message key(s) if the cursor is in the message windows.  Previously, pressing any key
   while the cursor was over the message windows/warning window would attempt to send a

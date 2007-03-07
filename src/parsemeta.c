@@ -71,6 +71,7 @@ static int sent = 0;		/* number of solicitations sent			*/
 static int seen = 0;		/* number of replies seen			*/
 static int type;		/* type of connection requested			*/
 #define RTT_AVG_BUFLEN  5	/* number of samples used for average rtt time	*/
+#define MAX_LIFETIME	5	/* max # connects for server to stay in cache   */
 
     /* from meta.h of metaserver code */
 #define SS_WORKING 0
@@ -598,12 +599,12 @@ static void version_r(struct sockaddr_in *address) {
 	sp->age = (int)now - (int)(sp->when-sp->age);
 	sp->when = now;
 	sp->refresh = 1;
-	sp->lifetime = 5;
+	sp->lifetime = MAX_LIFETIME;
 	continue;
       } else {
 	sp->age = age;
 	sp->when = now;
-	sp->lifetime = 5;
+	sp->lifetime = MAX_LIFETIME;
       }
     } 
     /* Use converted status and player values */
@@ -689,7 +690,7 @@ static void version_s(struct sockaddr_in *address)
   sp->age = 0;
   sp->when = now;
   sp->refresh = 1;
-  sp->lifetime = 5;
+  sp->lifetime = MAX_LIFETIME;
   sp->players = players;
   sp->status = statusOpen;
   sp->typeflag = type;
@@ -854,7 +855,8 @@ static void SaveMetasCache()
           serverlist[i].port,
           serverlist[i].when,
           serverlist[i].age,
-          serverlist[i].lifetime,
+          // Protect against corrupted data so at least lifetimes clear quickly
+          ((serverlist[i].lifetime > MAX_LIFETIME) ? MAX_LIFETIME : serverlist[i].lifetime), 
           serverlist[i].players,
           ((serverlist[i].status <= statusNull) ? serverlist[i].status : statusNull),
           serverlist[i].typeflag);

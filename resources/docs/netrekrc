@@ -744,7 +744,7 @@ singleMacro: EF
 macro.0.A:%    __    __   ______        __   256 ship positions, 50 FPS support,
 macro.0.A:%   /  \  / /__/_  __/______ / /__ all new music and sound, and a
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ whole lot more!  
-macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.2
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.2, released March 2007
 macro.0.A:%          Get it today at http://www.playnetrek.org
 
 macro.a.A:.          o                        Just         |    Squeal boy...
@@ -917,7 +917,7 @@ macro.).A:/*   INL-style timed bronco games are every Wednesday         */
 macro.).A:/*   10pm EST/7pm PST                                         */
 
 macro.(.A:  /*   Get the latest version of Netrek XP 2006 today!            */
-macro.(.A:  /*   Current version is 1.2, released February 2007             */
+macro.(.A:  /*   Current version is 1.2, released March 2007                */
 macro.(.A:  /*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
 macro.(.A:  /*                      or                                      */
 macro.(.A:  /*        http://www.playnetrek.org/                            */
