@@ -347,6 +347,14 @@ pbmain (char *name)
 
 #ifdef SOUND
     Mix_HaltChannel(-1); /* Kill all currently playing sounds when entering game */
+    /* Fade out any music playing over 5 seconds if background
+       music is off (i.e fade out geno music) */
+    if (Mix_PlayingMusic() && !soundMusicBkgd)
+    {
+        Mix_FadeOutMusic(5000);
+        /* Attempt to start background music once fadeout done */
+        Mix_HookMusicFinished(Play_Music_Bkgd);
+    }
     Play_Sound(ENTER_SHIP_WAV, SF_INFO);
 #endif
 

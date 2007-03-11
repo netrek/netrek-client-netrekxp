@@ -35,20 +35,16 @@ to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
 3) Get square planet bitmaps so I can turn them into mapped rotating globes.
 4) Pop-up dialog box for bad version response
-5) new UDP metaserver code has issue if 2nd metaserver responding has more servers, can be
-awkward to resize window if user going to click on a server.  However if cache is working
-properly, after the first connect, all servers should be stored and the metaserver window
-should not resize due to differences between the metaservers.
-5a) Metaping on a Unknown server is causing unseemly delay due to threading.
+5) Metaping on a Unknown server is causing unseemly delay due to threading.
 7) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
 8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
 Win98 xp computer
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
-10) Make sure all ping related fields are switched correctly via metasort.
-10a) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
-to hostname not resolving
+10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
+to hostname not resolving.  Should be fixed.
+12) fix redraw for stationary ships with new planets
 
 Stas's list:
 - color coded (?) and scrollable playerlist.

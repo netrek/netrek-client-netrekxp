@@ -189,7 +189,6 @@ static Window myroot;
        win = (Window *)window;\
        if (bitmap->hwnd != win->hwnd)\
        {\
-           LineToConsole("DBICONHEADER - bitmap and window mismatch\n");\
            hdc = GetDC (win->hwnd);\
            usebitmaphwnd = 0;\
        }\

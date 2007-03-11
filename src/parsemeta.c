@@ -148,7 +148,7 @@ int metaStatusLevel = statusNobody;
 
 /* Functions */
 extern void terminate (int error);
-
+static void metasort (void);
 
 static int
 open_port (char *host,
@@ -788,6 +788,7 @@ static int ReadMetasRecv(int x)
         metaWin = W_MakeMenu ("MetaServer List", 0, 0, 80, metaHeight, NULL, 2);
         W_SetWindowKeyDownHandler (metaWin, metaaction);
         W_SetWindowButtonHandler (metaWin, metaaction);
+        metasort();
     }
 
     /* if we have seen the same number of replies to what we sent, end */
@@ -850,13 +851,16 @@ static void SaveMetasCache()
       	  if (metaPing && serverlist[i].pkt_rtt[0] == -2)
       	      continue;
 #endif
+          /* Protect against saving corrupted server data */
+          if (serverlist[i].address == NULL || serverlist[i].lifetime > MAX_LIFETIME)
+              continue;
+
           sprintf(str,"%s,%d,%lld,%d,%d,%d,%d,%c\n",
           serverlist[i].address,
           serverlist[i].port,
           serverlist[i].when,
           serverlist[i].age,
-          // Protect against corrupted data so at least lifetimes clear quickly
-          ((serverlist[i].lifetime > MAX_LIFETIME) ? MAX_LIFETIME : serverlist[i].lifetime), 
+          serverlist[i].lifetime, 
           serverlist[i].players,
           ((serverlist[i].status <= statusNull) ? serverlist[i].status : statusNull),
           serverlist[i].typeflag);
@@ -1380,6 +1384,13 @@ metasort( void )
             memcpy(&tempserver[0],&serverlist[i],sizeof(struct servers));
             memcpy(&serverlist[i],&serverlist[i+1],sizeof(struct servers));
             memcpy(&serverlist[i+1],&tempserver[0],sizeof(struct servers));
+#ifdef METAPING
+            /* Reset IP lookup flag, as metaping initialization is a concurrent
+               thread and changing the ordering of the serverlist can lead to
+               assigning IP addresses to the wrong serverlist entry. */
+            serverlist[i].ip_lookup = 0;
+            serverlist[i+1].ip_lookup = 0;
+#endif
             /* Start back at beginning - could be more efficient with maybe
                a qsort but the serverlist is so small it doesn't matter much */
             i = 0;	
@@ -2051,7 +2062,7 @@ DWORD WINAPI metaPing_thread(void)
 				saDest.sin_addr.s_addr = serverlist[i].ip_addr;
 				saDest.sin_family = AF_INET;
 				saDest.sin_port = 0;
-				
+
 				// Address lookup failed somehow during init, don't ping
 				if (!saDest.sin_addr.s_addr) continue;
 

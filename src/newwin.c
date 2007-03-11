@@ -1153,7 +1153,7 @@ savebitmaps (void)
     beeplite1 = 
         W_StoreBitmap3 ("bitmaps/misclib/beepliteplayerm.bmp", emph_player_seq_width,
                         emph_player_seq_height * emph_player_seq_frames, BMP_BEEPLITE1,
-                        mapw, LR_MONOCHROME);       
+                        w, LR_MONOCHROME);       
 
     for (i = 0; i < emph_player_seq_frames; i++)
         emph_player_seq[emph_player_seq_frames - (i + 1)] =
@@ -1162,7 +1162,7 @@ savebitmaps (void)
     beeplite2 = 
         W_StoreBitmap3 ("bitmaps/misclib/beepliteplayerl.bmp", emph_player_seql_width,
                         emph_player_seql_height * emph_player_seql_frames, BMP_BEEPLITE2,
-                        mapw, LR_MONOCHROME);      
+                        w, LR_MONOCHROME);      
  
     for (i = 0; i < emph_player_seql_frames; i++)
         emph_player_seql[emph_player_seql_frames - (i + 1)] =
@@ -1171,7 +1171,7 @@ savebitmaps (void)
     beeplite3 = 
         W_StoreBitmap3 ("bitmaps/misclib/beepliteplanet.bmp", emph_planet_seq_width,
                         emph_planet_seq_height * emph_planet_seq_frames, BMP_BEEPLITE3,
-                        mapw, LR_MONOCHROME);
+                        w, LR_MONOCHROME);
 
     for (i = 0; i < emph_planet_seq_frames; i++)
         emph_planet_seq[emph_planet_seq_frames - (i + 1)] =
