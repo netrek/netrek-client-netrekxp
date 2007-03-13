@@ -137,6 +137,7 @@ extern int old_rotate;
 extern int old_rotate_deg;
 #endif
 
+extern int autoSetWar;
 extern int updatesPerSec;	/* client requested updates per second */
 extern int lastUpdateSpeed;	/* last update speed client requested */
 extern int server_ups;		/* server responded updates per second */

@@ -22,6 +22,7 @@
 #include "defs.h"
 #include "struct.h"
 #include "data.h"
+#include "packets.h"
 #include "proto.h"
 
 /******************************************************************************/
@@ -107,6 +108,70 @@ openmem (void)
     }
 }
 
+/******************************************************************************/
+/***  do_autosetwar(int team)                                               ***/
+/***  Set war declares on first entry into game.  Passes int team as        ***/
+/***  player's p_team is not set at the time this function is called        ***/
+/******************************************************************************/
+void
+do_autosetwar (int team)
+{
+    int i, newhostile;
+    int playercount = 0;
+    int largestenemy = -1;
+    int largestenemycount = 0;
+
+    /* Get my current hostile settings.  Should be hostile with all teams,
+       set earlier in cowmain() */
+    newhostile = me->p_hostile;
+
+    /* Loop through all teams, and set war as appropriate*/
+    for (i = 0; i < 4; i++)
+    {
+    	/* Don't change war settings with own team */
+    	if (team == i)
+    	    continue;
+
+    	/* If team has 0 players ... */
+        if ((playercount = realNumShips(1 << i)) == 0)
+        {
+            /* Declare peace?  Yes for non-zero autoSetWar */
+            if (autoSetWar)
+                newhostile ^= (1 << i);
+            continue;
+        }
+        
+        /* Keep track of largest enemy team */
+        if (playercount > largestenemycount)
+        {
+            largestenemy = i;
+            largestenemycount = playercount;
+        }
+    }
+    /* No enemy team?  Don't change war settings. */
+    if (largestenemy < 0)
+        return;
+
+    /* If autoSetWar is 2, keep hostile with largest enemy team, but
+       peace with all other teams even if they have 1 or more players */
+    if (autoSetWar == 2)
+    {
+        for (i = 0; i < 4; i++)
+        {
+            /* Skip own team and zero enemy teams, these were handled earlier */
+    	    if (team == i || (realNumShips(1 << i)) == 0)
+                continue;
+
+            /* Non-zero players team that isn't largest opponent? */
+            if (i != largestenemy)
+                newhostile ^= (1 << i);
+        }
+    }
+
+    sendWarReq (newhostile);
+    return;
+}
+
 #ifdef ROTATERACE
 /******************************************************************************/
 /***  rotateTeams()                                                         ***/
@@ -138,7 +203,7 @@ rotateTeams (void)
             nextlargestteamcount = playercount;
         }
     }
-    /* Server empty or only 1 team? Don't rotate. */
+    /* Server empty or only 1 team?  Don't rotate. */
     if (largestteam < 0 || nextlargestteam < 0)
         return;
 

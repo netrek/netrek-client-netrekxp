@@ -162,6 +162,7 @@ void loadxtrekrc (void);
 /******************************************************************************/
 void enter (void);
 void openmem (void);
+void do_autosetwar (int team);
 void rotateTeams (void);
 void drawTstats (void);
 #ifdef HOCKEY_LINES

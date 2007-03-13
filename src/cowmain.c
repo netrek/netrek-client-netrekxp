@@ -1062,6 +1062,9 @@ cowmain (char *server,
         /* Playing hockey? */
         check_hockey_mode();
 #endif
+        /* Set up autowar settings */
+        do_autosetwar(team);
+
         isFirstEntry = 0;
     }
 

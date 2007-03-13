@@ -134,6 +134,7 @@ int old_rotate = 0;
 int old_rotate_deg = 0;
 #endif
 
+int autoSetWar = 1;
 int loginAccept = -1;
 unsigned localflags = 0;
 int tournMask = 15;

@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- added "autoSetWar: (0-2)" netrekrc option that controls declare war settings with
+  enemy races when you first join.  Can now automatically declare peace on 3rd space
+  races, for example.
+- fixed bug where alert border was not working right upon death with old ship bitmaps
 - fixed error messages with cambot and beeplite
 - fixed music playback with cambot so it stops playing on entry properly
 - fixed bug with metaserver not sorting correcty sometimes, and some server entries not

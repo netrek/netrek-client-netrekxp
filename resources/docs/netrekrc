@@ -32,6 +32,12 @@ autoQuit: 60
 # Automatically rotate galaxy so teams are on left side of map
 autoRotate: off
 
+# Declare war with enemy races when you first join
+# 0 - Don't set war
+# 1 - Set war with nonzero player teams, peace w/ 0 player teams
+# 2 - Set war with largest enemy team,  peace w/ everyone else
+autoSetWar: 1
+
 # Base UDP local port
 baseUdpLocalPort: 0
 

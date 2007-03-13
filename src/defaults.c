@@ -74,6 +74,15 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"autoSetWar", &autoSetWar, RC_INT,
+        {
+            "Declare war with enemy races when you first join",
+            "0 - Don't set war",
+            "1 - Set war with nonzero player teams, peace w/ 0 player teams",
+            "2 - Set war with largest enemy team,  peace w/ everyone else",
+            NULL
+        }
+    },
     {"baseUdpLocalPort", &baseUdpLocalPort, RC_INT,
         {
             "Base UDP local port",
@@ -1590,6 +1599,7 @@ resetdefaults (void)
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
     autoRotate = booleanDefault ("autoRotate", autoRotate);
+    autoSetWar = intDefault ("autoSetWar", autoSetWar);
     logging = booleanDefault ("logging", logging);
     maxScrollLines = intDefault ("maxScrollLines", maxScrollLines);
     if (maxScrollLines > 500)

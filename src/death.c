@@ -59,7 +59,6 @@ death (void)
         else
             alertBorderColor = W_White;
         W_ChangeBorder (baseWin, gColor);
-        oldalert = PFGREEN;
     }
     if (W_IsMapped (statwin))
     {
