@@ -40,6 +40,8 @@ static int star_updates = 0;
 static int last_speed = 0;
 static int streaks_on = 0;
 #ifdef SOUND
+static int distance = 0;	/* For angular sound */
+static int angle = 0;		/* For angular sound */
 static int sound_torps = 0;
 static int sound_other_torps = 0;
 static int num_other_torps = 0;
@@ -74,6 +76,32 @@ int view = WINSIDE * SCALE / 2;
 static struct _star stars[10][10][16];
 
 /* Function Defininitions */
+
+#ifdef SOUND
+/* Sets global variables distance and sound used with angular sound */
+void SetDistAngle(int dx, int dy)
+{
+    int newdx, newdy;
+
+    newdx = dx - WINSIDE/2;
+    newdy = dy - WINSIDE/2;
+
+    distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
+    // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
+    // which would be a diagonal from player to corner of tactical
+    // Reason for normalization is Mix_SetDistance requires that range        
+    distance = (int)((255 * distance)/CORNER_DIST);
+    // Calculate angle, then adjust as necessary for Mix_SetDistance
+    if (distance != 0)
+    {
+        angle = (int)(atan2(-newdy, newdx)*180/XPI);
+        angle = 90 - angle;
+    }
+    else
+        angle = 0;
+    return;
+}
+#endif
 
 int
 randcolor()
@@ -641,7 +669,6 @@ DrawShips (void)
     const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
-    int newdx, newdy, distance, angle;
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
     W_Icon (*ship_bitsHR);
@@ -722,23 +749,8 @@ DrawShips (void)
                 {
                     // To avoid hearing twarp cloak sounds as the twarper/observer
                     if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
-                    {            
-                        newdx = dx - WINSIDE/2;
-                        newdy = dy - WINSIDE/2;
-
-                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                        // which would be a diagonal from player to corner of tactical
-                        // Reason for normalization is Mix_SetDistance requires that range        
-                        distance = (int)((255 * distance)/CORNER_DIST);
-                        // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        if (distance != 0)
-                        {
-                            angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                            angle = 90 - angle;
-                        }
-                        else
-                            angle = 0;
+                    {
+                    	SetDistAngle(dx, dy);   
                         // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
                             Play_Sound_Loc(CLOAKED_WAV, SF_CLOAKING, -1, distance);
@@ -762,23 +774,8 @@ DrawShips (void)
                 {
                     if (j->p_cloakphase == cloak_phases - 1)
                     {
-                        newdx = dx - WINSIDE/2;
-                        newdy = dy - WINSIDE/2;
-                        
-                        distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                        // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                        // which would be a diagonal from player to corner of tactical
-                        // Reason for normalization is Mix_SetDistance requires that range        
-                        distance = (int)((255 * distance)/CORNER_DIST);
-                        // Calculate angle, then adjust as necessary for Mix_SetDistance
-                        if (distance != 0)
-                        {
-                            angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                            angle = 90 - angle;
-                        }
-                        else
-                            angle = 0;
-                         // At short distances, don't use angular sound
+                        SetDistAngle(dx, dy);
+                        // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
                             Play_Sound_Loc(UNCLOAK_WAV, SF_CLOAKING, -1, distance);
                         else
@@ -1297,24 +1294,7 @@ DrawShips (void)
                 }
                 else
                 {
-                    int newdx, newdy, distance, angle;
-
-                    newdx = dx - WINSIDE/2;
-                    newdy = dy - WINSIDE/2;
-
-                    distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                    // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                    // which would be a diagonal from player to corner of tactical
-                    // Reason for normalization is Mix_SetDistance requires that range        
-                    distance = (int)((255 * distance)/CORNER_DIST);
-                    // Calculate angle, then adjust as necessary for Mix_SetDistance
-                    if (distance != 0)
-                    {
-                        angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                        angle = 90 - angle;
-                    }
-                    else
-                        angle = 0;
+                    SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
                     if (!soundAngles || distance < SCALE/2)
                     {
@@ -1383,24 +1363,7 @@ DrawShips (void)
                     Play_Sound(PHASER_WAV, SF_WEAPONS);
                 else
                 {
-                    int newdx, newdy, distance, angle;
-
-                    newdx = dx - WINSIDE/2;
-                    newdy = dy - WINSIDE/2;
-
-                    distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                    // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                    // which would be a diagonal from player to corner of tactical
-                    // Reason for normalization is Mix_SetDistance requires that range        
-                    distance = (int)((255 * distance)/CORNER_DIST);
-                    // Calculate angle, then adjust as necessary for Mix_SetDistance
-                    if (distance != 0)
-                    {
-                        angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                        angle = 90 - angle;
-                    }
-                    else
-                        angle = 0;
+                    SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
                     if (!soundAngles || distance < SCALE/2)
                         Play_Sound_Loc(PHASER_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, distance);
@@ -1861,24 +1824,7 @@ DrawTorps (void)
 #ifdef SOUND
                 if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
                 {
-                    int newdx, newdy, distance, angle;
-
-                    newdx = dx - WINSIDE/2;
-                    newdy = dy - WINSIDE/2;
-
-                    distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                    // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                    // which would be a diagonal from player to corner of tactical
-                    // Reason for normalization is Mix_SetDistance requires that range        
-                    distance = (int)((255 * distance)/CORNER_DIST);
-                    // Calculate angle, then adjust as necessary for Mix_SetDistance
-                    if (distance != 0)
-                    {
-                        angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                        angle = 90 - angle;
-                    }
-                    else
-                        angle = 0;
+                    SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
                     if (!soundAngles || distance < SCALE/2)
                         Play_Sound_Loc(TORP_HIT_WAV, SF_WEAPONS, -1, distance);
@@ -2123,24 +2069,7 @@ DrawPlasmaTorps (void)
 #ifdef SOUND
             if (pt->pt_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
             {
-                int newdx, newdy, distance, angle;
-
-                newdx = dx - WINSIDE/2;
-                newdy = dy - WINSIDE/2;
-    
-                distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                // which would be a diagonal from player to corner of tactical
-                // Reason for normalization is Mix_SetDistance requires that range        
-                distance = (int)((255 * distance)/CORNER_DIST);
-                // Calculate angle, then adjust as necessary for Mix_SetDistance
-                if (distance != 0)
-                {
-                    angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                    angle = 90 - angle;
-                }
-                else
-                    angle = 0;
+                SetDistAngle(dx, dy);
                 // At short distances, don't use angular sound
                 if (!soundAngles || distance < SCALE/2)
                     Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, -1, distance);
