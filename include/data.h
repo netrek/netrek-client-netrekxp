@@ -51,6 +51,7 @@ extern struct planet pdata[];
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
 extern int alertBorderColor;
+extern int forceBorder;
 extern int remap[];
 extern int udcounter;
 extern char *title;

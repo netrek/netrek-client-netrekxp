@@ -59,6 +59,11 @@ death (void)
         else
             alertBorderColor = W_White;
         W_ChangeBorder (baseWin, gColor);
+        oldalert = PFGREEN;
+        /* Need a border refresh on death with double buffering, as the
+           W_ChangeBorder above does not change the double buffered local
+           or map windows, but rather than non-double buffered "entry" window*/
+        forceBorder = 1;
     }
     if (W_IsMapped (statwin))
     {

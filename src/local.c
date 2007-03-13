@@ -2323,8 +2323,9 @@ DrawMisc (void)
     }
 
     /* Change border color to signify alert status */
-    if (oldalert != (me->p_flags & (PFGREEN | PFYELLOW | PFRED)))
+    if (oldalert != (me->p_flags & (PFGREEN | PFYELLOW | PFRED)) || forceBorder)
     {
+        forceBorder = 0;
         oldalert = (me->p_flags & (PFGREEN | PFYELLOW | PFRED));
         switch (oldalert)
         {
