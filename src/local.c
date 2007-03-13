@@ -50,10 +50,8 @@ static int sound_other_plasmas = 0;
 static int num_other_plasmas = 0;
 static unsigned int sound_flags = 0;
 static int other_torp_dist = 0;
-static int new_other_torp_dist = 0;
 static int other_torp_angle = 0;
 static int other_plasma_dist = 0;
-static int new_other_plasma_dist = 0;
 static int other_plasma_angle = 0;
 static int warpchange = 0;
 static unsigned int twarpflag = 0;
@@ -1771,40 +1769,22 @@ DrawTorps (void)
                 continue;
             }
 
-#ifdef SOUND
-            if (j != me)
-            {
-            	int new_angle;
-		int newdy, newdx;
-
-		newdy = dy / SCALE;
-		newdx = dx / SCALE;
-                // Store location of torp.
-                new_other_torp_dist = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-                // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-                // which would be a diagonal from player to corner of tactical
-                // Reason for normalization is Mix_SetDistance requires that range        
-                new_other_torp_dist = (int)((255 * new_other_torp_dist)/CORNER_DIST);
-                // Find how long till torp expires...BROKEN!
-                // Calculate angle, then adjust as necessary for Mix_SetDistance
-                if (new_other_torp_dist != 0)
-                {
-                    new_angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                    new_angle = 90 - new_angle;
-                }
-                else
-                    new_angle = 0;
-                // Choose closest torp - yes this sucks sometimes, but better than nothing
-                if (new_other_torp_dist < other_torp_dist)
-                {
-                    other_torp_dist = new_other_torp_dist;
-                    other_torp_angle = new_angle;
-                }	
-            }
-#endif         
             dx = dx / SCALE + WINSIDE / 2;
             dy = dy / SCALE + WINSIDE / 2;
 
+#ifdef SOUND
+            if (j != me)
+            {
+                SetDistAngle(dx, dy);
+                // Choose closest torp - yes this sucks sometimes, but better than nothing
+                // Proper fix would be to get torp expiry information
+                if (distance < other_torp_dist)
+                {
+                    other_torp_dist = distance;
+                    other_torp_angle = angle;
+                }	
+            }
+#endif         
 
             if (k->t_status == TEXPLODE)
             {
@@ -2015,41 +1995,22 @@ DrawPlasmaTorps (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
+        dx = dx / SCALE + WINSIDE / 2;
+        dy = dy / SCALE + WINSIDE / 2;
 
 #ifdef SOUND
         if (pt->pt_owner != me->p_no)
         {
-            int new_angle;
-            int newdy, newdx;
-		
-	    newdy = dy / SCALE;
-	    newdx = dx / SCALE;
-            // Store location of plasma.
-            new_other_plasma_dist = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
-            // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-            // which would be a diagonal from player to corner of tactical
-            // Reason for normalization is Mix_SetDistance requires that range        
-            new_other_plasma_dist = (int)((255 * new_other_plasma_dist)/CORNER_DIST);
-            // Find how long till torp expires...BROKEN!
-            // Calculate angle, then adjust as necessary for Mix_SetDistance
-            if (new_other_plasma_dist != 0)
-            {
-                new_angle = (int)(atan2(-newdy, newdx)*180/XPI);
-                new_angle = 90 - new_angle;
-            }
-            else
-                new_angle = 0;
+            SetDistAngle(dx, dy);
             // Choose closest plasma - yes this sucks sometimes, but better than nothing
-            if (new_other_plasma_dist < other_plasma_dist)
+            // Proper fix would be to get plasma expiry information
+            if (distance < other_plasma_dist)
             {
-                other_plasma_dist = new_other_plasma_dist;
-                other_plasma_angle = new_angle;
+                other_plasma_dist = distance;
+                other_plasma_angle = angle;
             }   	
         }
 #endif   
-
-        dx = dx / SCALE + WINSIDE / 2;
-        dy = dy / SCALE + WINSIDE / 2;
 
         if (pt->pt_status == PTEXPLODE)
         {
@@ -2458,10 +2419,8 @@ DrawMisc (void)
     }
     // Reset locations and fuses of other's closest torps and plasmas
     other_torp_dist = CORNER_DIST;
-    new_other_torp_dist = 0;
     other_torp_angle = 0;
     other_plasma_dist = CORNER_DIST;
-    new_other_plasma_dist = 0;
     other_plasma_angle = 0;
 
     sound_flags = me->p_flags;
