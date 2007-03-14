@@ -168,6 +168,11 @@ static char *planetbitmapgalaxymess[] = { "Show Bronco bitmaps on galactic map",
                                           "Show New color bitmaps on galactic map",
                                           ""
 };
+static char *autowarmess[] = { "Don't auto set war declarations",
+                              "Set war with nonzero player teams",
+                              "Set war with largest enemy team",
+                              ""
+};
 /* Only one of op_option, op_targetwin, and op_string should be defined. If
  * op_string is defined, op_size should be too and op_text is used without a
  * "Don't" prefix. if op_range is defined, there should be a %d in op_text
@@ -300,6 +305,7 @@ struct option Control_Menu[] = {
     {0, "Control Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "stay peaceful when reborn", &keepPeace, 0, 0, 0, NULL, NULL},
+    {1, "", &autoSetWar, 0, 0, 0, autowarmess, NULL},
     {1, "use new distress", &newDistress, 0, 0, 0, NULL, NULL},
 #ifdef MOTION_MOUSE
     {1, "use continuous mouse", &continuousMouse, 0, 0, 0, NULL, NULL},

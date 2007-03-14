@@ -4,11 +4,27 @@ name: guest
 # Login name
 login: netrek_player
 
-# Mouse button mapping
-buttonmap: 1P2f3k
-
 # Key mapping
+# Define you keymap here.  The format is newkey defaultkey.  For example, the
+# default key for shield toggle is 's', if you want to remap shield toggle to
+# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to
+# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old
+# one.  If you want shields on 'w' as well, put 'ws' in your keymap.  If you
+# had instead put 'wq', it would have mapped quit, the default action of 'q',
+# onto 'w'.
 keymap: PpW Zva%d_eyftg^jmnrpPrls3tfuwvDwsye d
+
+# Mouse button mapping
+# Button map lets you map the mouse buttons.  Unfortunately, it works in a
+# different way than keymap.  The format is <mousebutton> <key>.  To map
+# shields onto button 1 (the left one), you would put '1s' in your keymap. 
+# The buttonmap works through the keymap, so if you have shields mapped to
+# 'q', putting '1q' would make button 1 shields and not quit.  Buttons 4 and
+# 5 are support for Microsoft Xbuttons.  If you have a wheel mouse, the up
+# wheel is button 6 and the down wheel is button 7.  There is also support
+# for shifted, controled, and control-shifted mouse actions, see the netrek
+# help file for more details.
+buttonmap: 1P2f3k
 
 # Key to switch to macro mode
 # TAB, ESC could be used too

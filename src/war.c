@@ -36,7 +36,7 @@ static char *feds = "FED - ";
 static char *roms = "ROM - ";
 static char *klis = "KLI - ";
 static char *oris = "ORI - ";
-static char *gos = "  Save";
+static char *gos = "  Re-program";
 static char *exs = "  Exit - no change";
 
 static char *peaces = "Peace";

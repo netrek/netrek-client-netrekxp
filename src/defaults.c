@@ -2010,40 +2010,7 @@ saveOptions ()
     	if (saveBig)
     	    fputs ("\n", fp);
     }
-    
-    // Let's print buttonmap
-    str[0] = '\0';
-    str1[0] = '\0';
 
-#ifdef SHIFTED_MOUSE
-    for (i = W_LBUTTON; i <= W_XBUTTON2_4; i++)
-#else
-    for (i = W_LBUTTON; i <= W_WHEELDOWN; i++)
-#endif
-    {
-        if (buttonmap[i] != 0)
-        {
-            c = getkeyfromctrl (buttonmap[i]);
-            if (c == '^')
-                sprintf (str, "%c^^", getcharfromdec (i));
-            else
-                sprintf (str, "%c%c", getcharfromdec (i), getkeyfromctrl (buttonmap[i]));
-            strcat (str1, str);
-        }
-    }
-
-    if (saveBig && strlen (str1) != 0)
-        fputs ("# Mouse button mapping\n", fp);
-    if (strlen (str1) != 0)
-    {
-        strcpy (str, "buttonmap: ");
-        strcat (str, str1);
-        strcat (str, "\n");
-        fputs (str, fp);
-    }
-    if (saveBig && strlen (str1) != 0)
-        fputs ("\n", fp);
-        
     // keymap part
     // we're going to print only keymap that differs from standard one
     // we have to start from second key, because first one is space
@@ -2072,7 +2039,16 @@ saveOptions ()
         strcat (str, str1);
     }
     if (saveBig && strlen (str) != 0)
+    {
         fputs ("# Key mapping\n", fp);
+        fputs ("# Define you keymap here.  The format is newkey defaultkey.  For example, the\n", fp);
+        fputs ("# default key for shield toggle is 's', if you want to remap shield toggle to\n", fp);
+        fputs ("# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to\n", fp);
+        fputs ("# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old\n", fp);
+        fputs ("# one.  If you want shields on 'w' as well, put 'ws' in your keymap.  If you\n", fp);
+        fputs ("# had instead put 'wq', it would have mapped quit, the default action of 'q',\n", fp);
+        fputs ("# onto 'w'.\n", fp);
+    }
     if (strlen (str) != 0)
     {
         strcpy (str1, "keymap: ");
@@ -2081,6 +2057,50 @@ saveOptions ()
         fputs (str1, fp);
     }
     if (saveBig && strlen (str) != 0)
+        fputs ("\n", fp);
+
+    // Let's print buttonmap
+    str[0] = '\0';
+    str1[0] = '\0';
+
+#ifdef SHIFTED_MOUSE
+    for (i = W_LBUTTON; i <= W_XBUTTON2_4; i++)
+#else
+    for (i = W_LBUTTON; i <= W_WHEELDOWN; i++)
+#endif
+    {
+        if (buttonmap[i] != 0)
+        {
+            c = getkeyfromctrl (buttonmap[i]);
+            if (c == '^')
+                sprintf (str, "%c^^", getcharfromdec (i));
+            else
+                sprintf (str, "%c%c", getcharfromdec (i), getkeyfromctrl (buttonmap[i]));
+            strcat (str1, str);
+        }
+    }
+
+    if (saveBig && strlen (str1) != 0)
+    {
+        fputs ("# Mouse button mapping\n", fp);
+        fputs ("# Button map lets you map the mouse buttons.  Unfortunately, it works in a\n", fp);
+        fputs ("# different way than keymap.  The format is <mousebutton> <key>.  To map\n", fp);
+        fputs ("# shields onto button 1 (the left one), you would put '1s' in your keymap.\n", fp);
+        fputs ("# The buttonmap works through the keymap, so if you have shields mapped to\n", fp);
+        fputs ("# 'q', putting '1q' would make button 1 shields and not quit.  Buttons 4 and\n", fp);
+        fputs ("# 5 are support for Microsoft Xbuttons.  If you have a wheel mouse, the up\n", fp);
+        fputs ("# wheel is button 6 and the down wheel is button 7.  There is also support\n", fp);
+        fputs ("# for shifted, controled, and control-shifted mouse actions, see the netrek\n", fp);
+        fputs ("# help file for more details.\n", fp);
+    }
+    if (strlen (str1) != 0)
+    {
+        strcpy (str, "buttonmap: ");
+        strcat (str, str1);
+        strcat (str, "\n");
+        fputs (str, fp);
+    }
+    if (saveBig && strlen (str1) != 0)
         fputs ("\n", fp);
 
     // macroKey

@@ -362,11 +362,18 @@ db_special (int fr, int x, int y)
         msgtype = 4;
         color = W_White;
     }
+    /* Ship stopped */
+    else if (me->p_speed == 0)
+    {
+        sprintf (buf, "Stopped");
+        msgtype = 5;
+        color = W_Grey;
+    }
     /* Default impulse text */
     else
     {
         sprintf (buf, "Impulse");
-        msgtype = 5;
+        msgtype = 6;
         color = W_Yellow;
     }
 

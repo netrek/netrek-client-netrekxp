@@ -1402,7 +1402,14 @@ entrywindow (int *team,
     updatedeath ();
 
     if (remap[me->p_team] == NOBODY)
-        RedrawPlayerList ();    /* When you first login */
+    {
+    	/* When you first login */
+        char buf[80];
+
+        RedrawPlayerList ();
+        sprintf (buf, "Netrek - %s(%c)@%s", me->p_name, me->p_mapchars[1], serverName);
+        W_RenameWindow (baseWin, buf);
+    }
     else
         UpdatePlayerList ();    /* Otherwise */
 

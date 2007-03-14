@@ -624,36 +624,36 @@ initkeymap (void)
             case 'c':
                 buttonmap[12] = getctrlkey (&str);
                 break;
-			case 'd':
-				buttonmap[13] = getctrlkey (&str);
-				break;
-			case 'e':
-				buttonmap[14] = getctrlkey (&str);
-				break;
-			case 'f':
-				buttonmap[15] = getctrlkey (&str);
-				break;
-			case 'g':
-				buttonmap[16] = getctrlkey (&str);
-				break;
-			case 'h':
-				buttonmap[17] = getctrlkey (&str);
-				break;
-			case 'i':
-				buttonmap[18] = getctrlkey (&str);
-				break;
-			case 'j':
-				buttonmap[19] = getctrlkey (&str);
-				break;
-			case 'k':
-				buttonmap[20] = getctrlkey (&str);
-				break;
-			case 'l':
-				buttonmap[21] = getctrlkey (&str);
-				break;
-			case 'm':
-				buttonmap[22] = getctrlkey (&str);
-				break;
+            case 'd':
+                buttonmap[13] = getctrlkey (&str);
+                break;
+            case 'e':
+                buttonmap[14] = getctrlkey (&str);
+                break;
+            case 'f':
+                buttonmap[15] = getctrlkey (&str);
+                break;
+            case 'g':
+                buttonmap[16] = getctrlkey (&str);
+                break;
+            case 'h':
+                buttonmap[17] = getctrlkey (&str);
+                break;
+            case 'i':
+                buttonmap[18] = getctrlkey (&str);
+                break;
+            case 'j':
+                buttonmap[19] = getctrlkey (&str);
+                break;
+            case 'k':
+                buttonmap[20] = getctrlkey (&str);
+                break;
+            case 'l':
+                buttonmap[21] = getctrlkey (&str);
+                break;
+            case 'm':
+                buttonmap[22] = getctrlkey (&str);
+                break;
 #endif /* SHIFTED_MOUSE */
                 
             default:

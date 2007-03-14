@@ -1,4 +1,10 @@
 Netrek XP 2006, Version 1.3:
+- support for AT ship in playerlist and info window (shows 'AT' instead of '??')
+- improved explanation of keymap/buttonmap in the netrekrc
+- main window titlebar now shows your loginname and slot number, in addition to showing
+  the servername
+- new dashboard message for warp 0 ("Stopped") instead of saying "Impulse"
+- war window now says "Re-program" instead of "Save" for changing war settings
 - added "autoSetWar: (0-2)" netrekrc option that controls declare war settings with
   enemy races when you first join.  Can now automatically declare peace on 3rd space
   races, for example.

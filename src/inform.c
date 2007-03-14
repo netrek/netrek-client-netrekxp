@@ -33,7 +33,7 @@
  * care to keep it from extending beyond the main * window boundaries. */
 
 static char *my_classes[NUM_TYPES] = {
-    "SC", "DD", "CA", "BB", "AS", "SB", "GA", "??"
+    "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT"
 };
 
 /******************************************************************************/
