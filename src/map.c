@@ -23,6 +23,9 @@
 #include "map.h"
 #include "proto.h"
 
+/* debugging feature, show rectangular redraw regions on galactic */
+#undef DEBUG_SHOW_REGIONS
+
 /*
  *  Local Constants:
  *  
@@ -32,7 +35,7 @@
  *  Note: Detail *MUST* be a factor of GWIDTH.
  */
 
-#define DETAIL 40
+#define DETAIL 100
 #define SIZE (GWIDTH/DETAIL)
 
 
@@ -188,6 +191,59 @@ initPlanets (void)
     initialized = 1;
 }
 
+#ifdef DEBUG_SHOW_REGIONS                        /* Debugging code */
+void
+showRegions(void)
+/*
+ *  Make a rough map of the location of all the planets to help decide
+ *  whether a ship is possibly overlapping a planet.
+ */
+{
+    int     k;
+    int     startX, startY;
+    int     endX, endY;
+    struct planet *pl;
+#ifdef BEEPLITE
+    const int pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 5;
+#else
+    const int pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
+#endif
+    const int tHeight = W_Textheight * GWIDTH / WINSIDE;
+    const int tWidth = W_Textwidth * GWIDTH / WINSIDE;
+
+    for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
+    {
+        startX = (pl->pl_x - pRadius - tWidth) / SIZE;
+        endX = (pl->pl_x + pRadius + tWidth + (tWidth / 2)) / SIZE;
+
+        startY = (pl->pl_y - pRadius - (tHeight / 2)) / SIZE;
+        endY = (pl->pl_y + pRadius + tHeight + (tHeight / 2)) / SIZE;
+
+        if (startX < 0)
+            startX = 0;
+
+        if (endX >= DETAIL)
+            endX = DETAIL - 1;
+
+        if (startY < 0)
+            startY = 0;
+
+        if (endY >= DETAIL)
+            endY = DETAIL - 1;
+
+        startX = startX * SIZE * WINSIDE / GWIDTH;
+        startY = startY * SIZE * WINSIDE / GWIDTH;
+        endX = (endX * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
+        endY = (endY * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
+
+        W_MakeLine(mapw, startX, startY, startX, endY, W_White);
+        W_MakeLine(mapw, startX, startY, endX, startY, W_White);
+        W_MakeLine(mapw, endX, endY, startX, endY, W_White);
+        W_MakeLine(mapw, endX, endY, endX, startY, W_White);
+    }
+}
+#endif  /* Debugging code */
+
 /******************************************************************************/
 /***  checkRedraw()
 /******************************************************************************/
@@ -198,9 +254,14 @@ checkRedraw (int x,
  *  Compare the given location of a ship with the rough planet map created
  *  by initPlanets() to decide if part of the planet may have been erased
  *  by the ship.
+ *
+ *  Also force a redraw of every other player in the same grid square,
+ *  otherwise they will blink out of existence as a result of the
+ *  planet redraw.
  */
 {
     int i;
+    struct player *j;
 
     x /= SIZE;
     y /= SIZE;
@@ -209,33 +270,39 @@ checkRedraw (int x,
     {
         i = roughMap[x][y];
 
-        if (i != -1)
+        if (i == -1) return;
+        planets[i].pl_flags |= PLREDRAW;
+
+        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
         {
-            planets[i].pl_flags |= PLREDRAW;
-    
-            i = roughMap2[x][y];
-    
-            if (i != -1)
-            {
-                planets[i].pl_flags |= PLREDRAW;
-            }
+            if (j->p_status != PALIVE) continue;
+            if (j->p_flags & PFOBSERV) continue;
+            if ((j->p_x / SIZE) == x && (j->p_y / SIZE) == y )
+                redrawPlayer[i] = 1;
         }
+
+        i = roughMap2[x][y];
+        if (i == -1) return;
+        planets[i].pl_flags |= PLREDRAW;
     }
     else
     {
         i = roughMap3[x][y];
-    
-        if (i != -1)
+
+        if (i == -1) return;
+        planets[i].pl_flags |= PLREDRAW;
+
+        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
         {
-            planets[i].pl_flags |= PLREDRAW;
-    
-            i = roughMap4[x][y];
-    
-            if (i != -1)
-            {
-                planets[i].pl_flags |= PLREDRAW;
-            }
+            if (j->p_status != PALIVE) continue;
+            if (j->p_flags & PFOBSERV) continue;
+            if ((j->p_x / SIZE) == x && (j->p_y / SIZE) == y )
+                redrawPlayer[i] = 1;
         }
+
+        i = roughMap4[x][y];
+        if (i == -1) return;
+        planets[i].pl_flags |= PLREDRAW;
     }
 }
 
@@ -803,7 +870,7 @@ map (void)
                 lastRedraw[i] = 0;
             }
 
-            if (lastRedraw[i] == 10)
+            if (lastRedraw[i] == server_ups)
             {
                 /* Redraw stationary ships every update so that these
                    ships are not hidden by planet updates. */
@@ -821,6 +888,10 @@ map (void)
     /* Draw Planets */
 
     DrawPlanets ();
+
+#ifdef DEBUG_SHOW_REGIONS	/* Debugging code */
+   showRegions();
+#endif
 
     /* draw viewBox */
     if (viewBox)
