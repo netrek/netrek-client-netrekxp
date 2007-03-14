@@ -258,7 +258,7 @@ drawTstats (void)
     if (newDashboard)
         return;
     sprintf (buf,
-             "Flags        Warp Dam Shd Torps  Kills Armies   Fuel  Wtemp Etemp");
+             "Flags        Warp Dam Shd Torps  Kills Armies   Fuel  Wtemp Etemp  Time");
     W_WriteText (tstatw, 50, 5, textColor, buf, strlen (buf), W_RegularFont);
     sprintf (buf,
              "Maximum:      %2d  %3d %3d               %3d   %6d   %3d   %3d",

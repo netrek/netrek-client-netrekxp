@@ -496,6 +496,7 @@ copy resources\misclib\color\clock.bmp %InstCWD%\netrek\bitmaps\misclib\color
 copy resources\misclib\color\clockhand.bmp %InstCWD%\netrek\bitmaps\misclib\color
 copy resources\misclib\color\genocide.bmp %InstCWD%\netrek\bitmaps\misclib\color
 copy resources\misclib\color\genocide2.bmp %InstCWD%\netrek\bitmaps\misclib\color
+copy resources\misclib\color\*team.bmp %InstCWD%\netrek\bitmaps\misclib\color
 
 copy resources\fonts\ntfonts2.fon %InstCWD%\netrek
 

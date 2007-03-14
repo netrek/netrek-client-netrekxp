@@ -494,6 +494,10 @@ W_Cleanup (void)
     free (ship_bitmaps[4]);
 
     // Free other bitmaps
+    free (fedteam);
+    free (romteam);
+    free (kliteam);
+    free (oriteam);
     free (clockpic);
     free (clockhandpic);
     

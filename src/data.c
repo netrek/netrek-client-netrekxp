@@ -256,6 +256,7 @@ int macrocnt = 0;
 
 extern double Sin[], Cos[];
 
+W_Icon fedteam, romteam, kliteam, oriteam;
 W_Icon stipple, clockpic, clockhandpic, genopic, genopic2, icon;
 
 W_Color borderColor, backColor, textColor, myColor, warningColor, shipCol[5],

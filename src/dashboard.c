@@ -469,7 +469,10 @@ db_flags (int fr)
         else
             buf[11] = ' ';
             
-        W_WriteText (tstatw, 2, 3, textColor, "Flags", 5, W_RegularFont);
+        if (me->p_flags & (PFWEP | PFENG))
+            W_WriteText (tstatw, 2, 3, W_Red, "Flags", 5, W_RegularFont);
+        else
+            W_WriteText (tstatw, 2, 3, textColor, "Flags", 5, W_RegularFont);
         W_WriteText (tstatw, 2, 17, textColor, buf, 12, W_RegularFont);
         old_flags = me->p_flags;
     }

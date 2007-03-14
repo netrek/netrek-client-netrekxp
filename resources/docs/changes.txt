@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.3:
+- new graphics for the team select windows
+- the "Flags" text on COW and KRP dashboards will now turn red if your ship is
+  weapon temped or engine temped
 - support for AT ship in playerlist and info window (shows 'AT' instead of '??')
 - improved explanation of keymap/buttonmap in the netrekrc
 - main window titlebar now shows your loginname and slot number, in addition to showing

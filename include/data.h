@@ -258,6 +258,7 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
+extern W_Icon fedteam, romteam, kliteam, oriteam;
 extern W_Icon stipple, clockpic, clockhandpic, genopic, genopic2;
 
 extern W_Icon base_expview;

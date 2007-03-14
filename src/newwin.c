@@ -1328,6 +1328,19 @@ savebitmaps (void)
             W_StoreBitmap3 ("bitmaps/misclib/clock.bmp", BMP_CLOCK_WIDTH,
                             BMP_CLOCK_HEIGHT, BMP_CLOCK, qwin, LR_MONOCHROME);
     }
+
+    fedteam =
+        W_StoreBitmap3 ("bitmaps/misclib/color/fedteam.bmp", BMP_TEAM_SELECT_WIDTH,
+                        BMP_TEAM_SELECT_HEIGHT, BMP_FEDTEAM, w, LR_DEFAULTCOLOR);
+    romteam =
+        W_StoreBitmap3 ("bitmaps/misclib/color/romteam.bmp", BMP_TEAM_SELECT_WIDTH,
+                        BMP_TEAM_SELECT_HEIGHT, BMP_ROMTEAM, w, LR_DEFAULTCOLOR);
+    kliteam =
+        W_StoreBitmap3 ("bitmaps/misclib/color/kliteam.bmp", BMP_TEAM_SELECT_WIDTH,
+                        BMP_TEAM_SELECT_HEIGHT, BMP_KLITEAM, w, LR_DEFAULTCOLOR);
+    oriteam =
+        W_StoreBitmap3 ("bitmaps/misclib/color/oriteam.bmp", BMP_TEAM_SELECT_WIDTH,
+                        BMP_TEAM_SELECT_HEIGHT, BMP_ORITEAM, w, LR_DEFAULTCOLOR);
     genopic =
         W_StoreBitmap3 ("bitmaps/misclib/color/genocide.bmp", WINSIDE,
                         WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
@@ -2049,8 +2062,25 @@ redrawTeam (W_Window win,
         return;
 
     W_ClearWindow (win);
+#if 0 /* Old team windows */
     W_WriteText (win, 5, 5, shipCol[teamNo + 1], teams[teamNo],
                  strlen (teams[teamNo]), W_RegularFont);
+#endif
+    switch (teamNo)
+    {
+        case 0:
+            W_WriteBitmap ( 0, 0, fedteam, foreColor, win);
+            break;
+        case 1:
+            W_WriteBitmap ( 0, 0, romteam, foreColor, win);
+            break;
+        case 2:
+            W_WriteBitmap ( 0, 0, kliteam, foreColor, win);
+            break;
+        case 3:
+            W_WriteBitmap ( 0, 0, oriteam, foreColor, win);
+            break;
+    }
     (void) sprintf (buf, "%d", num);
     W_MaskText (win, 5, 46, shipCol[teamNo + 1], buf, strlen (buf),
                 W_BigFont);
