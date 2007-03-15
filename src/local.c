@@ -623,7 +623,7 @@ DrawPlanets (void)
 
 static void
 get_shrink_phaser_coords(int *rx, int *ry, int dx, int dy, int tx,
-                         int ty, int curr_fuse, int max_fuse)
+                         int ty, int curr_fuse, int max_fuse, int shrink_amount)
 {
    register int ph_dir, range, phaser_shrink;
 
@@ -641,7 +641,7 @@ get_shrink_phaser_coords(int *rx, int *ry, int dx, int dy, int tx,
     * Calculate current drawing range of phaser based on distance and phaser
     * fuse
     */
-   phaser_shrink = 16 - phaserShrink;
+   phaser_shrink = 16 - shrink_amount;
    if (phaser_shrink < 5)
        phaser_shrink = 5;
 
@@ -1393,8 +1393,6 @@ DrawShips (void)
 
                     tx = (j->p_x + tx - me->p_x) / SCALE + WINSIDE / 2;
                     ty = (j->p_y + ty - me->p_y) / SCALE + WINSIDE / 2;
-                    php->ph_fuse = 0;
-
                 }
                 else if (php->ph_status == PHHIT2)
                 {
@@ -1419,12 +1417,19 @@ DrawShips (void)
 
                 if (shrinkPhaserOnMiss || php->ph_status != PHMISS)
                 {
+                	
                     if (myPlayer(j) || isObsLockPlayer(j))
                     {
                         if (phaserShrinkStyle == 1)
                         {
                             px = (dx * 16 + 8) / 16;
                             py = (dy * 16 + 8) / 16;
+                            get_shrink_phaser_coords(&new_dx, &new_dy,
+                                                    px, py, tx, ty, 
+                                                    php->ph_fuse, php->ph_maxfuse,
+                                                    phaserShrink);
+                            px = new_dx;
+                            py = new_dy;
                         }
                         else
                         {
@@ -1436,11 +1441,25 @@ DrawShips (void)
                     }
                     else
                     {
-                        px = (dx * (16 - theirPhaserShrink) +
-                              tx * theirPhaserShrink + 8) / 16;
+                    	if (phaserShrinkStyle == 1)
+                        {
+                            px = (dx * 16 + 8) / 16;
+                            py = (dy * 16 + 8) / 16;
+                            get_shrink_phaser_coords(&new_dx, &new_dy,
+                                                    px, py, tx, ty, 
+                                                    php->ph_fuse, php->ph_maxfuse,
+                                                    theirPhaserShrink);
+                            px = new_dx;
+                            py = new_dy;
+                        }
+                        else
+                        {
+                            px = (dx * (16 - theirPhaserShrink) +
+                                  tx * theirPhaserShrink + 8) / 16;
 
-                        py = (dy * (16 - theirPhaserShrink) +
-                              ty * theirPhaserShrink + 8) / 16;
+                            py = (dy * (16 - theirPhaserShrink) +
+                                  ty * theirPhaserShrink + 8) / 16;
+                        }
                     }
                 }
                 else
@@ -1483,28 +1502,12 @@ DrawShips (void)
                         }
                         ph_col += (10/j->p_ship.s_phaserfuse);
                         scaled_ph_col = ph_col * 10 / server_ups;
-                        if (phaserShrinkStyle == 1)
-                        {
-                            get_shrink_phaser_coords(&new_dx, &new_dy,
-                                                    px, py, tx, ty, 
-                                                    php->ph_fuse, php->ph_maxfuse);
-                            px = new_dx;
-                            py = new_dy;
-                        }
                         W_CacheLine (w, px, py, tx, ty, col);
                     }
                     else
                     {
                         if (php->ph_status != PHMISS)
                         {
-                            if (phaserShrinkStyle == 1 && (myPlayer(j) || isObsLockPlayer(j)))
-                            {
-                                get_shrink_phaser_coords(&new_dx, &new_dy,
-                                                        px, py, tx, ty, 
-                                                        php->ph_fuse, php->ph_maxfuse);
-                                px = new_dx;
-                                py = new_dy;
-                            }
                             if (highlightFriendlyPhasers)
                                 W_CacheLine (w, px, py, tx, ty, foreColor);
                             else
