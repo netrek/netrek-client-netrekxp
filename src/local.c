@@ -667,6 +667,7 @@ DrawShips (void)
     const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
+    int startx, starty, endx, endy;
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
     W_Icon (*ship_bitsHR);
@@ -1166,6 +1167,53 @@ DrawShips (void)
                     showdetCircle--;
                 }
             }
+            /* Self tic heading */
+            if (headingTic)
+            {
+            	if (myPlayer(j))
+            	{
+                    startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_dir]);
+                    starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_dir]);
+                    endx = startx + (int) (TIC_LEN * Cos[j->p_dir]);
+                    endy = starty + (int) (TIC_LEN * Sin[j->p_dir]);
+                    
+                    W_MakeLine(w, startx, starty, endx, endy, W_White);
+                    clearline[0][clearlcount] = startx;
+                    clearline[1][clearlcount] = starty;
+                    clearline[2][clearlcount] = endx;
+                    clearline[3][clearlcount] = endy;
+                    clearlcount++;
+                    
+                    /* Update desired heading if locked, in a similiar way
+                       to how the server sets our heading */
+                    if (j->p_flags & PFPLOCK)
+                    {
+                        j->p_desdir = (int) (atan2(players[j->p_playerl].p_x - me->p_x,
+                        j->p_y - players[j->p_playerl].p_y) / XPI * 128.);
+                    }
+                    else if (j->p_flags & PFPLLOCK)
+                    {
+                        j->p_desdir = (int) (atan2(planets[j->p_planet].pl_x - me->p_x,
+                        j->p_y - planets[j->p_planet].pl_y) / XPI * 128.);
+                    }
+                    
+                    if (j->p_dir != j->p_desdir && !(j->p_flags & (PFORBIT | PFDOCK)))
+                    {
+                        startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_desdir]);
+                        starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_desdir]);
+                        endx = startx + (int) (DESIRED_TIC_LEN * Cos[j->p_desdir]);
+                        endy = starty + (int) (DESIRED_TIC_LEN * Sin[j->p_desdir]);
+      
+                        W_MakeLine(w, startx, starty, endx, endy, 
+                                  (j->p_flags & (PFPLOCK | PFPLLOCK)) ? W_Green : W_White);
+                        clearline[0][clearlcount] = startx;
+                        clearline[1][clearlcount] = starty;
+                        clearline[2][clearlcount] = endx;
+                        clearline[3][clearlcount] = endy;
+                        clearlcount++;
+                    }
+                }
+            }
 #ifdef HOCKEY_LINES
             /* Puck circle */
             if (puckCircle && playing_hockey)
@@ -1180,7 +1228,7 @@ DrawShips (void)
                     clearcount++;
                 }
             }
-            /* Puck tick heading */
+            /* Puck tic heading */
             if (puckArrow && playing_hockey &&
                 j->p_speed != 0 &&
                 strcmp(j->p_name, "Puck") == 0 &&
@@ -1188,8 +1236,6 @@ DrawShips (void)
                 j->p_team == NOBODY &&
                 j->p_ship.s_type == SCOUT)
             {
-                int startx, starty, endx, endy;
-
                 startx = dx + (int) ((shield_width / 2) * Cos[j->p_dir]);
                 starty = dy + (int) ((shield_width / 2) * Sin[j->p_dir]);
                 endx = startx + (int) (PUCKARROW_LEN * Cos[j->p_dir]);

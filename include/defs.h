@@ -46,6 +46,10 @@
                                  * engage/disengage */
 #define NUMRANKS 9
 #define PUCKARROW_LEN 6
+#define TIC_DIST 5000           /* distance from ship to draw
+                                 * heading tic mark */
+#define TIC_LEN 20              /* for current heading */
+#define DESIRED_TIC_LEN 10      /* for desired heading */
 
 /* These are configuration definitions */
 

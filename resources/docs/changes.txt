@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- added "headingTic: (on)/off" to draw a tick mark indicating your ship's heading, as well
+  as a smaller secondary mark indicating where you are turning to, or in the case of when
+  you are locked on to a player/planet, indicating the direction to that player/planet.
+  This option helps with aiming in hockey and hitting cloaked ships you are locked on to.
 - added "lockLine: (on)/off" to draw a dashed green line on the galactic map between your
   ship and the target you are locked on to, whether it be a player or a planet.
 - added "tractorID: (on)/off" to draw the player number of the person you are tractoring 

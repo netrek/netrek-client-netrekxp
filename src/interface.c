@@ -42,6 +42,7 @@ set_speed (int speed)
 void
 set_course (unsigned char dir)
 {
+    me->p_desdir = dir;
     sendDirReq (dir);
 }
 
