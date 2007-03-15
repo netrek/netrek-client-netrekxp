@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- added "lockLine: (on)/off" to draw a dashed green line on the galactic map between your
+  ship and the target you are locked on to, whether it be a player or a planet.
 - added "tractorID: (on)/off" to draw the player number of the person you are tractoring 
   or pressoring below and to the left of your ship.  Continues to display who you are
   tractor/pressoring even if they cloak.

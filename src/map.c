@@ -54,7 +54,7 @@ static signed char roughMap2[DETAIL][DETAIL];
 static signed char roughMap3[DETAIL][DETAIL];
 static signed char roughMap4[DETAIL][DETAIL];
 static int initialized = 0;
-
+static int maplockline[4];	/* Coordinates for lock line on map */
 
 /*
  *  Global Variables:
@@ -767,6 +767,7 @@ map (void)
     register int dx, dy;
 
     static char clearlock = 0;
+    static char clearlockline = 0;
     static int mclearzone[6][MAXPLAYER];
     static int clearlmark[4];
     static unsigned int lastRedraw[MAXPLAYER];
@@ -805,6 +806,7 @@ map (void)
         W_ClearWindow (mapw);
 
         clearlock = 0;
+        clearlockline = 0;
         clearviewbox = 0;
         viewboxcleared = 1;
 
@@ -827,6 +829,13 @@ map (void)
             clearlock = 0;
             W_WriteTriangle (mapw, clearlmark[0], clearlmark[1],
                              clearlmark[2], clearlmark[3], backColor);
+        }
+
+        if (clearlockline)
+        {
+            W_MakeTractLine (mapw, maplockline[0], maplockline[1],
+                             maplockline[2], maplockline[3], backColor);
+            clearlockline  = 0;
         }
 
         if (clearviewbox)
@@ -1017,10 +1026,11 @@ map (void)
     {
         j = &players[me->p_playerl];
 
+        dx = j->p_x * WINSIDE / GWIDTH;
+        dy = j->p_y * WINSIDE / GWIDTH;
+
         if (j->p_status == PALIVE && !(j->p_flags & PFCLOAK))
         {
-            dx = j->p_x * WINSIDE / GWIDTH;
-            dy = j->p_y * WINSIDE / GWIDTH;
             W_WriteTriangle (mapw, dx, dy + 6, 4, 1, foreColor);
 
             clearlmark[0] = dx;
@@ -1028,6 +1038,26 @@ map (void)
             clearlmark[2] = 4;
             clearlmark[3] = 1;
             clearlock = 1;
+        }
+        if (lockLine && (dx <= view && dx >= 0 && dy <= view && dy >= 0))
+        {
+            int mydx, mydy;
+            
+            mydx = me->p_x * WINSIDE / GWIDTH;
+            mydy = me->p_y * WINSIDE / GWIDTH;
+            W_MakeTractLine (mapw,
+                             mydx,
+                             mydy,
+                             dx, dy, W_Green);
+            maplockline[0] = mydx;
+            maplockline[1] = mydy;
+            maplockline[2] = dx;
+            maplockline[3] = dy;
+            clearlockline = 1;
+            /* Check 10 points in between start and end of line for planet overlap */
+            for (i = 0; i < 10; i++)
+                checkRedraw(me->p_x + i * (j->p_x - me->p_x)/10,
+                            me->p_y + i * (j->p_y - me->p_y)/10);
         }
     }
     else if ((me->p_flags & PFPLLOCK) && (showLock & 1))
@@ -1043,6 +1073,27 @@ map (void)
         clearlmark[2] = 4;
         clearlmark[3] = 0;
         clearlock = 1;
+        
+        if (lockLine)
+        {
+            int mydx, mydy;
+            
+            mydx = me->p_x * WINSIDE / GWIDTH;
+            mydy = me->p_y * WINSIDE / GWIDTH;
+            W_MakeTractLine (mapw,
+                             mydx,
+                             mydy,
+                             dx, dy, W_Green);
+            maplockline[0] = mydx;
+            maplockline[1] = mydy;
+            maplockline[2] = dx;
+            maplockline[3] = dy;
+            clearlockline = 1;
+            /* Check 10 points in between start and end of line for planet overlap */
+            for (i = 0; i < 10; i++)
+                checkRedraw(me->p_x + i * (l->pl_x - me->p_x)/10,
+                            me->p_y + i * (l->pl_y - me->p_y)/10);
+        }
     }
 
 #ifdef RECORDGAME
