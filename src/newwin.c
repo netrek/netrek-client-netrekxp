@@ -2062,25 +2062,28 @@ redrawTeam (W_Window win,
         return;
 
     W_ClearWindow (win);
-#if 0 /* Old team windows */
-    W_WriteText (win, 5, 5, shipCol[teamNo + 1], teams[teamNo],
-                 strlen (teams[teamNo]), W_RegularFont);
-#endif
-    switch (teamNo)
+    if (newTeams)
     {
-        case 0:
-            W_WriteBitmap ( 0, 0, fedteam, foreColor, win);
-            break;
-        case 1:
-            W_WriteBitmap ( 0, 0, romteam, foreColor, win);
-            break;
-        case 2:
-            W_WriteBitmap ( 0, 0, kliteam, foreColor, win);
-            break;
-        case 3:
-            W_WriteBitmap ( 0, 0, oriteam, foreColor, win);
-            break;
+        switch (teamNo)
+        {
+            case 0:
+                W_WriteBitmap ( 0, 0, fedteam, foreColor, win);
+                break;
+            case 1:
+                W_WriteBitmap ( 0, 0, romteam, foreColor, win);
+                break;
+            case 2:
+                W_WriteBitmap ( 0, 0, kliteam, foreColor, win);
+                break;
+            case 3:
+                W_WriteBitmap ( 0, 0, oriteam, foreColor, win);
+                break;
+        }
     }
+    else
+        W_WriteText (win, 5, 5, shipCol[teamNo + 1], teams[teamNo],
+                 strlen (teams[teamNo]), W_RegularFont);
+
     (void) sprintf (buf, "%d", num);
     W_MaskText (win, 5, 46, shipCol[teamNo + 1], buf, strlen (buf),
                 W_BigFont);

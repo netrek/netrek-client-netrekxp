@@ -199,6 +199,9 @@ newDistress: off
 # Use new quit window
 newQuit: on
 
+# Use new team windows
+newTeams: on
+
 # Omit team letter on galaxy
 omitTeamLetter: off
 

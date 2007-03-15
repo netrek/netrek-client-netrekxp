@@ -357,6 +357,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"newTeams", &newTeams, RC_BOOL,
+        {
+            "Use new team windows",
+            NULL
+        }
+    },
     {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
             "Omit team letter on galaxy",
@@ -1556,6 +1562,7 @@ resetdefaults (void)
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     newQuit = booleanDefault ("newQuit", newQuit);
+    newTeams = booleanDefault ("newTeams", newTeams);
     soundVolume= intDefault ("soundVolume", soundVolume);
     soundEffects= booleanDefault ("soundEffects", soundEffects);
     soundMusic = booleanDefault ("soundMusic", soundMusic);

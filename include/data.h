@@ -704,6 +704,7 @@ extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our rich
 
 extern int richText;    	/* temporary variable to enable/disable rich text windows */
 extern int newQuit;     	/* new quit clock */
+extern int newTeams;		/* new team windows */
 extern int soundVolume; 	/* Starting sound volume (0-128 range) */
 extern int soundEffects;	/* Use sound effects playback */
 extern int soundMusic;		/* Use music playback */

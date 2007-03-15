@@ -130,6 +130,7 @@ newPlist:                 (on/off) compatibility variable for player list
 # off - old style
 
 newQuit:                  (on/off) use new quit window
+newTeams:                 (on/off) use new team windows
 omitTeamLetter:           (on/off) omit team letter on galaxy
 orishipbmpfile:           (path) - old color bitmaps
 oriship1bmpfile:          (path) - new color bitmaps
