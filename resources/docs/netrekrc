@@ -117,6 +117,9 @@ forceDisplay: 1
 # (but only works if forceDisplay = 0).
 forceMono: off
 
+# Draw a tic mark indicating your ship's direction
+headingTic: on
+
 # Highlight friendly phasers
 highlightFriendlyPhasers: off
 
@@ -128,6 +131,10 @@ keepInfo: 15
 
 # Keep peace with enemy team after death
 keepPeace: on
+
+# Draw dashed green line on map from your ship to lock target,
+# requires showLock to be on for map
+lockLine: on
 
 # Log all messages to file. Requires "logfile" option
 logging: off
@@ -370,6 +377,9 @@ shrinkPhaserOnMiss: off
 # Put my team first in the player list
 sortMyTeamFirst: off
 
+# Sort the planet list by team and army count
+sortPlanets: on
+
 # Sort players by team
 sortPlayers: on
 
@@ -406,6 +416,9 @@ timerType: 1
 
 # Distance between tractor/pressor dots
 tpDotDist: 10
+
+# Show the ID of player you are tractoring as a number below your ship
+tractorID: on
 
 # Use short packets for communications
 tryShort: on
@@ -469,6 +482,9 @@ warnShields: off
 
 # Draw warp streaks while transwarping to starbase
 warpStreaks: on
+
+# Show phasers, torps and plasmas on galactic map
+weaponsOnMap: on
 
 # Enable internal windows moving
 windowMove: on

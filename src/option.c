@@ -263,7 +263,8 @@ struct option Ship_Menu[] = {
 #endif
     {1, "highlight friendly phasers", &highlightFriendlyPhasers, 0, 0, 0, NULL, NULL},
     {1, "show tractor/pressor beams", &showTractorPressor, 0, 0, 0, NULL, NULL},
-    {1, "show tractors after lock ", &continueTractor, 0, 0, 0, NULL, NULL},
+    {1, "show tractors after lock", &continueTractor, 0, 0, 0, NULL, NULL},
+    {1, "show tractor target ID", &tractorID, 0, 0, 0, NULL, NULL},
     {1, "show all players tract/press", &showAllTractorPressor, 0, 0, 0, NULL, NULL},
     {1, "enemy phaser width: %d", &enemyPhasers, 0, 0, 0, NULL, &enPhasRng},
     {1, "", &phaserShrinkStyle, 0, 0, 0, shrinkphasermess, NULL},
@@ -271,11 +272,9 @@ struct option Ship_Menu[] = {
     {1, "shrink their phasers by %d/16", &theirPhaserShrink, 0, 0, 0, NULL, &phaserShrinkRng},
     {1, "shrink phasers on a miss", &shrinkPhaserOnMiss, 0, 0, 0, NULL, NULL},
     {1, "report kills", &reportKills, 0, 0, 0, NULL, NULL},
+    {1, "show heading tic mark", &headingTic, 0, 0, 0, NULL, NULL},
+    {1, "show lock line", &lockLine, 0, 0, 0, NULL, NULL},
     {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
-#ifdef HOCKEY_LINES
-    {1, "show puck circle", &puckCircle, 0, 0, 0, NULL, NULL},
-    {1, "show puck arrow", &puckArrow, 0, 0, 0, NULL, NULL},
-#endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -289,6 +288,7 @@ struct option Planet_Menu[] = {
     {1, "rotate new planets", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
+    {1, "show weapons on galactic", &weaponsOnMap, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
     {1, "show AGRI in caps on map", &agriCAPS, 0, 0, 0, NULL, NULL},
@@ -298,6 +298,7 @@ struct option Planet_Menu[] = {
     {1, "autorotate galaxy", &autoRotate, 0, 0, 0, NULL, NULL},
     {1, "", &rotate, 0, 0, 0, rotatemess, NULL},
 #endif
+    {1, "sort the planetlist window", &sortPlanets, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -389,11 +390,6 @@ struct option Visual_Menu[] = {
     {1, "draw view box on map", &viewBox, 0, 0, 0, NULL, NULL},
     {1, "draw stars on local", &showStars, 0, 0, 0, NULL, NULL},
     {1, "draw warp streaks", &warpStreaks, 0, 0, 0, NULL, NULL},
-#ifdef HOCKEY_LINES
-    {1, "show hockey lines on local", &showHockeyLinesLocal, 0, 0, 0, NULL, NULL},
-    {1, "show hockey lines on map", &showHockeyLinesMap, 0, 0, 0, NULL, NULL},
-    {1, "show hockey score on map", &showHockeyScore, 0, 0, 0, NULL, NULL},
-#endif
     {1, "alert on extra border(s)", &extraAlertBorder, 0, 0, 0, NULL, NULL},
 #ifdef PHASER_STATS
     {1, "", &phaserStats, 0, 0, 0, phaserstatmess, NULL},
@@ -402,6 +398,20 @@ struct option Visual_Menu[] = {
     {1, "", &messageHUD, 0, 0, 0, messagehudmess, &messagehud_range},
 #endif
     {1, "use double buffering", &doubleBuffering, 0, 0, 0, NULL, NULL},
+    {1, "done", &notdone, 0, 0, 0, NULL, NULL},
+    {-1, NULL, 0, 0, 0, 0, NULL, NULL}
+};
+
+struct option Hockey_Menu[] = {
+    {0, "Hockey Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+    {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+#ifdef HOCKEY_LINES
+    {1, "show puck circle", &puckCircle, 0, 0, 0, NULL, NULL},
+    {1, "show puck arrow", &puckArrow, 0, 0, 0, NULL, NULL},
+    {1, "show hockey lines on local", &showHockeyLinesLocal, 0, 0, 0, NULL, NULL},
+    {1, "show hockey lines on map", &showHockeyLinesMap, 0, 0, 0, NULL, NULL},
+    {1, "show hockey score on map", &showHockeyScore, 0, 0, 0, NULL, NULL},
+#endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -1018,6 +1028,7 @@ InitOptionMenus (void)
     AddOptMenu (Visual_Menu, 0);
     AddOptMenu (Window_Menu, 0);
     AddOptMenu (Playerlist_Menu, 0);
+    AddOptMenu (Hockey_Menu, 0);
     AddOptMenu (Save_Menu, 0);
 
 

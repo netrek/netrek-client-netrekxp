@@ -198,6 +198,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"headingTic", &headingTic, RC_BOOL,
+        {
+            "Draw a tic mark indicating your ship's direction",
+            NULL
+        }
+    },
     {"highlightFriendlyPhasers", &highlightFriendlyPhasers, RC_BOOL,
         {
             "Highlight friendly phasers",
@@ -219,6 +225,13 @@ struct save_options save_options[] = {
     {"keepPeace", &keepPeace, RC_BOOL,
         {
             "Keep peace with enemy team after death",
+            NULL
+        }
+    },
+    {"lockLine", &lockLine, RC_BOOL,
+        {
+            "Draw dashed green line on map from your ship to lock target,"
+            "requires showLock to be on for map",
             NULL
         }
     },
@@ -689,6 +702,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"sortPlanets", &sortPlanets, RC_BOOL,
+        {
+            "Sort the planet list by team and army count",
+            NULL
+        }
+    },
     {"sortPlayers", &sortPlayers, RC_BOOL,
         {
             "Sort players by team",
@@ -755,6 +774,12 @@ struct save_options save_options[] = {
     {"tpDotDist", &tpDotDist, RC_INT,
         {
             "Distance between tractor/pressor dots",
+            NULL
+        }
+    },
+    {"tractorID", &tractorID, RC_BOOL,
+        {
+            "Show the ID of player you are tractoring as a number below your ship",
             NULL
         }
     },
@@ -877,6 +902,12 @@ struct save_options save_options[] = {
     {"warpStreaks", &warpStreaks, RC_BOOL,
         {
             "Draw warp streaks while transwarping to starbase",
+            NULL
+        }
+    },
+    {"weaponsOnMap", &weaponsOnMap, RC_BOOL,
+        {
+            "Show phasers, torps and plasmas on galactic map",
             NULL
         }
     },
@@ -1575,6 +1606,11 @@ resetdefaults (void)
     soundMusicBkgd = booleanDefault ("soundMusicBkgd", soundMusicBkgd);
     soundAngles = booleanDefault ("soundAngles", soundAngles);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
+    headingTic = booleanDefault ("headingTic", headingTic);
+    tractorID = booleanDefault ("tractorID", tractorID);
+    lockLine = booleanDefault ("lockLine", lockLine);
+    weaponsOnMap = booleanDefault ("weaponsOnMap", weaponsOnMap);
+    sortPlanets = booleanDefault ("sortPlanets", sortPlanets);   
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
     beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);

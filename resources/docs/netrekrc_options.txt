@@ -63,6 +63,7 @@ forceDisplay:             (0/3) how many colors to display
 forceMono:                (on/off) outdated option, that will force display to
                                    16 colors (but only works if forceDisplay = 0).
 fullScreen:               (on/off) create border for main window
+headingTic:               (on/off) draw a tic mark indicating your ship's direction
 highlightFriendlyPhasers: (on/off) use white color for friendly phasers
 ignoreCaps:               (on/off) ignore CapsLock key state
 indshipbmpfile:           (path) - old color bitmaps
@@ -79,6 +80,8 @@ kliship1bmpfile:          (path) - new color bitmaps
 klishipGbmpfile:          (path) - your own ship's grayscale bitmaps
 klishipTbmpfile:          (path) - shaded color bitmaps
 klishipMbmpfile:          (path) - mono bitmaps
+lockLine:                 (on/off) draw dashed green line on map from your ship to lock target,
+                                   requires showLock to be on for map
 logfile:                  (path) path to logfile
 logging:                  (on/off) enable logging
 login:                    (string) character login
@@ -257,6 +260,7 @@ showTractorPressor:       (on/off) show tractors and pressors
 shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
 singleMacro:              (string) macro keys that will trigger macro without macro mode
 sortMyTeamFirst:          (on/off) show my team first in the player list
+sortPlanets:              (on/off) sort the planet list by team and army count
 sortPlayers:              (on/off) sort players by teams
 sound:                    (on/off) enable layered, stereo sound
 soundVolume:              (0-128) starting sound volume
@@ -286,6 +290,7 @@ timerType:                (0-4) type of timer on dashboard window
 # 4 - user-set time
 
 tpDotDist:                (int) distance between tractor/pressor dots (default 10)
+tractorID:                (on/off) show the ID of player you are tractoring as a number below your ship
 tryShort:                 (on/off) enable short packets
 tryUdp:                   (on/off) try using UDP
 udpClientReceive:         (0-2) how to receive data from server
@@ -313,6 +318,7 @@ viewBox:                  (on/off) show tactical window boundaries on map
 warnHull:                 (on/off) warn hull state based on damage
 warnShields:              (on/off) change shields color on enemy approach
 warpStreaks:              (on/off) show streaks while warping to starbase
+weaponsOnMap:             (on/off) show phasers, torps and plasmas on galactic map
 windowMove:               (on/off) enable internal windows to be moved with mouse
 
 <window>.allow:           [A][T][I][P][K]

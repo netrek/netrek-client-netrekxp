@@ -712,5 +712,10 @@ extern int soundMusic;		/* Use music playback */
 extern int soundMusicBkgd;	/* Play random background music continuously */
 extern int soundAngles; 	/* Use 3D sound */
 
-extern int useFullShipInfo;  /* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
+extern int useFullShipInfo;	/* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
+extern int headingTic;		/* show ship heading tic */
+extern int tractorID;		/* show ID of player you are tractoring */
+extern int lockLine;		/* draw dashed line on map from you to lock target */
+extern int weaponsOnMap;	/* draw weapons fire on map */
+extern int sortPlanets; 	/* sort planet list by team and army count */
 #endif /* _h_data */
