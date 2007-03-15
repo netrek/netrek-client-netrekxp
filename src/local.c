@@ -1303,7 +1303,7 @@ DrawShips (void)
                         buflen = 1;
                         W_MaskText (w, dx - (j->p_ship.s_width / 2),
                                     dy + (j->p_ship.s_height / 2),
-                                    (j->p_flags & PFTRACT) ? gColor : yColor,
+                                    (j->p_flags & PFPRESS) ? yColor : gColor,
                                     idbuf, buflen, shipFont (j));
                         clearzone[0][clearcount] = dx - (j->p_ship.s_width / 2);
                         clearzone[1][clearcount] = dy + (j->p_ship.s_height / 2);
