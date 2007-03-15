@@ -1293,6 +1293,25 @@ DrawShips (void)
                 clearzone[2][clearcount] = buflen * W_Textwidth;
                 clearzone[3][clearcount] = W_Textheight;
                 clearcount++;
+                
+                /* Tractor target ID */
+                if (tractorID && (myPlayer(j) || isObsLockPlayer(j)))
+                {
+                    if (j->p_flags & (PFTRACT | PFPRESS))
+                    {
+                        idbuf[0] = *(shipnos + players[j->p_tractor].p_no);
+                        buflen = 1;
+                        W_MaskText (w, dx - (j->p_ship.s_width / 2),
+                                    dy + (j->p_ship.s_height / 2),
+                                    (j->p_flags & PFTRACT) ? gColor : yColor,
+                                    idbuf, buflen, shipFont (j));
+                        clearzone[0][clearcount] = dx - (j->p_ship.s_width / 2);
+                        clearzone[1][clearcount] = dy + (j->p_ship.s_height / 2);
+                        clearzone[2][clearcount] = buflen * W_Textwidth;
+                        clearzone[3][clearcount] = W_Textheight;
+                        clearcount++;
+                    }
+                }
             }
 
         }

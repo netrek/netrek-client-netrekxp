@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.3:
+- added "tractorID: (on)/off" to draw the player number of the person you are tractoring 
+  or pressoring below and to the left of your ship.  Continues to display who you are
+  tractor/pressoring even if they cloak.
 - added "puckArrow: (on)/off" option to draw a tic mark on the puck in hockey to indicate
   puck direction
 - several fixes to BRMH shrink phasers - they now can shrink on miss, and enemy phasers
