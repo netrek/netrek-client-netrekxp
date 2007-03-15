@@ -756,6 +756,7 @@ int maxScrollLines = 300;
 int mainTitleBar = 0;
 int observerMode = 0;
 int showHockeyScore = 1;
+int puckArrow = 1;
 
 int observerPorts[] = { 2593, 2595, 4000, 5000, 0 };
 

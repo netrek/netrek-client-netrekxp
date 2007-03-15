@@ -271,6 +271,9 @@ port: 2592
 # Use new UDP code
 portSwap: on
 
+# Put a small tic mark on the puck to indicate its direction
+puckArrow: on
+
 # Show the puck's max shot range as a circle around your ship
 puckCircle: off
 

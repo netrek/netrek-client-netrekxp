@@ -662,6 +662,7 @@ extern int messageKeyOnly;	/* only start messages with the actual message key(s)
 extern int observerMode;        /* set observer mode variable */
 extern int observerPorts[];     /* predefined list of observer ports */
 extern int showHockeyScore;     /* show hockey score on map */
+extern int puckArrow;           /* draw heading tic on puck */
 
 extern char pigcall[];  /* pigcall string */
 extern char cowid[];    /* cowid string */

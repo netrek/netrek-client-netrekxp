@@ -484,6 +484,12 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"puckArrow", &puckArrow, RC_BOOL,
+        {
+            "Put a small tic mark on the puck to indicate its direction",
+            NULL
+        }
+    },
     {"puckCircle", &puckCircle, RC_BOOL,
         {
             "Show the puck's max shot range as a circle around your ship",
@@ -1579,7 +1585,7 @@ resetdefaults (void)
 #ifdef HOCKEY_LINES
     showHockeyLinesLocal = booleanDefault ("showHockeyLinesLocal", showHockeyLinesLocal);
     showHockeyLinesMap = booleanDefault ("showHockeyLinesMap", showHockeyLinesMap);
-	showHockeyScore = booleanDefault ("showHockeyScore", showHockeyScore);
+    showHockeyScore = booleanDefault ("showHockeyScore", showHockeyScore);
 #endif
 
     saveBig = booleanDefault ("saveBig", saveBig);
@@ -1601,6 +1607,7 @@ resetdefaults (void)
     newDashboard = intDefault ("newDashboard", newDashboard);
     detCircle = booleanDefault ("detCircle", detCircle);
     puckCircle = booleanDefault ("puckCircle", puckCircle);
+    puckArrow = booleanDefault ("puckArrow", puckArrow);
     showArmy = booleanDefault ("showArmy", showArmy);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);

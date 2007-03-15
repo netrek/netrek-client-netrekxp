@@ -1180,6 +1180,28 @@ DrawShips (void)
                     clearcount++;
                 }
             }
+            /* Puck tick heading */
+            if (puckArrow && playing_hockey &&
+                j->p_speed != 0 &&
+                strcmp(j->p_name, "Puck") == 0 &&
+                strcmp(j->p_login, "Robot") == 0 &&
+                j->p_team == NOBODY &&
+                j->p_ship.s_type == SCOUT)
+            {
+                int startx, starty, endx, endy;
+
+                startx = dx + (int) ((shield_width / 2) * Cos[j->p_dir]);
+                starty = dy + (int) ((shield_width / 2) * Sin[j->p_dir]);
+                endx = startx + (int) (PUCKARROW_LEN * Cos[j->p_dir]);
+                endy = starty + (int) (PUCKARROW_LEN * Sin[j->p_dir]);
+
+                W_MakeLine(w, startx, starty, endx, endy, W_White);
+                clearline[0][clearlcount] = startx;
+                clearline[1][clearlcount] = starty;
+                clearline[2][clearlcount] = endx;
+                clearline[3][clearlcount] = endy;
+                clearlcount++;
+            }
 #endif
 
 #ifdef BEEPLITE

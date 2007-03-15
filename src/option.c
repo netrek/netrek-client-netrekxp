@@ -274,6 +274,7 @@ struct option Ship_Menu[] = {
     {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
 #ifdef HOCKEY_LINES
     {1, "show puck circle", &puckCircle, 0, 0, 0, NULL, NULL},
+    {1, "show puck arrow", &puckArrow, 0, 0, 0, NULL, NULL},
 #endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}

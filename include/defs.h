@@ -45,6 +45,7 @@
                                  * in a cloak
                                  * engage/disengage */
 #define NUMRANKS 9
+#define PUCKARROW_LEN 6
 
 /* These are configuration definitions */
 

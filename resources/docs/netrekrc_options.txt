@@ -212,6 +212,7 @@ playerListStyle:          (0-4) what player list style to use
 port:                     (port) default port
 port.<server>:            (port) port for <server>
 portSwap:                 (on/off) use UDP port swap code (use if you behind NAT)
+puckArrow:                (on/off) put a small tic mark on the puck to indicate its direction
 puckCircle:               (on/off) show the puck's max shot range as a circle around your ship
 rcfile-<ship>:            (path) use this file as netrekrc for ship (sc,dd,ca,bb,as,sb,ga,att)
 redrawDelay:              (0-10) how many updates to wait before redraw
