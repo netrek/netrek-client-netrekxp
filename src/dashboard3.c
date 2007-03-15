@@ -328,6 +328,16 @@ db_flags (int fr)
 
         old_flags = me->p_flags;
         old_tourn = status->tourn;
+#ifdef SOUND
+        if (ingame && oldengflag != (me->p_flags & PFENG))
+        {
+            if (me->p_flags & PFENG)
+                Play_Sound(ENGINE_MELT_WAV, SF_INFO);
+            else
+                Play_Sound(ENGINE_OK_WAV, SF_INFO);
+        }
+        oldengflag = (me->p_flags & PFENG);
+#endif
     }
 }
 

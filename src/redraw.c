@@ -181,6 +181,16 @@ stline (int flag)
     buf[7] = (char) (me->p_flags & PFCLOAK ? 'C' : ' ');
     buf[8] = (char) (me->p_flags & PFWEP ? 'W' : ' ');
     buf[9] = (char) (me->p_flags & PFENG ? 'E' : ' ');
+#ifdef SOUND
+    if (ingame && oldengflag != (me->p_flags & PFENG))
+    {
+        if (me->p_flags & PFENG)
+            Play_Sound(ENGINE_MELT_WAV, SF_INFO);
+        else
+            Play_Sound(ENGINE_OK_WAV, SF_INFO);
+    }
+    oldengflag = (me->p_flags & PFENG);
+#endif
     if (me->p_flags & PFPRESS)
         buf[10] = 'P';
     else if (me->p_flags & PFTRACT)

@@ -475,6 +475,16 @@ db_flags (int fr)
             W_WriteText (tstatw, 2, 3, textColor, "Flags", 5, W_RegularFont);
         W_WriteText (tstatw, 2, 17, textColor, buf, 12, W_RegularFont);
         old_flags = me->p_flags;
+#ifdef SOUND
+        if (ingame && oldengflag != (me->p_flags & PFENG))
+        {
+            if (me->p_flags & PFENG)
+                Play_Sound(ENGINE_MELT_WAV, SF_INFO);
+            else
+                Play_Sound(ENGINE_OK_WAV, SF_INFO);
+        }
+        oldengflag = (me->p_flags & PFENG);
+#endif
     }
     
     if (fr || status->tourn != old_tourn)

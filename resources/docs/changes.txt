@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- added new sounds for when engine melt, and then for when they are unmelted
 - new graphics for the team select windows
 - the "Flags" text on COW and KRP dashboards will now turn red if your ship is
   weapon temped or engine temped
