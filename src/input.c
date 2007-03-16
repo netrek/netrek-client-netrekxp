@@ -1542,7 +1542,9 @@ buttonaction (W_Event * data)
         if (data->key == W_LBUTTON)
         {
             sortPlanets = !sortPlanets;
-            updatePlanetw();
+            /* Do a full refresh */
+            W_UnmapWindow (planetw);
+            W_MapWindow (planetw);
         }
         else if (data->key == W_RBUTTON)
             W_UnmapWindow (planetw);

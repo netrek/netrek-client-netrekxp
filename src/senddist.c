@@ -89,11 +89,11 @@ loaddistress (enum dist_type i,
     dist->preappend[0] = '\0';
     dist->macroflag = 0;
 
-	/* If any of gettarget calls returned -1 -> meaning we are in playerlist
-	   window trying to send distress to not available person */
-	if (dist->tclose_pl == 255 || dist->tclose_en == 255 ||
-		dist->tclose_fr == 255 || dist->tclose_j == 255)
-		dist->sender = 255;
+    /* If any of gettarget calls returned -1 -> meaning we are in playerlist
+       window trying to send distress to not available person */
+    if (dist->tclose_pl == 255 || dist->tclose_en == 255 ||
+        dist->tclose_fr == 255 || dist->tclose_j == 255)
+        dist->sender = 255;
 
     return (dist);
 }
@@ -116,8 +116,8 @@ emergency (enum dist_type i, W_Event * data)
     recip = me->p_team;
 
     dist = loaddistress (i, data);
-	if (dist->sender == 255)
-		return;
+    if (dist->sender == 255)
+        return;
 
     if (gen_distress)
     {
@@ -193,6 +193,8 @@ pmacro (int mnum,
     pm = macro[mnum].string;
 
     dist = loaddistress (0, data);
+    if (dist->sender == 255)
+        return (0);
 
     len = makedistress (dist, cry, pm);
     if (len > 0)
