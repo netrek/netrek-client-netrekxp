@@ -32,6 +32,8 @@ static char *teamname[9] = {
     "ORI"
 };
 
+int planet_row[MAXPLANETS];  /* planets location in current plist */
+
 /* * Open a window which contains all the planets and their current *
  * statistics.  Players will not know about planets that their team * has not
  * orbited. */
@@ -42,8 +44,10 @@ planetlist (void)
     char buf[BUFSIZ];
 
     /* W_ClearWindow(planetw); */
-    (void) sprintf (buf, "Planet Name      own armies REPAIR FUEL AGRI CORE info");
+    (void) sprintf (buf, "Planet Name      Own Armies REPAIR FUEL AGRI CORE Info");
     W_WriteText (planetw, 2, 1, textColor, buf, strlen (buf), W_RegularFont);
+    /* Underline heading */
+    W_MakeLine (planetw, 2, 2 + 2 * W_Textheight, 2 + 57 * W_Textwidth , 2 + 2 * W_Textheight, W_White);
     /* Initialize planet window string array */
     for (i = 0; i < MAXPLANETS; i++)
         strcpy(priorplanets[i], "");
@@ -60,6 +64,9 @@ updatePlanetw (void)
 
     for (i = 0, j = &planets[i]; i < MAXPLANETS; i++, j++)
     {
+        /* Fill planet_row to get right planet placement in the list */
+        planet_row[i] = j->pl_no;
+
         if (j->pl_info & me->p_team)
         {
             (void) sprintf (buf, "%-16s %3s %3d    %6s %4s %4s %4s %c%c%c%c",
@@ -93,5 +100,34 @@ updatePlanetw (void)
                 strcpy(priorplanets[i], buf);
             } 
         }
+        if (i != 0 && (i % 10) == 0)
+        {
+              W_MakeLine (planetw,
+                          2 + 18 * W_Textwidth,
+                          2 + W_Textheight * (i+2),
+                          2 + 39 * W_Textwidth,
+                          2 + W_Textheight * (i+2),
+                          W_White);
+        }
     }
+}
+
+int
+GetPlanetFromPlist (int x, int y)
+{
+    int i;
+    int planet_no;
+
+    /* Let's find what planet sits in poition y in the list */
+    for (i = 0; i < MAXPLANETS; i++)
+    {
+        if (planet_row[i] == y)
+        {
+            planet_no = i;
+            return planet_no;
+        }
+    }
+
+    // We didn't find planet
+    return (-1);
 }

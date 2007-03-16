@@ -1506,6 +1506,6 @@ GetPlayerFromPlist (int x, int y)
         }
     }
 
-	// We didn't find player or its state is wrong
+    // We didn't find player or its state is wrong
     return (-1);
 }

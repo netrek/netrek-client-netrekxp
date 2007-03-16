@@ -45,6 +45,7 @@ rect doesn't take these into account.
 10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Should be fixed.
 12) fix redraw for stationary ships with new planets
+13) fix crash bug with %u macros via playerlist to non-visible players
 
 Stas's list:
 - color coded (?) and scrollable playerlist.

@@ -868,6 +868,7 @@ void updatePStats (void);
 /******************************************************************************/
 void planetlist (void);
 void updatePlanetw (void);
+int GetPlanetFromPlist (int x, int y);
 
 /******************************************************************************/
 /***  playback.c

@@ -1,4 +1,10 @@
 Netrek XP 2006, Version 1.3:
+- the planet list window can now be used with info, lock and certain RCDs.  In other words,
+  you can lock onto planets through the planet list window, and send planet-related RCDs
+  through the window as well.
+- left clicking the planet list window will toggle between a sorted and unsorted planet
+  list, right clicking will close the planet window.  Team's starting planets are now
+  separated by a white line.
 - added "headingTic: (on)/off" to draw a tick mark indicating your ship's heading, as well
   as a smaller secondary mark indicating where you are turning to, or in the case of when
   you are locked on to a player/planet, indicating the direction to that player/planet.

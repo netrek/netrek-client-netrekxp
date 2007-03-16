@@ -67,6 +67,17 @@ gettarget (W_Window ww,
         targ = &_targ;
         return (targ);
     }
+    if (ww == planetw)
+    {
+        /* Here we will get planet from planet list */
+        static struct obtype _targ;
+        g_x = (x - 1) / W_Textwidth;
+        g_y = (y - 4) / W_Textheight - 2; // Two header lines
+        _targ.o_type = PLANETTYPE;
+        _targ.o_num = GetPlanetFromPlist (g_x, g_y);
+        targ = &_targ;
+        return (targ);
+    }
 
     if (ww == mapw)
     {

@@ -1210,7 +1210,7 @@ keyaction (W_Event * data)
                                  * fastquit! */
 
     if (data->Window != mapw && data->Window != w && data->Window != infow
-        && data->Window != playerw)
+        && data->Window != playerw && data->Window != planetw)
         return;
 
     key = data->key;
@@ -1228,6 +1228,12 @@ keyaction (W_Event * data)
         else if (findMouseInWin (&x, &y, mapw))
         {                       /* galactic window */
             data->Window = mapw;
+            data->x = x;
+            data->y = y;
+        }
+        else if (findMouseInWin (&x, &y, planetw))
+        {                       /* planet list window */
+            data->Window = planetw;
             data->x = x;
             data->y = y;
         }
@@ -1386,9 +1392,9 @@ keyaction (W_Event * data)
         return;
     }
 
-    /* If the mouse is in player list window - enable info and lock */
-    /* This part has to be after macros, so point macros will work on */
-    /* the players from playerlist */
+    /* If the mouse is in player list window - enable info and lock, as
+       well as certain RCDs.  This part has to be after macros, so the RCDs
+       will work on the players from this list */
     if (data->Window == playerw)
     {
         switch (key)
@@ -1405,6 +1411,29 @@ keyaction (W_Event * data)
             case 206:   /* ^n */
             case 207:   /* ^o */
             case 208:   /* ^p */
+                break;
+            default:
+                return;
+        }
+    }
+    /* If the mouse is in planet list window - enable info and lock, as
+       well as certain RCDs.  This part has to be after macros, so that RCDs
+       will work on the planets from this list */
+    if (data->Window == planetw)
+    {
+        switch (key)
+        {
+            case 'i':
+            case 'I':
+            case 'l':
+            case 194: /* ^b */
+            case 195: /* ^c */
+            case 204: /* ^l */
+            case 205: /* ^m */
+            case 212: /* ^t */
+            case 144: /* ^0 */
+            case 145: /* ^1 */
+            case 150: /* ^6 */
                 break;
             default:
                 return;
@@ -1496,10 +1525,31 @@ buttonaction (W_Event * data)
 #endif
 
     if (data->Window != w && data->Window != mapw
-        && data->Window != infow
-		&& data->Window != playerw)
+        && data->Window != infow && data->Window != playerw
+        && data->Window != planetw)
         return;
     
+    if (data->Window == planetw)
+    {
+    	int x, y;
+    	
+    	if (findMouseInWin (&x, &y, planetw))
+    	{
+    	    data->Window = planetw;
+            data->x = x;
+            data->y = y;
+        }
+        if (data->key == W_LBUTTON)
+        {
+            sortPlanets = !sortPlanets;
+            updatePlanetw();
+        }
+        else if (data->key == W_RBUTTON)
+            W_UnmapWindow (planetw);
+
+        return;
+    }
+
     if (data->Window == playerw)
     {
     	int x, y;
