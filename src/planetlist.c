@@ -57,15 +57,18 @@ planetlist (void)
 void
 updatePlanetw (void)
 {
-    register int i, pos;
+    register int i, k, pos;
     char buf[BUFSIZ];
     register struct planet *j;
     int planetCount[NUMTEAM + 2]; /* Ind Fed Rom Kli Ori Unknown */
     int planetOffset[NUMTEAM + 2];
     int counter[NUMTEAM + 2];
+    int planetPos[NUMTEAM + 2][MAXPLANETS];
+    int planetArm[NUMTEAM + 2][MAXPLANETS];
     int playercount = 0;
     int largestteam = -1, nextlargestteam= -1;
     int largestteamcount = -1, nextlargestteamcount = -1;
+    int temp, temparm, z;
     
     if (sortPlanets)
     {
@@ -83,6 +86,11 @@ updatePlanetw (void)
             planetCount[i] = 0;
             planetOffset[i] = 0;
             counter[i] = 0;
+            for (k = 0; k < MAXPLANETS; k++)
+            {
+                planetArm[i][k] = 0;
+                planetPos[i][k] = 0;
+            }
         }
 
         /* Find the 2 largest teams enemy teams.  Team bits suck. */
@@ -106,24 +114,91 @@ updatePlanetw (void)
             }
         }
 
-        /* Store # of visible planets from each team */
+        /* Store # of visible planets from each team.  And let's sort them
+           by army count (low to high) while we are at it. */
         for (i = 0, j = &planets[i]; i < MAXPLANETS; i++, j++)
         {
             if (j->pl_info & me->p_team)
             {
-                if (j->pl_owner == 0) /* Independent */
-                    ++planetCount[0];
+                if (j->pl_owner == 0) /* Independent (no sorting)*/
+                {
+                    planetPos[0][planetCount[0]] = planetCount[0];
+                    planetCount[0]++;
+                }
                 else if (j->pl_owner == me->p_team) /* My team */
-                    ++planetCount[1];
+                {
+                    planetPos[1][planetCount[1]] = planetCount[1];
+                    planetArm[1][planetCount[1]] = j->pl_armies;
+                    k = planetCount[1];
+                    while (k > 0 && planetArm[1][k] < planetArm[1][k - 1])
+                    {
+                            temp = planetPos[1][k];
+                            temparm = planetArm[1][k];
+                            planetPos[1][k] = planetPos[1][k - 1];
+                            planetArm[1][k] = planetArm[1][k - 1];
+                            planetPos[1][k - 1] = temp;
+                            planetArm[1][k - 1] = temparm;
+                            k--;
+                    }
+                    planetCount[1]++;
+                }
                 else if (j->pl_owner == largestteam) /* Largest enemy */
-                    ++planetCount[2];
+                {
+                    planetPos[2][planetCount[2]] = planetCount[2];
+                    planetArm[2][planetCount[2]] = j->pl_armies;
+                    k = planetCount[2];
+                    while (k > 0 && planetArm[2][k] < planetArm[2][k - 1])
+                    {
+                            temp = planetPos[2][k];
+                            temparm = planetArm[2][k];
+                            planetPos[2][k] = planetPos[2][k - 1];
+                            planetArm[2][k] = planetArm[2][k - 1];
+                            planetPos[2][k - 1] = temp;
+                            planetArm[2][k - 1] = temparm;
+                            k--;
+                    }
+                    planetCount[2]++;
+                }
                 else if (j->pl_owner == nextlargestteam) /* Next largest enemy */
-                    ++planetCount[3];
+                {
+                    planetPos[3][planetCount[3]] = planetCount[3];
+                    planetArm[3][planetCount[3]] = j->pl_armies;
+                    k = planetCount[3];
+                    while (k > 0 && planetArm[3][k] < planetArm[3][k - 1])
+                    {
+                            temp = planetPos[3][k];
+                            temparm = planetArm[3][k];
+                            planetPos[3][k] = planetPos[3][k - 1];
+                            planetArm[3][k] = planetArm[3][k - 1];
+                            planetPos[3][k - 1] = temp;
+                            planetArm[3][k - 1] = temparm;
+                            k--;
+                    }
+                    planetCount[3]++;
+                }
                 else /* Smallest enemy */
-                    ++planetCount[4];
+                {
+                    planetPos[4][planetCount[4]] = planetCount[4];
+                    planetArm[4][planetCount[4]] = j->pl_armies;
+                    k = planetCount[4];
+                    while (k > 0 && planetArm[4][k] < planetArm[4][k - 1])
+                    {
+                            temp = planetPos[4][k];
+                            temparm = planetArm[4][k];
+                            planetPos[4][k] = planetPos[4][k - 1];
+                            planetArm[4][k] = planetArm[4][k - 1];
+                            planetPos[4][k - 1] = temp;
+                            planetArm[4][k - 1] = temparm;
+                            k--;
+                    }
+                    planetCount[4]++;
+                }
             }
             else
-                ++planetCount[5];
+            {
+                planetPos[5][planetCount[5]] = planetCount[5];
+                planetCount[5]++;
+            }
         }
         /* Set the offsets */
         planetOffset[0] = 0;
@@ -141,6 +216,7 @@ updatePlanetw (void)
     LineToConsole("Offsets are %d %d %d %d %d\n",
     planetOffset[1],planetOffset[2],planetOffset[3],planetOffset[4],planetOffset[5]);
 #endif
+
     for (i = 0, j = &planets[i]; i < MAXPLANETS; i++, j++)
     {
         if (sortPlanets)
@@ -149,33 +225,53 @@ updatePlanetw (void)
             {
                 if (j->pl_owner == 0) /* Independent */
                 {
-                    pos = planetOffset[0] + counter[0];
+                    pos = planetOffset[0] + planetPos[0][counter[0]];
                     counter[0]++;
                 }
                 else if (j->pl_owner == me->p_team) /* My team */
                 {
-                    pos = planetOffset[1] + counter[1];
+                    for (z = 0; z < planetCount[1]; z++)
+                    {
+                        if (planetPos[1][z] == counter[1])
+                            break;
+                    }
+                    pos = z + planetOffset[1];
                     counter[1]++;
                 }
                 else if (j->pl_owner == largestteam) /* Largest enemy */
                 {
-                    pos = planetOffset[2] + counter[2];
+                    for (z = 0; z < planetCount[2]; z++)
+                    {
+                        if (planetPos[2][z] == counter[2])
+                            break;
+                    }
+                    pos = z + planetOffset[2];
                     counter[2]++;
                 }
                 else if (j->pl_owner == nextlargestteam) /* Next largest enemy */
                 {
-                    pos = planetOffset[3] + counter[3];
+                    for (z = 0; z < planetCount[3]; z++)
+                    {
+                        if (planetPos[3][z] == counter[3])
+                            break;
+                    }
+                    pos = z + planetOffset[3];
                     counter[3]++;
                 }
                 else /* Smallest enemy */
                 {
-                    pos = planetOffset[4] + counter[4];
+                    for (z = 0; z < planetCount[4]; z++)
+                    {
+                        if (planetPos[4][z] == counter[4])
+                            break;
+                    }
+                    pos = z + planetOffset[4];
                     counter[4]++;
                 }
             }
             else
             {
-                pos = planetOffset[5] + counter[5];
+                pos = planetOffset[5] + planetPos[5][counter[5]];
                 counter[5]++;
             }
         }
