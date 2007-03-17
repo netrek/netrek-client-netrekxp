@@ -464,8 +464,13 @@ void loadbitmapsHR()
 	                        BMP_SHIP_HEIGHT_HR, BMP_ROM_SHIP, w,
 	                        LR_DEFAULTCOLOR);
     }
-    else  // No bitmaps, doh!
+    else  // No bitmaps, doh!  Force to mono and don't allow swapping
+    {
+        LineToConsole("Failed to load high res ship bitmaps, defaulting to mono.\n");
+        dynamicBitmaps = 0;
+        colorClient = 0;
         return;
+    }
     
     for (j = 0; j < NUM_TYPES; j++)
     {

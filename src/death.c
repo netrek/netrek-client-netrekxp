@@ -76,7 +76,7 @@ death (void)
     }
     if (infomapped)
         destroyInfo ();
-    W_UnmapWindow (planetw);
+//    W_UnmapWindow (planetw);
     W_UnmapWindow (rankw);
     W_UnmapWindow (war);
     if (optionWin)
