@@ -457,7 +457,8 @@ static inline W_Icon mplanetBitmapC(register struct planet * p);
 static inline void mplanetResourcesC (register struct planet *p, int destwidth,
                                       int destheight, int dx, int dy, W_Window window);
 //static void DrawPlanets();
-void map (void);
+inline void map (void);
+inline void clearMap (void);
 
 /******************************************************************************/
 /***  mswindow.c

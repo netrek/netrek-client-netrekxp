@@ -273,6 +273,7 @@ struct option Weapons_Menu[] = {
     {0, "Weapons Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
+    {1, "show weapons on galactic", &weaponsOnMap, 0, 0, 0, NULL, NULL},
 #ifdef JUBILEE_PHASERS
     {1, "use colorful phasers", &colorfulPhasers, 0, 0, 0, NULL, NULL},
 #endif
@@ -295,7 +296,6 @@ struct option Planet_Menu[] = {
     {1, "rotate new planets", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
     {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
-    {1, "show weapons on galactic", &weaponsOnMap, 0, 0, 0, NULL, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
     {1, "show AGRI in caps on map", &agriCAPS, 0, 0, 0, NULL, NULL},

@@ -1949,9 +1949,9 @@ DrawTorps (void)
             }
             else
             {
-            	if (colorWeapons)
-            	{
-            	    k->t_fuse++;
+                if (colorWeapons)
+                {
+                    k->t_fuse++;
 
                     frame = k->t_fuse * 10 / server_ups;
 
@@ -1996,7 +1996,6 @@ DrawTorps (void)
                                        dy - (BMP_CTORP_HEIGHT / 2),
                                        mtorpC[torpTeam][frame], torpColor (k), w);
                     }
-                    
                     clearzone[0][clearcount] = dx - (BMP_CTORP_WIDTH / 2);
                     clearzone[1][clearcount] = dy - (BMP_CTORP_HEIGHT / 2);
                     clearzone[2][clearcount] = BMP_CTORP_WIDTH;

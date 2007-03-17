@@ -55,6 +55,12 @@ static signed char roughMap3[DETAIL][DETAIL];
 static signed char roughMap4[DETAIL][DETAIL];
 static int initialized = 0;
 static int maplockline[4];	/* Coordinates for lock line on map */
+static int mclearlcount;	/* For phasers */
+static int mclearline[4][MAXPLAYER + 2 * MAXPLAYER];
+static int mclearpcount;	/* For torps */
+static int mclearpoint[2][(MAXTORP + 1) * MAXPLAYER];
+static int mclearacount; 	/* For torp explosions, plasmas, and plasma explosions */
+static int mcleararea[4][(MAXTORP + 1) * MAXPLAYER + (MAXPLASMA + 1) * MAXPLAYER];
 
 /*
  *  Global Variables:
@@ -755,7 +761,7 @@ DrawGalaxyHockeyScore (void)
 /******************************************************************************/
 /***  map()
 /******************************************************************************/
-void
+inline void
 map (void)
 /*
  *  Update the 'galactic' map.
@@ -786,6 +792,7 @@ map (void)
     if (doubleBuffering)
         W_Win2Mem (mapSDB);
 #endif
+    clearMap ();
 
     dx = (me->p_x) / (GWIDTH / WINSIDE);
     dy = (me->p_y) / (GWIDTH / WINSIDE);
@@ -1020,6 +1027,132 @@ map (void)
 #endif
     }
 
+    /* Draw weapons */
+    if (weaponsOnMap)
+    {
+        register int h;
+        register struct phaser *ph;
+        register struct torp *k;
+        register struct plasmatorp *pt;
+        int tx, ty;
+
+        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+        {
+            if (j->p_status == PFREE)
+                continue;
+
+            dx = j->p_x * WINSIDE / GWIDTH;
+            dy = j->p_y * WINSIDE / GWIDTH;
+            
+            /* phasers */
+            ph = &phasers[j->p_no];
+            if (ph->ph_status != PHFREE &&
+               (j->p_status == PALIVE || j->p_status == PEXPLODE || j->p_status == PDEAD))
+            {
+                switch(ph->ph_status)
+                {
+                    case PHMISS:
+                        /* Here I will have to compute end coordinate */
+                        tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
+                            * Cos[ph->ph_dir]) * WINSIDE / GWIDTH;
+                        ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
+                            * Sin[ph->ph_dir]) * WINSIDE / GWIDTH;
+                        break;
+                    case PHHIT2:
+                        tx = ph->ph_x * WINSIDE / GWIDTH;
+                        ty = ph->ph_y * WINSIDE / GWIDTH;
+                        break;
+                    default:
+                        tx = players[ph->ph_target].p_x * WINSIDE / GWIDTH;
+                        ty = players[ph->ph_target].p_y * WINSIDE / GWIDTH;
+                        break;
+                }
+                W_MakeLine(mapw, dx, dy, tx, ty, phaserColor(ph));
+                mclearline[0][mclearlcount] = dx;
+                mclearline[1][mclearlcount] = dy;
+                mclearline[2][mclearlcount] = tx;
+                mclearline[3][mclearlcount] = ty;
+                mclearlcount++;
+                /* Check for overwriting planets, corrected from view scale*/
+                checkRedraw(j->p_x, j->p_y);
+                checkRedraw(tx * (GWIDTH / WINSIDE), ty * (GWIDTH / WINSIDE));
+            }
+
+            if (!j->p_ntorp && !j->p_nplasmatorp)
+                continue;
+
+            /* torps */
+            for (h = 0, k = &torps[MAXTORP * i + h]; h < MAXTORP; h++, k++)
+            {
+                if (!k->t_status)
+                    continue;
+                if (k->t_x < 0 || k->t_y < 0)
+                    continue;
+                dx = k->t_x * WINSIDE / GWIDTH;
+                dy = k->t_y * WINSIDE / GWIDTH;
+
+                if (k->t_status == TEXPLODE)
+                {
+                    /* Use frame 0 (smallest) to limit size of torp explosions 
+                       on the galactic */
+                    W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2), dy - (BMP_TORPDET_HEIGHT / 2),
+                                   cloud[0], torpColor (k), mapw);
+                    mcleararea[0][mclearacount] = dx - (BMP_TORPDET_WIDTH / 2);
+                    mcleararea[1][mclearacount] = dy - (BMP_TORPDET_HEIGHT / 2);
+                    mcleararea[2][mclearacount] = BMP_TORPDET_WIDTH;
+                    mcleararea[3][mclearacount] = BMP_TORPDET_HEIGHT;
+                    mclearacount++;
+                }
+                else
+                {
+                    W_MakePoint(mapw, dx, dy, torpColor (k));
+                    mclearpoint[0][mclearpcount] = dx;
+                    mclearpoint[1][mclearpcount] = dy;
+                    mclearpcount++;
+                }
+                /* Check for overwriting planets */
+                checkRedraw(k->t_x, k->t_y);
+            }
+
+            /* plasmas */
+            for (h = 0, pt = &plasmatorps[MAXPLASMA * i + h]; h < MAXPLASMA; h++, pt++)
+            {
+                if (!pt->pt_status)
+                    continue;
+                if (pt->pt_x < 0 || pt->pt_y < 0)
+                    continue;
+                dx = pt->pt_x * WINSIDE / GWIDTH;
+                dy = pt->pt_y * WINSIDE / GWIDTH;
+
+                if (pt->pt_status == TEXPLODE)
+                {
+                    /* Use frame 0 (smallest) of the TORP animations to limit size of plasma
+                       explosions galactic.  Plasma explosion bitmaps are just too big */
+                    W_WriteBitmap (dx - (BMP_TORPDET_WIDTH / 2), dy - (BMP_TORPDET_HEIGHT / 2),
+                                   cloud[0], plasmatorpColor (pt), mapw);
+                    mcleararea[0][mclearacount] = dx - (BMP_TORPDET_WIDTH / 2);
+                    mcleararea[1][mclearacount] = dy - (BMP_TORPDET_HEIGHT / 2);
+                    mcleararea[2][mclearacount] = BMP_TORPDET_WIDTH;
+                    mcleararea[3][mclearacount] = BMP_TORPDET_HEIGHT;
+                    mclearacount++;
+                }
+                else
+                {
+                    /* Draw plasmas as a 2x2 pixel torp */
+                    W_MakeLine(mapw, dx, dy, dx + 1, dy, plasmatorpColor (pt));
+                    W_MakeLine(mapw, dx, dy + 1, dx + 1, dy + 1, plasmatorpColor (pt));
+                    mcleararea[0][mclearacount] = dx;
+                    mcleararea[1][mclearacount] = dy;
+                    mcleararea[2][mclearacount] = 2;
+                    mcleararea[3][mclearacount] = 2;
+                    mclearacount++;
+                }
+                /* Check for overwriting planets */
+                checkRedraw(pt->pt_x, pt->pt_y);
+            }
+        }
+    }
+
     /* Draw the lock symbol (if needed) */
 
     if ((me->p_flags & PFPLOCK) && (showLock & 1))
@@ -1103,4 +1236,27 @@ map (void)
     if (doubleBuffering)
         W_Mem2Win (mapSDB);
 #endif
+}
+
+
+inline void
+clearMap (void)
+/*
+   Clear the weapons fire on the galactic map (intelligently rather than
+   just simply wiping the map).  Similar to clearLocal().
+*/
+{
+    int i;
+    
+    W_ClearAreas (mapw, mcleararea[0], mcleararea[1], mcleararea[2],
+                      mcleararea[3], mclearacount);
+    mclearacount = 0;
+
+    for (i = 0; i < mclearpcount; i++)
+        W_MakePoint (mapw, mclearpoint[0][i], mclearpoint[1][i], backColor);
+    mclearpcount = 0;
+
+    W_MakeLines (mapw, mclearline[0], mclearline[1], mclearline[2],
+                     mclearline[3], mclearlcount, backColor);
+    mclearlcount = 0;
 }
