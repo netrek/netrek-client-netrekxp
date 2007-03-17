@@ -373,7 +373,7 @@ static int ReadMetasSend()
 
   /* send request to a multicast metaserver on local area network */
   address.sin_family = AF_INET;
-  address.sin_port = htons(metaPort);
+  address.sin_port = htons((u_short) metaPort);
   address.sin_addr.s_addr = inet_addr("224.0.0.1");
   if (metaVerbose)
     LineToConsole ("Requesting player list from nearby servers on %s\n",
@@ -392,7 +392,7 @@ static int ReadMetasSend()
   while (token != NULL) {
     /* compose the address structure */
     address.sin_family = AF_INET;
-    address.sin_port = htons(metaPort);
+    address.sin_port = htons((u_short) metaPort);
 
     /* skip any blanks */
     while (*token == ' ') token++;

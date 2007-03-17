@@ -3472,7 +3472,7 @@ void print_packet(char *packet, int size)
 		   ((struct you_spacket *) packet)->hostile,
 		   ((struct you_spacket *) packet)->swar,
 		   ((struct you_spacket *) packet)->armies,
-		   ntohs(((struct you_spacket *) packet)->flags),
+		   ntohl(((struct you_spacket *) packet)->flags),
 		   ntohl(((struct you_spacket *) packet)->damage),
 		   ntohl(((struct you_spacket *) packet)->shield),
 		   ntohl(((struct you_spacket *) packet)->fuel),

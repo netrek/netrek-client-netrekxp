@@ -640,13 +640,11 @@ W_Cleanup (void)
     SelectObject (localSDB->mem_dc, localSDB->old_bmp);
     DeleteObject (localSDB->mem_bmp);
     ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
-    free (localSDB->window);
     free (localSDB);
 
     SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
     DeleteObject (mapSDB->mem_bmp);
     ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
-    free (mapSDB->window);
     free (mapSDB);
 
     //WinKey Kill Library Stop

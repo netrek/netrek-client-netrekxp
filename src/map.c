@@ -879,7 +879,7 @@ map (void)
                 lastRedraw[i] = 0;
             }
 
-            if (lastRedraw[i] == server_ups)
+            if (lastRedraw[i] == (u_int) server_ups)
             {
                 /* Redraw stationary ships every update so that these
                    ships are not hidden by planet updates. */

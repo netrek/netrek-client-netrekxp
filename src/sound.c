@@ -321,7 +321,7 @@ extern void Play_Sound_Loc (int type, u_int flag, int angle, int distance)
     if (angle >= 0)
     {
         // Adjust volume with distance and angle
-        if (Mix_SetPosition(channel, angle, distance) == 0)
+        if (Mix_SetPosition(channel, (char) angle, (char) distance) == 0)
         {
             LineToConsole("Mix_SetPosition: %s\n", Mix_GetError());
             return;
@@ -330,7 +330,7 @@ extern void Play_Sound_Loc (int type, u_int flag, int angle, int distance)
     else
     {
         // Adjust volume with distance
-        if (Mix_SetDistance(channel, distance) == 0)
+        if (Mix_SetDistance(channel, (char) distance) == 0)
         {
             LineToConsole("Mix_SetDistance: %s\n", Mix_GetError());
             return;
