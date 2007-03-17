@@ -1170,7 +1170,7 @@ DrawShips (void)
             /* Self tic heading */
             if (headingTic)
             {
-            	if (myPlayer(j))
+            	if (myPlayer(j) || isObsLockPlayer(j))
             	{
                     startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_dir]);
                     starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_dir]);
@@ -1197,7 +1197,7 @@ DrawShips (void)
                         j->p_y - planets[j->p_planet].pl_y) / XPI * 128.);
                     }
                     
-                    if (j->p_dir != j->p_desdir && !(j->p_flags & (PFORBIT | PFDOCK)))
+                    if (j == me && j->p_dir != j->p_desdir && !(j->p_flags & (PFORBIT | PFDOCK | PFOBSERV)))
                     {
                         startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_desdir]);
                         starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_desdir]);
