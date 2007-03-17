@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- added ability to update buttonmap through the options menu
 - added "weaponsOnMap: (on)/off" to show torps, plasmas and phasers on the galactic map.
   Currently server only shows weapons fire within local window, but perhaps in the future
   it will show all weapons for observers.

@@ -26,6 +26,7 @@
 int notdone;                    /* not done flag */
 
 static char newkeys[14];
+static char newbuttons[10];
 
 char *localmes[] = { "Show owner on local planets",
                      "Show resources on local planets",
@@ -322,6 +323,7 @@ struct option Control_Menu[] = {
 #endif
     {1, "allow wheel actions", &allowWheelActions, 0, 0, 0, NULL, NULL},
     {1, "new keymap entries: %s", 0, 0, newkeys, 13, NULL, NULL},
+    {1, "new buttonmap entries: %s", 0, 0, newbuttons, 9, NULL, NULL},
     {1, "ignore the capslock key", &ignoreCaps, 0, 0, 0, NULL, NULL},
     {1, "%d updates per second", &updatesPerSec, 0, 0, 0, 0, &updates_range},
     {1, "%d 1/10 sec screen refresh delay", &redrawDelay, 0, 0, 0, 0,
@@ -457,6 +459,7 @@ optionwindow (void)
     notdone = 1;
 
     *newkeys = '\0';
+    *newbuttons = '\0';
     if (FirstMenu == NULL)
     {
         MaxOptions = InitOptionMenus ();
@@ -1009,6 +1012,93 @@ optiondone (void)
             break;
     }
     *newkeys = '\0';
+
+    /* update buttonmap */
+    str = newbuttons;
+    while (*str != '\0' && *(str + 1) != '\0')
+    {
+        switch (*str++)
+        {
+        case '1':
+            buttonmap[1] = getctrlkey (&str);
+            break;
+        case '2':
+            buttonmap[2] = getctrlkey (&str);
+            break;
+        case '3':
+            buttonmap[3] = getctrlkey (&str);
+            break;
+        /* XButton 1 */
+        case '4':
+            buttonmap[4] = getctrlkey (&str);
+            break;
+        /* XButton 2 */
+        case '5':
+            buttonmap[5] = getctrlkey (&str);
+            break;
+        /* Wheel Up */
+        case '6':
+            buttonmap[6] = getctrlkey (&str);
+            break;
+        /* Wheel Down */
+        case '7':
+            buttonmap[7] = getctrlkey (&str);
+            break;
+
+#ifdef SHIFTED_MOUSE
+        case '8':
+            buttonmap[8] = getctrlkey (&str);
+            break;
+        case '9':
+            buttonmap[9] = getctrlkey (&str);
+            break;
+        case 'a':
+            buttonmap[10] = getctrlkey (&str);
+            break;
+        case 'b':
+            buttonmap[11] = getctrlkey (&str);
+            break;
+        case 'c':
+            buttonmap[12] = getctrlkey (&str);
+            break;
+        case 'd':
+            buttonmap[13] = getctrlkey (&str);
+            break;
+        case 'e':
+            buttonmap[14] = getctrlkey (&str);
+            break;
+        case 'f':
+            buttonmap[15] = getctrlkey (&str);
+            break;
+        case 'g':
+            buttonmap[16] = getctrlkey (&str);
+            break;
+        case 'h':
+            buttonmap[17] = getctrlkey (&str);
+            break;
+        case 'i':
+            buttonmap[18] = getctrlkey (&str);
+            break;
+        case 'j':
+            buttonmap[19] = getctrlkey (&str);
+            break;
+        case 'k':
+            buttonmap[20] = getctrlkey (&str);
+            break;
+        case 'l':
+            buttonmap[21] = getctrlkey (&str);
+            break;
+        case 'm':
+            buttonmap[22] = getctrlkey (&str);
+            break;
+#endif /* SHIFTED_MOUSE */
+            
+        default:
+            LineToConsole ("%c ignored in buttonmap\n", *(str - 1));
+            break;
+        }
+    }
+    *newbuttons = '\0';
 
     if (updatesPerSec != lastUpdateSpeed)
     {
