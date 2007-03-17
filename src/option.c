@@ -250,7 +250,6 @@ struct option Ship_Menu[] = {
     {0, "Ship Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &colorClient, 0, 0, 0, bitmaptypemess, &bitmap_range},
-    {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
 #ifdef VSHIELD_BITMAPS
     {1, "vary shields bitmap w/ dam", &varyShields, 0, 0, 0, NULL, NULL},
     {1, "vary shields color w/ dam", &varyShieldsColor, 0, 0, 0, NULL, NULL},
@@ -258,23 +257,31 @@ struct option Ship_Menu[] = {
     {1, "use warning shields", &warnShields, 0, 0, 0, NULL, NULL},
     {1, "use warning hull", &vary_hull, 0, 0, 0, NULL, NULL},
     {1, "show speed on tactical", &showMySpeed, 0, 0, 0, NULL, NULL},
-#ifdef JUBILEE_PHASERS
-    {1, "use colorful phasers", &colorfulPhasers, 0, 0, 0, NULL, NULL},
-#endif
-    {1, "highlight friendly phasers", &highlightFriendlyPhasers, 0, 0, 0, NULL, NULL},
     {1, "show tractor/pressor beams", &showTractorPressor, 0, 0, 0, NULL, NULL},
     {1, "show tractors after lock", &continueTractor, 0, 0, 0, NULL, NULL},
     {1, "show tractor target ID", &tractorID, 0, 0, 0, NULL, NULL},
     {1, "show all players tract/press", &showAllTractorPressor, 0, 0, 0, NULL, NULL},
+    {1, "report kills", &reportKills, 0, 0, 0, NULL, NULL},
+    {1, "show heading tic mark", &headingTic, 0, 0, 0, NULL, NULL},
+    {1, "show lock line", &lockLine, 0, 0, 0, NULL, NULL},
+    {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
+    {1, "done", &notdone, 0, 0, 0, NULL, NULL},
+    {-1, NULL, 0, 0, 0, 0, NULL, NULL}
+};
+
+struct option Weapons_Menu[] = {
+    {0, "Weapons Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+    {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
+    {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
+#ifdef JUBILEE_PHASERS
+    {1, "use colorful phasers", &colorfulPhasers, 0, 0, 0, NULL, NULL},
+#endif
+    {1, "highlight friendly phasers", &highlightFriendlyPhasers, 0, 0, 0, NULL, NULL},
     {1, "enemy phaser width: %d", &enemyPhasers, 0, 0, 0, NULL, &enPhasRng},
     {1, "", &phaserShrinkStyle, 0, 0, 0, shrinkphasermess, NULL},
     {1, "shrink my phaser by %d/16", &phaserShrink, 0, 0, 0, NULL, &phaserShrinkRng},
     {1, "shrink their phasers by %d/16", &theirPhaserShrink, 0, 0, 0, NULL, &phaserShrinkRng},
     {1, "shrink phasers on a miss", &shrinkPhaserOnMiss, 0, 0, 0, NULL, NULL},
-    {1, "report kills", &reportKills, 0, 0, 0, NULL, NULL},
-    {1, "show heading tic mark", &headingTic, 0, 0, 0, NULL, NULL},
-    {1, "show lock line", &lockLine, 0, 0, 0, NULL, NULL},
-    {1, "show det circle", &detCircle, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
@@ -1024,6 +1031,7 @@ InitOptionMenus (void)
     /* AddOptMenu( &OptionsMenu, 0); */
     AddOptMenu (Control_Menu, 0);
     AddOptMenu (Ship_Menu, 0);
+    AddOptMenu (Weapons_Menu, 0);
     AddOptMenu (Planet_Menu, 0);
     AddOptMenu (Visual_Menu, 0);
     AddOptMenu (Window_Menu, 0);

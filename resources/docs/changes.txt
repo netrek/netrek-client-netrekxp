@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- new Options menus for Hockey and Weapons
 - planet window no longer gets unmapped on death
 - fixed macro crash bug with sending macros to invisible players on the playerlist
 - added "mapSort: (on)/off" to sort the planet list, with your planets first, then the planets
