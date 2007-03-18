@@ -1466,6 +1466,7 @@ DrawShips (void)
 #ifdef SOUND
                 php->sound_phaser = 0;
 #endif
+                php->ph_fuse = 0;
             }
             else
             {

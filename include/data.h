@@ -570,6 +570,7 @@ extern int F_ship_cap;
 extern int F_show_all_tractors;
 extern int F_sp_generic_32;
 extern int F_full_direction_resolution;
+extern int F_full_weapon_resolution;
 
 #ifdef RECORDGAME
 extern int F_many_self;

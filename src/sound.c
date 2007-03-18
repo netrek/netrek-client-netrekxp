@@ -54,7 +54,6 @@ int loadSounds(void) {
   int i;
 
   sounds[CLOAKED_WAV] = Mix_LoadWAV(DATAFILE("nt_cloaked.wav"));
-  sounds[ENGINE_WAV] = Mix_LoadWAV(DATAFILE("nt_engine.wav"));
   sounds[ENGINE_MELT_WAV] = Mix_LoadWAV(DATAFILE("nt_enginemelt.wav"));
   sounds[ENGINE_OK_WAV] = Mix_LoadWAV(DATAFILE("nt_engineok.wav"));
   sounds[ENTER_SHIP_WAV] = Mix_LoadWAV(DATAFILE("nt_enter_ship.wav"));

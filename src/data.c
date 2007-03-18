@@ -675,6 +675,7 @@ int F_ship_cap = 0;
 int F_show_all_tractors = 1;
 int F_sp_generic_32 = 0;
 int F_full_direction_resolution = 0;
+int F_full_weapon_resolution = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;

@@ -26,7 +26,6 @@ extern void Init_Sound (void);
 
 enum {
   CLOAKED_WAV,
-  ENGINE_WAV,
   ENGINE_MELT_WAV,
   ENGINE_OK_WAV,
   ENTER_SHIP_WAV,

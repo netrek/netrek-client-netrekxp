@@ -1,8 +1,9 @@
 Netrek XP 2006, Version 1.3:
+- added support for feature packet FULL_WEAPON_RESOLUTION, this means that observers
+  can see all weapons on the galaxy map, yay!  It also means you can see your torps
+  on the galaxy map beyond your tactical range (good for plinking).
 - added ability to update buttonmap through the options menu
 - added "weaponsOnMap: (on)/off" to show torps, plasmas and phasers on the galactic map.
-  Currently server only shows weapons fire within local window, but perhaps in the future
-  it will show all weapons for observers.
 - new Options menus for Hockey and Weapons
 - planet window no longer gets unmapped on death
 - fixed macro crash bug with sending macros to invisible players on the playerlist
