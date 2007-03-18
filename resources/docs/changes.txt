@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- the old mono torps are now default.  Big torps are nice and all, but I think
+  there is a loss in dodging ability with the bigger torps.
 - added support for feature packet FULL_WEAPON_RESOLUTION, this means that observers
   can see all weapons on the galaxy map, yay!  It also means you can see your torps
   on the galaxy map beyond your tactical range (good for plinking).

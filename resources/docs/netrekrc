@@ -72,7 +72,7 @@ colorClient: 4
 colorfulPhasers: off
 
 # Use colored bitmaps for torps and plasmas
-colorWeapons: on
+colorWeapons: off
 
 # Show tractor/pressor after lock
 continueTractor: on
