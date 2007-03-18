@@ -283,7 +283,7 @@ checkRedraw (int x,
         {
             if (j->p_status != PALIVE) continue;
             if (j->p_flags & PFOBSERV) continue;
-            if ((j->p_x / SIZE) == x && (j->p_y / SIZE) == y )
+            if (roughMap[j->p_x / SIZE][j->p_y / SIZE] != -1)
                 redrawPlayer[i] = 1;
         }
 
@@ -302,7 +302,7 @@ checkRedraw (int x,
         {
             if (j->p_status != PALIVE) continue;
             if (j->p_flags & PFOBSERV) continue;
-            if ((j->p_x / SIZE) == x && (j->p_y / SIZE) == y )
+            if (roughMap3[j->p_x / SIZE][j->p_y / SIZE] != -1)
                 redrawPlayer[i] = 1;
         }
 
