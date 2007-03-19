@@ -169,11 +169,19 @@ static char *planetbitmapgalaxymess[] = { "Show Bronco bitmaps on galactic map",
                                           "Show New color bitmaps on galactic map",
                                           ""
 };
+
 static char *autowarmess[] = { "Don't auto set war declarations",
                               "Set war with nonzero player teams",
                               "Set war with largest enemy team",
                               ""
 };
+
+static char *viewrangemess[] = { "Don't show range circle",
+                                 "Only show range circle when cloaked",
+                                 "Show range circle at all times",
+                                 ""
+};
+
 /* Only one of op_option, op_targetwin, and op_string should be defined. If
  * op_string is defined, op_size should be too and op_text is used without a
  * "Don't" prefix. if op_range is defined, there should be a %d in op_text
@@ -397,7 +405,7 @@ struct option Visual_Menu[] = {
 #endif
     {1, "omit team letter on map", &omitTeamLetter, 0, 0, 0, NULL, NULL},
     {1, "draw view box on map", &viewBox, 0, 0, 0, NULL, NULL},
-    {1, "draw detect limits on map", &viewRange, 0, 0, 0, NULL, NULL},
+    {1, "", &viewRange, 0, 0, 0, viewrangemess, NULL},
     {1, "draw stars on local", &showStars, 0, 0, 0, NULL, NULL},
     {1, "draw warp streaks", &warpStreaks, 0, 0, 0, NULL, NULL},
     {1, "alert on extra border(s)", &extraAlertBorder, 0, 0, 0, NULL, NULL},

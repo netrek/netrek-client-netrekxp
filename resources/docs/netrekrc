@@ -475,7 +475,10 @@ varyShieldsColor: on
 viewBox: on
 
 # Show range at which enemies can see you as a circle on map
-viewRange: on
+# 0 - don't show range circle
+# 1 - only show range circle when cloaked
+# 2 - show range circle at all times
+viewRange: 1
 
 # Warn hull state based on damage
 warnHull: off

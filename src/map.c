@@ -1031,10 +1031,12 @@ map (void)
 	/* Draw range circle */
 	if (viewRange && (myPlayer(j) || isObsLockPlayer(j)))
         {
-        /* Orbitting any non-owned planet gets you seen,
-           so don't draw the circle */
+          /* Orbitting any non-owned planet gets you seen,
+             so don't draw the circle */
           if ((j->p_flags & PFORBIT) &&
           (planets[j->p_planet].pl_owner != j->p_team)) ;
+          /* Don't draw if uncloaked and viewRange is 1 */
+          else if (!(j->p_flags & PFCLOAK) && viewRange == 1) ;
           else
           {
             struct planet *pl;

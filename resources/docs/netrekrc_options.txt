@@ -315,7 +315,11 @@ useRSA.<server>           (on/off) user RSA for <server>
 varyShields:              (on/off) change shields graphic on shield damage
 varyShieldsColor:         (on/off) change shields color on shield damage
 viewBox:                  (on/off) show tactical window boundaries on map
-viewRange:                (on/off) show range at which enemies can see you as a circle on map
+viewRange:                (0-2) show range at which enemies can see you as a circle on map
+# 0 - don't show range circle
+# 1 - only show range circle when cloaked
+# 2 - show range circle at all times
+
 warnHull:                 (on/off) warn hull state based on damage
 warnShields:              (on/off) change shields color on enemy approach
 warpStreaks:              (on/off) show streaks while warping to starbase

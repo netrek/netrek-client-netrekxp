@@ -887,9 +887,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"viewRange", &viewRange, RC_BOOL,
+    {"viewRange", &viewRange, RC_INT,
         {
             "Show range at which enemies can see you as a circle on map",
+            "0 - Don't show range circle",
+            "1 - Only show range circle when cloaked",
+            "2 - Show range circle at all times",
             NULL
         }
     },
@@ -1621,7 +1624,7 @@ resetdefaults (void)
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
     beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
     viewBox = booleanDefault ("viewBox", viewBox);
-    viewRange = booleanDefault ("viewRange", viewRange);
+    viewRange = intDefault ("viewRange", viewRange);
     warpStreaks = booleanDefault ("warpStreaks", warpStreaks);
     showStars = booleanDefault ("showStars", showStars);
 
