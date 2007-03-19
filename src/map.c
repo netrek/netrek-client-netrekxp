@@ -1042,14 +1042,24 @@ map (void)
             int planx, plany;
             int distx, disty;
             int rad;
+            int color;
 
 #ifdef BEEPLITE
             pRadius = 3 * BMP_MPLANET_WIDTH / 5;
 #else
             pRadius = BMP_MPLANET_WIDTH / 2;
 #endif
-            rad = (j->p_flags & PFCLOAK) ? MAXDISTCLOAK : MAXDISTVIS;
-            W_WriteCircle(mapw, dx, dy, rad, 0, 1, W_White);
+            if (j->p_flags & PFCLOAK)
+            {
+                rad = MAXDISTCLOAK;
+                color = W_Red;
+            }
+            else
+            {
+                rad = MAXDISTVIS;
+                color = W_White;
+            }
+            W_WriteCircle(mapw, dx, dy, rad, 0, 1, color);
             mclearx = dx;
             mcleary = dy;
             mclearr = rad;
@@ -1305,7 +1315,7 @@ clearMap (void)
     
     if (mclearccount)
     {
-        W_WriteCircle(mapw, mclearx, mcleary, mclearr, 0, 1, backColor);
+        W_WriteCircle(mapw, mclearx, mcleary, mclearr, 0, 0, backColor);
         mclearccount--;
     }
 }

@@ -3317,7 +3317,10 @@ void W_WriteCircle (W_Window window,
     }
 
     if (dashed)
+    {
+        SetBkColor (hdc, colortable[BLACK].rgb);
         SelectObject (hdc, colortable[color].dashedpen);
+    }
     else
         SelectObject (hdc, colortable[color].pen);
     SelectObject (hdc, GetStockObject (NULL_BRUSH));
