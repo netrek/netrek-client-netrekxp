@@ -104,20 +104,28 @@ static void
 reportFeatures (void)
 {
     struct feature *f;
+    int value;
 
     for (f = features; f->name != 0; f++)
     {
         if (strcmpi (f->name, "FEATURE_PACKETS") != 0)
+        {
+            if (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION"))
+                value = useFullShipInfo;
+            else if (!strcmp(f->name, "FULL_WEAPON_RESOLUTION"))
+                value = useFullWeapInfo;
+            else
+                value = f->value;
             sendFeature (f->name,
                          f->feature_type,
-                         (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION") ? useFullShipInfo : f->value),
+                         value,
                          (char) (f->arg1 ? *f->arg1 : 0),
                          (char) (f->arg2 ? *f->arg2 : 0));
 
 #ifdef DEBUG
-        LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type,
-        !strcmp(f->name, "FULL_DIRECTION_RESOLUTION") ? useFullShipInfo : f->value);
+            LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type, value);
 #endif
+        }
     }
 }
 

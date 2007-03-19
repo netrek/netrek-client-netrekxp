@@ -456,6 +456,12 @@ updatesPerSec: 50
 # slight increase in bandwidth usage
 useFullShipInfo: on
 
+# Allows observers to see all weapons fire on galaxy map
+# by using long torp packets instead of short torp packets,
+# slight increase in bandwidth usage.  Also allows self torps
+# to be seen beyond tactical range, again via galactic map
+useFullWeapInfo: on
+
 # Use beeplite
 useLite: on
 

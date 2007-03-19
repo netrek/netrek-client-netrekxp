@@ -845,6 +845,15 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"useFullWeapInfo", &useFullWeapInfo, RC_BOOL,
+        {
+            "Allows observers to see all weapons fire on galaxy map",
+            "by using long torp packets instead of short torp packets,",
+            "slight increase in bandwidth usage.  Also allows self torps",
+            "to be seen beyond tactical range, again via galactic map",
+            NULL
+        }
+    },
 #ifdef BEEPLITE
     {"useLite", &useLite, RC_BOOL,
         {
@@ -1615,6 +1624,7 @@ resetdefaults (void)
     soundMusicBkgd = booleanDefault ("soundMusicBkgd", soundMusicBkgd);
     soundAngles = booleanDefault ("soundAngles", soundAngles);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
+    useFullWeapInfo = booleanDefault ("useFullWeapInfo", useFullWeapInfo);
     headingTic = booleanDefault ("headingTic", headingTic);
     tractorID = booleanDefault ("tractorID", tractorID);
     lockLine = booleanDefault ("lockLine", lockLine);
