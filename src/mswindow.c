@@ -644,7 +644,7 @@ W_Cleanup (void)
 
     SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
     DeleteObject (mapSDB->mem_bmp);
-    ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+    DeleteDC (mapSDB->win_dc);
     free (mapSDB);
 
     //WinKey Kill Library Stop
@@ -5611,6 +5611,7 @@ W_InitSDB (W_Window window)
 {
     Window * win;
     SDBUFFER * sdb;
+    HBITMAP junk;
 
     win = ((Window *)window);
 
@@ -5636,6 +5637,14 @@ W_InitSDB (W_Window window)
     if (sdb->mem_dc == NULL)
         return NULL;
 
+    //This code ripped from W_Initialize, better safe than sorry
+    junk = CreateBitmap (1, 1, 1, 1, NULL);
+    GlobalOldMemDCBitmap = (HBITMAP) SelectObject (sdb->win_dc, junk);
+    SelectObject (sdb->win_dc, GlobalOldMemDCBitmap);
+    GlobalOldMemDC2Bitmap = (HBITMAP) SelectObject (sdb->mem_dc, junk);
+    SelectObject (sdb->mem_dc, GlobalOldMemDC2Bitmap);
+    DeleteObject (junk);
+    
     sdb->mem_bmp = CreateCompatibleBitmap (sdb->win_dc, sdb->wr.right, sdb->wr.bottom);
     if (sdb->mem_bmp == NULL)
         return NULL;
