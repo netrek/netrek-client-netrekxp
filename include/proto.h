@@ -602,6 +602,7 @@ void W_WriteCircle (W_Window window,
                     int y,
                     int r,
                     int highlight,
+                    int dashed,
                     W_Color color);
 void W_WriteTriangle (W_Window window,
                       int x,

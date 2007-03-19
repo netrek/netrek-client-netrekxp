@@ -197,6 +197,7 @@ extern void W_WriteCircle (W_Window,
                            int,
                            int,
                            int,
+                           int,
                            W_Color);
 extern void W_WriteTriangle (W_Window,
                              int,

@@ -887,6 +887,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"viewRange", &viewRange, RC_BOOL,
+        {
+            "Show range at which enemies can see you as a circle on map",
+            NULL
+        }
+    },
     {"warnHull", &vary_hull, RC_BOOL,
         {
             "Warn hull state based on damage",
@@ -1615,6 +1621,7 @@ resetdefaults (void)
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
     beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
     viewBox = booleanDefault ("viewBox", viewBox);
+    viewRange = booleanDefault ("viewRange", viewRange);
     warpStreaks = booleanDefault ("warpStreaks", warpStreaks);
     showStars = booleanDefault ("showStars", showStars);
 

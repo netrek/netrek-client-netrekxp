@@ -781,6 +781,7 @@ time_t  timeBank[T_TOTAL];      /* array of times    */
 
 int omitTeamLetter = 0;
 int viewBox = 1;
+int viewRange = 1;
 
 struct stringlist *defaults = NULL;
 

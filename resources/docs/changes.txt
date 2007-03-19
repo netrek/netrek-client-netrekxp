@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- added "viewRange: (on)/off" option to draw a dashed circle on the map showing
+  the range at which enemies can see you.  Circle radius depends on if you are
+  cloaked or not.  If orbitting a foreign planet, no circle is drawn, as you are
+  visible to all.
 - fixed flicker experienced sometimes seen with stationary ships near a planet
   on the galactic map
 - the old mono torps are now default.  Big torps are nice and all, but I think

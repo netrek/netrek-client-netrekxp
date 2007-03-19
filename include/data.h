@@ -685,6 +685,7 @@ extern time_t timeBank[];   /* different kind of times to store for different ti
 extern int omitTeamLetter;  /* don't show team letter on map */
 
 extern int viewBox;     /* show local window box on map */
+extern int viewRange;   /* show range at which enemies can see you as a circle on map */
 
 extern struct stringlist * defaults; /* pointer to defaults list */
 

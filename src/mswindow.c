@@ -3302,6 +3302,7 @@ void W_WriteCircle (W_Window window,
                     int y,
                     int r,
                     int highlight,
+                    int dashed,
                     W_Color color)
 {
     DBHEADER_VOID;
@@ -3315,7 +3316,10 @@ void W_WriteCircle (W_Window window,
         RealizePalette (hdc);
     }
 
-    SelectObject (hdc, colortable[color].pen);
+    if (dashed)
+        SelectObject (hdc, colortable[color].dashedpen);
+    else
+        SelectObject (hdc, colortable[color].pen);
     SelectObject (hdc, GetStockObject (NULL_BRUSH));
 
     Ellipse (hdc, x - r, y - r, x + r, y + r);

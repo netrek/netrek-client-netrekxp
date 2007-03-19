@@ -474,6 +474,9 @@ varyShieldsColor: on
 # Show limits of tactical display on galaxy
 viewBox: on
 
+# Show range at which enemies can see you as a circle on map
+viewRange: on
+
 # Warn hull state based on damage
 warnHull: off
 

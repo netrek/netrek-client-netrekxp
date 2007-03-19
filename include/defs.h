@@ -76,6 +76,12 @@
                                  * person can go into orbit */
 #define PFIREDIST 1500          /* At this range a planet
                                  * will shoot at a player */
+#define MAXDISTCLOAK (WINSIDE/7)
+                                /* At this range a player can
+                                   be seen while cloaked */
+#define MAXDISTVIS (WINSIDE/3)
+                                /* At this range a player can be
+                                   seen while visible (uncloaked) */
 
 /* 6 minutes is maximum for autoquit -- anything more causes problems in the
  * server.  (?) */

@@ -61,6 +61,8 @@ static int mclearpcount;	/* For torps */
 static int mclearpoint[2][(MAXTORP + 1) * MAXPLAYER];
 static int mclearacount; 	/* For torp explosions, plasmas, and plasma explosions */
 static int mcleararea[4][(MAXTORP + 1) * MAXPLAYER + (MAXPLASMA + 1) * MAXPLAYER];
+static int mclearx, mcleary, mclearr;	/* x,y,radius for range circle */
+static int mclearccount;
 
 /*
  *  Global Variables:
@@ -625,7 +627,7 @@ DrawPlanets ()
 #endif
         if (planetHighlighting && (l->pl_info & me->p_team)) /* Draw halo */
             W_WriteCircle(mapw, dx, dy, BMP_MPLANET_WIDTH / 2,
-                          l->pl_armies > 4 ? 1 : 0, planetColor(l));
+                          l->pl_armies > 4 ? 1 : 0, 0, planetColor(l));
 
         if ((l->pl_flags & PLAGRI) && (l->pl_info & me->p_team))
         {
@@ -1025,6 +1027,47 @@ map (void)
 #ifdef BEEPLITE
 	}
 #endif
+
+	/* Draw range circle */
+	if (viewRange && (myPlayer(j) || isObsLockPlayer(j)))
+        {
+        /* Orbitting any non-owned planet gets you seen,
+           so don't draw the circle */
+          if ((j->p_flags & PFORBIT) &&
+          (planets[j->p_planet].pl_owner != j->p_team)) ;
+          else
+          {
+            struct planet *pl;
+            int pRadius;
+            int planx, plany;
+            int distx, disty;
+            int rad;
+
+#ifdef BEEPLITE
+            pRadius = 3 * BMP_MPLANET_WIDTH / 5;
+#else
+            pRadius = BMP_MPLANET_WIDTH / 2;
+#endif
+            rad = (j->p_flags & PFCLOAK) ? MAXDISTCLOAK : MAXDISTVIS;
+            W_WriteCircle(mapw, dx, dy, rad, 0, 1, W_White);
+            mclearx = dx;
+            mcleary = dy;
+            mclearr = rad;
+            mclearccount++;
+            for (pl = planets + MAXPLANETS - 1; pl >= planets; --pl)
+            {
+                /* Redraw check - redraw all planets in range.  Have to
+                   adjust distance to account for planet radius and text
+                   of planet name */
+                planx = pl->pl_x * WINSIDE / GWIDTH;
+                plany = pl->pl_y * WINSIDE / GWIDTH;
+                distx = ABS(planx - dx) - pRadius - W_Textwidth;
+                disty = ABS(plany - dy) - pRadius - W_Textheight;
+                if (distx*distx + disty*disty < (rad*rad))
+                    pl->pl_flags |= PLREDRAW;
+            }
+          }
+        }
     }
 
     /* Draw weapons */
@@ -1259,4 +1302,10 @@ clearMap (void)
     W_MakeLines (mapw, mclearline[0], mclearline[1], mclearline[2],
                      mclearline[3], mclearlcount, backColor);
     mclearlcount = 0;
+    
+    if (mclearccount)
+    {
+        W_WriteCircle(mapw, mclearx, mcleary, mclearr, 0, 1, backColor);
+        mclearccount--;
+    }
 }

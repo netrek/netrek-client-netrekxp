@@ -397,6 +397,7 @@ struct option Visual_Menu[] = {
 #endif
     {1, "omit team letter on map", &omitTeamLetter, 0, 0, 0, NULL, NULL},
     {1, "draw view box on map", &viewBox, 0, 0, 0, NULL, NULL},
+    {1, "draw detect limits on map", &viewRange, 0, 0, 0, NULL, NULL},
     {1, "draw stars on local", &showStars, 0, 0, 0, NULL, NULL},
     {1, "draw warp streaks", &warpStreaks, 0, 0, 0, NULL, NULL},
     {1, "alert on extra border(s)", &extraAlertBorder, 0, 0, 0, NULL, NULL},

@@ -1158,7 +1158,7 @@ DrawShips (void)
             {
             	if (myPlayer(j))
             	{
-                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, W_Red);         
+                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, 0, W_Red);         
                     clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
                     clearzone[1][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
                     clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
@@ -1220,7 +1220,7 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, SHOTRANGE/SCALE, 0, W_Grey);         
+                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, SHOTRANGE/SCALE, 0, 0, W_Grey);         
                     clearzone[0][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
                     clearzone[1][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
                     clearzone[2][clearcount] = 2*SHOTRANGE/SCALE + 1;
