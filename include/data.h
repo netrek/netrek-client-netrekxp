@@ -705,7 +705,7 @@ extern int allowWheelActions;    /* allow mouse wheel actions */
 
 extern WNDPROC lpfnDefRichEditWndProc;  /* default window procedure for our richedit controls */
 
-extern int richText;    	/* temporary variable to enable/disable rich text windows */
+extern int richText;    	/* rich text message windows */
 extern int newQuit;     	/* new quit clock */
 extern int newTeams;		/* new team windows */
 extern int soundVolume; 	/* Starting sound volume (0-128 range) */

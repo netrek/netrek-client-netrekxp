@@ -2290,8 +2290,12 @@ NetrekWndProc (HWND hwnd,
 
     case WM_MOUSEMOVE:
         GET_STRUCT_PTR;
-        /*if (win->hwnd != GetFocus ())
-            SetFocus (win->hwnd);*/
+        if (richText) /* Richtext windows set focus, we need to get it back
+                         if mouse moves out of the window */
+        {
+            if (win->hwnd != GetFocus ())
+                SetFocus (win->hwnd);
+        }
         SetCursor (win->cursor);
 
 #if defined(MOTION_MOUSE) || defined(XTRA_MESSAGE_UI)
@@ -2758,31 +2762,31 @@ NetrekWndProc (HWND hwnd,
         GET_STRUCT_PTR;
 
         // If we're not in message windows then we'll map wheel up and
-		// wheel down events as regular mouse events
+        // wheel down events as regular mouse events
         if (win->type == WIN_GRAPH || win->type == WIN_TEXT || win->type == WIN_MENU)
-		{
-	        //BringWindowToTop (hwnd);
-			//GET_STRUCT_PTR;
+        {
+            //BringWindowToTop (hwnd);
+            //GET_STRUCT_PTR;
 
             /* Let's see whether we should process wheel messages */
             if (!allowWheelActions)
                 return (1);
 
-			STORE_EVENT_MOUSE;
-			LastPressHwnd = hwnd;
+            STORE_EVENT_MOUSE;
+            LastPressHwnd = hwnd;
 
-			if (wheel > 0)
-			{
-				EventQueue[EventTail].key = W_WHEELUP;
-				EventQueue[EventTail].type = W_EV_BUTTON;
-			}
-			else if (wheel < 0)
-			{
-				EventQueue[EventTail].key = W_WHEELDOWN;
-				EventQueue[EventTail].type = W_EV_BUTTON;
-			}
+            if (wheel > 0)
+            {
+                EventQueue[EventTail].key = W_WHEELUP;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+            }
+            else if (wheel < 0)
+            {
+                EventQueue[EventTail].key = W_WHEELDOWN;
+                EventQueue[EventTail].type = W_EV_BUTTON;
+            }
             return (0);
-		}
+        }
         else if (win->type == WIN_SCROLL)
         {
             i = GetScrollPos (hwnd, SB_VERT);
@@ -2814,7 +2818,7 @@ NetrekWndProc (HWND hwnd,
             SendMessage (win->hwnd, EM_GETRECT, 0, (LPARAM) &r);
             visline = SendMessage (win->hwnd, EM_GETFIRSTVISIBLELINE, 0, 0);
             lines = SendMessage (win->hwnd, EM_GETLINECOUNT, 0, 0);
-
+            //LineToConsole("%d visline, %d total lines\n", visline, lines);
             maxscroll = ((lines - visline) - (r.bottom / W_Textheight)) * W_Textheight;
 
             switch (wheel)
@@ -5875,9 +5879,8 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
         W_ChangeBorder ((W_Window) win, W_White);
         break;*/
 
-/*    case WM_KEYDOWN:
-        LineToConsole ("key down\n");
-        return (0);*/
+    case WM_KEYDOWN:
+        return (0);
     case WM_LBUTTONDOWN:
         BringWindowToTop (hwnd);
         break;

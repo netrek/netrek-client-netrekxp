@@ -293,6 +293,9 @@ rejectMacro: off
 # Report kills
 reportKills: on
 
+# Use rich text message windows, currently disabled
+richText: off
+
 # Rotate planets (only works with new planet bitmaps)
 rotatePlanets: on
 

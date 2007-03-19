@@ -40,7 +40,7 @@ this is fixed.
 7) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
 8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
-Win98 xp computer (already checked for CPU usage, not so bad, plus 50 updates/sec has
+Win98 xp computer (already profiled for CPU usage, not so bad, plus 50 updates/sec has
 more impact).
 9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.

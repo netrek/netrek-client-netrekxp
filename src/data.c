@@ -801,7 +801,7 @@ int allowWheelActions = 1;   /* allow wheel actions */
 
 WNDPROC lpfnDefRichEditWndProc;     /* default window proc */
 
-int richText = 0;   		/* temporary variable to select rich text message windows */
+int richText = 0;   		/* rich text message windows */
 int newQuit = 0;    		/* new quit clock */
 int newTeams = 0;		/* new team windows */
 int soundVolume = 64;		/* Starting sound volume (0-128 range) */
