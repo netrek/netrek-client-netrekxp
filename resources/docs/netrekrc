@@ -486,8 +486,9 @@ viewBox: on
 # Show range at which enemies can see you as a circle on map
 # 0 - don't show range circle
 # 1 - only show range circle when cloaked
-# 2 - show range circle at all times
-viewRange: 1
+# 2 - only show range circle when carrying
+# 3 - show range circle at all times
+viewRange: 2
 
 # Warn hull state based on damage
 warnHull: off
@@ -875,8 +876,8 @@ macro.Z.A:%   | \   |   And it reads zero!
 macro.Z.A:%   \__o__/
 
 macro.z.A:%  /-----\
-macro.z.A:%  |\   /|    The Klew meter (tm) is pointing at %u (%p)
-macro.z.A:%  | \ / |    Eh, it's broken!
+macro.z.A:%  |  |  |    The Klew meter (tm) is pointing at %u (%p)
+macro.z.A:%  |  |  |    Eh, he's alright!
 macro.z.A:%  \__o__/
 
 macro.A.A:%   /-----\
@@ -969,6 +970,11 @@ macro.9.A:%      All your base           .  :    \_/ /  / \
 macro.9.A:%      are belong to us!     <    <     / /  // /\          \o/
 macro.9.A:%                          .:>: .> >. :/*/:</>./.X__         |
 macro.9.A:% --------------------:--:--**#:-<<:^/^<**#**#**:._/--------/->---
+
+mac.^y.A:% __   __ _____  _____   _
+mac.^y.A:% \ \_/ /|  ___||  ___| | |     It's %u (%p)
+mac.^y.A:%  \   / |  ___||___  | |_|     Now we will win!
+mac.^y.A:%   |_|  |_____||_____| (_)
 
 macro.).A:/*   Join the netrek clue game mailing list today! At         */
 macro.).A:/*   http://groups.google.com/group/netrek-clue-games         */

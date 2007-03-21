@@ -907,7 +907,8 @@ struct save_options save_options[] = {
             "Show range at which enemies can see you as a circle on map",
             "0 - Don't show range circle",
             "1 - Only show range circle when cloaked",
-            "2 - Show range circle at all times",
+            "2 - Only show range circle when carrying",
+            "3 - Show range circle at all times",
             NULL
         }
     },

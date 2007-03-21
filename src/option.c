@@ -177,7 +177,8 @@ static char *autowarmess[] = { "Don't auto set war declarations",
 };
 
 static char *viewrangemess[] = { "Don't show range circle",
-                                 "Only show range circle when cloaked",
+                                 "Only show range circle if cloaked",
+                                 "Only show range circle if carrying",
                                  "Show range circle at all times",
                                  ""
 };

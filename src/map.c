@@ -1037,6 +1037,8 @@ map (void)
           (planets[j->p_planet].pl_owner != j->p_team)) ;
           /* Don't draw if uncloaked and viewRange is 1 */
           else if (!(j->p_flags & PFCLOAK) && viewRange == 1) ;
+          /* Don't draw if not carrying and viewRange is 2 */
+          else if (j->p_armies == 0 && viewRange == 2) ;
           else
           {
             struct planet *pl;

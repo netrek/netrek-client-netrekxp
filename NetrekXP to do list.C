@@ -16,7 +16,6 @@ where a ship is seen to have pressors on constantly, even when they are off
 9) on daemon exit in newbie/pret, kill any hosed bot slots
 10) end game bots are stupid, and on timericide don't act right
 11) feature packet for rank names and requirements
-12) final planet count and cscore would be nice in pw_stats
 15) phaser misses have the client computer phaser length, but with phaser upgrades,
 this causes a mismatch in the actual phaser length for other players.  Server needs
 to somehow relay phaser damage values for other ships, perhaps in generic_32?
