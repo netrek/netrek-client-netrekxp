@@ -53,7 +53,10 @@ DisplayMessage ()
 
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
+    {
+        //W_WriteText (w, 5 + W_Textwidth * length, HUDoffset, textColor, " ", 1, W_RegularFont);
         W_WriteText (w, 5, HUDoffset, textColor, tmp, length, W_RegularFont);
+    }
 #endif
     W_WriteText (messagew, 5, 5, textColor, tmp, length, W_RegularFont);
 }

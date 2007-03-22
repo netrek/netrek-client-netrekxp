@@ -120,7 +120,6 @@ motionThresh:             (int) mouse motion threshold
 mouseAsShift:             (on/off) use mouse buttons to switch keymaps
 mungScrollbarColors:      (on/off) set scrollbar colors to match background colors
 name:                     (string) character nick name
-netrek.w32caption:        (on/off) when off - shows titlebar in netrek window
 newDashboard:             (0-3) dashboard style
 # 0 - Text
 # 1 - COW

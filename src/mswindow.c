@@ -1486,8 +1486,6 @@ W_MapWindow (W_Window window)
 
     ShowWindow (win->hwnd, SW_SHOWNORMAL);
     BringWindowToTop (win->hwnd);
-    if (window == baseWin && !booleanDefault ("netrek.w32caption", 1))
-        PostMessage (win->hwnd, WM_SYSKEYDOWN, VK_RETURN, 0);
 }
 
 //Hides the window.
@@ -2054,7 +2052,7 @@ NetrekWndProc (HWND hwnd,
 
 
     case WM_MBUTTONDOWN:
-        //BringWindowToTop (hwnd);
+        BringWindowToTop (hwnd);
         GET_STRUCT_PTR;
 
         STORE_EVENT_MOUSE;
@@ -2085,7 +2083,7 @@ NetrekWndProc (HWND hwnd,
         return (0);
 
     case WM_RBUTTONDOWN:
-        //BringWindowToTop (hwnd);
+        BringWindowToTop (hwnd);
         GET_STRUCT_PTR;
 
         STORE_EVENT_MOUSE;
