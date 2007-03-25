@@ -60,6 +60,9 @@ baseUdpLocalPort: 0
 # Beep if received private message
 beepOnPrivateMessage: off
 
+# Delay before continuous mouse clicks, in updates (0 = no delay)
+clickDelay: 0
+
 # What type of ship bitmaps to use
 # 0 - mono
 # 1 - new color bitmaps (default)
@@ -211,6 +214,9 @@ newTeams: on
 
 # Omit team letter on galaxy
 omitTeamLetter: off
+
+# Show packets sent and received by blinking dashboard lights
+packetLights: on
 
 # Add space between teams in player list
 partitionPlist: off

@@ -46,8 +46,7 @@ rect doesn't take these into account.
 10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
-11) mouse click repeat rate
-13) _ bug with backspace and messages in HUD
+11) _ bug with backspace and messages in HUD
 
 Stas's list:
 - color coded (?) and scrollable playerlist.

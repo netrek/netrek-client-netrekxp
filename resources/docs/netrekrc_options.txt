@@ -27,6 +27,7 @@ buttonmap-<ship>:         (string) use this buttonmap for ship (sc,dd,ca,bb,as,s
 ckeymap:                  (string) change control keymap
 ckeymap-<ship>:           (string) use this ckeymap for ship (sc,dd,ca,bb,as,sb,ga,att)
 cloakChars:               (two chars) how to display cloaker on galactic
+clickDelay:               (0-50) delay before continuous mouse clicks, in updates (0 = no delay)
 color.<color>:            (color) replace first <color> with (color)
 color.<race>:             (color) replace that race color with (color)
 colorClient:              (0-3) what type of ship bitmaps to use
@@ -139,6 +140,7 @@ oriship1bmpfile:          (path) - new color bitmaps
 orishipGbmpfile:          (path) - your own ship's grayscale bitmaps
 orishipTbmpfile:          (path) - shaded color bitmaps
 orishipMbmpfile:          (path) - mono bitmaps
+packetLights:             (on/off) show packets sent and received by blinking dashboard lights
 partitionList:            (on/off) add blank line between teams in player list
 password:                 (string) password for autologin
 phaserShrink:             (0-16) shrink own phaser by x/16 of its length

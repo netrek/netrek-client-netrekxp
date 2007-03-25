@@ -95,6 +95,14 @@ struct save_options save_options[] = {
             NULL
         }
     },
+#ifdef MOTION_MOUSE
+    {"clickDelay", &clickDelay, RC_INT,
+        {
+            "Delay before continuous mouse clicks, in updates (0 = no delay)",
+            NULL
+        }
+    },
+#endif
     {"colorClient", &colorClient, RC_INT,
         {
             "What type of ship bitmaps to use",
@@ -379,6 +387,12 @@ struct save_options save_options[] = {
     {"omitTeamLetter", &omitTeamLetter, RC_BOOL,
         {
             "Omit team letter on galaxy",
+            NULL
+        }
+    },
+    {"packetLights", &packetLights, RC_BOOL,
+        {
+            "Show packets sent and received by blinking dashboard lights",
             NULL
         }
     },
@@ -1637,7 +1651,8 @@ resetdefaults (void)
     tractorID = booleanDefault ("tractorID", tractorID);
     lockLine = booleanDefault ("lockLine", lockLine);
     weaponsOnMap = booleanDefault ("weaponsOnMap", weaponsOnMap);
-    sortPlanets = booleanDefault ("sortPlanets", sortPlanets);   
+    sortPlanets = booleanDefault ("sortPlanets", sortPlanets);
+    packetLights = booleanDefault ("packetLights", packetLights);
     tpDotDist = intDefault ("tpDotDist", tpDotDist);
     omitTeamLetter = booleanDefault ("omitTeamLetter", omitTeamLetter);
     beepOnPrivateMessage = booleanDefault ("beepOnPrivateMessage", beepOnPrivateMessage);
@@ -1797,6 +1812,7 @@ resetdefaults (void)
     continuousMouseFix = booleanDefault ("continuousMouseFix", continuousMouseFix);
 
     motionThresh = intDefault ("motionThresh", motionThresh);
+    clickDelay = intDefault ("clickDelay", clickDelay);
 #endif
 
 #ifdef SHIFTED_MOUSE

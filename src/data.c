@@ -581,6 +581,7 @@ int highlightFriendlyPhasers = 0;
 int continuousMouse = 1;
 int continuousMouseFix = 1;
 int motionThresh = 16;
+int clickDelay = 0;             /* # of updates to delay before repeating */
 int motion_mouse_enablable = 1;
 int motion_mouse_steering = 0;
 
@@ -818,3 +819,4 @@ int tractorID = 1;		/* show ID of player you are tractoring */
 int lockLine = 1;		/* draw dashed line on map from you to lock target */
 int weaponsOnMap = 1;		/* draw weapons fire on map */
 int sortPlanets = 1;		/* sort planet list by team and army count */
+int packetLights = 1;           /* show packet send/receive via dashboard */

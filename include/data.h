@@ -478,6 +478,7 @@ extern int ignore_signals;
 extern int continuousMouse;
 extern int continuousMouseFix;
 extern int motionThresh;
+extern int clickDelay;
 extern int motion_mouse_enablable;
 extern int motion_mouse_steering;
 
@@ -722,4 +723,5 @@ extern int tractorID;		/* show ID of player you are tractoring */
 extern int lockLine;		/* draw dashed line on map from you to lock target */
 extern int weaponsOnMap;	/* draw weapons fire on map */
 extern int sortPlanets; 	/* sort planet list by team and army count */
+extern int packetLights;        /* show packet send/receive via dashboard */
 #endif /* _h_data */

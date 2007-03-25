@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- added "clickDelay: (0-50)" to allow for a delay between continuous mouse clicks, range
+  is in # of updates
+- added "packetLights: (on)/off" to show packets sent and received via blinking lights
+  on dashboard
 - restored ability for middle and right mouse clicks to raise the current window to the
   top, helps with overlapped windows
 - removed the netrek.w32caption option that was undocumented and has since been replaced

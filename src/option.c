@@ -246,6 +246,10 @@ struct int_range enPhasRng = { 0, 10, 1 };
 struct int_range messagehud_range = { 0, 2, 1 };
 #endif
 
+#ifdef MOTION_MOUSE
+struct int_range clickdelay_range = { 0, 50, 1 };
+#endif
+
 struct int_range playerlistobserver_range = { 0, 4, 1 };
 
 struct int_range planetbitmaprange = { 0, 3, 1 };
@@ -329,6 +333,7 @@ struct option Control_Menu[] = {
 #ifdef MOTION_MOUSE
     {1, "use continuous mouse", &continuousMouse, 0, 0, 0, NULL, NULL},
     {1, "fix continuous mouse", &continuousMouseFix, 0, 0, 0, NULL, NULL},
+    {1, "%d updates repeat delay", &clickDelay, 0, 0, 0, NULL, &clickdelay_range},
 #endif
     {1, "allow wheel actions", &allowWheelActions, 0, 0, 0, NULL, NULL},
     {1, "new keymap entries: %s", 0, 0, newkeys, 13, NULL, NULL},
@@ -399,6 +404,7 @@ struct option Visual_Menu[] = {
     {0, "Visuals Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "", &newDashboard, 0, 0, 0, dashboardoptions, NULL},
+    {1, "show packet lights", &packetLights, 0, 0, 0, NULL, NULL},
     {1, "", &timerType, 0, 0, 0, timermess, NULL},
     {1, "keep info on for %d x .1s (0=perm)", &keepInfo, 0, 0, 0, 0, &keepInfo_range},
 #ifdef BEEPLITE
