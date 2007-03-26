@@ -47,6 +47,7 @@ rect doesn't take these into account.
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
 11) _ bug with backspace and messages in HUD
+12) implement packet lights
 
 Stas's list:
 - color coded (?) and scrollable playerlist.

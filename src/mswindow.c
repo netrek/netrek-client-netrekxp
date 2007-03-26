@@ -1870,6 +1870,7 @@ NetrekWndProc (HWND hwnd,
 #if defined(MOTION_MOUSE) || defined(XTRA_MESSAGE_UI)
     static POINTS prev_pos;
     static HWND LastPressHwnd;
+    static int delaytime = 0;
 #endif
 
     switch (msg)
@@ -2046,6 +2047,7 @@ NetrekWndProc (HWND hwnd,
 
 #ifdef MOTION_MOUSE
         prev_pos = MAKEPOINTS (lParam);
+        delaytime = udcounter;
 #endif
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (0);
@@ -2078,6 +2080,7 @@ NetrekWndProc (HWND hwnd,
 
 #ifdef MOTION_MOUSE
         prev_pos = MAKEPOINTS (lParam);
+        delaytime = udcounter;
 #endif
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (0);
@@ -2109,6 +2112,7 @@ NetrekWndProc (HWND hwnd,
 
 #ifdef MOTION_MOUSE
         prev_pos = MAKEPOINTS (lParam);
+        delaytime = udcounter;
 #endif
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (0);
@@ -2167,6 +2171,7 @@ NetrekWndProc (HWND hwnd,
 
 #ifdef MOTION_MOUSE
         prev_pos = MAKEPOINTS (lParam);
+        delaytime = udcounter;
 #endif
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (TRUE);	/* MSDN says you SHOULD return TRUE if processing WM_XBUTTONDOWN */
@@ -2342,6 +2347,18 @@ NetrekWndProc (HWND hwnd,
                                                       HIWORD (lParam));
         if (thresh < motionThresh)
             return (0);
+
+        //Check to see if click delay in effect.  If so, return.  If not, reset timer.
+        //Only works if mouse is moving, but that is true for all continuous mouse events,
+        //i.e. holding down torp button without moving the mouse will not release a continuous
+        //stream of torps.  This problem is due to a design flaw in the Windows event loop.
+        if (clickDelay)
+        {
+            if (delaytime + clickDelay > udcounter)
+                return (0);
+            else
+                delaytime = udcounter;
+        }
 
         prev_pos = MAKEPOINTS (lParam);
 
