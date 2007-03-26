@@ -40,6 +40,62 @@
 
 #define SPACING 4
 
+/* code to draw and erase packet lights 2/5/94 [BDyess] */
+
+#define SENDX 		7
+#define SENDY		1
+#define RECEIVEX	3
+#define RECEIVEY	1
+
+static int send_lit = 0, receive_lit = 0;
+
+void
+light_send()
+{
+    if (send_lit)
+        return;
+    send_lit = MAX(1, server_ups / 10);
+    W_MakePoint(tstatw, SENDX, SENDY, W_Green);
+    W_MakePoint(tstatw, SENDX + 1, SENDY, W_Green);
+    W_MakePoint(tstatw, SENDX, SENDY + 1, W_Green);
+    W_MakePoint(tstatw, SENDX + 1, SENDY + 1, W_Green);
+}
+
+void
+light_receive()
+{
+    if (receive_lit)
+        return;
+    receive_lit = MAX(2, 2 * server_ups / 10);
+    W_MakePoint(tstatw, RECEIVEX, RECEIVEY, W_Yellow);
+    W_MakePoint(tstatw, RECEIVEX + 1, RECEIVEY, W_Yellow);
+    W_MakePoint(tstatw, RECEIVEX, RECEIVEY + 1, W_Yellow);
+    W_MakePoint(tstatw, RECEIVEX + 1, RECEIVEY + 1, W_Yellow);
+}
+
+void
+light_erase()
+{
+    if (receive_lit == MAX(1, server_ups / 10))
+    {
+        W_MakePoint(tstatw, RECEIVEX, RECEIVEY, backColor);
+        W_MakePoint(tstatw, RECEIVEX + 1, RECEIVEY, backColor);
+        W_MakePoint(tstatw, RECEIVEX, RECEIVEY + 1, backColor);
+        W_MakePoint(tstatw, RECEIVEX + 1, RECEIVEY + 1, backColor);
+    }
+    if (receive_lit)
+        receive_lit--;
+    if (send_lit == MAX(1, server_ups / 20))
+    {
+        W_MakePoint(tstatw, SENDX, SENDY, backColor);
+        W_MakePoint(tstatw, SENDX + 1, SENDY, backColor);
+        W_MakePoint(tstatw, SENDX, SENDY + 1, backColor);
+        W_MakePoint(tstatw, SENDX + 1, SENDY + 1, backColor);
+    }
+    if (send_lit)
+        send_lit--;
+}
+
 /******************************************************************************/
 /***  timerString()                                                         ***/
 /******************************************************************************/
@@ -568,6 +624,8 @@ db_redraw_krp (int fr)
     /* TIMER */
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
 
+    light_erase();
+
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -
                      ((me->p_ship.s_maxspeed + 1) *
@@ -739,6 +797,8 @@ db_redraw_COW (int fr)
     db_special (fr, 38, 3);
 
     db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
+
+    light_erase();
 
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -

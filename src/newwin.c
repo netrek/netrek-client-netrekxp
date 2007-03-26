@@ -1410,6 +1410,9 @@ entrywindow (int *team,
         lastplayercount[i] = -1;        /* force redraw first time
                                          * through */
     }
+
+    light_erase();
+
     W_MapWindow (qwin);
 
     *team = -1;
@@ -1464,6 +1467,7 @@ entrywindow (int *team,
                 (udpSock >= 0 && FD_ISSET (udpSock, &rfds)))
             {
                 readFromServer (&rfds);
+                light_erase();
             }
             elapsed = time (0) - startTime;
             if (elapsed > (time_t)(autoQuit))

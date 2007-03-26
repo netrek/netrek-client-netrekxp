@@ -1081,6 +1081,9 @@ doRead (int asock)
         }
 #endif /* SHORT_PACKETS */
 
+        if (packetLights)
+            light_receive();
+
         if (size == 0)
         {
             LineToConsole ("Variable packet has 0 length! type=%d Trying to read more!\n",
@@ -1544,6 +1547,9 @@ sendServerPacket (struct player_spacket *packet)
     }
 #endif
 
+    if (packetLights)
+        light_send();
+ 
     if (commMode == COMM_UDP)
     {
         /* for now, just sent everything via TCP */

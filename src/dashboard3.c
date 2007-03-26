@@ -378,7 +378,9 @@ db_redraw_lab2 (int fr)
 
     /* TIMER */
     db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
-        
+
+    light_erase();
+
     // SRS - inserted some additional casts to clear up compiler warnings
     cur_max = (int) ((me->p_ship.s_maxspeed + 2) -
                      ((me->p_ship.s_maxspeed + 1) *

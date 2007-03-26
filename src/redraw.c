@@ -162,7 +162,9 @@ stline (int flag)
     }
     /* TIMER */
     db_timer (flag, WINSIDE - 12 * W_Textwidth, 27);
-    
+
+    light_erase();
+
     buf[0] = (char) (me->p_flags & PFSHIELD ? 'S' : ' ');
     if (me->p_flags & PFGREEN)
         buf[1] = 'G';
