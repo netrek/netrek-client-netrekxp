@@ -1488,11 +1488,25 @@ DrawShips (void)
                     ty = (php->ph_y - me->p_y) / SCALE + WINSIDE / 2;
                 }
                 else
-                {               /* Start point is dx, dy */
-                    tx = (players[php->ph_target].p_x - me->p_x) /
-                        SCALE + WINSIDE / 2;
-                    ty = (players[php->ph_target].p_y - me->p_y) /
-                        SCALE + WINSIDE / 2;
+                {
+                    /* Start point is dx, dy.  With short packets, target
+                       dx, dy not sent, and thus can be out of galaxy bounds
+                       in certain cases.  For example, if you die while phasering,
+                       and your target's ship is no longer visible to your team.
+                       Best solution seems to be to not draw the phaser by setting
+                       phaser length to 0. */
+                    if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_y < 0)
+                    {
+                        tx = WINSIDE / 2;
+                        ty = WINSIDE / 2;
+                    }
+                    else
+                    {
+                        tx = (players[php->ph_target].p_x - me->p_x) /
+                            SCALE + WINSIDE / 2;
+                        ty = (players[php->ph_target].p_y - me->p_y) /
+                            SCALE + WINSIDE / 2;
+                    }
                 }
 
 

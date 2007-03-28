@@ -982,6 +982,11 @@ mac.^y.A:% \ \_/ /|  ___||  ___| | |     It's %u (%p)
 mac.^y.A:%  \   / |  ___||___  | |_|     Now we will win!
 mac.^y.A:%   |_|  |_____||_____| (_)
 
+mac.^n.A:%  _   _  _____  _____   _
+mac.^n.A:% | \ | ||  _  ||  _  | | |     It's %u (%p)
+mac.^n.A:% | |\| || |_| || |_| | |_|     Great, now we're fucked!
+mac.^n.A:% |_| \_||_____||_____| (_)
+
 macro.).A:/*   Join the netrek clue game mailing list today! At         */
 macro.).A:/*   http://groups.google.com/group/netrek-clue-games         */
 macro.).A:/*   INL-style timed bronco games are every Wednesday         */

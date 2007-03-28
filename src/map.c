@@ -1120,8 +1120,17 @@ map (void)
                         ty = ph->ph_y * WINSIDE / GWIDTH;
                         break;
                     default:
-                        tx = players[ph->ph_target].p_x * WINSIDE / GWIDTH;
-                        ty = players[ph->ph_target].p_y * WINSIDE / GWIDTH;
+                        /* Don't draw phasers to ships out of galactic bounds */
+                        if (players[ph->ph_target].p_x < 0 || players[ph->ph_target].p_y < 0)
+                        {
+                            tx = dx;
+                            ty = dy;
+                        }
+                        else
+                        {
+                            tx = players[ph->ph_target].p_x * WINSIDE / GWIDTH;
+                            ty = players[ph->ph_target].p_y * WINSIDE / GWIDTH;
+                        }
                         break;
                 }
                 W_MakeLine(mapw, dx, dy, tx, ty, phaserColor(ph));

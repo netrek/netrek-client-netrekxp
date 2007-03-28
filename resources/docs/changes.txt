@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- fixed bug with self phasers where they would sometimes stretch across the screen
+  upon death.
 - added "clickDelay: (0-50)" to allow for a delay between continuous mouse clicks, range
   is in # of updates
 - added "packetLights: (on)/off" to show packets sent and received via blinking lights
