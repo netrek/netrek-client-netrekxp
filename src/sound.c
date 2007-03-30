@@ -29,6 +29,7 @@
 
 static void soundrefresh (int i);
 static void Init_sound_flags (void);
+static int init_success = 0;
 
 static Mix_Chunk *sounds[NUM_WAVES];
 static Mix_Music *music[NUM_MUSIC];
@@ -191,6 +192,9 @@ extern void Init_Sound (void)
         /* Toggle on sound, and load sound files */
       	sound_toggle = 1;
       	loadSounds();
+      	
+      	/* Keep track of successful sound initialization */
+      	init_success = 1;
 
       	/* Load music files, and play random intro music */
         loadMusic();
@@ -552,7 +556,12 @@ void soundaction (W_Event * data)
 
     if (i == SOUND_TOGGLE)
     {
-        if (sound_init)
+        if (!init_success)
+        {
+            sound_init = 1;
+            Init_Sound();
+        }
+        else
             sound_toggle = (sound_toggle == 1) ? 0 : 1;
         // Halt all sounds if toggled off
         if (!sound_toggle)

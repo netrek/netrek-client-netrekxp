@@ -1104,7 +1104,8 @@ map (void)
             /* phasers */
             ph = &phasers[j->p_no];
             if (ph->ph_status != PHFREE &&
-               (j->p_status == PALIVE || j->p_status == PEXPLODE || j->p_status == PDEAD))
+               (j->p_status == PALIVE || j->p_status == PEXPLODE || j->p_status == PDEAD) &&
+               !(j->p_x < 0 || j->p_x >= GWIDTH))
             {
                 switch(ph->ph_status)
                 {

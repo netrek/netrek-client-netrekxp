@@ -1497,8 +1497,8 @@ DrawShips (void)
                        phaser length to 0. */
                     if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_y < 0)
                     {
-                        tx = WINSIDE / 2;
-                        ty = WINSIDE / 2;
+                        tx = dx;
+                        ty = dy;
                     }
                     else
                     {
