@@ -204,7 +204,6 @@ char *w_texts[] = {
 #define NUMVARITEXTS ( sizeof vari_texts / sizeof   vari_texts[0])
 #define NUMDAEMONTEXTS ( sizeof daemon_texts / sizeof daemon_texts[0])
 
-extern void sendShortReq (char);
 void new_flags (unsigned int data,
                 int which);
 
@@ -910,7 +909,7 @@ handleShortReply (struct shortreply_spacket *packet)
         {                       /* retry for S_P 1 */
             LineToConsole ("Using Short Packet Version 1.\n");
             shortversion = OLDSHORTVERSION;
-            sendShortReq (SPK_VON);
+            sendShortReq (SPK_VON, 1);
         }
         else
         {
@@ -936,7 +935,7 @@ handleShortReply (struct shortreply_spacket *packet)
          * when you first enter and to fix other loss if short packets
          * have just been turned back on.
          */
-        sendShortReq (SPK_SALL);
+        sendShortReq (SPK_SALL, 1);
         break;
     case SPK_MOFF:
         recv_mesg = 0;
@@ -1226,7 +1225,7 @@ resetWeaponInfo (void)
 
 
 void
-sendShortReq (char state)
+sendShortReq (char state, int showmess)
 {
     struct shortreq_cpacket shortReq;
 
@@ -1250,13 +1249,15 @@ sendShortReq (char state)
         /* Let the client do the work, and not the network :-) */
 
         resetWeaponInfo ();
-
-        if (state == SPK_SALL)
-            warning ("Sent request for small update (weapons+planets+kills)");
-        else if (state == SPK_ALL)
-            warning ("Sent request for medium update (all except stats)");
-        else
-            warning ("Sent some unknown request...");
+        if (showmess)
+        {
+            if (state == SPK_SALL)
+                warning ("Sent request for small update (weapons+planets+kills)");
+            else if (state == SPK_ALL)
+                warning ("Sent request for medium update (all except stats)");
+            else
+                warning ("Sent some unknown request...");
+        }
     }
 
     sendServerPacket ((struct player_spacket *) &shortReq);

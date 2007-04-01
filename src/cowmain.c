@@ -1040,7 +1040,7 @@ cowmain (char *server,
 #ifdef SHORT_PACKETS            /* should we be checking for
                                  * udp on here? */
         if (tryShort)
-            sendShortReq (SPK_VON);
+            sendShortReq (SPK_VON, 1);
         else
         {
             /*

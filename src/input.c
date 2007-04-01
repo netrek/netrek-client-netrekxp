@@ -2336,7 +2336,7 @@ void
 Key45 (void)
 {
 #ifdef SHORT_PACKETS
-    sendShortReq (SPK_SALL);
+    sendShortReq (SPK_SALL, 1);
 #endif
 
 }
@@ -3456,7 +3456,7 @@ Key124 (void)
 {
 
 #ifdef SHORT_PACKETS
-    sendShortReq (SPK_ALL);
+    sendShortReq (SPK_ALL, 1);
 #endif
 
 }

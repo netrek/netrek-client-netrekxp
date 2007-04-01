@@ -994,7 +994,7 @@ void handleShortReply (struct shortreply_spacket *packet);
 void handleVTorpInfo (unsigned char *sbuf);
 void handleVPlanet (unsigned char *sbuf);
 void resetWeaponInfo (void);
-void sendShortReq (char state);
+void sendShortReq (char state, int showmess);
 struct warning_s_spacket;
 void handleSWarning (struct warning_s_spacket *packet);
 void add_whydead (char *s,

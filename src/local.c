@@ -1495,7 +1495,7 @@ DrawShips (void)
                        and your target's ship is no longer visible to your team.
                        Best solution seems to be to not draw the phaser by setting
                        phaser length to 0. */
-                    if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_y < 0)
+                    if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_x > GWIDTH)
                     {
                         tx = dx;
                         ty = dy;
@@ -2607,9 +2607,17 @@ local (void)
 
     /* Keep redrawing for double buffered observers who get set out of normal gameplay bounds,
        whether due to locking onto an ineligible planet, or observing a player who dies -
-       otherwise screen doesn't refresh*/
+       otherwise screen doesn't refresh */
     if ((me->p_x < 0 || me->p_x >= GWIDTH) && !(doubleBuffering && (me->p_flags & PFOBSERV)))
+    {
+        /* If alive but out of bounds, we probably missed a packet giving our location,
+           so quietly request a new one */
+#ifdef SHORT_PACKETS
+        if (me->p_status == PALIVE) 
+            sendShortReq (SPK_SALL, 0);
+#endif
         return;
+    }
 
     DrawPlanets ();
 

@@ -86,9 +86,9 @@ spaction (W_Event * data)
         if (data->type == W_EV_BUTTON)
         {
             if (recv_short)
-                sendShortReq (SPK_VOFF);
+                sendShortReq (SPK_VOFF, 1);
             else
-                sendShortReq (SPK_VON);
+                sendShortReq (SPK_VON, 1);
         }
         break;
 
@@ -96,9 +96,9 @@ spaction (W_Event * data)
         if (data->type == W_EV_BUTTON)
         {
             if (recv_mesg)
-                sendShortReq (SPK_MOFF);
+                sendShortReq (SPK_MOFF, 1);
             else
-                sendShortReq (SPK_MON);
+                sendShortReq (SPK_MON, 1);
         }
         break;
 
@@ -106,9 +106,9 @@ spaction (W_Event * data)
         if (data->type == W_EV_BUTTON)
         {
             if (recv_kmesg)
-                sendShortReq (SPK_M_NOKILLS);
+                sendShortReq (SPK_M_NOKILLS, 1);
             else
-                sendShortReq (SPK_M_KILLS);
+                sendShortReq (SPK_M_KILLS, 1);
         }
         break;
 
@@ -116,9 +116,9 @@ spaction (W_Event * data)
         if (data->type == W_EV_BUTTON)
         {
             if (recv_warn)
-                sendShortReq (SPK_M_NOWARN);
+                sendShortReq (SPK_M_NOWARN, 1);
             else
-                sendShortReq (SPK_M_WARN);
+                sendShortReq (SPK_M_WARN, 1);
         }
         break;
 

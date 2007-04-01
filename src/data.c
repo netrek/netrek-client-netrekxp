@@ -814,7 +814,7 @@ int soundAngles = 0; 		/* Use 3D sound */
 int useFullShipInfo = 1;	/* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
 int useFullWeapInfo = 1;	/* Receive larger torp packets, get self torp info beyond
 				   tactical, allow observer to see all weapons fire */
-int headingTic = 1;		/* show ship heading tic */
+int headingTic = 0;		/* show ship heading tic */
 int tractorID = 1;		/* show ID of player you are tractoring */
 int lockLine = 1;		/* draw dashed line on map from you to lock target */
 int weaponsOnMap = 1;		/* draw weapons fire on map */

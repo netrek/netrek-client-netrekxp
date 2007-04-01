@@ -286,10 +286,6 @@
 #define sendResetStatsReq(verify) sendShortPacket(CP_RESETSTATS, (char) verify)
 #define sendScanReq(who) sendShortPacket(CP_SCAN, (char) who)  /* ATM */
 
-#ifdef SHORT_PACKETS
-/* #define sendShortReq(state)   sendShortPacket(CP_S_REQ, state) */
-#endif
-
 /* This macro allows us to time things based upon # frames / sec. */
 #define ticks(x) ((x)*200000/timerDelay)
 

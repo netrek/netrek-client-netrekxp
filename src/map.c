@@ -1105,7 +1105,7 @@ map (void)
             ph = &phasers[j->p_no];
             if (ph->ph_status != PHFREE &&
                (j->p_status == PALIVE || j->p_status == PEXPLODE || j->p_status == PDEAD) &&
-               !(j->p_x < 0 || j->p_x >= GWIDTH))
+               !(j->p_x < 0 || j->p_x > GWIDTH))
             {
                 switch(ph->ph_status)
                 {
@@ -1122,7 +1122,7 @@ map (void)
                         break;
                     default:
                         /* Don't draw phasers to ships out of galactic bounds */
-                        if (players[ph->ph_target].p_x < 0 || players[ph->ph_target].p_y < 0)
+                        if (players[ph->ph_target].p_x < 0 || players[ph->ph_target].p_x > GWIDTH)
                         {
                             tx = dx;
                             ty = dy;
