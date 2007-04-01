@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- dist.taking (used in older netrekrc files) will now work, though dist.take is still
+  the preferred name for that distress call
 - sound can now be initialized via sound menu if program starts with sound off
 - fixed bug with self phasers where they would sometimes stretch across the screen
   upon death.

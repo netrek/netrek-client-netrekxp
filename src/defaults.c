@@ -1213,7 +1213,9 @@ initDefaults (char *deffile)
                  dm->name && notdone; dm++, dm_def++)
 
             {
-                if (strcmpi (str, dm->name) == 0)
+                /* Allow dist.taking to work, as that was the old dist name prior to 2006 */
+                if (strcmpi (str, dm->name) == 0
+                   || (strcmpi (str, "taking") == 0 && strcmpi (dm->name, "take") == 0) )
                 {
                     dm->macro = strdup (v);
 

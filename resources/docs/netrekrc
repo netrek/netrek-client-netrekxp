@@ -121,7 +121,7 @@ forceDisplay: 1
 forceMono: off
 
 # Draw a tic mark indicating your ship's direction
-headingTic: on
+headingTic: off
 
 # Highlight friendly phasers
 highlightFriendlyPhasers: off
