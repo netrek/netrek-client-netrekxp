@@ -61,11 +61,13 @@ extern char buttonmap[];
 extern int messpend;
 #ifdef XTRA_MESSAGE_UI
 extern int messageHUD;          /* Show message being typed on the local display */
-extern int messageHoldThresh;      /* Threshold value for putting a message on hold */
-extern int messMouseDelta;      /* To keep track of mouse movement delta        */
+extern char HUDbuf[90];         /* Buffer to hold current message for display    */
+extern int showHUD;             /* Internal variable to control when to display message    */
+extern int HUDoffset;           /* Internal variable that determines message offset        */
+extern int messageHoldThresh;   /* Threshold value for putting a message on hold */
+extern int messMouseDelta;      /* To keep track of mouse movement delta         */
 #endif
 extern int lastcount;
-extern int mdisplayed;
 extern int lastm;
 extern time_t delay;
 extern time_t rdelay;

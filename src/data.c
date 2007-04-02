@@ -70,11 +70,13 @@ int remap[16] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0 };
 int messpend = 0;
 #ifdef XTRA_MESSAGE_UI
 int messageHUD = 0;             /* Show message being typed on the local display           */
+char HUDbuf[90] = "";           /* Buffer to hold current message for display              */
+int showHUD = 0;                /* Internal variable to control when to display message    */
+int HUDoffset;                  /* Internal variable that determines message offset        */
 int messageHoldThresh = 0;      /* Threshold value for putting a message on hold (squared) */
 int messMouseDelta = 0;         /* To keep track of mouse movement delta                   */
 #endif
 int lastcount = 0;
-int mdisplayed = 0;
 int udcounter = 0;
 int showTractorPressor = 1;
 int showAllTractorPressor = 1;  /* Enable SHOW_ALL_TRACTORS feature */

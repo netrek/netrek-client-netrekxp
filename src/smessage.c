@@ -21,7 +21,6 @@
 #include "proto.h"
 
 static int lcount;
-static int HUDoffset;
 static char buf[MAX_MLENGTH];
 static char cursor = '_';
 static char mbuf[80];
@@ -32,7 +31,7 @@ void
 DisplayMessage ()
 {
     int length;
-    char tmp[1024];
+    char tmp[90];
 
     length = strlen (outmessage);
 
@@ -53,10 +52,7 @@ DisplayMessage ()
 
 #ifdef XTRA_MESSAGE_UI
     if (HUDoffset)
-    {
-        //W_WriteText (w, 5 + W_Textwidth * length, HUDoffset, textColor, " ", 1, W_RegularFont);
-        W_WriteText (w, 5, HUDoffset, textColor, tmp, length, W_RegularFont);
-    }
+        strcpy (HUDbuf, tmp);
 #endif
     W_WriteText (messagew, 5, 5, textColor, tmp, length, W_RegularFont);
 }
@@ -127,6 +123,7 @@ smessage (char ichar)
 
     if (messpend == 0)
     {
+        showHUD = 1;
         messpend = 1;
 #ifdef XTRA_MESSAGE_UI
         /* Figure out where to put the message on the local */
@@ -199,6 +196,7 @@ smessage (char ichar)
             lcount = ADDRLEN;
             break;
         }
+        BlankChar(lcount + 1, 1);
         outmessage[lcount + 1] = '\0';
         outmessage[lcount] = cursor;
         DisplayMessage ();
@@ -206,7 +204,7 @@ smessage (char ichar)
 
     case '\033':               /* abort message */
         BlankChar (0, lcount + 1);
-        mdisplayed = 0;
+        showHUD = 0;
         messpend = 0;
         message_off ();
         for (i = 0; i < MAX_MLENGTH; i++)
@@ -252,6 +250,7 @@ smessage (char ichar)
     case 23:
         while (--lcount >= ADDRLEN)
         {
+            BlankChar(lcount + 1, 1);
             outmessage[lcount + 1] = '\0';
             outmessage[lcount] = cursor;
         }
@@ -349,7 +348,7 @@ smessage (char ichar)
             warning ("Not legal recipient");
         }
         BlankChar (0, lcount + 1);
-        mdisplayed = 0;
+        showHUD = 0;
         lcount = 0;
         break;
 

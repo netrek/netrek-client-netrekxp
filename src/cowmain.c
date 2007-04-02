@@ -1065,6 +1065,10 @@ cowmain (char *server,
         /* Set up autowar settings */
         do_autosetwar(team);
 
+        /* Click me sign on message window (for newbies) */
+        sprintf(buf, "Click here to send a message to ALL");
+        W_WriteText (messagew, 5, 5, textColor, buf, strlen(buf), W_RegularFont);
+
         isFirstEntry = 0;
     }
 

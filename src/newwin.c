@@ -791,6 +791,22 @@ handleMessageWindowKeyDown (W_Event * event)
 static void
 handleMessageWindowButton (W_Event * event)
 {
+    switch (event->key)
+    {
+    case W_LBUTTON:
+        if (messageon == 0)
+        {
+#ifdef SOUND
+            Play_Sound(MESSAGE_WAV, SF_MESSAGE);
+#endif
+            message_on ();
+            if (messpend == 0)
+                smessage ('A');
+        }
+        return;
+    default:
+        return;
+    }
 }
 
 /******************************************************************************/

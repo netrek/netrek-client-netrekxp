@@ -2587,6 +2587,20 @@ DrawMisc (void)
             clearcount++;
         }
     }
+
+#ifdef XTRA_MESSAGE_UI
+    /* Display message HUD */
+    if (HUDoffset && showHUD)
+    {
+        W_WriteText (w, 5, HUDoffset, textColor, HUDbuf, strlen(HUDbuf), W_RegularFont);
+        clearzone[0][clearcount] = 5;
+        clearzone[1][clearcount] = HUDoffset;
+        clearzone[2][clearcount] = W_Textwidth * strlen(HUDbuf);
+        clearzone[3][clearcount] = W_Textheight;
+        clearcount++;
+    }
+#endif
+
 }
 
 

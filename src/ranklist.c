@@ -114,7 +114,7 @@ ranklist (void)
     strcpy (buf, "To achieve a rank, you need the corresponding DI");
     W_WriteText (rankw, 1, i + 3, textColor, buf, strlen (buf),
                  W_RegularFont);
-    strcpy (buf, "in less than the hours allowed.");
+    strcpy (buf, "in less than the hours allowed (DI = ratings x hours).");
     W_WriteText (rankw, 1, i + 4, textColor, buf, strlen (buf),
                  W_RegularFont);
     strcpy (buf, "OR, get offense+boming+planets above corresponding Ratings");
