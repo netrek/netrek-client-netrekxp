@@ -24,7 +24,7 @@ keymap: PpW Zva%d_eyftg^jmnrpPrls3tfuwvDwsye d
 # wheel is button 6 and the down wheel is button 7.  There is also support
 # for shifted, controled, and control-shifted mouse actions, see the netrek
 # help file for more details.
-buttonmap: 1P2f3k
+buttonmap: 1P2f3k6%70
 
 # Key to switch to macro mode
 # TAB, ESC could be used too
@@ -584,7 +584,7 @@ planet.geometry:        57x43+660+0
 planet.mapped:          off
 
 rank.parent:            netrek
-rank.geometry:          65x18+50+300
+rank.geometry:          80x18+10+300
 rank.mapped:            off
 
 player.parent:          netrek

@@ -21,11 +21,62 @@
 #include "data.h"
 #include "proto.h"
 
+/* Calculate DI to next rank, following server logic */
+float toNextRank(int rank)
+{
+    int hourratio;
+    float rankDI, myDI, oRating, pRating, bRating, Ratings;
+    
+    /* TODO: add support for INL mode */
+    if (!strcmp(me->p_name, "guest") || !strcmp(me->p_name, "Guest"))
+        hourratio = 5;
+    else
+        hourratio = 1;
+
+    oRating = offenseRating (me);
+    pRating = planetRating (me);
+    bRating = bombingRating (me);
+    Ratings = oRating + pRating + bRating;
+    myDI = (float) (Ratings * (me->p_stats.st_tticks / 36000.0));
+    rankDI = ranks[rank].ratings * ranks[rank].hours / hourratio;
+
+    if (Ratings > ranks[rank].ratings)
+    {
+        if (myDI > rankDI)
+            return (0.0);
+        else
+            return (rankDI - myDI);
+    }
+    else if (Ratings > (ranks[rank-1].ratings))
+    {
+        if (myDI > 2*rankDI)
+            return (0.0);
+        else
+            return (2*rankDI - myDI);
+    }
+    else if (me->p_stats.st_rank > 0 && Ratings > (ranks[rank-2].ratings))
+    {
+        if (myDI > 4*rankDI)
+            return (0.0);
+        else
+            return (4*rankDI - myDI);
+    }
+    else if (me->p_stats.st_rank >= 4 && Ratings > (ranks[rank-3].ratings))
+    {
+        if (myDI > 8*rankDI)
+            return (0.0);
+        else
+            return (8*rankDI - myDI);
+    }
+    else
+        return (-1);
+}
+
 void
 ranklist (void)
 {
     register int i;
-    char buf[80];
+    char buf[100];
 
     /* W_ClearWindow(rankw); */
     (void) strcpy (buf, "  Rank       Hours  Defense  Ratings      DI");
@@ -39,6 +90,18 @@ ranklist (void)
                  ranks[i].ratings, ranks[i].ratings * ranks[i].hours);
         if (mystats->st_rank == i)
         {
+            if (i < NUMRANKS-1)
+            {
+                char buf2[35];
+                float DI;
+                if ((DI = toNextRank(i+1)) != -1)
+                {
+                    sprintf(buf2, " (%.2f DI until next rank)", DI);
+                    strcat(buf, buf2);
+                }
+                else
+                    strcat(buf, " Need higher ratings for next rank");
+            }
             W_WriteText (rankw, 1, i + 2, W_Cyan, buf, strlen (buf),
                          W_BoldFont);
         }
@@ -54,17 +117,13 @@ ranklist (void)
     strcpy (buf, "in less than the hours allowed.");
     W_WriteText (rankw, 1, i + 4, textColor, buf, strlen (buf),
                  W_RegularFont);
-    strcpy (buf,
-            "OR, get offense+boming+planets above corresponding Ratings");
+    strcpy (buf, "OR, get offense+boming+planets above corresponding Ratings");
     W_WriteText (rankw, 1, i + 5, textColor, buf, strlen (buf),
                  W_RegularFont);
     strcpy (buf, "Promotions also occur at 2xDI with Ratings - 1");
     W_WriteText (rankw, 1, i + 6, textColor, buf, strlen (buf),
                  W_RegularFont);
-    strcpy (buf, "and at 4xDI with Ratings - 2");
+    strcpy (buf, "4xDI with Ratings - 2, and 8xDI with Ratings - 3");
     W_WriteText (rankw, 1, i + 7, textColor, buf, strlen (buf),
-                 W_RegularFont);
-    strcpy (buf, " also, some servers require .8 defense for promotion.");
-    W_WriteText (rankw, 1, i + 8, textColor, buf, strlen (buf),
                  W_RegularFont);
 }

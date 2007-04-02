@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- default buttonmap now uses mouse wheel for accel/decel, scroll up to accelerate to max,
+  scroll down to decelerate to warp 0.
 - fixed annoying bug where tactical would sometimes seem to disappear on reentry into game
   after death, was due to losing your position packet and not requesting a new one (you now
   WILL request a position update if alive but seemingly off the map)

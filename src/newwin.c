@@ -836,7 +836,7 @@ newwin (char *hostmon,
     planetw = W_MakeTextWindow ("planet", WINSIDE + 160, 10, 57, MAXPLANETS + 3, baseWin, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
-    rankw = W_MakeTextWindow ("rank", 50, 300, 65, NUMRANKS + 9, baseWin, 2);
+    rankw = W_MakeTextWindow ("rank", 10, 300, 80, NUMRANKS + 9, baseWin, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
     playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 32, baseWin, 2);
