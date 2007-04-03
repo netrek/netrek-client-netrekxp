@@ -150,6 +150,7 @@ extern int server_fps;		/* server configured frames per second */
 extern int SBhours;
 
 extern int showMySpeed;
+extern int showOtherSpeed;
 
 #ifdef JUBILEE_PHASERS
 extern int colorfulPhasers;
@@ -574,6 +575,8 @@ extern int F_show_all_tractors;
 extern int F_sp_generic_32;
 extern int F_full_direction_resolution;
 extern int F_full_weapon_resolution;
+extern int F_show_army_count;
+extern int F_show_other_speed;
 
 #ifdef RECORDGAME
 extern int F_many_self;

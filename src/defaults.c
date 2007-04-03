@@ -617,9 +617,16 @@ struct save_options save_options[] = {
             NULL
         }
     },
-    {"showArmy", &showArmy, RC_BOOL,
+    {"showArmy", &showArmy, RC_INT,
         {
-            "Show army count of planet you are orbiting (or locked on as observer)",
+            "Where to show army counts next to planets",
+            "Server god decides whether to fully enable this feature",
+            "If server god has feature off, army counts will only show on",
+            "planet you are orbiting (or locked onto as an observer)",
+            "0 - don't show army counts",
+            "1 - show army counts on local map only (default)",
+            "2 - show army counts on galactic map only",
+            "3 - show army counts on both maps",
             NULL
         }
     },
@@ -677,6 +684,13 @@ struct save_options save_options[] = {
     {"showMySpeed", &showMySpeed, RC_BOOL,
         {
             "Show my speed on local",
+            NULL
+        }
+    },
+    {"showOtherSpeed", &showOtherSpeed, RC_BOOL,
+        {
+            "Show other player's speed on local",
+            "Server god decides whether to enable this feature",
             NULL
         }
     },
@@ -1689,7 +1703,7 @@ resetdefaults (void)
     detCircle = booleanDefault ("detCircle", detCircle);
     puckCircle = booleanDefault ("puckCircle", puckCircle);
     puckArrow = booleanDefault ("puckArrow", puckArrow);
-    showArmy = booleanDefault ("showArmy", showArmy);
+    showArmy = intDefault ("showArmy", showArmy);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
@@ -1825,6 +1839,7 @@ resetdefaults (void)
     ignoreCaps = booleanDefault ("ignoreCaps", ignoreCaps);
 
     showMySpeed = booleanDefault ("showMySpeed", showMySpeed);
+    showOtherSpeed = booleanDefault ("showOtherSpeed", showOtherSpeed);
 
 #ifdef JUBILEE_PHASERS
     colorfulPhasers = booleanDefault ("colorfulPhasers", colorfulPhasers);

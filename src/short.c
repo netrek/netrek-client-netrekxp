@@ -1170,11 +1170,16 @@ handleVPlanet (unsigned char *sbuf)
 #ifdef EM
             /* don't redraw when armies change unless it crosses the '4' * army
              * limit. Keeps people from watching for planet 'flicker' * when
-             * players are beaming */
+             * players are beaming. */
+            /* Above comment kept for historic purposes, but flicker issue has
+             * been solved by double buffering.  Added in redraw for any planet
+             * that changes army count if feature packet to display army count
+             * is on. BB 04/07 */
             int planetarmies = (unsigned char) packet->armies;
 
             if ((plan->pl_armies < 5 && planetarmies > 4) ||
-                (plan->pl_armies > 4 && planetarmies < 5))
+                (plan->pl_armies > 4 && planetarmies < 5) ||
+                F_show_army_count)
 #endif
 
                 redraw = 1;

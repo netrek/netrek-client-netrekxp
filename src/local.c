@@ -563,10 +563,11 @@ DrawPlanets (void)
         }
 
         /* Allow army display if player/observer is orbitting a planet, or alternatively
-           if observer is locked onto a planet */
-        if (showArmy &&
+           if observer is locked onto a planet, or is show_army_count feature packet is on */
+        if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
+         && (F_show_army_count || 
            ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
-          || ((me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) )
+          || ((me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
         {
             char armbuf[4];
             int armbuflen;
@@ -1329,6 +1330,24 @@ DrawShips (void)
                             idbuf[4] = '\0';
                             buflen = 4;
                         }
+                    }
+                }
+                else if (F_show_other_speed && showOtherSpeed)
+                {
+                    if (j->p_speed < 10)
+                    {
+                        idbuf[1] = ',';
+                        idbuf[2] = (char) (j->p_speed + '0');
+                        idbuf[3] = '\0';
+                        buflen = 3;
+                    }
+                    else
+                    {
+                        idbuf[1] = ',';
+                        idbuf[2] = (char) (j->p_speed / 10 + '0');
+                        idbuf[3] = (char) (j->p_speed % 10 + '0');
+                        idbuf[4] = '\0';
+                        buflen = 4;
                     }
                 }
                 W_MaskText (w, dx + (j->p_ship.s_width / 2),

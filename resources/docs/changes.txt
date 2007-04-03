@@ -1,4 +1,12 @@
 Netrek XP 2006, Version 1.3:
+- new netrekrc option "showOtherSpeed: (on)/off" to show speed next to other players,
+  only works if server has the new feature packet SHOW_OTHER_SPEED on.
+- changed showArmy option to be a range (0-3), to take advantage of new server feature
+  packet SHOW_ARMY_COUNT.  Range of values is now as follows:
+# 0 - don't show army counts
+# 1 - show army counts on local map only (default)
+# 2 - show army counts on galactic map only
+# 3 - show army counts on both maps
 - changed how message HUD works, it now is refreshed during the redraw of the local map
   rather than updated independently, should fix some redraw bugs with message HUD
 - message window will now say "Click here to send a message to ALL" until any message

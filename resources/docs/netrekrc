@@ -331,8 +331,15 @@ shiftedMouse: on
 # Server god decides whether to enable it on server
 showAllTractorPressor: on
 
-# Show army count of planet you are orbiting (or locked on as observer)
-showArmy: on
+# Where to show army counts next to planets
+# Server god decides whether to fully enable this feature
+# If server god has feature off, army counts will only show on
+# planet you are orbiting (or locked onto as an observer)
+# 0 - don't show army counts
+# 1 - show army counts on local map only (default)
+# 2 - show army counts on galactic map only
+# 3 - show army counts on both maps
+showArmy: 1
 
 # Show hints window
 showHints: on
@@ -364,6 +371,10 @@ showMotd: on
 
 # Show my speed on local
 showMySpeed: on
+
+# Show other player's speed on local
+# Server god decides whether to enable this feature
+showOtherSpeed: on
 
 # Show planet names on local
 showPlanetNames: on

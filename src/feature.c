@@ -93,6 +93,8 @@ struct feature features[] = {
 #endif
 
     {"SHOW_ALL_TRACTORS", &F_show_all_tractors, 'S', 1, 0, 0},
+    {"SHOW_ARMY_COUNT", &F_show_army_count, 'S', 1, 0, 0},
+    {"SHOW_OTHER_SPEED", &F_show_other_speed, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 

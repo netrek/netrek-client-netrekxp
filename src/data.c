@@ -439,7 +439,8 @@ int playerListHack = 0;
 int playerListMessaging = 1;
 int messageKeyOnly = 1;
 
-int showMySpeed = 0;
+int showMySpeed = 1;
+int showOtherSpeed = 1;
 
 #ifdef JUBILEE_PHASERS
 int colorfulPhasers = 0;
@@ -679,6 +680,8 @@ int F_show_all_tractors = 1;
 int F_sp_generic_32 = 0;
 int F_full_direction_resolution = 0;
 int F_full_weapon_resolution = 0;
+int F_show_army_count = 0;
+int F_show_other_speed = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;

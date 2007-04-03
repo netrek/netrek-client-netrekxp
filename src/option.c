@@ -183,6 +183,13 @@ static char *viewrangemess[] = { "Don't show range circle",
                                  ""
 };
 
+static char *armycountmess[] = { "Don't show army counts",
+                                 "Show army counts on local",
+                                 "Show army counts on map",
+                                 "Show army counts on local and map",
+                                 ""
+};
+
 /* Only one of op_option, op_targetwin, and op_string should be defined. If
  * op_string is defined, op_size should be too and op_text is used without a
  * "Don't" prefix. if op_range is defined, there should be a %d in op_text
@@ -270,7 +277,8 @@ struct option Ship_Menu[] = {
 #endif
     {1, "use warning shields", &warnShields, 0, 0, 0, NULL, NULL},
     {1, "use warning hull", &vary_hull, 0, 0, 0, NULL, NULL},
-    {1, "show speed on tactical", &showMySpeed, 0, 0, 0, NULL, NULL},
+    {1, "show my speed on local", &showMySpeed, 0, 0, 0, NULL, NULL},
+    {1, "show other's speed on local", &showOtherSpeed, 0, 0, 0, NULL, NULL},
     {1, "show tractor/pressor beams", &showTractorPressor, 0, 0, 0, NULL, NULL},
     {1, "show tractors after lock", &continueTractor, 0, 0, 0, NULL, NULL},
     {1, "show tractor target ID", &tractorID, 0, 0, 0, NULL, NULL},
@@ -309,7 +317,7 @@ struct option Planet_Menu[] = {
     {1, "highlight planets", &planetHighlighting, 0, 0, 0, NULL, NULL},
     {1, "rotate new planets", &rotatePlanets, 0, 0, 0, NULL, NULL},
     {1, "show planet names on local", &showPlanetNames, 0, 0, 0, NULL, NULL},
-    {1, "show army count on orbit", &showArmy, 0, 0, 0, NULL, NULL},
+    {1, "", &showArmy, 0, 0, 0, armycountmess, NULL},
     {1, "show owner on galactic", &showPlanetOwner, 0, 0, 0, NULL, NULL},
     {1, "show IND planets", &showIND, 0, 0, 0, NULL, NULL},
     {1, "show AGRI in caps on map", &agriCAPS, 0, 0, 0, NULL, NULL},

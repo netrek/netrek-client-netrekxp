@@ -240,7 +240,12 @@ server:                   (address) default server (only listed on TCP metaserve
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands
 showAllTractorPressor:    (on/off) show each player's tractor/pressor beams (requires server support)
-showArmy:                 (on/off) show army count of planet you are orbiting (or locked on as observer)
+showArmy:                 (0-3) show army count next to planets
+# 0 - don't show army counts
+# 1 - show army counts on local map only (default)
+# 2 - show army counts on galactic map only
+# 3 - show army counts on both maps
+
 showHints:                (on/off) show hints window
 showHockeyLinesLocal:     (on/off) show hockey lines on tactical
 showHockeyLinesMap:       (on/off) show hockey lines on galactic
@@ -252,6 +257,7 @@ showLock:                 (0-3) where to show lock triangle
 # 2 - tactical
 # 3 - both (default)
 
+showOtherSpeed:           (on/off) show other player's speed on tactical
 showMySpeed:              (on/off) show my speed on tactical
 showMotd:                 (on/off) show Motd if waiting on queue
 showPlanetNames:          (on/off) show planet names on tactical

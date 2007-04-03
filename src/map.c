@@ -654,6 +654,38 @@ DrawPlanets ()
                         l->pl_name, 3, planetFont (l));
         }
 
+        if (F_show_army_count && (showArmy == 2 || showArmy == 3) && (l->pl_info & me->p_team))
+        {    
+            char armbuf[4];
+            int armbuflen;
+            
+            if (l->pl_armies < 10)
+            {
+                armbuf[0] = (char) (l->pl_armies + '0');
+                armbuf[1] = '\0';
+                armbuflen = 2;
+            }
+            else if (l->pl_armies < 100)
+            {
+                armbuf[0] = (char) (l->pl_armies / 10 + '0');
+                armbuf[1] = (char) (l->pl_armies % 10 + '0');
+                armbuf[2] = '\0';
+                armbuflen = 3;
+            }
+            else
+            {
+                armbuf[0] = (char) (l->pl_armies / 100 + '0');
+                armbuf[1] = (char) ((l->pl_armies / 10) % 10 + '0');
+                armbuf[2] = (char) (l->pl_armies % 10 + '0');
+                armbuf[3] = '\0';
+                armbuflen = 4;
+            }
+                
+            W_MaskText (mapw, dx - (BMP_MPLANET_WIDTH / 4) -  2*(armbuflen - 2),
+                         dy - (BMP_MPLANET_HEIGHT / 4), W_White,
+                         armbuf, armbuflen, W_BoldFont);
+        }
+
         if (showIND && ((l->pl_info & me->p_team)
 #ifdef RECORDGAME
                         || playback

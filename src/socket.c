@@ -1670,13 +1670,12 @@ handlePlanet (struct planet_spacket *packet)
 
     if (plan->pl_armies != (signed int) ntohl (packet->armies))
     {
-        /* don't redraw when armies change unless it crosses the '4' * army
-         * limit. Keeps people from watching for planet 'flicker' * when
-         * players are beaming */
+        /* See comment in short.c for explanation of redraw */
         int planetarmies = ntohl (packet->armies);
 
         if ((plan->pl_armies < 5 && planetarmies > 4) ||
-            (plan->pl_armies > 4 && planetarmies < 5))
+            (plan->pl_armies > 4 && planetarmies < 5) ||
+            F_show_army_count )
             redraw = 1;
     }
     plan->pl_armies = ntohl (packet->armies);
