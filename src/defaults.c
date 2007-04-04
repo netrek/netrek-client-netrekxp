@@ -630,6 +630,13 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"showCloakers", &showCloakers, RC_BOOL, 
+        {
+            "Show other cloakers on local",
+            "Server god decides whether to enable it on server",
+            NULL
+        }
+    },
     {"showHints", &showHints, RC_BOOL,
         {
             "Show hints window",
@@ -1704,6 +1711,7 @@ resetdefaults (void)
     puckCircle = booleanDefault ("puckCircle", puckCircle);
     puckArrow = booleanDefault ("puckArrow", puckArrow);
     showArmy = intDefault ("showArmy", showArmy);
+    showCloakers = booleanDefault ("showCloakers", showCloakers);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);

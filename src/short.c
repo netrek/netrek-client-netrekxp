@@ -275,6 +275,7 @@ handleVTorp (unsigned char *sbuf)
         /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
         before drawing torp in local.c */
         thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
+        thetorp->t_clear = 0;
 
         if (bitset & 01)
         {
@@ -1002,6 +1003,7 @@ handleVTorpInfo (unsigned char *sbuf)
     	/* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
         before drawing torp in local.c */
         thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
+        thetorp->t_clear = 0;
 
         if (*bitset & 01)
         {

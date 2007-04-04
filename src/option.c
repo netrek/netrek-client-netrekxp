@@ -279,6 +279,7 @@ struct option Ship_Menu[] = {
     {1, "use warning hull", &vary_hull, 0, 0, 0, NULL, NULL},
     {1, "show my speed on local", &showMySpeed, 0, 0, 0, NULL, NULL},
     {1, "show other's speed on local", &showOtherSpeed, 0, 0, 0, NULL, NULL},
+    {1, "show cloakers on local", &showCloakers, 0, 0, 0, NULL, NULL},
     {1, "show tractor/pressor beams", &showTractorPressor, 0, 0, 0, NULL, NULL},
     {1, "show tractors after lock", &continueTractor, 0, 0, 0, NULL, NULL},
     {1, "show tractor target ID", &tractorID, 0, 0, 0, NULL, NULL},

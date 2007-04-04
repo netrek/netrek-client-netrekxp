@@ -246,6 +246,7 @@ showArmy:                 (0-3) show army count next to planets
 # 2 - show army counts on galactic map only
 # 3 - show army counts on both maps
 
+showCloakers:             (on/off) show cloakers on tactical
 showHints:                (on/off) show hints window
 showHockeyLinesLocal:     (on/off) show hockey lines on tactical
 showHockeyLinesMap:       (on/off) show hockey lines on galactic

@@ -1,4 +1,13 @@
 Netrek XP 2006, Version 1.3:
+- if weaponsOnMap option is on, internal timer to determine when it's safe to expire
+  weapons is moved to map draw routine.  Fixes problem where observers who are not
+  locked onto anyone but still getting weapons drawn on map would have problems
+  with weapons (like phasers) not expiring correctly due to packet loss
+- enemy torps which are off local screen are no longer automatically freed (since
+  this data is now sent for observers).  Also fixed an issue with exploding torps
+  that would not clear properly.
+- new netrekrc option "showCloakers: (on)/off" to show other cloakers on tactical,
+  only works if server has the new feature packet SHOW_CLOAKERS on.
 - new netrekrc option "showOtherSpeed: (on)/off" to show speed next to other players,
   only works if server has the new feature packet SHOW_OTHER_SPEED on.
 - changed showArmy option to be a range (0-3), to take advantage of new server feature

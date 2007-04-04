@@ -341,6 +341,10 @@ showAllTractorPressor: on
 # 3 - show army counts on both maps
 showArmy: 1
 
+# Show other cloakers on local
+# Server god decides whether to enable this feature
+showCloakers: on
+
 # Show hints window
 showHints: on
 

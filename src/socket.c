@@ -1213,6 +1213,7 @@ handleTorp (struct torp_spacket *packet)
     /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
        before drawing torp in local.c */
     thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
+    thetorp->t_clear = 0;
 
 
 #ifdef ROTATERACE
@@ -1243,6 +1244,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
     /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
        before drawing torp in local.c */
     thetorp->t_updateFuse = MAX(2, TORP_UPDATE_FUSE * server_ups / 10);
+    thetorp->t_clear = 0;
 
     if (packet->status == TEXPLODE && thetorp->t_status == TFREE)
     {
@@ -1878,6 +1880,7 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
     /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
        before drawing torp in local.c */
     thetorp->pt_updateFuse = MAX(2, PLASMA_UPDATE_FUSE * server_ups / 10);
+    thetorp->pt_clear = 0;
     if (packet->status == PTEXPLODE && thetorp->pt_status == PTFREE)
     {
         /* FAT: redundant explosion; don't update p_nplasmatorp */
@@ -1925,6 +1928,7 @@ handlePlasma (struct plasma_spacket *packet)
     /* Updatefuse requires minimum value of 2 to ensure a redraw, updateFuse decremented
        before drawing torp in local.c */
     thetorp->pt_updateFuse = MAX(2, PLASMA_UPDATE_FUSE * server_ups / 10);
+    thetorp->pt_clear = 0;
 
 #ifdef ROTATERACE
     if (rotate)

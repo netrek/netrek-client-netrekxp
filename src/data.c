@@ -57,6 +57,7 @@ int detCircle = 0;              /* Enable det circle option */
 int showdetCircle = 0;          /* Det circle toggles on only when det is hit */
 int puckCircle = 0;             /* Show maximum puck shooting distance on tactical */
 int showArmy = 1;               /* Show army count of planet you are orbiting */
+int showCloakers = 1;           /* Show cloakers on tactical */
 int fastQuit = 0;
 int gen_distress = 0;           /* generic distress/macro
                                  * system support */
@@ -682,6 +683,7 @@ int F_full_direction_resolution = 0;
 int F_full_weapon_resolution = 0;
 int F_show_army_count = 0;
 int F_show_other_speed = 0;
+int F_show_cloakers = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;

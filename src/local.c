@@ -794,7 +794,7 @@ DrawShips (void)
            the ship drawing code with the goto statement */
         if (j->p_flags & PFCLOAK && (j->p_cloakphase == (cloak_phases - 1)))
         {
-            if (myPlayer (j)
+            if (myPlayer (j) || (showCloakers && F_show_cloakers)
 #ifdef RECORDGAME
                 || playback
 #endif
@@ -1478,14 +1478,17 @@ DrawShips (void)
             }
 #endif
 
-            if ((php->ph_updateFuse -= weaponUpdate) == 0)
+            if (!weaponsOnMap)
             {
-                /* Expire the phaser */
-                php->ph_status = PHFREE;
+                if ((php->ph_updateFuse -= weaponUpdate) == 0)
+                {
+                    /* Expire the phaser */
+                    php->ph_status = PHFREE;
 #ifdef SOUND
-                php->sound_phaser = 0;
+                    php->sound_phaser = 0;
 #endif
-                php->ph_fuse = 0;
+                    php->ph_fuse = 0;
+                }
             }
             else
             {
@@ -1856,26 +1859,29 @@ DrawTorps (void)
             --torpCount;
 
 
-            /* Age a torp only if some weapon has been updated
-             * (eg this is not a pause). */
-            if ((k->t_updateFuse -= weaponUpdate) == 0)
+            if (!weaponsOnMap)
             {
-                if (k->t_status != TEXPLODE)
+                /* Age a torp only if some weapon has been updated
+                 * (eg this is not a pause). */
+                if ((k->t_updateFuse -= weaponUpdate) == 0)
                 {
-                    /* Expire the torp */
+                    if (k->t_status != TEXPLODE || k->t_clear == 1)
+                    {
+                        /* Expire the torp */
 #if 0
-                    fputs ("[torp]", stderr);
-                    fflush (stderr);
+                        fputs ("[torp]", stderr);
+                        fflush (stderr);
 #endif
-                    k->t_status = TFREE;
-                    j->p_ntorp--;
-                    continue;
-                }
-                else
-                {
-                    /* Leave the torp to explode on its own */
-
-                    k->t_updateFuse = 100;
+                        k->t_status = TFREE;
+                        j->p_ntorp--;
+                        continue;
+                    }
+                    else
+                    {
+                        /* Leave the torp to explode on its own */
+                        k->t_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                        k->t_clear = 1;
+                    }
                 }
             }
 
@@ -1883,15 +1889,7 @@ DrawTorps (void)
             dy = k->t_y - me->p_y;
 
             if (dx > view || dx < -view || dy > view || dy < -view)
-            {
-                /* Call any torps off screen "free" (if owned by other) */
-                if (k->t_status == TEXPLODE && j != me)
-                {
-                    k->t_status = TFREE;
-                    j->p_ntorp--;
-                }
                 continue;
-            }
 
             dx = dx / SCALE + WINSIDE / 2;
             dy = dy / SCALE + WINSIDE / 2;
@@ -2091,24 +2089,27 @@ DrawPlasmaTorps (void)
         if (pt->pt_owner != me->p_no)
             num_other_plasmas++;
 #endif
-        if ((pt->pt_updateFuse -= weaponUpdate) == 0)
+        if (!weaponsOnMap)
         {
-            if (pt->pt_status != PTEXPLODE)
+            if ((pt->pt_updateFuse -= weaponUpdate) == 0)
             {
-                /* Expire the torp */
-#ifdef DEBUG
-                fputs ("[plasma]", stderr);
-                fflush (stderr);
+                if (pt->pt_status != PTEXPLODE || pt->pt_clear == 1)
+                {
+                    /* Expire the plasma */
+#if 0
+                    fputs ("[plasma]", stderr);
+                    fflush (stderr);
 #endif
-                pt->pt_status = PTFREE;
-                players[pt->pt_owner].p_nplasmatorp--;
-                continue;
-            }
-            else
-            {
-                /* Leave the torp to explode on its own */
-
-                pt->pt_updateFuse = 100;
+                    pt->pt_status = PTFREE;
+                    players[pt->pt_owner].p_nplasmatorp--;
+                    continue;
+                }
+                else
+                {
+                    /* Leave the plasma to explode on its own */
+                    pt->pt_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                    pt->pt_clear = 1;
+                }
             }
         }
 
@@ -2138,7 +2139,6 @@ DrawPlasmaTorps (void)
         if (pt->pt_status == PTEXPLODE)
         {
             pt->pt_fuse--;
-
             frame = pt->pt_fuse * 10 / server_ups;
 
             if (pt->pt_fuse <= 0)
@@ -2662,7 +2662,8 @@ local (void)
     DrawTorps ();
     DrawPlasmaTorps ();
 
-    weaponUpdate = 0;
+    if (!weaponsOnMap)
+        weaponUpdate = 0;
     DrawMisc ();
 
 #ifdef RECORDGAME

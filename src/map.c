@@ -1116,7 +1116,7 @@ map (void)
         }
     }
 
-    /* Draw weapons */
+    /* Draw (and expire) weapons */
     if (weaponsOnMap)
     {
         register int h;
@@ -1135,6 +1135,17 @@ map (void)
             
             /* phasers */
             ph = &phasers[j->p_no];
+
+            if ((ph->ph_updateFuse -= weaponUpdate) == 0)
+            {
+                /* Expire the phaser */
+                ph->ph_status = PHFREE;
+#ifdef SOUND
+                ph->sound_phaser = 0;
+#endif
+                ph->ph_fuse = 0;
+            }
+
             if (ph->ph_status != PHFREE &&
                (j->p_status == PALIVE || j->p_status == PEXPLODE || j->p_status == PDEAD) &&
                !(j->p_x < 0 || j->p_x > GWIDTH))
@@ -1187,6 +1198,30 @@ map (void)
                     continue;
                 if (k->t_x < 0 || k->t_y < 0)
                     continue;
+
+                /* Age a torp only if some weapon has been updated
+                 * (eg this is not a pause). */
+                if ((k->t_updateFuse -= weaponUpdate) == 0)
+                {
+                    if (k->t_status != TEXPLODE || k->t_clear == 1)
+                    {
+                        /* Expire the torp */
+#if 0
+                        fputs ("[torp]", stderr);
+                        fflush (stderr);
+#endif
+                        k->t_status = TFREE;
+                        j->p_ntorp--;
+                        continue;
+                    }
+                    else
+                    {
+                        /* Leave the torp to explode on its own */
+                        k->t_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                        k->t_clear = 1;
+                    }
+                }
+
                 dx = k->t_x * WINSIDE / GWIDTH;
                 dy = k->t_y * WINSIDE / GWIDTH;
 
@@ -1220,6 +1255,28 @@ map (void)
                     continue;
                 if (pt->pt_x < 0 || pt->pt_y < 0)
                     continue;
+                    
+                if ((pt->pt_updateFuse -= weaponUpdate) == 0)
+                {
+                    if (pt->pt_status != PTEXPLODE || pt->pt_clear == 1)
+                    {
+                        /* Expire the plasma */
+#if 0
+                        fputs ("[plasma]", stderr);
+                        fflush (stderr);
+#endif
+                        pt->pt_status = PTFREE;
+                        players[pt->pt_owner].p_nplasmatorp--;
+                        continue;
+                    }
+                    else
+                    {
+                        /* Leave the plasma to explode on its own */
+                        pt->pt_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                        pt->pt_clear = 1;
+                    }
+                }
+
                 dx = pt->pt_x * WINSIDE / GWIDTH;
                 dy = pt->pt_y * WINSIDE / GWIDTH;
 
@@ -1251,6 +1308,8 @@ map (void)
             }
         }
     }
+    /* Reset weapon update marker */
+    weaponUpdate = 0;
 
     /* Draw the lock symbol (if needed) */
 

@@ -189,6 +189,7 @@ extern int detCircle;
 extern int showdetCircle;
 extern int puckCircle;
 extern int showArmy;
+extern int showCloakers;
 extern int niftyNewMessages;
 extern int fastQuit;
 extern char *shipnos;
@@ -577,6 +578,7 @@ extern int F_full_direction_resolution;
 extern int F_full_weapon_resolution;
 extern int F_show_army_count;
 extern int F_show_other_speed;
+extern int F_show_cloakers;
 
 #ifdef RECORDGAME
 extern int F_many_self;

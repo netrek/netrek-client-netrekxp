@@ -317,6 +317,7 @@ struct torp
     short t_fuse;               /* Life left in current state */
     unsigned char t_updateFuse; /* Updates before torp will expire */
     unsigned char t_dir;        /* direction */
+    int t_clear;                /* Flag to clear exploding torps */
 };
 
 
@@ -337,6 +338,7 @@ struct plasmatorp
     short pt_updateFuse;        /* Time till expiry */
     int pt_x;
     int pt_y;
+    int pt_clear;               /* Flag to clear exploding plasmas */
 };
 
 #define PHFREE 0x00
