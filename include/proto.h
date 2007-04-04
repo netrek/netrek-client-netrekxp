@@ -1096,6 +1096,7 @@ void sendMessage (char *mes,
 struct mask_spacket;
 void handleMask (struct mask_spacket *packet);
 void sendOptionsPacket (void);
+void sendPlanetsPacket (int pnum);
 void pickSocket (int old);
 struct badversion_spacket;
 void handleBadVersion (struct badversion_spacket *packet);

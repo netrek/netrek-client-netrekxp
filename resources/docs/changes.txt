@@ -1,4 +1,11 @@
 Netrek XP 2006, Version 1.3:
+- added support for CHECK_PLANETS feature packet, this is a nice packet that checks
+  with the server to make sure your planet info is up to date, so no more phantom
+  armies on a planet or delay on bombing a planet flat because you lost a planet
+  packet.  Also no more wondering if you missed a planet packet while dropping.
+  if planet army count doesn't go down.  This cross-check with server occurs 10 times/
+  second for a planet you are orbitting (critical) and every 5 seconds for all the
+  planets your team has info on (non-critical).
 - if weaponsOnMap option is on, internal timer to determine when it's safe to expire
   weapons is moved to map draw routine.  Fixes problem where observers who are not
   locked onto anyone but still getting weapons drawn on map would have problems

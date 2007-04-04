@@ -79,6 +79,7 @@ struct feature features[] = {
     {"SP_GENERIC_32", &F_sp_generic_32, 'S', 1, 0, 0},
     {"FULL_DIRECTION_RESOLUTION", &F_full_direction_resolution, 'S', 1, 0, 0},
     {"FULL_WEAPON_RESOLUTION", &F_full_weapon_resolution, 'S', 1, 0, 0},
+    {"CHECK_PLANETS", &F_check_planets, 'S', 1, 0, 0},
 
 #ifdef WARP_DEAD
     {"DEAD_WARP", &F_dead_warp, 'S', 1, 0, 0},

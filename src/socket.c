@@ -261,7 +261,7 @@ int sizes[] = {
     0,                          /* 37 */
 #endif
 
-    0,                          /* 38 */
+    sizeof (struct planet_cpacket),     /* CP_PLANET */
     0,                          /* 39 */
     0,                          /* 40 */
     0,                          /* 41 */
@@ -1586,6 +1586,7 @@ sendServerPacket (struct player_spacket *packet)
         case CP_SHIELD:
         case CP_REPAIR:
         case CP_ORBIT:
+        case CP_PLANET:
         case CP_PLANLOCK:
         case CP_PLAYLOCK:
         case CP_BOMB:
@@ -2107,6 +2108,23 @@ sendOptionsPacket (void)
                              ST_SHOWGLOBAL * 1);        /* showlocal and showgalactic, set to 1 */
     MCOPY (mystats->st_keymap, optPacket.keymap, 96);
     sendServerPacket ((struct player_spacket *) &optPacket);
+}
+
+void
+sendPlanetsPacket (int pnum)
+{
+    struct planet_cpacket planPacket;
+    struct planet *pl;
+
+    pl = &planets[pnum];
+
+    planPacket.type = CP_PLANET;
+    planPacket.pnum = pl->pl_no;
+    planPacket.owner = pl->pl_owner;
+    planPacket.info = pl->pl_info;
+    planPacket.armies = htonl (pl->pl_armies);
+    planPacket.flags = htons ((short) (pl->pl_flags));
+    sendServerPacket ((struct player_spacket *) &planPacket);
 }
 
 void
@@ -3976,13 +3994,19 @@ void print_opacket(char *packet, int size)
       LineToConsole("\nC->S CP_REPAIR\t");
       if (log_packets > 1)
 	LineToConsole("  state=%d,",
-		((struct repair_cpacket *) packet)-> state );
+		((struct repair_cpacket *) packet)->state );
       break;
     case CP_ORBIT        :                    /* orbit planet/starbase */
       LineToConsole("\nC->S CP_ORBIT\t");
       if (log_packets > 1)
 	LineToConsole("  state=%d,",
 		((struct orbit_cpacket *) packet)->state );
+      break;
+    case CP_PLANET       :                    /* planet info */
+      LineToConsole("\nC->S CP_PLANET\t");
+      if (log_packets > 1)
+	LineToConsole("  pnum=%d,",
+		((struct planet_cpacket *) packet)->pnum );
       break;
     case CP_PLANLOCK     :                    /* lock on planet */
       LineToConsole("\nC->S CP_PLANLOCK\t");

@@ -63,6 +63,8 @@ static int mclearacount; 	/* For torp explosions, plasmas, and plasma explosions
 static int mcleararea[4][(MAXTORP + 1) * MAXPLAYER + (MAXPLASMA + 1) * MAXPLAYER];
 static int mclearx, mcleary, mclearr;	/* x,y,radius for range circle */
 static int mclearccount;
+static int planet_refresh = 0;
+static int orbit_planet_refresh = 0;
 
 /*
  *  Global Variables:
@@ -502,6 +504,27 @@ DrawPlanets ()
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
+        /* Synchronize planet info (up to 10 times/second) for current orbitted planet
+           and once every 5 seconds for all other planets we have info on*/
+        if (F_check_planets)
+        {
+            if ((me->p_flags & PFORBIT)
+            && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+            {
+                orbit_planet_refresh++;
+                if ((orbit_planet_refresh * 10 / server_ups) >= 1)
+                {
+                        sendPlanetsPacket(l->pl_no);
+                        orbit_planet_refresh = 0;
+                }
+            }
+            else if (l->pl_info & me->p_team)
+            {
+                if ((planet_refresh * 10 / server_ups) >= 50)
+                        sendPlanetsPacket(l->pl_no);
+            }
+        }
+
         if (!(l->pl_flags & PLREDRAW))
             continue;
 
@@ -938,6 +961,15 @@ map (void)
     /* Draw Planets */
 
     DrawPlanets ();
+
+    /* Increment counter for requesting planet sync (F_check_planets) */
+    if (F_check_planets)
+    {
+        if ((planet_refresh * 10 / server_ups) >= 50)
+            planet_refresh = 0;
+        else
+            planet_refresh++;
+    }
 
 #ifdef DEBUG_SHOW_REGIONS	/* Debugging code */
    showRegions();

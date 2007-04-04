@@ -681,6 +681,7 @@ int F_show_all_tractors = 1;
 int F_sp_generic_32 = 0;
 int F_full_direction_resolution = 0;
 int F_full_weapon_resolution = 0;
+int F_check_planets = 0;
 int F_show_army_count = 0;
 int F_show_other_speed = 0;
 int F_show_cloakers = 0;
