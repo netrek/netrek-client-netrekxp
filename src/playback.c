@@ -199,9 +199,10 @@ pbmain (char *name)
     if ((stringDefault ("indshipHRbmpfile")) != NULL)
         ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
 
-    newwin (display_host, name);
 
     resetdefaults ();
+    newwin (display_host, name);
+
     savebitmaps ();
     
     /* open memory...? */

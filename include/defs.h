@@ -27,14 +27,6 @@
 #define MAXPLASMA 1
 #define PKEY 128
 
-
-#ifdef SMALL_SCREEN
-#define WINSIDE 400
-#else
-#define WINSIDE 500             /* Size of strategic and
-                                 * tactical windows */
-#endif
-
 #define CORNER_DIST (int)(sqrt)(WINSIDE*WINSIDE/2)
 
 #define BORDER 1                /* border width for option
@@ -57,8 +49,6 @@
                                  * on a side */
 #define WARP1 20                /* warp one will move 20
                                  * spaces per update */
-#define SCALE 40                /* Window will be one pixel
-                                 * for 20 spaces */
 #define EXPDIST 350             /* At this range a torp will
                                  * explode */
 #define DETDIST 1700            /* At this range a player

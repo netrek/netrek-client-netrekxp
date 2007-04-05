@@ -942,6 +942,9 @@ newwin (char *hostmon,
         W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
     }
     /* End of Message windows */
+    /* Now let's set Window Allowed Messages for all message windows */
+    for (i = 0; i < 6; i++)
+        W_SetWAM (wam_windows[i]);
 
     pStats = W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
                             baseWin, 1, foreColor);

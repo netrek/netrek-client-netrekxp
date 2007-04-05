@@ -7,8 +7,6 @@ which then maps windows accordingly.
 Things not gonna happen, or server problems:
 2) torp_other and plasma_other not working right due to lack of torp fuse info
 3) twarping to base docked on base causes the twarp problem, but hard to reproduce
-4) Server sometimes not updating tract/press flags for observers, several instances
-where a ship is seen to have pressors on constantly, even when they are off
 5) Triple mode blanks planet names, if you vote to dogfight or hockey, names are not restored
 6) "The 0 0 20 minutes before empire collapses" - with surrenderstart = 1
 7) mars - lose nb_robots

@@ -273,6 +273,12 @@ checkFeature (struct feature_cpacket *packet)
 	    break;
 	}
     }
+    /* Ignore these feature packets for testing purposes */
+#if DEBUG
+    F_show_army_count = 1;
+    F_show_other_speed = 1;
+    F_show_cloakers = 1;
+#endif
 #endif /* BEEPLITE */
 }
 

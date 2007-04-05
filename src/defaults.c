@@ -1660,7 +1660,7 @@ resetdefaults (void)
 
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
-    //richText = booleanDefault ("richText", richText);
+    richText = booleanDefault ("richText", richText);
     newQuit = booleanDefault ("newQuit", newQuit);
     newTeams = booleanDefault ("newTeams", newTeams);
     soundVolume= intDefault ("soundVolume", soundVolume);
@@ -1774,10 +1774,6 @@ resetdefaults (void)
     phaserStats = booleanDefault ("phaserStats", phaserStats);
 #endif
 
-    /* Now let's set Window Allowed Messages for all message windows */
-    for (i = 0; i < 6; i++)
-        W_SetWAM (wam_windows[i]);
-
 #ifdef XTRA_MESSAGE_UI
     messageHUD = intDefault ("messageHUD", messageHUD);
     messageHoldThresh = intDefault ("messageHoldThresh", messageHoldThresh);
@@ -1879,7 +1875,7 @@ resetdefaults (void)
 	
     tts_time = intDefault("tts_time", tts_time);
     tts_max_len = intDefault("tts_max_len", tts_max_len);
-    tts_ypos = intDefault("tts_ypos", tts_ypos);
+    tts_ypos = intDefault("tts_ypos", WINSIDE / 2 - 16);
 #endif /* BEEPLITE */
 
     shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
@@ -1919,7 +1915,9 @@ resetdefaults (void)
     myshipdef = &shipdefaults[myshiptype];
 
 	/* Let's check whether windows settings had changed */
-/* Not working yet
+        /* Read in defaults was moved before window generation, thus this
+           code is obsolete and not worth fixing - BB 04/07 */
+/*
 	updateWindowsGeometry (baseWin);
 	updateWindowsGeometry (w);
 	updateWindowsGeometry (mapw);
@@ -2382,6 +2380,9 @@ saveOptions ()
     	if (saveBig)
     	{
     	    fputs ("# Window placements section\n", fp);
+    	    fputs ("# Local and map windows MUST be square.  Size can be adjusted.\n", fp);
+    	    fputs ("# If sizing downwards, don't forget to remap any windows nested\n", fp);
+    	    fputs ("# inside these windows, such as team select and quit windows.\n", fp);
     	    fputs ("\n", fp);
     	}
 

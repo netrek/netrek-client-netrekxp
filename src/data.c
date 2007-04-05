@@ -32,7 +32,9 @@ struct message *messages;
 struct mctl *mctl;
 struct memory universe;
 
-int ingame = 0;              /* If player is in game - to distinguish between whether
+int WINSIDE = 500;              /* Size of strategic and tactical windows */
+int SCALE = 40;                 /* Window will be one pixel for these # spaces */
+int ingame = 0;                 /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
 int ghoststart = 0;             /* is this a ghostbust
                                  * restart? */
@@ -555,10 +557,7 @@ int	last_tts_xpos = 0;
 int     last_tts_width = 0;
 int     tts_timer = 0;
 int     tts_time = 25;
-int     tts_ypos = WINSIDE / 2 - 16;		 /* as found in redraw.c *
-
-						  * 
-						  * * originally */
+int     tts_ypos = 234;		 /* was WINSIDE / 2 - 16 */
 char    lastIn[100];
 
 #endif /* BEEPLITE */

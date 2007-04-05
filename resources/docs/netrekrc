@@ -574,6 +574,9 @@ playerList: nTR N  K l M
 
 
 # Window placements section
+# Local and map windows MUST be square.  Size can be adjusted.
+# If sizing downwards, don't forget to remap any windows nested
+# inside these windows, such as team select and quit windows.
 
 netrek.parent:          netrek
 netrek.geometry:        1024x768
@@ -822,7 +825,7 @@ sound.mapped:           off
 # Keys that will trigger macro without going to macro mode
 singleMacro: EF
 
-macro.0.A:%    __    __   ______        __   Bug fixes, hockey improvements,
+macro.0.A:%    __    __   ______        __   Bug fixes, anti-packet loss stuff,
 macro.0.A:%   /  \  / /__/_  __/______ / /__ observers see all weapons, etc.
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ Plus 50 updates/sec support! 
 macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.3, released March 2007

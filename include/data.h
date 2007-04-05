@@ -48,6 +48,9 @@ extern struct ship shipvals[];
 extern struct memory universe;
 extern struct planet pdata[];
 
+extern int WINSIDE;             /* This used to be a define ... */
+extern int SCALE;               /* and so was this ... */
+
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
 extern unsigned int oldengflag;

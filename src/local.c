@@ -68,8 +68,8 @@ static void redrawStarSector(int sectorx, int sectory);
 
 #define scaleLocal(pt)           ((pt)/SCALE + (WINSIDE/2))
 
-int fullview = WINSIDE * SCALE;
-int view = WINSIDE * SCALE / 2;
+#define STARSIDE 500          /* Used to normalize star density */
+#define INFORANGE 500         /* Range at which server stops sending some data */
 
 static struct _star stars[10][10][16];
 
@@ -123,11 +123,12 @@ initStars()
 {
     register int i, j, k;
 
-    for (i = 0; i < 10; i++) {
-       for (j = 0; j < 10; j++) {
-            for (k = 0; k < 16; k++) {
-                stars[i][j][k].s_x = RANDOM() % 20000;
-                stars[i][j][k].s_y = RANDOM() % 20000;
+    /* Star density: 16 stars per 20000 x 20000 galactic region */
+    for (i = 0; i < (5 * STARSIDE / WINSIDE + 1); i++) {
+       for (j = 0; j < (5 * STARSIDE / WINSIDE + 1); j++) {
+            for (k = 0; k < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); k++) {
+                stars[i][j][k].s_x = RANDOM() % 20000 * WINSIDE / STARSIDE;
+                stars[i][j][k].s_y = RANDOM() % 20000 * WINSIDE / STARSIDE;
                 stars[i][j][k].s_color = randcolor();
             }
         }
@@ -138,6 +139,8 @@ initStars()
 void
 DrawStars()
 {
+    const int fullview = WINSIDE * SCALE;
+    const int view = WINSIDE * SCALE / 2;
     /*
        note: cpp symbols in expressions (WINSIDE*SCALE) will be precalculated
        by any C optimizer
@@ -168,7 +171,7 @@ DrawStars()
         sector_offy += fullview; 
     }   
 
-#define MAXSECTOR   (GWIDTH/(fullview))
+#define MAXSECTOR   (5 * STARSIDE / WINSIDE) + 1
   
     /* at worst we have to redraw 4 star sectors */
 
@@ -228,6 +231,8 @@ DrawStars()
 static void
 redrawStarSector (int sectorx, int sectory)
 {
+    const int fullview = WINSIDE * SCALE;
+    const int view = WINSIDE * SCALE / 2;
     register int i, dx, dy, dxx, dyy;
     register int xbase = sectorx * fullview;
     register int ybase = sectory * fullview;
@@ -287,8 +292,11 @@ redrawStarSector (int sectorx, int sectory)
             }
             dxx = (int) (Cos[mydir] * streaklength / 10);
             dyy = (int) (Sin[mydir] * streaklength / 10);
-            for (i = 0, s = star_sector; i < 16; i++, s++)
+            for (i = 0, s = star_sector; i < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); i++, s++)
             {
+                if (s->s_x + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
+                    continue;
+
                 dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
                 dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
                 if (ABS(dx) > (view) || ABS(dy) > (view))
@@ -307,8 +315,11 @@ redrawStarSector (int sectorx, int sectory)
             return;
         }
     }
-    for (i = 0, s = star_sector; i < 16; i++, s++)
+    for (i = 0, s = star_sector; i < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); i++, s++)
     {
+        if (s->s_x  + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
+            continue;
+
         dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
         dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
         if (ABS(dx) > (view) || ABS(dy) > (view))
@@ -2371,6 +2382,50 @@ DrawMisc (void)
         }                       /* End for Hockey Lines *
                                  * Ends the if, too */
 #endif /* HOCKEY_LINES */
+
+    /* Draw inforange box (if necessary) */
+    if ( WINSIDE > INFORANGE )
+    {
+        dx = (WINSIDE / 2) + (INFORANGE / 2);
+        sy = (WINSIDE / 2) - (INFORANGE / 2);
+        ey = (WINSIDE / 2) + (INFORANGE / 2);
+        W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
+        clearline[0][clearlcount] = dx;
+        clearline[1][clearlcount] = sy;
+        clearline[2][clearlcount] = dx;
+        clearline[3][clearlcount] = ey;
+        clearlcount++;
+        
+        dx = (WINSIDE / 2) - (INFORANGE / 2);
+        sy = (WINSIDE / 2) - (INFORANGE / 2);
+        ey = (WINSIDE / 2) + (INFORANGE / 2);
+        W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
+        clearline[0][clearlcount] = dx;
+        clearline[1][clearlcount] = sy;
+        clearline[2][clearlcount] = dx;
+        clearline[3][clearlcount] = ey;
+        clearlcount++;
+        
+        dy = (WINSIDE / 2) + (INFORANGE / 2);
+        sx = (WINSIDE / 2) - (INFORANGE / 2);
+        ex = (WINSIDE / 2) + (INFORANGE / 2);
+        W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
+        clearline[0][clearlcount] = sx;
+        clearline[1][clearlcount] = dy;
+        clearline[2][clearlcount] = ex;
+        clearline[3][clearlcount] = dy;
+        clearlcount++;
+        
+        dy = (WINSIDE / 2) - (INFORANGE / 2);
+        sx = (WINSIDE / 2) - (INFORANGE / 2);
+        ex = (WINSIDE / 2) + (INFORANGE / 2);
+        W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
+        clearline[0][clearlcount] = sx;
+        clearline[1][clearlcount] = dy;
+        clearline[2][clearlcount] = ex;
+        clearline[3][clearlcount] = dy;
+        clearlcount++;
+    }
 
     /* Draw Edges */
     if (me->p_x < (WINSIDE / 2) * SCALE)

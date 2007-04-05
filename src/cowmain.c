@@ -779,6 +779,7 @@ cowmain (char *server,
     if ((stringDefault ("indshipHRbmpfile")) != NULL)
         ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
 
+    resetdefaults ();
     newwin (display_host, name);
 
 #ifdef META
@@ -800,7 +801,6 @@ cowmain (char *server,
     /* Set observer flag as soon as we know port number */
     setObserverMode (xtrekPort);
 
-    resetdefaults ();
     savebitmaps ();
     
 #if defined(SOUND)

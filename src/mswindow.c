@@ -3043,6 +3043,35 @@ W_MakeLine (W_Window window,
         ReleaseDC (win->hwnd, hdc);
 }
 
+void
+W_MakeDashedLine (W_Window window,
+                  int x0,
+                  int y0,
+                  int x1,
+                  int y1,
+                  W_Color color)
+{
+    register int border;
+    DBHEADER_VOID;
+    
+    border = win->border;
+
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+    SetBkColor (hdc, colortable[BLACK].rgb);
+    SelectObject (hdc, colortable[color].dashedpen);
+    MoveTo (hdc, x0 + border, y0 + border);
+    LineTo (hdc, x1 + border, y1 + border);
+    /* Get that last point in there ... -SAC */
+    SetPixel (hdc, x1 + border, y1 + border, colortable[color].rgb);
+
+    if (!sdb || !doubleBuffering || !ingame)
+        ReleaseDC (win->hwnd, hdc);
+}
+
 //We don't need to cache...
 void
 W_CacheLine (W_Window window,
@@ -4797,6 +4826,12 @@ checkGeometry (char *name,
         while (*s != 'x' && *s != 0)
             s++;
         *width = atoi (geom_default);
+        if (!strcmp("local", name))
+            WINSIDE = *width;
+/*      Need to separate WINSIDE into TWINSIDE and GWINSIDE  
+        else if (!strcmp("map", name))
+            WINSIDE = *width;
+*/
         result |= G_SET_WIDTH;
         if (*s == 0)
             return result;
@@ -4805,6 +4840,18 @@ checkGeometry (char *name,
         while (*s != '+' && *s != '-' && *s != 0)
             s++;
         *height = atoi (geom_default);
+        if (!strcmp("local", name))
+        {
+            if (*height > *width)
+                WINSIDE = *height;
+        }
+/*
+        else if (!strcmp("map", name))
+        {
+            if (*height > *width)
+                WINSIDE = *height;
+        }
+*/
         result |= G_SET_HEIGHT;
         if (*s == 0)
             return result;

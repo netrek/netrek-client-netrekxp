@@ -149,6 +149,12 @@ extern void W_MakeLine (W_Window window,
                         int x1,
                         int y1,
                         W_Color color);
+extern void W_MakeDashedLine (W_Window window,
+                              int x0,
+                              int y0,
+                              int x1,
+                              int y1,
+                              W_Color color);
 extern void W_MapWindow (W_Window window);
 extern void W_UnmapWindow (W_Window window);
 extern int W_EventsPending (void);

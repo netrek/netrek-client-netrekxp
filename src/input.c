@@ -3502,6 +3502,7 @@ Key127 (W_Event * data)
 void
 reread_defaults (void)
 {
+    int i;
     char mbuf[80];
 
     if (strlen (defaultsFile) > 0)
@@ -3510,6 +3511,9 @@ reread_defaults (void)
         warning (mbuf);
         initDefaults (defaultsFile);
         resetdefaults ();
+        /* Set Window Allowed Messages ( since it got moved to newwin() )*/
+        for (i = 0; i < 6; i++)
+            W_SetWAM (wam_windows[i]);
         initkeymap ();
     }
     else

@@ -505,7 +505,7 @@ DrawPlanets ()
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
         /* Synchronize planet info (up to 10 times/second) for current orbitted planet
-           and once every 5 seconds for all other planets we have info on*/
+           and once every 5 seconds for all other planets we have info on */
         if (F_check_planets)
         {
             if ((me->p_flags & PFORBIT)

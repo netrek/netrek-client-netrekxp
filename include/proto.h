@@ -560,6 +560,12 @@ void W_MakeLine (W_Window window,
                  int x1,
                  int y1,
                  W_Color color);
+void W_MakeDashedLine (W_Window window,
+                       int x0,
+                       int y0,
+                       int x1,
+                       int y1,
+                       W_Color color);
 void W_CacheLine (W_Window window,
                   int x0,
                   int y0,
