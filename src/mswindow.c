@@ -4827,11 +4827,9 @@ checkGeometry (char *name,
             s++;
         *width = atoi (geom_default);
         if (!strcmp("local", name))
-            WINSIDE = *width;
-/*      Need to separate WINSIDE into TWINSIDE and GWINSIDE  
+            TWINSIDE = *width;
         else if (!strcmp("map", name))
-            WINSIDE = *width;
-*/
+            GWINSIDE = *width;
         result |= G_SET_WIDTH;
         if (*s == 0)
             return result;
@@ -4843,15 +4841,13 @@ checkGeometry (char *name,
         if (!strcmp("local", name))
         {
             if (*height > *width)
-                WINSIDE = *height;
+                TWINSIDE = *height;
         }
-/*
         else if (!strcmp("map", name))
         {
             if (*height > *width)
-                WINSIDE = *height;
+                GWINSIDE = *height;
         }
-*/
         result |= G_SET_HEIGHT;
         if (*s == 0)
             return result;

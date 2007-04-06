@@ -345,13 +345,13 @@ lockPlanetOrBase (W_Window ww,
 
     if (ww == mapw)
     {
-        g_x = x * GWIDTH / WINSIDE;
-        g_y = y * GWIDTH / WINSIDE;
+        g_x = x * GWIDTH / GWINSIDE;
+        g_y = y * GWIDTH / GWINSIDE;
     }
     else
     {
-        g_x = me->p_x + ((x - WINSIDE / 2) * SCALE);
-        g_y = me->p_y + ((y - WINSIDE / 2) * SCALE);
+        g_x = me->p_x + ((x - TWINSIDE / 2) * SCALE);
+        g_y = me->p_y + ((y - TWINSIDE / 2) * SCALE);
     }
     closedist = GWIDTH;
 
@@ -1872,16 +1872,16 @@ getcourse (W_Window ww,
     {
         int me_x, me_y;
 
-        me_x = me->p_x * WINSIDE / GWIDTH;
-        me_y = me->p_y * WINSIDE / GWIDTH;
+        me_x = me->p_x * GWINSIDE / GWIDTH;
+        me_y = me->p_y * GWINSIDE / GWIDTH;
         return ((unsigned char) nint ((atan2 ((double) (x - me_x),
                                               (double) (me_y -
                                                         y)) / 3.14159 *
                                        128.) + 0.5));
     }
     else
-        return ((unsigned char) nint ((atan2 ((double) (x - WINSIDE / 2),
-                                              (double) (WINSIDE / 2 - y))
+        return ((unsigned char) nint ((atan2 ((double) (x - TWINSIDE / 2),
+                                              (double) (TWINSIDE / 2 - y))
                                        / 3.14159 * 128.) + 0.5));
 }
 

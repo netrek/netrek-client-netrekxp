@@ -224,6 +224,13 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"infoRange", &infoRange, RC_BOOL,
+        {
+            "Show weapon's range boundary as a dashed white box if tactical",
+            "size is increased beyond the standard 500x500",
+            NULL
+        }
+    },
     {"keepInfo", &keepInfo, RC_INT,
         {
             "How many tenths of seconds to keep info window on (default 15)",
@@ -1842,6 +1849,7 @@ resetdefaults (void)
     /* SRS 12/94, ignore the Capslock key */
     ignoreCaps = booleanDefault ("ignoreCaps", ignoreCaps);
 
+    infoRange = booleanDefault ("infoRange", infoRange);
     showMySpeed = booleanDefault ("showMySpeed", showMySpeed);
     showOtherSpeed = booleanDefault ("showOtherSpeed", showOtherSpeed);
 
@@ -1875,7 +1883,7 @@ resetdefaults (void)
 	
     tts_time = intDefault("tts_time", tts_time);
     tts_max_len = intDefault("tts_max_len", tts_max_len);
-    tts_ypos = intDefault("tts_ypos", WINSIDE / 2 - 16);
+    tts_ypos = intDefault("tts_ypos", TWINSIDE / 2 - 16);
 #endif /* BEEPLITE */
 
     shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
@@ -2383,6 +2391,9 @@ saveOptions ()
     	    fputs ("# Local and map windows MUST be square.  Size can be adjusted.\n", fp);
     	    fputs ("# If sizing downwards, don't forget to remap any windows nested\n", fp);
     	    fputs ("# inside these windows, such as team select and quit windows.\n", fp);
+    	    fputs ("# Most windows will autoadjust to the right spot if local or\n", fp);
+    	    fputs ("# map size are changed, so most window placements are commented\n", fp);
+    	    fputs ("# out.  Uncomment them if you wish to customize.\n", fp);
     	    fputs ("\n", fp);
     	}
 
@@ -2438,19 +2449,6 @@ saveOptions ()
         }
         fputs ("\n", fp);
 
-        // Warning window - always mapped
-        if ((adefault = stringDefault ("warn.parent")) != NULL)
-        {
-            sprintf (str, "warn.parent:            %s\n", adefault);
-            fputs (str, fp);
-        }
-        if ((adefault = stringDefault ("warn.geometry")) != NULL)
-        {
-            sprintf (str, "warn.geometry:          %s\n", adefault);
-            fputs (str, fp);
-        }
-        fputs ("\n", fp);
-
         // Message window - preferred mapped
         if ((adefault = stringDefault ("message.parent")) != NULL)
         {
@@ -2467,6 +2465,19 @@ saveOptions ()
         else
             sprintf (str, "message.mapped:         off\n");
         fputs (str, fp);
+        fputs ("\n", fp);
+
+        // Warning window - always mapped
+        if ((adefault = stringDefault ("warn.parent")) != NULL)
+        {
+            sprintf (str, "warn.parent:            %s\n", adefault);
+            fputs (str, fp);
+        }
+        if ((adefault = stringDefault ("warn.geometry")) != NULL)
+        {
+            sprintf (str, "warn.geometry:          %s\n", adefault);
+            fputs (str, fp);
+        }
         fputs ("\n", fp);
 
         // Planet window

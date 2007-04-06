@@ -14,6 +14,7 @@ extern void Play_Music_Bkgd (void);
 extern void Group_Sound (int type, int channel);
 extern void ChangeVolume (int vol);
 extern void Init_Sound (void);
+extern int sound_window_height (void);
 
 #define SF_EXPLOSIONS	0x001
 #define SF_WEAPONS	0x002

@@ -42,11 +42,12 @@ int MaxMotdLine = 0;
 
 #define SIZEOF(a)       (sizeof (a) / sizeof (*(a)))
 
-#define BOXSIDE         (WINSIDE / 5)
+#define BOXSIDE         (TWINSIDE / 5)
+#define MENU_PAD 4
 #define TILESIDE        16
 #define MESSAGESIZE     20
-#define STATSIZE        (MESSAGESIZE * 2 + BORDER)
-#define YOFF            -25
+#define STATSIZE        (MESSAGESIZE * 2 + BORDER * 2)
+#define YOFF            0
 
 /* Local function prototypes */
 void loadbitmaps (void);
@@ -822,54 +823,54 @@ newwin (char *hostmon,
 
     baseWin = W_MakeWindow ("netrek", 0, 0, 1024, 768, NULL, BORDER, gColor);
 
-    w = W_MakeWindow ("local", 0, 0, WINSIDE, WINSIDE, baseWin, THICKBORDER, foreColor);
+    w = W_MakeWindow ("local", 0, 0, TWINSIDE, TWINSIDE, baseWin, THICKBORDER, foreColor);
 
     localSDB = W_InitSDB (w);
 
-    mapw = W_MakeWindow ("map", WINSIDE + 6, 0, WINSIDE, WINSIDE, baseWin,
+    mapw = W_MakeWindow ("map", TWINSIDE + 2 * THICKBORDER, 0, GWINSIDE, GWINSIDE, baseWin,
                          THICKBORDER, foreColor);
 
     mapSDB = W_InitSDB (mapw);
 
-    tstatw = W_MakeWindow ("tstat", 0, WINSIDE + 6, WINSIDE + 5,
-                            STATSIZE + 2, baseWin, BORDER, foreColor);
+    tstatw = W_MakeWindow ("tstat", 0, TWINSIDE + 2 * THICKBORDER, TWINSIDE + (2 * THICKBORDER - 2 * BORDER),
+                            STATSIZE, baseWin, BORDER, foreColor);
 
     W_SetWindowExposeHandler (tstatw, redrawTstats);
-    
-    warnw = W_MakeWindow ("warn", WINSIDE + 6, WINSIDE + 23, WINSIDE + 4, MESSAGESIZE - 4,
-                           baseWin, BORDER, foreColor);
 
-    W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
-    
-    messagew = W_MakeWindow ("message", WINSIDE + 6, WINSIDE + 6,
-                             WINSIDE + 4, MESSAGESIZE - 4, baseWin, BORDER,
-                             foreColor);
+    messagew = W_MakeWindow ("message", TWINSIDE + 2 * THICKBORDER, GWINSIDE + 2 * THICKBORDER,
+                             GWINSIDE + (2 * THICKBORDER - 2 * BORDER), MESSAGESIZE, baseWin, BORDER, foreColor);
 
     W_SetWindowKeyDownHandler (messagew, handleMessageWindowKeyDown);
     W_SetWindowButtonHandler (messagew, handleMessageWindowButton);
     W_SetWindowExposeHandler (messagew, DisplayMessage);
+    
+    warnw = W_MakeWindow ("warn", TWINSIDE + 2 * THICKBORDER, GWINSIDE + 2 * THICKBORDER + MESSAGESIZE + 2 * BORDER,
+                          GWINSIDE + (2 * THICKBORDER - 2 * BORDER), MESSAGESIZE, baseWin, BORDER, foreColor);
 
-    planetw = W_MakeTextWindow ("planet", WINSIDE + 160, 10, 57, MAXPLANETS + 3, baseWin, 2);
+    W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
+
+    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, MAXPLANETS + 3, baseWin, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
     rankw = W_MakeTextWindow ("rank", 10, 300, 80, NUMRANKS + 9, baseWin, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
-    playerw = W_MakeTextWindow ("player", 0, WINSIDE + 50, PlistMaxWidth (), 32, baseWin, 2);
+    playerw = W_MakeTextWindow ("player", 0, TWINSIDE + 2 * THICKBORDER + STATSIZE + 2 * BORDER,
+                                PlistMaxWidth (), MAXPLAYER + 3, baseWin, 2);
     W_SetWindowExposeHandler (playerw, RedrawPlayerList);
 
-    playerw2 = W_MakeTextWindow ("player2", 140, 100, PlistMaxWidth2 (), 32, baseWin, 2);
+    playerw2 = W_MakeTextWindow ("player2", 140, 100, PlistMaxWidth2 (), MAXPLAYER + 3, baseWin, 2);
     W_SetWindowExposeHandler (playerw2, RedrawPlayerList);
 
 #ifdef RECORDGAME
     if (playback)
         helpWin = W_MakeTextWindow ("help", 286,
-                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 50,
+                          TWINSIDE + 2 * THICKBORDER + STATSIZE + 2 * BORDER,
                           72, 15, NULL, BORDER);
     else
 #endif
         helpWin = W_MakeTextWindow ("help", 20,
-                          YOFF + WINSIDE + 2 * BORDER + 2 * MESSAGESIZE + 30,
+                          TWINSIDE + 2 * THICKBORDER + STATSIZE + 2 * BORDER - 5,
                           160, 21, NULL, BORDER);
 
 #ifdef RECORDGAME
@@ -889,55 +890,79 @@ newwin (char *hostmon,
 #endif
 
     /* Message windows */
-    if (richText)
+    if (richText
+#ifdef RECORDGAME
+        && !playback
+#endif
+    )
     {
-        messwa = W_MakeScrollingRichTextWindow ("review_all", 506, 658, 81, 5, baseWin, BORDER);
+        messwa = W_MakeScrollingRichTextWindow ("review_all", TWINSIDE + 2 * THICKBORDER,
+                                                GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 8 * BORDER + 4 * MENU_PAD + 9 * W_Textheight,
+                                                81, 5, baseWin, BORDER);
         wam_windows[0] = messwa;
         W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
 
-        messwt = W_MakeScrollingRichTextWindow ("review_team", 506, 579, 81, 7, baseWin, BORDER);
+        messwt = W_MakeScrollingRichTextWindow ("review_team", TWINSIDE + 2 * THICKBORDER,
+                                                GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 6 * BORDER + 2 * MENU_PAD + 3 * W_Textheight,
+                                                81, 6, baseWin, BORDER);
         wam_windows[1] = messwt;
         W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
    
-        messwi = W_MakeScrollingRichTextWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
+        messwi = W_MakeScrollingRichTextWindow ("review_your", TWINSIDE + 2 * THICKBORDER,
+                                                GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 4 * BORDER,
+                                                81, 3, baseWin, BORDER);
         wam_windows[2] = messwi;
         W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
     
-        messwk = W_MakeScrollingRichTextWindow ("review_kill", 506, 717, 81, 3, baseWin, BORDER);
+        messwk = W_MakeScrollingRichTextWindow ("review_kill", TWINSIDE + 2 * THICKBORDER,
+                                                GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 10 * BORDER + 6 * MENU_PAD + 14 * W_Textheight,
+                                                81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
-        phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", WINSIDE + 6, YOFF + 
-                                                    WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                                                    15 * W_Textheight + 16, 81, 4, baseWin, BORDER);
+        phaserwin = W_MakeScrollingRichTextWindow ("review_phaser", TWINSIDE + 2 * THICKBORDER,
+                                                    GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 12 * BORDER + 8 * MENU_PAD + 17 * W_Textheight,
+                                                    81, 4, baseWin, BORDER);
         wam_windows[4] = phaserwin;
 
-        reviewWin = W_MakeScrollingRichTextWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
+        reviewWin = W_MakeScrollingRichTextWindow ("review", TWINSIDE + 2 * THICKBORDER,
+                                                   GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 4 * BORDER,
+                                                   81, 20, baseWin, BORDER);
         wam_windows[5] = reviewWin;
         W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
     }
     else
     {
-        messwa = W_MakeScrollingWindow ("review_all", 506, 658, 81, 5, baseWin, BORDER);
+        messwa = W_MakeScrollingWindow ("review_all", TWINSIDE + 2 * THICKBORDER,
+                                        GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 8 * BORDER + 4 * MENU_PAD + 9 * W_Textheight,
+                                        81, 5, baseWin, BORDER);
         wam_windows[0] = messwa;
         W_SetWindowKeyDownHandler (messwa, handleMessageWindowKeyDown);
 
-        messwt = W_MakeScrollingWindow ("review_team", 506, 579, 81, 7, baseWin, BORDER);
+        messwt = W_MakeScrollingWindow ("review_team", TWINSIDE + 2 * THICKBORDER,
+                                        GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 6 * BORDER + 2 * MENU_PAD + 3 * W_Textheight,
+                                        81, 6, baseWin, BORDER);
         wam_windows[1] = messwt;
         W_SetWindowKeyDownHandler (messwt, handleMessageWindowKeyDown);
    
-        messwi = W_MakeScrollingWindow ("review_your", 506, 540, 81, 3, baseWin, BORDER);
+        messwi = W_MakeScrollingWindow ("review_your", TWINSIDE + 2 * THICKBORDER,
+                                        GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 4 * BORDER,
+                                        81, 3, baseWin, BORDER);
         wam_windows[2] = messwi;
         W_SetWindowKeyDownHandler (messwi, handleMessageWindowKeyDown);
     
-        messwk = W_MakeScrollingWindow ("review_kill", 506, 717, 81, 3, baseWin, BORDER);
+        messwk = W_MakeScrollingWindow ("review_kill", TWINSIDE + 2 * THICKBORDER,
+                                        GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 10 * BORDER + 6 * MENU_PAD + 14 * W_Textheight,
+                                        81, 3, baseWin, BORDER);
         wam_windows[3] = messwk;
 
-        phaserwin = W_MakeScrollingWindow ("review_phaser", WINSIDE + 6, YOFF + 
-                                           WINSIDE + 3 * BORDER + 2 * MESSAGESIZE +
-                                           15 * W_Textheight + 16, 81, 4, baseWin, BORDER);
+        phaserwin = W_MakeScrollingWindow ("review_phaser", TWINSIDE + 2 * THICKBORDER,
+                                           GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 12 * BORDER + 8 * MENU_PAD + 17 * W_Textheight,
+                                           81, 4, baseWin, BORDER);
         wam_windows[4] = phaserwin;
 
-        reviewWin = W_MakeScrollingWindow ("review", 506, 540, 81, 22, baseWin, BORDER);
+        reviewWin = W_MakeScrollingWindow ("review", TWINSIDE + 2 * THICKBORDER,
+                                           GWINSIDE + 2 * THICKBORDER + 2 * MESSAGESIZE + 4 * BORDER,
+                                           81, 20, baseWin, BORDER);
         wam_windows[5] = reviewWin;
         W_SetWindowKeyDownHandler (reviewWin, handleMessageWindowKeyDown);
     }
@@ -946,29 +971,29 @@ newwin (char *hostmon,
     for (i = 0; i < 6; i++)
         W_SetWAM (wam_windows[i]);
 
-    pStats = W_MakeWindow ("pingStats", 500, 4, pStatsWidth (), pStatsHeight (),
+    pStats = W_MakeWindow ("pingStats", TWINSIDE + 10, 4, pStatsWidth (), pStatsHeight (),
                             baseWin, 1, foreColor);
     W_SetWindowExposeHandler (pStats, redrawPStats);
 
-    udpWin = W_MakeMenu ("UDP", WINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS, NULL, 2);
+    udpWin = W_MakeMenu ("UDP", TWINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS, NULL, 2);
     W_SetWindowButtonHandler (udpWin, udpaction);
 
 #ifdef SHORT_PACKETS
-    spWin = W_MakeMenu ("network", WINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS, NULL, 2);
+    spWin = W_MakeMenu ("network", TWINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS, NULL, 2);
     W_SetWindowKeyDownHandler (spWin, spaction);
     W_SetWindowButtonHandler (spWin, spaction);
 #endif
 
 #if defined(SOUND)
-    soundWin = W_MakeMenu("sound", WINSIDE + 20, -BORDER + 10, 33,
-                        14, NULL, 2);
+    soundWin = W_MakeMenu("sound", TWINSIDE + 20, -BORDER + 10, 33,
+                        sound_window_height(), NULL, 2);
     W_SetWindowKeyDownHandler(soundWin, soundaction);
     W_SetWindowButtonHandler(soundWin, soundaction);
     W_DefineArrowCursor(soundWin);
 #endif
 
 #ifdef TOOLS
-    toolsWin = W_MakeScrollingWindow ("tools", WINSIDE + BORDER, BORDER,
+    toolsWin = W_MakeScrollingWindow ("tools", TWINSIDE + BORDER, BORDER,
                                         80, TOOLSWINLEN, NULL, BORDER);
     W_DefineTrekCursor (toolsWin);
 #endif
@@ -984,13 +1009,14 @@ newwin (char *hostmon,
 
     for (i = 0; i < 4; i++)
     {
-        teamWin[i] = W_MakeWindow (teamshort[1 << i], i * BOXSIDE, WINSIDE - BOXSIDE,
+        teamWin[i] = W_MakeWindow (teamshort[1 << i], i * BOXSIDE, TWINSIDE - BOXSIDE,
                                     BOXSIDE, BOXSIDE, w, 1, foreColor);
     }
-    qwin = W_MakeWindow ("quit", 4 * BOXSIDE, WINSIDE - BOXSIDE, BOXSIDE,
+    qwin = W_MakeWindow ("quit", 4 * BOXSIDE, TWINSIDE - BOXSIDE, BOXSIDE,
                          BOXSIDE, w, 1, foreColor);
 
-    statwin = W_MakeWindow ("stats", 405, 506, 100, 80, baseWin, BORDER, foreColor);
+    statwin = W_MakeWindow ("stats", TWINSIDE + 2 * THICKBORDER - 100, TWINSIDE + 2 * THICKBORDER,
+                            100, 80, baseWin, BORDER, foreColor);
     W_SetWindowExposeHandler (statwin, redrawStats);
 
     W_DefineTrekCursor (baseWin);
@@ -1033,7 +1059,7 @@ newwin (char *hostmon,
 #define WARWIDTH 20
 #define WARBORDER 2
 
-    war = W_MakeMenu ("war", WINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin, WARBORDER);
+    war = W_MakeMenu ("war", TWINSIDE + 10, -BORDER + 10, WARWIDTH, 6, baseWin, WARBORDER);
     W_SetWindowButtonHandler (war, waraction);
     W_DefineArrowCursor (war);
 
@@ -1366,12 +1392,12 @@ savebitmaps (void)
         W_StoreBitmap3 ("bitmaps/misclib/color/oriteam.bmp", BMP_TEAM_SELECT_WIDTH,
                         BMP_TEAM_SELECT_HEIGHT, BMP_ORITEAM, w, LR_DEFAULTCOLOR);
     genopic =
-        W_StoreBitmap3 ("bitmaps/misclib/color/genocide.bmp", WINSIDE,
-                        WINSIDE, BMP_GENO, w, LR_DEFAULTCOLOR);
+        W_StoreBitmap3 ("bitmaps/misclib/color/genocide.bmp", BMP_GENO_WIDTH,
+                        BMP_GENO_HEIGHT, BMP_GENO, w, LR_DEFAULTCOLOR);
 
     genopic2 =
-        W_StoreBitmap3 ("bitmaps/misclib/color/genocide2.bmp", WINSIDE,
-                        WINSIDE, BMP_GENO2, w, LR_DEFAULTCOLOR);                      
+        W_StoreBitmap3 ("bitmaps/misclib/color/genocide2.bmp", BMP_GENO_WIDTH,
+                        BMP_GENO_HEIGHT, BMP_GENO2, w, LR_DEFAULTCOLOR);                      
 }
 
 
@@ -1909,12 +1935,12 @@ showMotdWin (W_Window motdwin, int atline)
 
     sprintf (buf, "---  %s  ---", (char *) query_cowid ());
     length = strlen (buf);
-    center = WINSIDE / 2 - (length * W_Textwidth) / 2;
+    center = 250 - (length * W_Textwidth) / 2;
     W_WriteText (motdwin, center, W_Textheight, textColor,
                  buf, length, W_BoldFont);
     sprintf (buf, CBUGS);
     length = strlen (buf);
-    center = WINSIDE / 2 - (length * W_Textwidth) / 2;
+    center = 250 - (length * W_Textwidth) / 2;
     W_WriteText (motdwin, center, 3 * W_Textheight, textColor,
                  buf, length, W_RegularFont);
 
@@ -2095,16 +2121,24 @@ redrawTeam (W_Window win,
         switch (teamNo)
         {
             case 0:
-                W_WriteBitmap ( 0, 0, fedteam, foreColor, win);
+                W_WriteScaleBitmap ( 0, 0, BOXSIDE, BOXSIDE,
+                                     BMP_TEAM_SELECT_WIDTH, BMP_TEAM_SELECT_HEIGHT,
+                                     0, fedteam, foreColor, win);
                 break;
             case 1:
-                W_WriteBitmap ( 0, 0, romteam, foreColor, win);
+                W_WriteScaleBitmap ( 0, 0, BOXSIDE, BOXSIDE,
+                                     BMP_TEAM_SELECT_WIDTH, BMP_TEAM_SELECT_HEIGHT,
+                                     0, romteam, foreColor, win);
                 break;
             case 2:
-                W_WriteBitmap ( 0, 0, kliteam, foreColor, win);
+                W_WriteScaleBitmap ( 0, 0, BOXSIDE, BOXSIDE,
+                                     BMP_TEAM_SELECT_WIDTH, BMP_TEAM_SELECT_HEIGHT,
+                                     0, kliteam, foreColor, win);
                 break;
             case 3:
-                W_WriteBitmap ( 0, 0, oriteam, foreColor, win);
+                W_WriteScaleBitmap ( 0, 0, BOXSIDE, BOXSIDE,
+                                     BMP_TEAM_SELECT_WIDTH, BMP_TEAM_SELECT_HEIGHT,
+                                     0, oriteam, foreColor, win);
                 break;
         }
     }
@@ -2125,7 +2159,14 @@ redrawTeam (W_Window win,
 void
 redrawQuit (void)
 {
-    W_WriteText (qwin, 5, 5, textColor, "Quit Netrek XP", 14, W_RegularFont);
+    int xoff;
+    
+    xoff = (BOXSIDE / 2) - 7 * W_Textwidth;
+    if (xoff < 1)
+        xoff = 5;
+
+    W_WriteText (qwin, xoff, 5, textColor,
+                 "Quit Netrek XP", 14, W_RegularFont);
 }
 
 #define CLOCK_BDR       0
@@ -2170,8 +2211,10 @@ showTimeLeft (time_t time, time_t max)
         cy = CLOCK_Y + CLOCK_HEI / 2;
         
         angle = (int)(-360 * time / max);
-        W_WriteBitmap ( CLOCK_BDR, CLOCK_BDR, clockpic, foreColor, qwin);
-        W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
+        W_WriteScaleBitmap (CLOCK_BDR, CLOCK_BDR, BOXSIDE, BOXSIDE,
+                            BMP_CCLOCK_WIDTH, BMP_CCLOCK_HEIGHT,
+                            0, clockpic, foreColor, qwin);
+        W_OverlayScaleBitmap (CLOCK_BDR, CLOCK_BDR, BOXSIDE, BOXSIDE,
                               BMP_CHAND_WIDTH, BMP_CHAND_HEIGHT,
                               angle, clockhandpic, foreColor, qwin);
         sprintf (buf, "%d", max - time);

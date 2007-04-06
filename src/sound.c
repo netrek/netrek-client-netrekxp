@@ -467,6 +467,11 @@ extern void soundwindow (void)
     W_MapWindow (soundWin);
 }
 
+extern int sound_window_height (void)
+{
+    return SOUND_DONE + 1;
+}
+
 static void soundrefresh (int i)
 {
     char buf[BUFSIZ];

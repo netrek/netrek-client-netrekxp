@@ -81,13 +81,13 @@ gettarget (W_Window ww,
 
     if (ww == mapw)
     {
-        g_x = x * GWIDTH / WINSIDE;
-        g_y = y * GWIDTH / WINSIDE;
+        g_x = x * GWIDTH / GWINSIDE;
+        g_y = y * GWIDTH / GWINSIDE;
     }
     else
     {
-        g_x = me->p_x + ((x - WINSIDE / 2) * SCALE);
-        g_y = me->p_y + ((y - WINSIDE / 2) * SCALE);
+        g_x = me->p_x + ((x - TWINSIDE / 2) * SCALE);
+        g_y = me->p_y + ((y - TWINSIDE / 2) * SCALE);
     }
 
     targ = gettarget2 (g_x, g_y, targtype);

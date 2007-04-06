@@ -32,7 +32,8 @@ struct message *messages;
 struct mctl *mctl;
 struct memory universe;
 
-int WINSIDE = 500;              /* Size of strategic and tactical windows */
+int TWINSIDE = 500;             /* Size of tactical window */
+int GWINSIDE = 500;             /* Size of galactic window */
 int SCALE = 40;                 /* Window will be one pixel for these # spaces */
 int ingame = 0;                 /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
@@ -827,3 +828,4 @@ int lockLine = 1;		/* draw dashed line on map from you to lock target */
 int weaponsOnMap = 1;		/* draw weapons fire on map */
 int sortPlanets = 1;		/* sort planet list by team and army count */
 int packetLights = 1;           /* show packet send/receive via dashboard */
+int infoRange = 1;              /* show limit on info with large tactical windows */

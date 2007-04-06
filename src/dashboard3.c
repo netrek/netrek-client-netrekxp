@@ -377,7 +377,7 @@ db_redraw_lab2 (int fr)
     db_special (fr, 160, 32);
 
     /* TIMER */
-    db_timer (fr, WINSIDE - 12 * W_Textwidth, 32);
+    db_timer (fr, 428, 32);
 
     light_erase();
 

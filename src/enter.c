@@ -325,12 +325,12 @@ init_hockey_lines (void)
 
     /* This part defines galaxy lines */
 #define G_RINK_TOP 0
-#define G_RINK_BOTTOM (WINSIDE)
+#define G_RINK_BOTTOM (GWINSIDE)
 #define G_TENTH (((G_RINK_BOTTOM - G_RINK_TOP)/10))
 #define G_R_MID (((G_RINK_BOTTOM - G_RINK_TOP)/2)-1)    /* center (red) line */
 #define G_RINK_LENGTH ((G_RINK_BOTTOM - G_RINK_TOP))
-#define G_RINK_WIDTH ((WINSIDE*2/3))
-#define G_G_MID ((WINSIDE/2))   /* center of goal */
+#define G_RINK_WIDTH ((GWINSIDE*2/3))
+#define G_G_MID ((GWINSIDE/2))   /* center of goal */
 #define G_RINK_LEFT ((G_G_MID-(G_RINK_WIDTH/2))-2)
 #define G_RINK_RIGHT ((G_G_MID+(G_RINK_WIDTH/2))-1)
 #define G_G_LFT (G_R_MID-G_TENTH)       /* left edge of goal */
@@ -589,7 +589,7 @@ init_hockey_lines (void)
     /* Right rink boundary */
     map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_RINK_RIGHT;
     map_hockey_lines[i].begin_y = 0;
-    map_hockey_lines[i].end_y = WINSIDE - 1;
+    map_hockey_lines[i].end_y = GWINSIDE - 1;
     map_hockey_lines[i].color = W_Grey;
     map_hockey_lines[i].flag = &showHockeyLinesMap;
     map_hockey_lines[i++].orientation = S_LINE_VERTICAL;
@@ -597,7 +597,7 @@ init_hockey_lines (void)
     /* Left rink boundary */
     map_hockey_lines[i].begin_x = map_hockey_lines[i].end_x = G_RINK_LEFT;
     map_hockey_lines[i].begin_y = 0;
-    map_hockey_lines[i].end_y = WINSIDE - 1;
+    map_hockey_lines[i].end_y = GWINSIDE - 1;
     map_hockey_lines[i].color = W_Grey;
     map_hockey_lines[i].flag = &showHockeyLinesMap;
     map_hockey_lines[i++].orientation = S_LINE_VERTICAL;

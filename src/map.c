@@ -97,8 +97,8 @@ initPlanets (void)
     int endX, endY;
     struct planet *pl;
     int pRadius;
-    const int tHeight = W_Textheight * GWIDTH / WINSIDE;
-    const int tWidth = W_Textwidth * GWIDTH / WINSIDE;
+    const int tHeight = W_Textheight * GWIDTH / GWINSIDE;
+    const int tWidth = W_Textwidth * GWIDTH / GWINSIDE;
 
     for (x = 0; x < DETAIL; x++)
     {
@@ -116,9 +116,9 @@ initPlanets (void)
        assigned to a x,y point and that is intersected with the rough planet map in a 
        checkredraw call, which doesn't work so good if the player ship is beeplite highlited */ 
 #ifdef BEEPLITE
-    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 5;
+    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 5;
 #else
-    pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
+    pRadius = BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 2;
 #endif
     for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
     {
@@ -159,7 +159,7 @@ initPlanets (void)
         }
     }
     /* Now loop for the new planet bitmaps, which are roughly 50% wider */
-    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 4;
+    pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 4;
     for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
     {
         /*
@@ -214,12 +214,12 @@ showRegions(void)
     int     endX, endY;
     struct planet *pl;
 #ifdef BEEPLITE
-    const int pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 5;
+    const int pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 5;
 #else
-    const int pRadius = BMP_MPLANET_WIDTH * GWIDTH / WINSIDE / 2;
+    const int pRadius = BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 2;
 #endif
-    const int tHeight = W_Textheight * GWIDTH / WINSIDE;
-    const int tWidth = W_Textwidth * GWIDTH / WINSIDE;
+    const int tHeight = W_Textheight * GWIDTH / GWINSIDE;
+    const int tWidth = W_Textwidth * GWIDTH / GWINSIDE;
 
     for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
     {
@@ -241,10 +241,10 @@ showRegions(void)
         if (endY >= DETAIL)
             endY = DETAIL - 1;
 
-        startX = startX * SIZE * WINSIDE / GWIDTH;
-        startY = startY * SIZE * WINSIDE / GWIDTH;
-        endX = (endX * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
-        endY = (endY * SIZE + SIZE - 1) * WINSIDE / GWIDTH;
+        startX = startX * SIZE * GWINSIDE / GWIDTH;
+        startY = startY * SIZE * GWINSIDE / GWIDTH;
+        endX = (endX * SIZE + SIZE - 1) * GWINSIDE / GWIDTH;
+        endY = (endY * SIZE + SIZE - 1) * GWINSIDE / GWIDTH;
 
         W_MakeLine(mapw, startX, startY, startX, endY, W_White);
         W_MakeLine(mapw, startX, startY, endX, startY, W_White);
@@ -530,8 +530,8 @@ DrawPlanets ()
 
         l->pl_flags &= ~PLREDRAW;       /* Turn redraw flag off! */
 
-        dx = l->pl_x * WINSIDE / GWIDTH;
-        dy = l->pl_y * WINSIDE / GWIDTH;
+        dx = l->pl_x * GWINSIDE / GWIDTH;
+        dy = l->pl_y * GWINSIDE / GWIDTH;
 
 
         /* Erase the planet first */
@@ -542,8 +542,8 @@ DrawPlanets ()
 
             int odx, ody;
 
-            odx = pl_update[l->pl_no].plu_x * WINSIDE / GWIDTH;
-            ody = pl_update[l->pl_no].plu_y * WINSIDE / GWIDTH;
+            odx = pl_update[l->pl_no].plu_x * GWINSIDE / GWIDTH;
+            ody = pl_update[l->pl_no].plu_y * GWINSIDE / GWIDTH;
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)  // Needs adjusting
@@ -838,8 +838,8 @@ map (void)
     static int viewx = 0, viewy = 0;
     static char clearviewbox = 0;
     static char viewboxcleared = 0;
-    int viewdist = (WINSIDE / 2 * SCALE) / (GWIDTH / WINSIDE);
-    int view = WINSIDE * SCALE / 2;
+    int viewdist = (TWINSIDE / 2 * SCALE) / (GWIDTH / GWINSIDE);
+    int view = TWINSIDE * SCALE / 2;
     int mvx, mvy;
 
 #ifdef RECORDGAME
@@ -851,8 +851,8 @@ map (void)
 #endif
     clearMap ();
 
-    dx = (me->p_x) / (GWIDTH / WINSIDE);
-    dy = (me->p_y) / (GWIDTH / WINSIDE);
+    dx = (me->p_x) / (GWIDTH / GWINSIDE);
+    dy = (me->p_y) / (GWIDTH / GWINSIDE);
 
     if (redrawall)
     {
@@ -906,17 +906,17 @@ map (void)
         {
             clearviewbox = 0;
             /* clear old dots - placed here for less flicker */
-            if (viewx + viewdist < WINSIDE && viewy + viewdist < WINSIDE)
+            if (viewx + viewdist < GWINSIDE && viewy + viewdist < GWINSIDE)
                 W_MakePoint (mapw, viewx + viewdist, viewy + viewdist, backColor);
-            if (viewx + viewdist < WINSIDE && viewy - viewdist > 0)
+            if (viewx + viewdist < GWINSIDE && viewy - viewdist > 0)
                 W_MakePoint (mapw, viewx + viewdist, viewy - viewdist, backColor);
-            if (viewx - viewdist > 0 && viewy + viewdist < WINSIDE)
+            if (viewx - viewdist > 0 && viewy + viewdist < GWINSIDE)
                 W_MakePoint (mapw, viewx - viewdist, viewy + viewdist, backColor);
             if (viewx - viewdist > 0 && viewy - viewdist > 0)
                 W_MakePoint (mapw, viewx - viewdist, viewy - viewdist, backColor);
             /* redraw any planets they overwrote */
-            mvx = viewx * (GWIDTH / WINSIDE); /* correct from view scale */
-            mvy = viewy * (GWIDTH / WINSIDE);
+            mvx = viewx * (GWIDTH / GWINSIDE); /* correct from view scale */
+            mvy = viewy * (GWIDTH / GWINSIDE);
             checkRedraw(mvx + view, mvy + view);
             checkRedraw(mvx + view, mvy - view);
             checkRedraw(mvx - view, mvy + view);
@@ -981,11 +981,11 @@ map (void)
         if (viewboxcleared || viewx != dx || viewy != dy)
         {
             /* draw the new points */
-            if (dx + viewdist < WINSIDE && dy + viewdist < WINSIDE)
+            if (dx + viewdist < GWINSIDE && dy + viewdist < GWINSIDE)
                 W_MakePoint (mapw, dx + viewdist, dy + viewdist, W_White);
-            if (dx + viewdist < WINSIDE && dy - viewdist > 0)
+            if (dx + viewdist < GWINSIDE && dy - viewdist > 0)
                 W_MakePoint (mapw, dx + viewdist, dy - viewdist, W_White);
-            if (dx - viewdist > 0 && dy + viewdist < WINSIDE)
+            if (dx - viewdist > 0 && dy + viewdist < GWINSIDE)
                 W_MakePoint (mapw, dx - viewdist, dy + viewdist, W_White);
             if (dx - viewdist > 0 && dy - viewdist > 0)
                 W_MakePoint (mapw, dx - viewdist, dy - viewdist, W_White);
@@ -1027,8 +1027,8 @@ map (void)
             continue;
 
 
-        dx = j->p_x * WINSIDE / GWIDTH;
-        dy = j->p_y * WINSIDE / GWIDTH;
+        dx = j->p_x * GWINSIDE / GWIDTH;
+        dy = j->p_y * GWINSIDE / GWIDTH;
 
 
         if (j->p_flags & PFCLOAK)
@@ -1119,12 +1119,12 @@ map (void)
 #endif
             if (j->p_flags & PFCLOAK)
             {
-                rad = MAXDISTCLOAK;
+                rad = MAXDISTCLOAK * GWINSIDE / GWIDTH;
                 color = W_Red;
             }
             else
             {
-                rad = MAXDISTVIS;
+                rad = MAXDISTVIS * GWINSIDE / GWIDTH;
                 color = W_White;
             }
             W_WriteCircle(mapw, dx, dy, rad, 0, 1, color);
@@ -1137,8 +1137,8 @@ map (void)
                 /* Redraw check - redraw all planets in range.  Have to
                    adjust distance to account for planet radius and text
                    of planet name */
-                planx = pl->pl_x * WINSIDE / GWIDTH;
-                plany = pl->pl_y * WINSIDE / GWIDTH;
+                planx = pl->pl_x * GWINSIDE / GWIDTH;
+                plany = pl->pl_y * GWINSIDE / GWIDTH;
                 distx = ABS(planx - dx) - pRadius - W_Textwidth;
                 disty = ABS(plany - dy) - pRadius - W_Textheight;
                 if (distx*distx + disty*disty < (rad*rad))
@@ -1162,8 +1162,8 @@ map (void)
             if (j->p_status == PFREE)
                 continue;
 
-            dx = j->p_x * WINSIDE / GWIDTH;
-            dy = j->p_y * WINSIDE / GWIDTH;
+            dx = j->p_x * GWINSIDE / GWIDTH;
+            dy = j->p_y * GWINSIDE / GWIDTH;
             
             /* phasers */
             ph = &phasers[j->p_no];
@@ -1187,13 +1187,13 @@ map (void)
                     case PHMISS:
                         /* Here I will have to compute end coordinate */
                         tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
-                            * Cos[ph->ph_dir]) * WINSIDE / GWIDTH;
+                            * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
                         ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
-                            * Sin[ph->ph_dir]) * WINSIDE / GWIDTH;
+                            * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
                         break;
                     case PHHIT2:
-                        tx = ph->ph_x * WINSIDE / GWIDTH;
-                        ty = ph->ph_y * WINSIDE / GWIDTH;
+                        tx = ph->ph_x * GWINSIDE / GWIDTH;
+                        ty = ph->ph_y * GWINSIDE / GWIDTH;
                         break;
                     default:
                         /* Don't draw phasers to ships out of galactic bounds */
@@ -1204,8 +1204,8 @@ map (void)
                         }
                         else
                         {
-                            tx = players[ph->ph_target].p_x * WINSIDE / GWIDTH;
-                            ty = players[ph->ph_target].p_y * WINSIDE / GWIDTH;
+                            tx = players[ph->ph_target].p_x * GWINSIDE / GWIDTH;
+                            ty = players[ph->ph_target].p_y * GWINSIDE / GWIDTH;
                         }
                         break;
                 }
@@ -1217,7 +1217,7 @@ map (void)
                 mclearlcount++;
                 /* Check for overwriting planets, corrected from view scale*/
                 checkRedraw(j->p_x, j->p_y);
-                checkRedraw(tx * (GWIDTH / WINSIDE), ty * (GWIDTH / WINSIDE));
+                checkRedraw(tx * (GWIDTH / GWINSIDE), ty * (GWIDTH / GWINSIDE));
             }
 
             if (!j->p_ntorp && !j->p_nplasmatorp)
@@ -1254,8 +1254,8 @@ map (void)
                     }
                 }
 
-                dx = k->t_x * WINSIDE / GWIDTH;
-                dy = k->t_y * WINSIDE / GWIDTH;
+                dx = k->t_x * GWINSIDE / GWIDTH;
+                dy = k->t_y * GWINSIDE / GWIDTH;
 
                 if (k->t_status == TEXPLODE)
                 {
@@ -1309,8 +1309,8 @@ map (void)
                     }
                 }
 
-                dx = pt->pt_x * WINSIDE / GWIDTH;
-                dy = pt->pt_y * WINSIDE / GWIDTH;
+                dx = pt->pt_x * GWINSIDE / GWIDTH;
+                dy = pt->pt_y * GWINSIDE / GWIDTH;
 
                 if (pt->pt_status == TEXPLODE)
                 {
@@ -1349,8 +1349,8 @@ map (void)
     {
         j = &players[me->p_playerl];
 
-        dx = j->p_x * WINSIDE / GWIDTH;
-        dy = j->p_y * WINSIDE / GWIDTH;
+        dx = j->p_x * GWINSIDE / GWIDTH;
+        dy = j->p_y * GWINSIDE / GWIDTH;
 
         if (j->p_status == PALIVE && !(j->p_flags & PFCLOAK))
         {
@@ -1366,8 +1366,8 @@ map (void)
         {
             int mydx, mydy;
             
-            mydx = me->p_x * WINSIDE / GWIDTH;
-            mydy = me->p_y * WINSIDE / GWIDTH;
+            mydx = me->p_x * GWINSIDE / GWIDTH;
+            mydy = me->p_y * GWINSIDE / GWIDTH;
             W_MakeTractLine (mapw,
                              mydx,
                              mydy,
@@ -1387,8 +1387,8 @@ map (void)
     {
         struct planet *l = &planets[me->p_planet];
 
-        dx = l->pl_x * WINSIDE / GWIDTH;
-        dy = l->pl_y * WINSIDE / GWIDTH;
+        dx = l->pl_x * GWINSIDE / GWIDTH;
+        dy = l->pl_y * GWINSIDE / GWIDTH;
         W_WriteTriangle (mapw, dx, dy - (BMP_MPLANET_HEIGHT) / 2 - 4, 4, 0, foreColor);
 
         clearlmark[0] = dx;
@@ -1401,8 +1401,8 @@ map (void)
         {
             int mydx, mydy;
             
-            mydx = me->p_x * WINSIDE / GWIDTH;
-            mydy = me->p_y * WINSIDE / GWIDTH;
+            mydx = me->p_x * GWINSIDE / GWIDTH;
+            mydy = me->p_y * GWINSIDE / GWIDTH;
             W_MakeTractLine (mapw,
                              mydx,
                              mydy,

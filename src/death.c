@@ -149,11 +149,17 @@ death (void)
         switch (i)
         {
             case 0:
-                W_TileWindow (mapw, genopic);
+                W_WriteScaleBitmap(0, 0, GWINSIDE, GWINSIDE,
+                                   BMP_GENO_WIDTH,
+                                   BMP_GENO_HEIGHT,
+                                   0, genopic, foreColor, mapw);
                 break;
             case 1:
             default:
-                W_TileWindow (mapw, genopic2);
+                W_WriteScaleBitmap(0, 0, GWINSIDE, GWINSIDE,
+                                   BMP_GENO_WIDTH,
+                                   BMP_GENO_HEIGHT,
+                                   0, genopic2, foreColor, mapw);
                 break;
         }
 #ifdef SOUND

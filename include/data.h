@@ -48,8 +48,10 @@ extern struct ship shipvals[];
 extern struct memory universe;
 extern struct planet pdata[];
 
-extern int WINSIDE;             /* This used to be a define ... */
-extern int SCALE;               /* and so was this ... */
+/* These used to be defines ... */
+extern int TWINSIDE;
+extern int GWINSIDE;
+extern int SCALE;
 
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
@@ -735,4 +737,5 @@ extern int lockLine;		/* draw dashed line on map from you to lock target */
 extern int weaponsOnMap;	/* draw weapons fire on map */
 extern int sortPlanets; 	/* sort planet list by team and army count */
 extern int packetLights;        /* show packet send/receive via dashboard */
+extern int infoRange;           /* show limit on info with large tactical windows */
 #endif /* _h_data */

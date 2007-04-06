@@ -66,10 +66,12 @@ struct _star {
 
 static void redrawStarSector(int sectorx, int sectory);
 
-#define scaleLocal(pt)           ((pt)/SCALE + (WINSIDE/2))
+#define scaleLocal(pt)           ((pt)/SCALE + (TWINSIDE/2))
 
 #define STARSIDE 500          /* Used to normalize star density */
 #define INFORANGE 500         /* Range at which server stops sending some data */
+/* Max range at which other's torps can be seen, used in scaling sound volume */
+#define SOUND_MAXRANGE (int)(sqrt)(INFORANGE * INFORANGE/2)
 
 static struct _star stars[10][10][16];
 
@@ -81,14 +83,20 @@ void SetDistAngle(int dx, int dy)
 {
     int newdx, newdy;
 
-    newdx = dx - WINSIDE/2;
-    newdy = dy - WINSIDE/2;
+    newdx = dx - TWINSIDE/2;
+    newdy = dy - TWINSIDE/2;
 
     distance = (int) sqrt((newdx)*(newdx) + (newdy)*(newdy));
     // Normalize from 0 to 255, 0 being on top of player, 255 being max distance
-    // which would be a diagonal from player to corner of tactical
-    // Reason for normalization is Mix_SetDistance requires that range        
-    distance = (int)((255 * distance)/CORNER_DIST);
+    // which would be a diagonal from player to corner of window where server
+    // stops sending some information (INFORANGE).  This normalization assumes that
+    // the local window (TWINSIDE) matches the range at which some data is sent
+    // (INFORANGE).  If TWINSIDE is increased, distances can now exceed SOUND_MAXRANGE
+    // causing the normalization to not quite work.  These far distance events (such
+    // as a ship cloaking, explosions, etc) will play at minimum sound volume
+    // (essentially inaudible) due to a bounds check in Play_Sound_Loc().
+    // Reason for normalization is Mix_SetDistance requires that range.
+    distance = (int)((255 * distance)/SOUND_MAXRANGE);
     // Calculate angle, then adjust as necessary for Mix_SetDistance
     if (distance != 0)
     {
@@ -124,11 +132,11 @@ initStars()
     register int i, j, k;
 
     /* Star density: 16 stars per 20000 x 20000 galactic region */
-    for (i = 0; i < (5 * STARSIDE / WINSIDE + 1); i++) {
-       for (j = 0; j < (5 * STARSIDE / WINSIDE + 1); j++) {
-            for (k = 0; k < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); k++) {
-                stars[i][j][k].s_x = RANDOM() % 20000 * WINSIDE / STARSIDE;
-                stars[i][j][k].s_y = RANDOM() % 20000 * WINSIDE / STARSIDE;
+    for (i = 0; i < (5 * STARSIDE / TWINSIDE + 1); i++) {
+       for (j = 0; j < (5 * STARSIDE / TWINSIDE + 1); j++) {
+            for (k = 0; k < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); k++) {
+                stars[i][j][k].s_x = RANDOM() % 20000 * TWINSIDE / STARSIDE;
+                stars[i][j][k].s_y = RANDOM() % 20000 * TWINSIDE / STARSIDE;
                 stars[i][j][k].s_color = randcolor();
             }
         }
@@ -139,10 +147,10 @@ initStars()
 void
 DrawStars()
 {
-    const int fullview = WINSIDE * SCALE;
-    const int view = WINSIDE * SCALE / 2;
+    const int fullview = TWINSIDE * SCALE;
+    const int view = TWINSIDE * SCALE / 2;
     /*
-       note: cpp symbols in expressions (WINSIDE*SCALE) will be precalculated
+       note: cpp symbols in expressions (TWINSIDE*SCALE) will be precalculated
        by any C optimizer
     */ 
     int sectorx = me->p_x / (fullview);
@@ -171,7 +179,7 @@ DrawStars()
         sector_offy += fullview; 
     }   
 
-#define MAXSECTOR   (5 * STARSIDE / WINSIDE) + 1
+#define MAXSECTOR   (5 * STARSIDE / TWINSIDE) + 1
   
     /* at worst we have to redraw 4 star sectors */
 
@@ -231,8 +239,8 @@ DrawStars()
 static void
 redrawStarSector (int sectorx, int sectory)
 {
-    const int fullview = WINSIDE * SCALE;
-    const int view = WINSIDE * SCALE / 2;
+    const int fullview = TWINSIDE * SCALE;
+    const int view = TWINSIDE * SCALE / 2;
     register int i, dx, dy, dxx, dyy;
     register int xbase = sectorx * fullview;
     register int ybase = sectory * fullview;
@@ -292,7 +300,7 @@ redrawStarSector (int sectorx, int sectory)
             }
             dxx = (int) (Cos[mydir] * streaklength / 10);
             dyy = (int) (Sin[mydir] * streaklength / 10);
-            for (i = 0, s = star_sector; i < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); i++, s++)
+            for (i = 0, s = star_sector; i < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); i++, s++)
             {
                 if (s->s_x + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
                     continue;
@@ -315,7 +323,7 @@ redrawStarSector (int sectorx, int sectory)
             return;
         }
     }
-    for (i = 0, s = star_sector; i < (16 * (WINSIDE / STARSIDE) * (WINSIDE / STARSIDE)); i++, s++)
+    for (i = 0, s = star_sector; i < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); i++, s++)
     {
         if (s->s_x  + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
             continue;
@@ -512,7 +520,7 @@ DrawPlanets (void)
 {
     register int dx, dy;
     register struct planet *l;
-    const int view = SCALE * WINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
+    const int view = SCALE * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
@@ -521,8 +529,8 @@ DrawPlanets (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + WINSIDE / 2;
-        dy = dy / SCALE + WINSIDE / 2;
+        dx = dx / SCALE + TWINSIDE / 2;
+        dy = dy / SCALE + TWINSIDE / 2;
         
         if (planetBitmap == 3)
         {
@@ -676,7 +684,7 @@ DrawShips (void)
     int buflen = 1;
     static int ph_col = 0;
     static int scaled_ph_col = 0;
-    const int view = SCALE * WINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
+    const int view = SCALE * TWINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
     int startx, starty, endx, endy;
@@ -746,8 +754,8 @@ DrawShips (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + WINSIDE / 2;
-        dy = dy / SCALE + WINSIDE / 2;
+        dx = dx / SCALE + TWINSIDE / 2;
+        dy = dy / SCALE + TWINSIDE / 2;
 
         cloak_phases = CLOAK_PHASES * server_ups / 10;
         if (j->p_flags & PFCLOAK)
@@ -1170,9 +1178,9 @@ DrawShips (void)
             {
             	if (myPlayer(j))
             	{
-                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, DETDIST/SCALE, 0, 0, W_Red);         
-                    clearzone[0][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
-                    clearzone[1][clearcount] = WINSIDE/2 - (DETDIST/SCALE);
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, DETDIST/SCALE, 0, 0, W_Red);         
+                    clearzone[0][clearcount] = TWINSIDE/2 - (DETDIST/SCALE);
+                    clearzone[1][clearcount] = TWINSIDE/2 - (DETDIST/SCALE);
                     clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
                     clearzone[3][clearcount] = 2*DETDIST/SCALE + 1;
                     clearcount++;
@@ -1232,9 +1240,9 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                    W_WriteCircle(w, WINSIDE/2, WINSIDE/2, SHOTRANGE/SCALE, 0, 0, W_Grey);         
-                    clearzone[0][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
-                    clearzone[1][clearcount] = WINSIDE/2 - (SHOTRANGE/SCALE);
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/SCALE, 0, 0, W_Grey);         
+                    clearzone[0][clearcount] = TWINSIDE/2 - (SHOTRANGE/SCALE);
+                    clearzone[1][clearcount] = TWINSIDE/2 - (SHOTRANGE/SCALE);
                     clearzone[2][clearcount] = 2*SHOTRANGE/SCALE + 1;
                     clearzone[3][clearcount] = 2*SHOTRANGE/SCALE + 1;
                     clearcount++;
@@ -1274,7 +1282,7 @@ DrawShips (void)
             	else
             	{
             	    /* draw */
-            	    W_WriteTTSText(w, WINSIDE, tts_ypos, lastIn, tts_len);
+            	    W_WriteTTSText(w, TWINSIDE, tts_ypos, lastIn, tts_len);
             	    clearzone[0][clearcount] = last_tts_xpos;
                     clearzone[1][clearcount] = tts_ypos - W_Textheight;
                     clearzone[2][clearcount] = last_tts_width;
@@ -1512,13 +1520,13 @@ DrawShips (void)
                     ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
                                 Sin[php->ph_dir]);
 
-                    tx = (j->p_x + tx - me->p_x) / SCALE + WINSIDE / 2;
-                    ty = (j->p_y + ty - me->p_y) / SCALE + WINSIDE / 2;
+                    tx = (j->p_x + tx - me->p_x) / SCALE + TWINSIDE / 2;
+                    ty = (j->p_y + ty - me->p_y) / SCALE + TWINSIDE / 2;
                 }
                 else if (php->ph_status == PHHIT2)
                 {
-                    tx = (php->ph_x - me->p_x) / SCALE + WINSIDE / 2;
-                    ty = (php->ph_y - me->p_y) / SCALE + WINSIDE / 2;
+                    tx = (php->ph_x - me->p_x) / SCALE + TWINSIDE / 2;
+                    ty = (php->ph_y - me->p_y) / SCALE + TWINSIDE / 2;
                 }
                 else
                 {
@@ -1536,9 +1544,9 @@ DrawShips (void)
                     else
                     {
                         tx = (players[php->ph_target].p_x - me->p_x) /
-                            SCALE + WINSIDE / 2;
+                            SCALE + TWINSIDE / 2;
                         ty = (players[php->ph_target].p_y - me->p_y) /
-                            SCALE + WINSIDE / 2;
+                            SCALE + TWINSIDE / 2;
                     }
                 }
 
@@ -1766,8 +1774,8 @@ DrawShips (void)
                     px = (tractee->p_x - me->p_x);
                     py = (tractee->p_y - me->p_y);
 
-                    px = px / SCALE + WINSIDE / 2;
-                    py = py / SCALE + WINSIDE / 2;
+                    px = px / SCALE + TWINSIDE / 2;
+                    py = py / SCALE + TWINSIDE / 2;
 
                     if (px == dx && py == dy)
                         continue;       /* this had better be last
@@ -1847,7 +1855,7 @@ DrawTorps (void)
     int torpCount;
     int torpTeam;
     int frame;
-    const int view = SCALE * WINSIDE / 2;
+    const int view = SCALE * TWINSIDE / 2;
 
     for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
     {
@@ -1902,8 +1910,8 @@ DrawTorps (void)
             if (dx > view || dx < -view || dy > view || dy < -view)
                 continue;
 
-            dx = dx / SCALE + WINSIDE / 2;
-            dy = dy / SCALE + WINSIDE / 2;
+            dx = dx / SCALE + TWINSIDE / 2;
+            dy = dy / SCALE + TWINSIDE / 2;
 
 #ifdef SOUND
             if (j != me)
@@ -2085,7 +2093,7 @@ DrawPlasmaTorps (void)
 {
     register struct plasmatorp *pt;
     register int dx, dy;
-    const int view = SCALE * WINSIDE / 2;
+    const int view = SCALE * TWINSIDE / 2;
     int ptorpTeam;
     int frame;
 
@@ -2130,8 +2138,8 @@ DrawPlasmaTorps (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + WINSIDE / 2;
-        dy = dy / SCALE + WINSIDE / 2;
+        dx = dx / SCALE + TWINSIDE / 2;
+        dy = dy / SCALE + TWINSIDE / 2;
 
 #ifdef SOUND
         if (pt->pt_owner != me->p_no)
@@ -2309,11 +2317,11 @@ DrawMisc (void)
 {
     register struct player *j;
     register int dx, dy;
-    const int view = SCALE * WINSIDE / 2;
+    const int view = SCALE * TWINSIDE / 2;
 
 #ifdef HOCKEY_LINES
     register struct s_line *sl;
-    const int HALF_WINSIDE = WINSIDE / 2;
+    const int HALF_WINSIDE = TWINSIDE / 2;
     int ex, ey, sx, sy;
 #endif
 
@@ -2333,13 +2341,13 @@ DrawMisc (void)
                     if ((sy =
                          HALF_WINSIDE - (me->p_y - sl->begin_y) / SCALE) < 0)
                         sy = 0;
-                    if (sy > (WINSIDE - 1))
-                        sy = WINSIDE - 1;
+                    if (sy > (TWINSIDE - 1))
+                        sy = TWINSIDE - 1;
                     if ((ey =
                          HALF_WINSIDE - (me->p_y - sl->end_y) / SCALE) < 0)
                         ey = 0;
-                    if (ey > (WINSIDE - 1))
-                        ey = WINSIDE - 1;
+                    if (ey > (TWINSIDE - 1))
+                        ey = TWINSIDE - 1;
                     if (sy == ey)
                         continue;
                 }
@@ -2357,13 +2365,13 @@ DrawMisc (void)
                     if ((sx =
                          HALF_WINSIDE - (me->p_x - sl->begin_x) / SCALE) < 0)
                         sx = 0;
-                    if (sx > (WINSIDE - 1))
-                        sx = WINSIDE - 1;
+                    if (sx > (TWINSIDE - 1))
+                        sx = TWINSIDE - 1;
                     if ((ex =
                          HALF_WINSIDE - (me->p_x - sl->end_x) / SCALE) < 0)
                         ex = 0;
-                    if (ex > (WINSIDE - 1))
-                        ex = WINSIDE - 1;
+                    if (ex > (TWINSIDE - 1))
+                        ex = TWINSIDE - 1;
                     if (sx == ex)
                         continue;
                 }
@@ -2384,59 +2392,110 @@ DrawMisc (void)
 #endif /* HOCKEY_LINES */
 
     /* Draw inforange box (if necessary) */
-    if ( WINSIDE > INFORANGE )
+    if ( infoRange && TWINSIDE > INFORANGE && !(me->p_x < 0 || me->p_x > GWIDTH))
     {
-        dx = (WINSIDE / 2) + (INFORANGE / 2);
-        sy = (WINSIDE / 2) - (INFORANGE / 2);
-        ey = (WINSIDE / 2) + (INFORANGE / 2);
-        W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
-        clearline[0][clearlcount] = dx;
-        clearline[1][clearlcount] = sy;
-        clearline[2][clearlcount] = dx;
-        clearline[3][clearlcount] = ey;
-        clearlcount++;
-        
-        dx = (WINSIDE / 2) - (INFORANGE / 2);
-        sy = (WINSIDE / 2) - (INFORANGE / 2);
-        ey = (WINSIDE / 2) + (INFORANGE / 2);
-        W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
-        clearline[0][clearlcount] = dx;
-        clearline[1][clearlcount] = sy;
-        clearline[2][clearlcount] = dx;
-        clearline[3][clearlcount] = ey;
-        clearlcount++;
-        
-        dy = (WINSIDE / 2) + (INFORANGE / 2);
-        sx = (WINSIDE / 2) - (INFORANGE / 2);
-        ex = (WINSIDE / 2) + (INFORANGE / 2);
-        W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
-        clearline[0][clearlcount] = sx;
-        clearline[1][clearlcount] = dy;
-        clearline[2][clearlcount] = ex;
-        clearline[3][clearlcount] = dy;
-        clearlcount++;
-        
-        dy = (WINSIDE / 2) - (INFORANGE / 2);
-        sx = (WINSIDE / 2) - (INFORANGE / 2);
-        ex = (WINSIDE / 2) + (INFORANGE / 2);
-        W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
-        clearline[0][clearlcount] = sx;
-        clearline[1][clearlcount] = dy;
-        clearline[2][clearlcount] = ex;
-        clearline[3][clearlcount] = dy;
-        clearlcount++;
+        const int LEFT = (TWINSIDE / 2) - (INFORANGE / 2);
+        const int RIGHT = (TWINSIDE / 2) + (INFORANGE / 2);
+        const int TOP = (TWINSIDE / 2) - (INFORANGE / 2);
+        const int BOTTOM = (TWINSIDE / 2) + (INFORANGE / 2);
+
+        long dist;
+
+        if (me->p_x > (INFORANGE / 2) * SCALE)
+        {
+            dx = LEFT;
+            dist = me->p_y - ((INFORANGE / 2) * SCALE);
+            if (dist < 0)
+                sy = (TOP - dist/SCALE);
+            else
+                sy = TOP;
+            dist = me->p_y + ((INFORANGE / 2) * SCALE);
+            if (dist > GWIDTH)
+                ey = (BOTTOM - (dist - GWIDTH)/SCALE);
+            else
+                ey = BOTTOM;
+            W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
+            clearline[0][clearlcount] = dx;
+            clearline[1][clearlcount] = sy;
+            clearline[2][clearlcount] = dx;
+            clearline[3][clearlcount] = ey;
+            clearlcount++;
+        }
+
+        if ((GWIDTH - me->p_x) > (INFORANGE / 2) * SCALE)
+        {
+            dx = RIGHT;
+            dist = me->p_y - ((INFORANGE / 2) * SCALE);
+            if (dist < 0)
+                sy = (TOP - dist/SCALE);
+            else
+                sy = TOP;
+            dist = me->p_y + ((INFORANGE / 2) * SCALE);
+            if (dist > GWIDTH)
+                ey = (BOTTOM - (dist - GWIDTH)/SCALE);
+            else
+                ey = BOTTOM;
+            W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
+            clearline[0][clearlcount] = dx;
+            clearline[1][clearlcount] = sy;
+            clearline[2][clearlcount] = dx;
+            clearline[3][clearlcount] = ey;
+            clearlcount++;
+        }
+
+        if (me->p_y > (INFORANGE / 2) * SCALE)
+        {
+            dy = TOP;
+            dist = me->p_x - ((INFORANGE / 2) * SCALE);
+            if (dist < 0)
+                sx = (LEFT - dist/SCALE);
+            else
+                sx = LEFT;
+            dist = me->p_x + ((INFORANGE / 2) * SCALE);
+            if (dist > GWIDTH)
+                ex = (RIGHT - (dist - GWIDTH)/SCALE);
+            else
+                ex = RIGHT;
+            W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
+            clearline[0][clearlcount] = sx;
+            clearline[1][clearlcount] = dy;
+            clearline[2][clearlcount] = ex;
+            clearline[3][clearlcount] = dy;
+            clearlcount++;
+        }
+
+        if ((GWIDTH - me->p_y) > (INFORANGE/ 2) * SCALE)
+        {
+            dy = BOTTOM;
+            dist = me->p_x - ((INFORANGE / 2) * SCALE);
+            if (dist < 0)
+                sx = (LEFT - dist/SCALE);
+            else
+                sx = LEFT;
+            dist = me->p_x + ((INFORANGE / 2) * SCALE);
+            if (dist > GWIDTH)
+                ex = (RIGHT - (dist - GWIDTH)/SCALE);
+            else
+                ex = RIGHT;
+            W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
+            clearline[0][clearlcount] = sx;
+            clearline[1][clearlcount] = dy;
+            clearline[2][clearlcount] = ex;
+            clearline[3][clearlcount] = dy;
+            clearlcount++;
+        }
     }
 
     /* Draw Edges */
-    if (me->p_x < (WINSIDE / 2) * SCALE)
+    if (me->p_x < (TWINSIDE / 2) * SCALE)
     {
-        dx = (WINSIDE / 2) - (me->p_x) / SCALE;
-        sy = (WINSIDE / 2) + (0 - me->p_y) / SCALE;
-        ey = (WINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
+        dx = (TWINSIDE / 2) - (me->p_x) / SCALE;
+        sy = (TWINSIDE / 2) + (0 - me->p_y) / SCALE;
+        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
         if (sy < 0)
             sy = 0;
-        if (ey > WINSIDE - 1)
-            ey = WINSIDE - 1;
+        if (ey > TWINSIDE - 1)
+            ey = TWINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
         clearline[0][clearlcount] = dx;
@@ -2446,15 +2505,15 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if ((GWIDTH - me->p_x) < (WINSIDE / 2) * SCALE)
+    if ((GWIDTH - me->p_x) < (TWINSIDE / 2) * SCALE)
     {
-        dx = (WINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
-        sy = (WINSIDE / 2) + (0 - me->p_y) / SCALE;
-        ey = (WINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
+        dx = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
+        sy = (TWINSIDE / 2) + (0 - me->p_y) / SCALE;
+        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
         if (sy < 0)
             sy = 0;
-        if (ey > WINSIDE - 1)
-            ey = WINSIDE - 1;
+        if (ey > TWINSIDE - 1)
+            ey = TWINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, dx, sy, dx, ey, warningColor);
         clearline[0][clearlcount] = dx;
@@ -2464,15 +2523,15 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if (me->p_y < (WINSIDE / 2) * SCALE)
+    if (me->p_y < (TWINSIDE / 2) * SCALE)
     {
-        dy = (WINSIDE / 2) - (me->p_y) / SCALE;
-        sx = (WINSIDE / 2) + (0 - me->p_x) / SCALE;
-        ex = (WINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
+        dy = (TWINSIDE / 2) - (me->p_y) / SCALE;
+        sx = (TWINSIDE / 2) + (0 - me->p_x) / SCALE;
+        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
         if (sx < 0)
             sx = 0;
-        if (ex > WINSIDE - 1)
-            ex = WINSIDE - 1;
+        if (ex > TWINSIDE - 1)
+            ex = TWINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
         clearline[0][clearlcount] = sx;
@@ -2482,15 +2541,15 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if ((GWIDTH - me->p_y) < (WINSIDE / 2) * SCALE)
+    if ((GWIDTH - me->p_y) < (TWINSIDE / 2) * SCALE)
     {
-        dy = (WINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
-        sx = (WINSIDE / 2) + (0 - me->p_x) / SCALE;
-        ex = (WINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
+        dy = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
+        sx = (TWINSIDE / 2) + (0 - me->p_x) / SCALE;
+        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
         if (sx < 0)
             sx = 0;
-        if (ex > WINSIDE - 1)
-            ex = WINSIDE - 1;
+        if (ex > TWINSIDE - 1)
+            ex = TWINSIDE - 1;
         /* XFIX */
         W_CacheLine (w, sx, dy, ex, dy, warningColor);
         clearline[0][clearlcount] = sx;
@@ -2597,9 +2656,9 @@ DrawMisc (void)
             Play_Sound_Loc(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_plasma_angle, other_plasma_dist);
     }
     // Reset locations and fuses of other's closest torps and plasmas
-    other_torp_dist = CORNER_DIST;
+    other_torp_dist = SOUND_MAXRANGE;
     other_torp_angle = 0;
-    other_plasma_dist = CORNER_DIST;
+    other_plasma_dist = SOUND_MAXRANGE;
     other_plasma_angle = 0;
 
     sound_flags = me->p_flags;
@@ -2627,8 +2686,8 @@ DrawMisc (void)
                 dy = j->p_y - me->p_y;
                 if (ABS (dx) < view && ABS (dy) < view)
                 {
-                    dx = dx / SCALE + WINSIDE / 2;
-                    dy = dy / SCALE + WINSIDE / 2;
+                    dx = dx / SCALE + TWINSIDE / 2;
+                    dy = dy / SCALE + TWINSIDE / 2;
                     tri_x = dx + 0;
                     tri_y = dy + 20;    /* below ship */
                     facing = 1;
@@ -2644,8 +2703,8 @@ DrawMisc (void)
             dy = l->pl_y - me->p_y;
             if (ABS (dx) < view && ABS (dy) < view)
             {
-                dx = dx / SCALE + WINSIDE / 2;
-                dy = dy / SCALE + WINSIDE / 2;
+                dx = dx / SCALE + TWINSIDE / 2;
+                dy = dy / SCALE + TWINSIDE / 2;
                 tri_x = dx;
                 tri_y = dy - 20;        /* below planet */
                 facing = 0;

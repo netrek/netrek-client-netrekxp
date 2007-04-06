@@ -2,7 +2,6 @@ List for the netrekrc/installer:
 1) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
 2) fix netrekrc append so that it doesn't keep adding new lines to the netrekrc
-3) Get source code for installer from Joe.
 
 Things not gonna happen, or server problems:
 2) torp_other and plasma_other not working right due to lack of torp fuse info
@@ -44,6 +43,11 @@ rect doesn't take these into account.
 10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
+11) CPU profile cambot
+12) Solve richtext issue with keyboard/mouse action over richtext windows..
+12a) minor richtext issue with scrolling - extra line at the end
+13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
+if you fly into the NW corner of the galaxy.  this was never anticipated!
 
 Stas's list:
 - color coded (?) and scrollable playerlist.

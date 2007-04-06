@@ -129,6 +129,10 @@ highlightFriendlyPhasers: off
 # Ignore Caps Lock key state
 ignoreCaps: on
 
+# Show weapon's range boundary as a dashed white box if tactical
+# size is increased beyond the standard 500x500
+infoRange: on
+
 # How many tenths of seconds to keep info window on (default 15)
 keepInfo: 15
 
@@ -577,115 +581,118 @@ playerList: nTR N  K l M
 # Local and map windows MUST be square.  Size can be adjusted.
 # If sizing downwards, don't forget to remap any windows nested
 # inside these windows, such as team select and quit windows.
+# Most windows will autoadjust to the right spot if local or
+# map size are changed, so most window placements are commented
+# out.  Uncomment them if you wish to customize.
 
 netrek.parent:          netrek
 netrek.geometry:        1024x768
 
 local.parent:           netrek
-local.geometry:         500x500+0+0
+local.geometry:         500x500
 
 map.parent:             netrek
-map.geometry:           500x500+506+0
+map.geometry:           500x500
 
 tstat.parent:           netrek
-tstat.geometry:         505x43+0+506
-
-warn.parent:            netrek
-warn.geometry:          504x16+506+523
+#tstat.geometry:         504x42+0+506
 
 message.parent:         netrek
-message.geometry:       504x16+506+506
+#message.geometry:       504x20+506+506
 message.mapped:         on
 
+warn.parent:            netrek
+#warn.geometry:          504x20+506+526
+
 planet.parent:          netrek
-planet.geometry:        57x43+660+0
+#planet.geometry:        57x43+516+10
 planet.mapped:          off
 
 rank.parent:            netrek
-rank.geometry:          80x18+10+300
+#rank.geometry:          80x18+10+300
 rank.mapped:            off
 
 player.parent:          netrek
-player.geometry:        +0+550
+#player.geometry:        +0+550
 player.mapped:          on
 
 player2.parent:         netrek
-player2.geometry:       +140+100
+#player2.geometry:       +140+100
 player2.mapped:         off
 
 help.parent:            netrek
-help.mapped:            off
+#help.mapped:            off
 
 review_all.parent:      netrek
-review_all.geometry:    81x5+506+658
+#review_all.geometry:    81x5+506+660
 review_all.mapped:      on
 
 review_team.parent:     netrek
-review_team.geometry:   81x7+506+579
+#review_team.geometry:   81x6+506+590
 review_team.mapped:     on
 
 review_your.parent:     netrek
-review_your.geometry:   81x3+506+540
+#review_your.geometry:   81x3+506+550
 review_your.mapped:     on
 
 review_kill.parent:     netrek
-review_kill.geometry:   81x3+506+717
+#review_kill.geometry:   81x3+506+720
 review_kill.mapped:     on
 review_kill.allow:      KP
 
 review_phaser.parent:   netrek
-review_phaser.geometry: 81x4+506+676
+#review_phaser.geometry: 81x4+506+750
 review_phaser.mapped:   off
 
 review.parent:          netrek
-review.geometry:        81x22+506+540
+#review.geometry:        81x20+506+550
 review.mapped:          off
 
 pingStats.parent:       netrek
-pingStats.geometry:     +500+4
+#pingStats.geometry:     +500+4
 pingStats.mapped:       off
 
 UDP.parent:             netrek
-UDP.geometry:           +510+9
+#UDP.geometry:           +510+9
 UDP.mapped:             off
 
 network.parent:         netrek
-network.geometry:       +510+9
+#network.geometry:       +510+9
 network.mapped:         off
 
 DocWin.parent:          netrek
-DocWin.geometry:        500x500+0+181
+#DocWin.geometry:        500x500+0+181
 DocWin.mapped:          off
 
 xtrekrcWin.parent:      netrek
-xtrekrcWin.geometry:    500x500+0+200
+#xtrekrcWin.geometry:    500x500+0+200
 xtrekrcWin.mapped:      off
 
 fed.parent:             local
-fed.geometry:           100x100+0+400
+#fed.geometry:           100x100+0+400
 
 kli.parent:             local
-kli.geometry:           100x100+200+400
+#kli.geometry:           100x100+200+400
 
 ori.parent:             local
-ori.geometry:           100x100+300+400
+#ori.geometry:           100x100+300+400
 
 rom.parent:             local
-rom.geometry:           100x100+100+400
+#rom.geometry:           100x100+100+400
 
 quit.parent:            local
-quit.geometry:          100x100+400+400
+#quit.geometry:          100x100+400+400
 
 stats.parent:           netrek
-stats.geometry:         100x80+405+506
+#stats.geometry:         100x80+406+506
 stats.mapped:           off
 
 war.parent:             netrek
-war.geometry:           20x6+510+9
+#war.geometry:           20x6+510+9
 war.mapped:             off
 
 sound.parent:           netrek
-sound.geometry:         +520+9
+#sound.geometry:         +520+9
 sound.mapped:           off
 
 

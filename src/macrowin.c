@@ -330,7 +330,7 @@ showMacroWin (void)
 
         if (num >= NUMLINES)
             num = NUMLINES;
-        macroWin = W_MakeTextWindow ("macrow", WINSIDE + BORDER + 25, BORDER + 5,
+        macroWin = W_MakeTextWindow ("macrow", TWINSIDE + BORDER + 25, BORDER + 5,
                                      80, num, NULL, BORDER);
 
         W_ResizeTextWindow (macroWin, 80, num);

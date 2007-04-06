@@ -736,10 +736,10 @@ handleVPlayer (unsigned char *sbuf)
 
         pl->p_x = my_x = x;
         pl->p_y = my_y = y;
-        Plx[me->p_no] = WINSIDE / 2;
-        Ply[me->p_no] = WINSIDE / 2;
-        Pgx[me->p_no] = pl->p_x * WINSIDE / GWIDTH;
-        Pgy[me->p_no] = pl->p_y * WINSIDE / GWIDTH;
+        Plx[me->p_no] = TWINSIDE / 2;
+        Ply[me->p_no] = TWINSIDE / 2;
+        Pgx[me->p_no] = pl->p_x * GWINSIDE / GWIDTH;
+        Pgy[me->p_no] = pl->p_y * GWINSIDE / GWIDTH;
         redrawPlayer[me->p_no] = 1;
 
 #ifdef ROTATERACE

@@ -27,8 +27,6 @@
 #define MAXPLASMA 1
 #define PKEY 128
 
-#define CORNER_DIST (int)(sqrt)(WINSIDE*WINSIDE/2)
-
 #define BORDER 1                /* border width for option
                                  * windows */
 #define THICKBORDER 3           /* Thicker border for windows */
@@ -66,10 +64,10 @@
                                  * person can go into orbit */
 #define PFIREDIST 1500          /* At this range a planet
                                  * will shoot at a player */
-#define MAXDISTCLOAK (WINSIDE/7)
+#define MAXDISTCLOAK (GWIDTH/7)
                                 /* At this range a player can
                                    be seen while cloaked */
-#define MAXDISTVIS (WINSIDE/3)
+#define MAXDISTVIS (GWIDTH/3)
                                 /* At this range a player can be
                                    seen while visible (uncloaked) */
 

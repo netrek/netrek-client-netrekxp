@@ -72,6 +72,7 @@ indship1bmpfile:          (path) - new color bitmaps
 indshipGbmpfile:          (path) - your own ship's grayscale bitmaps
 indshipTbmpfile:          (path) - shaded color bitmaps
 indshipMbmpfile:          (path) - mono bitmaps
+infoRange:                (on/off) show weapon's range boundary with large tacticals windows
 keepInfo:                 (0-100) number of tenths of seconds to keep info (default 15)
 keepPeace:                (on/off) stays in peace after being killed
 keymap:                   (string) change keymap

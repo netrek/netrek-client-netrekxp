@@ -161,7 +161,7 @@ stline (int flag)
         oldbuf = buf1;
     }
     /* TIMER */
-    db_timer (flag, WINSIDE - 12 * W_Textwidth, 27);
+    db_timer (flag, 428, 27);
 
     light_erase();
 
