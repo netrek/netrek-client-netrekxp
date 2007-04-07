@@ -482,9 +482,9 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
     {
     	/* Select resources */
         if (p->pl_armies > 4)
-            W_WriteScaleBitmap(dx - destwidth/3,
+            W_WriteScaleBitmap(dx - destwidth/3 - 1,
                                dy,
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_ARMY_WIDTH,
                                BMP_ARMY_HEIGHT,
@@ -493,9 +493,9 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                window);       
         if (p->pl_flags & PLREPAIR)
             W_WriteScaleBitmap(dx,
-                               dy - destheight/3,
+                               dy - destheight/3 - 1,
                                destwidth,
-                               destheight/3,
+                               destheight/3 + 1,
                                BMP_WRENCH_WIDTH,
                                BMP_WRENCH_HEIGHT,
                                0,
@@ -504,7 +504,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_FUEL_WIDTH,
                                BMP_FUEL_HEIGHT,
@@ -643,10 +643,10 @@ DrawPlanets (void)
         }
         if (planetBitmap == 3)
         {
-            clearzone[0][clearcount] = dx - (5 * BMP_PLANET_WIDTH / 6 * SCALE / scaleFactor);
-            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6 * SCALE / scaleFactor);
-            clearzone[2][clearcount] = (5 * BMP_PLANET_WIDTH / 3 * SCALE / scaleFactor);
-            clearzone[3][clearcount] = (4 * BMP_PLANET_HEIGHT / 3 * SCALE / scaleFactor);
+            clearzone[0][clearcount] = dx - (5 * BMP_PLANET_WIDTH / 6 * SCALE / scaleFactor) - 1;
+            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6 * SCALE / scaleFactor) - 1;
+            clearzone[2][clearcount] = (5 * BMP_PLANET_WIDTH / 3 * SCALE / scaleFactor) + 2;
+            clearzone[3][clearcount] = (4 * BMP_PLANET_HEIGHT / 3 * SCALE / scaleFactor) + 1;
         }
         else
         {
@@ -2687,8 +2687,12 @@ DrawMisc (void)
     /* Force a border redraw?  Bitmaps rotated realtime as well as viewRange circles 
        will overwrite the border.  Since it is very CPU expensive to write
        rectangles (drawborder function) to the active window, especially if double
-       buffering is off, let's slow down redraws to at most 10 per second */
+       buffering is off, let's slow down redraws to at most 10 per second.
+       Turned off during playback due to excessive CPU usage.  */
     else
+#ifdef RECORDGAME
+         if (!playback)
+#endif
     {
     	static int border_refresh = 0;
 

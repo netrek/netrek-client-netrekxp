@@ -446,9 +446,9 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
     {
     	/* Select resources */
         if (p->pl_armies > 4)
-            W_WriteScaleBitmap(dx - destwidth/3,
+            W_WriteScaleBitmap(dx - destwidth/3 - 1,
                                dy,
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_ARMY_WIDTH,
                                BMP_ARMY_HEIGHT,
@@ -457,9 +457,9 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                                window);       
         if (p->pl_flags & PLREPAIR)
             W_WriteScaleBitmap(dx,
-                               dy - destheight/3,
+                               dy - destheight/3 - 1,
                                destwidth,
-                               destheight/3,
+                               destheight/3 + 1,
                                BMP_WRENCH_WIDTH,
                                BMP_WRENCH_HEIGHT,
                                0,
@@ -468,7 +468,7 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
-                               destwidth/3,
+                               destwidth/3 + 1,
                                destheight,
                                BMP_FUEL_WIDTH,
                                BMP_FUEL_HEIGHT,
@@ -550,10 +550,10 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)
-                W_ClearArea (mapw, odx - (5 * BMP_MPLANET_WIDTH / 6),
-                             ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             5 * BMP_MPLANET_WIDTH / 3,
-                             4 * BMP_MPLANET_HEIGHT / 3);
+                W_ClearArea (mapw, odx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
+                             ody - (5 * BMP_MPLANET_HEIGHT / 6) - 1,
+                             5 * BMP_MPLANET_WIDTH / 3 + 2,
+                             4 * BMP_MPLANET_HEIGHT / 3 + 1);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),
@@ -570,10 +570,10 @@ DrawPlanets ()
 
             /* XFIX */
             if (planetBitmapGalaxy == 3)
-                W_ClearArea (mapw, dx - (5 * BMP_MPLANET_WIDTH / 6),
-                             dy - (5 * BMP_MPLANET_HEIGHT / 6),
-                             5 * BMP_MPLANET_WIDTH / 3,
-                             4 * BMP_MPLANET_HEIGHT / 3 + 4);
+                W_ClearArea (mapw, dx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
+                             dy - (5 * BMP_MPLANET_HEIGHT / 6) - 1,
+                             5 * BMP_MPLANET_WIDTH / 3 + 2,
+                             4 * BMP_MPLANET_HEIGHT / 3 + 5);
             else
                 /* The +4 and +8 are for beeplite, as it uses a
                    24x24 overlay bitmap compared to 16x16 planet */

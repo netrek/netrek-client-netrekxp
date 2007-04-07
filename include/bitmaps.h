@@ -176,8 +176,8 @@
 
 // Resources
 #define BMP_ARMYBMP 10
-#define BMP_ARMY_WIDTH 40
-#define BMP_ARMY_HEIGHT 120
+#define BMP_ARMY_WIDTH 10
+#define BMP_ARMY_HEIGHT 30
 #define BMP_WRENCHBMP 11
 #define BMP_WRENCH_WIDTH 120
 #define BMP_WRENCH_HEIGHT 40

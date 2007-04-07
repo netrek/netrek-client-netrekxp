@@ -41,7 +41,9 @@ rect doesn't take these into account.
 10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
-11) CPU profile cambot
+11) CPU profile cambot - revealed draw border issue (fixed, turned off extra border
+refreshes during playback), the rest is just the usual CPU use from doing very fast
+redraws
 12) minor richtext issue with scrolling - extra line at the end
 13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
@@ -52,7 +54,5 @@ Stas's list:
 - add shiftMouse, controlMouse on/off
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
-- add copy/paste possibility from message windows (richtext ?)
-- add clickable urls from message windows (richtext ?)
 - parse Announcer messages in hockey games
 - pasting multiline prints \r\n instead of splitting lines

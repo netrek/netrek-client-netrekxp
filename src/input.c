@@ -3546,7 +3546,7 @@ Key212 (W_Event * data)
 void
 Key193 (void)
 {
-    scaleFactor -= 5;
+    scaleFactor -= 2;
     if (scaleFactor < 10)
         scaleFactor = 10;
     W_FastClear = 1;
@@ -3560,7 +3560,7 @@ Key193 (void)
 void
 Key218 (void)
 {
-    scaleFactor += 5;
+    scaleFactor += 2;
     if (scaleFactor > 40)
         scaleFactor = 40;
     W_FastClear = 1;
