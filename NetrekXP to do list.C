@@ -42,8 +42,7 @@ rect doesn't take these into account.
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
 11) CPU profile cambot
-12) Solve richtext issue with keyboard/mouse action over richtext windows..
-12a) minor richtext issue with scrolling - extra line at the end
+12) minor richtext issue with scrolling - extra line at the end
 13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 

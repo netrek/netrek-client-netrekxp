@@ -2255,7 +2255,10 @@ NetrekWndProc (HWND hwnd,
 
         hwnd = WindowFromPoint (pos);
         if (GetWindowLongPtr (hwnd, GWLP_WNDPROC) != (LONG) NetrekWndProc)
-            return 0;           //Mouse is not in one of our windows
+        {
+            if (GetWindowLongPtr (hwnd, GWLP_WNDPROC) != (LONG) RichTextWndProc)
+                return 0;           //Mouse is not in one of our windows
+        }
 
         if (!hwnd || hwnd == ((Window *) baseWin)->hwnd)
             hwnd = ((Window *) w)->hwnd;
@@ -5963,8 +5966,6 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
         W_ChangeBorder ((W_Window) win, W_White);
         break;*/
 
- //   case WM_KEYDOWN:
- //       return (0);
     case WM_LBUTTONDOWN:
         BringWindowToTop (hwnd);
         break;

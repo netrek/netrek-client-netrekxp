@@ -162,7 +162,7 @@ messageHoldThresh: 0
 # 0 - nowhere
 # 1 - top of the window
 # 2 - bottom of the window
-messageHUD: 0
+messageHUD: 2
 
 # Only start messages with the actual message key(s)
 # if cursor is in the message windows
