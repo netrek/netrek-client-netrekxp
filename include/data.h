@@ -51,7 +51,6 @@ extern struct planet pdata[];
 /* These used to be defines ... */
 extern int TWINSIDE;
 extern int GWINSIDE;
-extern int SCALE;
 
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
@@ -738,4 +737,5 @@ extern int weaponsOnMap;	/* draw weapons fire on map */
 extern int sortPlanets; 	/* sort planet list by team and army count */
 extern int packetLights;        /* show packet send/receive via dashboard */
 extern int infoRange;           /* show limit on info with large tactical windows */
+extern int scaleFactor;         /* allows for scaling of graphics */
 #endif /* _h_data */

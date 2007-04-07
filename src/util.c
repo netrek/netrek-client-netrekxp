@@ -86,8 +86,8 @@ gettarget (W_Window ww,
     }
     else
     {
-        g_x = me->p_x + ((x - TWINSIDE / 2) * SCALE);
-        g_y = me->p_y + ((y - TWINSIDE / 2) * SCALE);
+        g_x = me->p_x + ((x - TWINSIDE / 2) * scaleFactor);
+        g_y = me->p_y + ((y - TWINSIDE / 2) * scaleFactor);
     }
 
     targ = gettarget2 (g_x, g_y, targtype);

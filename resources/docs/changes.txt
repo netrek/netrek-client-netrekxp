@@ -1,4 +1,13 @@
 Netrek XP 2006, Version 1.3:
+- added new function keys, control-z and control-a, for zooming.  Control-z zooms in,
+  and control-a zooms out.  As part of the benefit of having all graphics scale, ALL ship
+  bitmap sets now show ships to 256 positions.
+- added netrekrc option "scaleFactor: (10-40)" that allows you to zoom in the local map
+  to get more detail!  Turn on those high resolution bitmaps, pump up your tactical size
+  to 1000x1000 and see the great graphics!  Default scale is 40 (this is the traditional
+  scale used in clients, changing scale to 20 will effectively double the scale).
+- added netrekrc option "richText: (on)/off" to allow stuff like cut/paste from message
+  windows and clickable URLs.  The 2nd part works, the first part..not so much yet.
 - added the ability to change the size of the local or map windows!  This is a huge improvement,
   and is probably the most often requested feature.  There really is no limit on how big or small
   you can make the windows.  As you increase local window size, you can see further, giving

@@ -66,7 +66,7 @@ struct _star {
 
 static void redrawStarSector(int sectorx, int sectory);
 
-#define scaleLocal(pt)           ((pt)/SCALE + (TWINSIDE/2))
+#define scaleLocal(pt)           ((pt)/scaleFactor + (TWINSIDE/2))
 
 #define STARSIDE 500          /* Used to normalize star density */
 #define INFORANGE 500         /* Range at which server stops sending some data */
@@ -305,8 +305,8 @@ redrawStarSector (int sectorx, int sectory)
                 if (s->s_x + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
                     continue;
 
-                dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
-                dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
+                dx = (s->s_x + xbase) - (me->p_x - (me->p_x % scaleFactor));
+                dy = (s->s_y + ybase) - (me->p_y - (me->p_y % scaleFactor));
                 if (ABS(dx) > (view) || ABS(dy) > (view))
                     continue;
 
@@ -328,8 +328,8 @@ redrawStarSector (int sectorx, int sectory)
         if (s->s_x  + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
             continue;
 
-        dx = (s->s_x + xbase) - (me->p_x - (me->p_x % SCALE));
-        dy = (s->s_y + ybase) - (me->p_y - (me->p_y % SCALE));
+        dx = (s->s_x + xbase) - (me->p_x - (me->p_x % scaleFactor));
+        dy = (s->s_y + ybase) - (me->p_y - (me->p_y % scaleFactor));
         if (ABS(dx) > (view) || ABS(dy) > (view))
             continue;
 
@@ -468,7 +468,10 @@ static inline void
 planetResourcesC (register struct planet *p, int destwidth, int destheight,
                   int dx, int dy, W_Window window)
 /*
- *  Draw the resources for a colorized planet.
+ *  Draw the resources for a colorized planet.  Destwidth and destheight
+ *  are the dimensions of the planet (not the resources) bitmap.  Dx and
+ *  dy are the coordinates of the upper left corner of the planet bitmap.
+ *  Resources are aligned based on those factors. 
  */
 {   
     if ((p->pl_info & me->p_team)
@@ -479,8 +482,8 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
     {
     	/* Select resources */
         if (p->pl_armies > 4)
-            W_WriteScaleBitmap(dx - 7 * destwidth / 8,
-                               dy - (destheight / 2),
+            W_WriteScaleBitmap(dx - destwidth/3,
+                               dy,
                                destwidth/3,
                                destheight,
                                BMP_ARMY_WIDTH,
@@ -489,8 +492,8 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                army_bitmap, planetColor(p),
                                window);       
         if (p->pl_flags & PLREPAIR)
-            W_WriteScaleBitmap(dx - (destwidth / 2),
-                               dy - (5 * destheight / 6),
+            W_WriteScaleBitmap(dx,
+                               dy - destheight/3,
                                destwidth,
                                destheight/3,
                                BMP_WRENCH_WIDTH,
@@ -499,8 +502,8 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                wrench_bitmap, planetColor(p),
                                window);
         if (p->pl_flags & PLFUEL)
-            W_WriteScaleBitmap(dx + 3 * destwidth / 5,
-                               dy - (destheight / 2),
+            W_WriteScaleBitmap(dx + destwidth,
+                               dy,
                                destwidth/3,
                                destheight,
                                BMP_FUEL_WIDTH,
@@ -520,7 +523,7 @@ DrawPlanets (void)
 {
     register int dx, dy;
     register struct planet *l;
-    const int view = SCALE * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
+    const int view = scaleFactor * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
@@ -529,15 +532,15 @@ DrawPlanets (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + TWINSIDE / 2;
-        dy = dy / SCALE + TWINSIDE / 2;
+        dx = dx / scaleFactor + TWINSIDE / 2;
+        dy = dy / scaleFactor + TWINSIDE / 2;
         
         if (planetBitmap == 3)
         {
-            W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2),
-                                dy - (BMP_PLANET_HEIGHT / 2),
-                                BMP_PLANET_WIDTH,
-                                BMP_PLANET_HEIGHT,
+            W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_PLANET_WIDTH * SCALE / scaleFactor,
+                                BMP_PLANET_HEIGHT * SCALE / scaleFactor,
                                 BMP_CPLANET_WIDTH,
 			        BMP_CPLANET_HEIGHT,
 			        0,
@@ -545,13 +548,25 @@ DrawPlanets (void)
                                 planetColor (l),
                                 w);
              /* Draw planet resources */
-             planetResourcesC(l, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT, dx, dy, w);
+             planetResourcesC(l,
+                              BMP_PLANET_WIDTH * SCALE / scaleFactor,
+                              BMP_PLANET_HEIGHT * SCALE / scaleFactor,
+                              dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
+                              dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                              w);
         }
         else
         {
-            W_WriteBitmap (dx - (BMP_PLANET_WIDTH / 2),
-                           dy - (BMP_PLANET_HEIGHT / 2), getPlanetBitmap (l),
-                           planetColor (l), w);
+            W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_PLANET_WIDTH * SCALE / scaleFactor,
+                                BMP_PLANET_HEIGHT * SCALE / scaleFactor,
+                                BMP_PLANET_WIDTH,
+			        BMP_PLANET_HEIGHT,
+                                0,
+                                getPlanetBitmap (l),
+                                planetColor (l),
+                                w);
         }
         if (showIND && ((l->pl_info & me->p_team)
 #ifdef RECORDGAME
@@ -559,23 +574,27 @@ DrawPlanets (void)
 #endif
             ) && (l->pl_owner == NOBODY))
         {
-            W_CacheLine (w, dx - (BMP_PLANET_WIDTH / 2),
-                         dy - (BMP_PLANET_HEIGHT / 2),
-                         dx + (BMP_PLANET_WIDTH / 2 - 1),
-                         dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
-            W_CacheLine (w, dx + (BMP_PLANET_WIDTH / 2 - 1),
-                         dy - (BMP_PLANET_HEIGHT / 2),
-                         dx - (BMP_PLANET_WIDTH / 2),
-                         dy + (BMP_PLANET_HEIGHT / 2 - 1), W_White);
+            W_CacheLine (w, dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
+                         dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                         dx + (BMP_PLANET_WIDTH / 2 - 1) * SCALE / scaleFactor,
+                         dy + (BMP_PLANET_HEIGHT / 2 - 1)* SCALE / scaleFactor,
+                         W_White);
+            W_CacheLine (w, dx + (BMP_PLANET_WIDTH / 2 - 1) * SCALE / scaleFactor,
+                         dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                         dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
+                         dy + (BMP_PLANET_HEIGHT / 2 - 1) * SCALE / scaleFactor,
+                         W_White);
         }
 
         if (showPlanetNames)
         {
-            W_MaskText (w, dx - (BMP_PLANET_WIDTH / 2),
-                        dy + (BMP_PLANET_HEIGHT / 2), planetColor (l),
+            /* Center name */
+            W_MaskText (w, dx - (W_Textwidth * l->pl_namelen / 2),
+                        dy + (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
+                        planetColor (l),
                         l->pl_name, l->pl_namelen, planetFont (l));
-            clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2);
-            clearzone[1][clearcount] = dy + (BMP_PLANET_HEIGHT / 2);
+            clearzone[0][clearcount] = dx - (W_Textwidth * l->pl_namelen / 2);
+            clearzone[1][clearcount] = dy + (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor;
             clearzone[2][clearcount] = W_Textwidth * l->pl_namelen;
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
@@ -612,28 +631,29 @@ DrawPlanets (void)
                 armbuf[3] = '\0';
                 armbuflen = 4;
             }
-            W_MaskText (w, dx - (7 * BMP_PLANET_WIDTH / 8),
-                        dy - (5 * BMP_PLANET_HEIGHT / 6), planetColor (l),
+            W_MaskText (w, dx - (7 * BMP_PLANET_WIDTH / 8) * SCALE / scaleFactor,
+                        dy - (5 * BMP_PLANET_HEIGHT / 6) * SCALE / scaleFactor,
+                        planetColor (l),
                         armbuf, armbuflen, planetFont (l));
-            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8);
-            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6);
+            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8) * SCALE / scaleFactor;
+            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6) * SCALE / scaleFactor;
             clearzone[2][clearcount] = W_Textwidth * armbuflen;
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
         }
-        if (planetBitmap == 3) // Needs adjusting
+        if (planetBitmap == 3)
         {
-            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8 + 1);
-            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6);
-            clearzone[2][clearcount] = 7 * BMP_PLANET_WIDTH / 4 + 2;
-            clearzone[3][clearcount] = 4 * BMP_PLANET_HEIGHT / 3;
+            clearzone[0][clearcount] = dx - (5 * BMP_PLANET_WIDTH / 6 * SCALE / scaleFactor);
+            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6 * SCALE / scaleFactor);
+            clearzone[2][clearcount] = (5 * BMP_PLANET_WIDTH / 3 * SCALE / scaleFactor);
+            clearzone[3][clearcount] = (4 * BMP_PLANET_HEIGHT / 3 * SCALE / scaleFactor);
         }
         else
         {
-            clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2);
-            clearzone[1][clearcount] = dy - (BMP_PLANET_HEIGHT / 2);
-            clearzone[2][clearcount] = BMP_PLANET_WIDTH;
-            clearzone[3][clearcount] = BMP_PLANET_HEIGHT;
+            clearzone[0][clearcount] = dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor;
+            clearzone[1][clearcount] = dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor;
+            clearzone[2][clearcount] = BMP_PLANET_WIDTH * SCALE / scaleFactor;
+            clearzone[3][clearcount] = BMP_PLANET_HEIGHT * SCALE / scaleFactor;
         }
         clearcount++;
     }
@@ -684,7 +704,7 @@ DrawShips (void)
     int buflen = 1;
     static int ph_col = 0;
     static int scaled_ph_col = 0;
-    const int view = SCALE * TWINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
+    const int view = scaleFactor * TWINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
     int startx, starty, endx, endy;
@@ -754,8 +774,8 @@ DrawShips (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + TWINSIDE / 2;
-        dy = dy / SCALE + TWINSIDE / 2;
+        dx = dx / scaleFactor + TWINSIDE / 2;
+        dy = dy / scaleFactor + TWINSIDE / 2;
 
         cloak_phases = CLOAK_PHASES * server_ups / 10;
         if (j->p_flags & PFCLOAK)
@@ -819,12 +839,17 @@ DrawShips (void)
 #endif
                 )
             {
-                W_WriteBitmap (dx - (cloak_width / 2),
-                               dy - (cloak_height / 2), cloakicon, myColor, w);
-                clearzone[0][clearcount] = dx - (shield_width / 2);
-                clearzone[1][clearcount] = dy - (shield_height / 2);
-                clearzone[2][clearcount] = shield_width;
-                clearzone[3][clearcount] = shield_height;
+                W_WriteScaleBitmap (dx - (BMP_CLOAK_WIDTH / 2) * SCALE / scaleFactor,
+                                    dy - (BMP_CLOAK_HEIGHT / 2) * SCALE / scaleFactor,
+                                    BMP_CLOAK_WIDTH * SCALE / scaleFactor,
+                                    BMP_CLOAK_HEIGHT * SCALE / scaleFactor,
+                                    BMP_CLOAK_WIDTH,
+                                    BMP_CLOAK_HEIGHT,
+                                    0, cloakicon, myColor, w);
+                clearzone[0][clearcount] = dx - (BMP_CLOAK_WIDTH / 2) * SCALE / scaleFactor;
+                clearzone[1][clearcount] = dy - (BMP_CLOAK_HEIGHT / 2) * SCALE / scaleFactor;
+                clearzone[2][clearcount] = BMP_CLOAK_WIDTH * SCALE / scaleFactor;
+                clearzone[3][clearcount] = BMP_CLOAK_HEIGHT * SCALE / scaleFactor;
                 clearcount++;
 
                 goto shieldlabel;       /* draw the shield even when
@@ -837,16 +862,16 @@ DrawShips (void)
         if (j->p_status == PALIVE)
         {
 #if defined (BEEPLITE)
-	    clearzone[0][clearcount] = dx - (shield_width / 2 + 6);
-	    clearzone[1][clearcount] = dy - (shield_height / 2 + 6);
-	    clearzone[2][clearcount] = shield_width + 12;
-	    clearzone[3][clearcount] = shield_height + 12;
+	    clearzone[0][clearcount] = dx - (shield_width / 2 + 6) * SCALE / scaleFactor;
+	    clearzone[1][clearcount] = dy - (shield_height / 2 + 6) * SCALE / scaleFactor;
+	    clearzone[2][clearcount] = (shield_width + 12) * SCALE / scaleFactor;
+	    clearzone[3][clearcount] = (shield_height + 12) * SCALE / scaleFactor;
 	    clearcount++;
 #else
-	    clearzone[0][clearcount] = dx - (shield_width / 2);
-	    clearzone[1][clearcount] = dy - (shield_height / 2);
-	    clearzone[2][clearcount] = shield_width;
-	    clearzone[3][clearcount] = shield_height;
+	    clearzone[0][clearcount] = dx - (shield_width / 2) * SCALE / scaleFactor;
+	    clearzone[1][clearcount] = dy - (shield_height / 2) * SCALE / scaleFactor);
+	    clearzone[2][clearcount] = shield_width * SCALE / scaleFactor;
+	    clearzone[3][clearcount] = shield_height * SCALE / scaleFactor;
 	    clearcount++;
 #endif
 
@@ -988,17 +1013,23 @@ DrawShips (void)
             
             if (colorClient != 4)
             {
-                W_WriteBitmap (dx - (j->p_ship.s_width / 2),
-                               dy - (j->p_ship.s_height / 2),
-                               ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
-                               playerColor (j), w);
+                W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
+                                    dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor,
+                                    j->p_ship.s_width * SCALE / scaleFactor,
+                                    j->p_ship.s_height * SCALE / scaleFactor,
+                                    BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT,
+                                    (360 * j->p_dir/255), // Converted to angle
+                                    ship_bits[j->p_ship.s_type][0], // Use pointing "up" bitmap
+                                    playerColor (j),
+                                    w);
             }
             else
             {
-                W_OverlayScaleBitmap (dx - (j->p_ship.s_width / 2),
-                                      dy - (j->p_ship.s_height / 2),
-                                      j->p_ship.s_width,
-                                      j->p_ship.s_height,
+                W_OverlayScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
+                                      dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor,
+                                      j->p_ship.s_width * SCALE / scaleFactor,
+                                      j->p_ship.s_height * SCALE / scaleFactor,
                                       BMP_SHIP_WIDTH_HR,
                                       BMP_SHIP_HEIGHT_HR,
                                       (360 * j->p_dir/255), // Converted to angle
@@ -1011,9 +1042,13 @@ DrawShips (void)
                of the ship icon */
             if (j->p_cloakphase > 0)
             {
-                W_WriteBitmap (dx - (cloak_width / 2),
-                               dy - (cloak_height / 2), cloakicon,
-                               playerColor (j), w);
+                W_WriteScaleBitmap (dx - (BMP_CLOAK_WIDTH / 2) * SCALE / scaleFactor,
+                                    dy - (BMP_CLOAK_HEIGHT / 2) * SCALE / scaleFactor,
+                                    BMP_CLOAK_WIDTH * SCALE / scaleFactor,
+                                    BMP_CLOAK_HEIGHT * SCALE / scaleFactor,
+                                    BMP_CLOAK_WIDTH,
+                                    BMP_CLOAK_HEIGHT,
+                                    0, cloakicon, playerColor (j), w);
                 if (!myPlayer (j) && !isObsLockPlayer(j))
                 /* If not my player, or not observing that player, we exit the draw
                    function here */
@@ -1027,10 +1062,15 @@ DrawShips (void)
 	      && (liteflag & LITE_PLAYERS_LOCAL))
 	    {
 	        int seq_n = (emph_player_seq_n[j->p_no] * 10 / server_ups) % emph_player_seql_frames;
-	        W_WriteBitmap (dx - (emph_player_seql_width / 2),
-			       dy - (emph_player_seql_height / 2),
-			       emph_player_seql[seq_n],
-			       W_White, w);
+	        W_WriteScaleBitmap (dx - (emph_player_seql_width / 2) * SCALE / scaleFactor,
+			            dy - (emph_player_seql_height / 2) * SCALE / scaleFactor,
+			            emph_player_seql_width * SCALE / scaleFactor,
+			            emph_player_seql_height * SCALE / scaleFactor,
+			            emph_player_seql_width,
+			            emph_player_seql_height,
+			            0,
+			            emph_player_seql[seq_n],
+			            W_White, w);
 	    }
 #endif
 
@@ -1106,12 +1146,21 @@ DrawShips (void)
                 }
 
 #ifdef VSHIELD_BITMAPS
-                W_WriteBitmap (dx - (shield_width / 2),
-                               dy - (shield_height / 2), shield[shieldnum],
-                               color, w);
+                W_WriteScaleBitmap (dx - (BMP_SHIELD_WIDTH / 2) * SCALE / scaleFactor,
+                                    dy - (BMP_SHIELD_HEIGHT / 2) * SCALE / scaleFactor,
+                                    BMP_SHIELD_WIDTH * SCALE / scaleFactor,
+                                    BMP_SHIELD_HEIGHT * SCALE / scaleFactor,
+                                    BMP_SHIELD_WIDTH,
+                                    BMP_SHIELD_HEIGHT,
+                                    0, shield[shieldnum], color, w);
 #else
-                W_WriteBitmap (dx - (shield_width / 2),
-                               dy - (shield_height / 2), shield, color, w);
+                W_WriteScaleBitmap (dx - (BMP_SHIELD_WIDTH / 2) * SCALE / scaleFactor,
+                                    dy - (BMP_SHIELD_HEIGHT / 2) * SCALE / scaleFactor,
+                                    BMP_SHIELD_WIDTH * SCALE / scaleFactor,
+                                    BMP_SHIELD_HEIGHT * SCALE / scaleFactor,
+                                    BMP_SHIELD_WIDTH,
+                                    BMP_SHIELD_HEIGHT,
+                                    0, shield, color, w);
 #endif
             }
             /* Warning hull */
@@ -1162,14 +1211,18 @@ DrawShips (void)
 		    else
 		        hull_color = playerColor(j);
 
-		    W_WriteBitmap(dx - (shield_width / 2 + 1),
-			          dy - (shield_height / 2 + 1),
-			          hull[hull_num], hull_color, w);
+		    W_WriteScaleBitmap (dx - (hull_width / 2) * SCALE / scaleFactor,
+                                        dy - (hull_height / 2) * SCALE / scaleFactor,
+                                        hull_width * SCALE / scaleFactor,
+                                        hull_height * SCALE / scaleFactor,
+                                        hull_width,
+                                        hull_height,
+			                0, hull[hull_num], hull_color, w);
 			          
-		    clearzone[0][clearcount] = dx - (shield_width / 2 + 1);
-		    clearzone[1][clearcount] = dy - (shield_height / 2 + 1);
-		    clearzone[2][clearcount] = shield_width + 2;
-		    clearzone[3][clearcount] = shield_height + 2;
+		    clearzone[0][clearcount] = dx - (hull_width / 2) * SCALE / scaleFactor;
+		    clearzone[1][clearcount] = dy - (hull_height / 2) * SCALE / scaleFactor;
+		    clearzone[2][clearcount] = hull_width * SCALE / scaleFactor;
+		    clearzone[3][clearcount] = hull_height * SCALE / scaleFactor;
 		    clearcount++;
                 }
             }
@@ -1178,11 +1231,11 @@ DrawShips (void)
             {
             	if (myPlayer(j))
             	{
-                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, DETDIST/SCALE, 0, 0, W_Red);         
-                    clearzone[0][clearcount] = TWINSIDE/2 - (DETDIST/SCALE);
-                    clearzone[1][clearcount] = TWINSIDE/2 - (DETDIST/SCALE);
-                    clearzone[2][clearcount] = 2*DETDIST/SCALE + 1;
-                    clearzone[3][clearcount] = 2*DETDIST/SCALE + 1;
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, DETDIST/scaleFactor, 0, 0, W_Red);         
+                    clearzone[0][clearcount] = TWINSIDE/2 - (DETDIST/scaleFactor);
+                    clearzone[1][clearcount] = TWINSIDE/2 - (DETDIST/scaleFactor);
+                    clearzone[2][clearcount] = 2*DETDIST/scaleFactor + 1;
+                    clearzone[3][clearcount] = 2*DETDIST/scaleFactor + 1;
                     clearcount++;
                     showdetCircle--;
                 }
@@ -1192,8 +1245,8 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                    startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_dir]);
-                    starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_dir]);
+                    startx = dx + (int) (TIC_DIST/scaleFactor * Cos[j->p_dir]);
+                    starty = dy + (int) (TIC_DIST/scaleFactor * Sin[j->p_dir]);
                     endx = startx + (int) (TIC_LEN * Cos[j->p_dir]);
                     endy = starty + (int) (TIC_LEN * Sin[j->p_dir]);
                     
@@ -1219,8 +1272,8 @@ DrawShips (void)
                     
                     if (j == me && j->p_dir != j->p_desdir && !(j->p_flags & (PFORBIT | PFDOCK | PFOBSERV)))
                     {
-                        startx = dx + (int) (TIC_DIST/SCALE * Cos[j->p_desdir]);
-                        starty = dy + (int) (TIC_DIST/SCALE * Sin[j->p_desdir]);
+                        startx = dx + (int) (TIC_DIST/scaleFactor * Cos[j->p_desdir]);
+                        starty = dy + (int) (TIC_DIST/scaleFactor * Sin[j->p_desdir]);
                         endx = startx + (int) (DESIRED_TIC_LEN * Cos[j->p_desdir]);
                         endy = starty + (int) (DESIRED_TIC_LEN * Sin[j->p_desdir]);
       
@@ -1240,11 +1293,11 @@ DrawShips (void)
             {
             	if (myPlayer(j) || isObsLockPlayer(j))
             	{
-                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/SCALE, 0, 0, W_Grey);         
-                    clearzone[0][clearcount] = TWINSIDE/2 - (SHOTRANGE/SCALE);
-                    clearzone[1][clearcount] = TWINSIDE/2 - (SHOTRANGE/SCALE);
-                    clearzone[2][clearcount] = 2*SHOTRANGE/SCALE + 1;
-                    clearzone[3][clearcount] = 2*SHOTRANGE/SCALE + 1;
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/scaleFactor, 0, 0, W_Grey);         
+                    clearzone[0][clearcount] = TWINSIDE/2 - (SHOTRANGE/scaleFactor);
+                    clearzone[1][clearcount] = TWINSIDE/2 - (SHOTRANGE/scaleFactor);
+                    clearzone[2][clearcount] = 2*SHOTRANGE/scaleFactor + 1;
+                    clearzone[3][clearcount] = 2*SHOTRANGE/scaleFactor + 1;
                     clearcount++;
                 }
             }
@@ -1256,8 +1309,8 @@ DrawShips (void)
                 j->p_team == NOBODY &&
                 j->p_ship.s_type == SCOUT)
             {
-                startx = dx + (int) ((shield_width / 2) * Cos[j->p_dir]);
-                starty = dy + (int) ((shield_width / 2) * Sin[j->p_dir]);
+                startx = dx + (int) ((shield_width / 2) * SCALE / scaleFactor * Cos[j->p_dir]);
+                starty = dy + (int) ((shield_width / 2) * SCALE / scaleFactor * Sin[j->p_dir]);
                 endx = startx + (int) (PUCKARROW_LEN * Cos[j->p_dir]);
                 endy = starty + (int) (PUCKARROW_LEN * Sin[j->p_dir]);
 
@@ -1369,11 +1422,12 @@ DrawShips (void)
                         buflen = 4;
                     }
                 }
-                W_MaskText (w, dx + (j->p_ship.s_width / 2),
-                            dy - (j->p_ship.s_height / 2), color,
+                W_MaskText (w, dx + (j->p_ship.s_width / 2) * SCALE / scaleFactor,
+                            dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor,
+                            color,
                             idbuf, buflen, shipFont (j));
-                clearzone[0][clearcount] = dx + (j->p_ship.s_width / 2);
-                clearzone[1][clearcount] = dy - (j->p_ship.s_height / 2);
+                clearzone[0][clearcount] = dx + (j->p_ship.s_width / 2) * SCALE / scaleFactor;
+                clearzone[1][clearcount] = dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor;
                 clearzone[2][clearcount] = buflen * W_Textwidth;
                 clearzone[3][clearcount] = W_Textheight;
                 clearcount++;
@@ -1385,12 +1439,12 @@ DrawShips (void)
                     {
                         idbuf[0] = *(shipnos + players[j->p_tractor].p_no);
                         buflen = 1;
-                        W_MaskText (w, dx - (j->p_ship.s_width / 2),
-                                    dy + (j->p_ship.s_height / 2),
+                        W_MaskText (w, dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
+                                    dy + (j->p_ship.s_height / 2) * SCALE / scaleFactor,
                                     (j->p_flags & PFPRESS) ? yColor : gColor,
                                     idbuf, buflen, shipFont (j));
-                        clearzone[0][clearcount] = dx - (j->p_ship.s_width / 2);
-                        clearzone[1][clearcount] = dy + (j->p_ship.s_height / 2);
+                        clearzone[0][clearcount] = dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor;
+                        clearzone[1][clearcount] = dy + (j->p_ship.s_height / 2) * SCALE / scaleFactor;
                         clearzone[2][clearcount] = buflen * W_Textwidth;
                         clearzone[3][clearcount] = W_Textheight;
                         clearcount++;
@@ -1443,23 +1497,33 @@ DrawShips (void)
 
                 if (j->p_ship.s_type == STARBASE)
                 {
-                    W_WriteBitmap (dx - (BMP_SBEXPL_WIDTH / 2),
-                                   dy - (BMP_SBEXPL_HEIGHT / 2), sbexpview[i],
-                                   playerColor (j), w);
-                    clearzone[0][clearcount] = dx - (BMP_SBEXPL_WIDTH / 2);
-                    clearzone[1][clearcount] = dy - (BMP_SBEXPL_HEIGHT / 2);
-                    clearzone[2][clearcount] = BMP_SBEXPL_WIDTH;
-                    clearzone[3][clearcount] = BMP_SBEXPL_HEIGHT;
+                    W_WriteScaleBitmap (dx - (BMP_SBEXPL_WIDTH / 2) * SCALE / scaleFactor,
+                                        dy - (BMP_SBEXPL_HEIGHT / 2) * SCALE / scaleFactor,
+                                        BMP_SBEXPL_WIDTH * SCALE / scaleFactor,
+                                        BMP_SBEXPL_HEIGHT * SCALE / scaleFactor,
+                                        BMP_SBEXPL_WIDTH,
+                                        BMP_SBEXPL_HEIGHT,
+                                        0, sbexpview[i],
+                                        playerColor (j), w);
+                    clearzone[0][clearcount] = dx - (BMP_SBEXPL_WIDTH / 2) * SCALE / scaleFactor;
+                    clearzone[1][clearcount] = dy - (BMP_SBEXPL_HEIGHT / 2) * SCALE / scaleFactor;
+                    clearzone[2][clearcount] = BMP_SBEXPL_WIDTH * SCALE / scaleFactor;
+                    clearzone[3][clearcount] = BMP_SBEXPL_HEIGHT * SCALE / scaleFactor;
                 }
                 else
                 {
-                    W_WriteBitmap (dx - (BMP_SHIPEXPL_WIDTH / 2),
-                                   dy - (BMP_SHIPEXPL_HEIGHT / 2), expview[i],
-                                   playerColor (j), w);
-                    clearzone[0][clearcount] = dx - (BMP_SHIPEXPL_WIDTH / 2);
-                    clearzone[1][clearcount] = dy - (BMP_SHIPEXPL_HEIGHT / 2);
-                    clearzone[2][clearcount] = BMP_SHIPEXPL_WIDTH;
-                    clearzone[3][clearcount] = BMP_SHIPEXPL_HEIGHT;
+                    W_WriteScaleBitmap (dx - (BMP_SHIPEXPL_WIDTH / 2) * SCALE / scaleFactor,
+                                        dy - (BMP_SHIPEXPL_HEIGHT / 2) * SCALE / scaleFactor,
+                                        BMP_SHIPEXPL_WIDTH * SCALE / scaleFactor,
+                                        BMP_SHIPEXPL_HEIGHT * SCALE / scaleFactor,
+                                        BMP_SHIPEXPL_WIDTH,
+                                        BMP_SHIPEXPL_HEIGHT,
+                                        0, expview[i],
+                                        playerColor (j), w);
+                    clearzone[0][clearcount] = dx - (BMP_SHIPEXPL_WIDTH / 2) * SCALE / scaleFactor;
+                    clearzone[1][clearcount] = dy - (BMP_SHIPEXPL_HEIGHT / 2) * SCALE / scaleFactor;
+                    clearzone[2][clearcount] = BMP_SHIPEXPL_WIDTH * SCALE / scaleFactor;
+                    clearzone[3][clearcount] = BMP_SHIPEXPL_HEIGHT * SCALE / scaleFactor;
                 }
                 clearcount++;
             }
@@ -1520,13 +1584,13 @@ DrawShips (void)
                     ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
                                 Sin[php->ph_dir]);
 
-                    tx = (j->p_x + tx - me->p_x) / SCALE + TWINSIDE / 2;
-                    ty = (j->p_y + ty - me->p_y) / SCALE + TWINSIDE / 2;
+                    tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
+                    ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
                 }
                 else if (php->ph_status == PHHIT2)
                 {
-                    tx = (php->ph_x - me->p_x) / SCALE + TWINSIDE / 2;
-                    ty = (php->ph_y - me->p_y) / SCALE + TWINSIDE / 2;
+                    tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
+                    ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
                 }
                 else
                 {
@@ -1544,9 +1608,9 @@ DrawShips (void)
                     else
                     {
                         tx = (players[php->ph_target].p_x - me->p_x) /
-                            SCALE + TWINSIDE / 2;
+                            scaleFactor + TWINSIDE / 2;
                         ty = (players[php->ph_target].p_y - me->p_y) /
-                            SCALE + TWINSIDE / 2;
+                            scaleFactor + TWINSIDE / 2;
                     }
                 }
 
@@ -1774,8 +1838,8 @@ DrawShips (void)
                     px = (tractee->p_x - me->p_x);
                     py = (tractee->p_y - me->p_y);
 
-                    px = px / SCALE + TWINSIDE / 2;
-                    py = py / SCALE + TWINSIDE / 2;
+                    px = px / scaleFactor + TWINSIDE / 2;
+                    py = py / scaleFactor + TWINSIDE / 2;
 
                     if (px == dx && py == dy)
                         continue;       /* this had better be last
@@ -1785,10 +1849,10 @@ DrawShips (void)
                                    (double) (dy - py)) + XPI / 2.0;
                     dir = (unsigned char) nint (theta / XPI * 128.0);
                     if (tractee->p_flags & PFSHIELD)
-                        target_width = shield_width;
+                        target_width = shield_width * SCALE / scaleFactor;
                     else
                     {
-                        target_width = tractee->p_ship.s_width / 2;
+                        target_width = tractee->p_ship.s_width / 2 * SCALE / scaleFactor;
                     }
                     lx[0] = (int) (px + (Cos[dir] * (target_width / 2)));
                     ly[0] = (int) (py + (Sin[dir] * (target_width / 2)));
@@ -1855,7 +1919,7 @@ DrawTorps (void)
     int torpCount;
     int torpTeam;
     int frame;
-    const int view = SCALE * TWINSIDE / 2;
+    const int view = scaleFactor * TWINSIDE / 2;
 
     for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
     {
@@ -1910,8 +1974,8 @@ DrawTorps (void)
             if (dx > view || dx < -view || dy > view || dy < -view)
                 continue;
 
-            dx = dx / SCALE + TWINSIDE / 2;
-            dy = dy / SCALE + TWINSIDE / 2;
+            dx = dx / scaleFactor + TWINSIDE / 2;
+            dy = dy / scaleFactor + TWINSIDE / 2;
 
 #ifdef SOUND
             if (j != me)
@@ -2093,7 +2157,7 @@ DrawPlasmaTorps (void)
 {
     register struct plasmatorp *pt;
     register int dx, dy;
-    const int view = SCALE * TWINSIDE / 2;
+    const int view = scaleFactor * TWINSIDE / 2;
     int ptorpTeam;
     int frame;
 
@@ -2138,8 +2202,8 @@ DrawPlasmaTorps (void)
         if (dx > view || dx < -view || dy > view || dy < -view)
             continue;
 
-        dx = dx / SCALE + TWINSIDE / 2;
-        dy = dy / SCALE + TWINSIDE / 2;
+        dx = dx / scaleFactor + TWINSIDE / 2;
+        dy = dy / scaleFactor + TWINSIDE / 2;
 
 #ifdef SOUND
         if (pt->pt_owner != me->p_no)
@@ -2317,7 +2381,7 @@ DrawMisc (void)
 {
     register struct player *j;
     register int dx, dy;
-    const int view = SCALE * TWINSIDE / 2;
+    const int view = scaleFactor * TWINSIDE / 2;
 
 #ifdef HOCKEY_LINES
     register struct s_line *sl;
@@ -2333,18 +2397,18 @@ DrawMisc (void)
             /* Treat the line differently based on the orientation */
             if (sl->orientation == S_LINE_VERTICAL)
             {
-                if (((sx = (sl->begin_x - me->p_x) / SCALE) < HALF_WINSIDE)
+                if (((sx = (sl->begin_x - me->p_x) / scaleFactor) < HALF_WINSIDE)
                     && (sx > -HALF_WINSIDE))
                 {
                     sx += HALF_WINSIDE;
                     ex = sx;
                     if ((sy =
-                         HALF_WINSIDE - (me->p_y - sl->begin_y) / SCALE) < 0)
+                         HALF_WINSIDE - (me->p_y - sl->begin_y) / scaleFactor) < 0)
                         sy = 0;
                     if (sy > (TWINSIDE - 1))
                         sy = TWINSIDE - 1;
                     if ((ey =
-                         HALF_WINSIDE - (me->p_y - sl->end_y) / SCALE) < 0)
+                         HALF_WINSIDE - (me->p_y - sl->end_y) / scaleFactor) < 0)
                         ey = 0;
                     if (ey > (TWINSIDE - 1))
                         ey = TWINSIDE - 1;
@@ -2357,18 +2421,18 @@ DrawMisc (void)
 
             else if (sl->orientation == S_LINE_HORIZONTAL)
             {
-                if (((sy = (sl->begin_y - me->p_y) / SCALE) < HALF_WINSIDE)
+                if (((sy = (sl->begin_y - me->p_y) / scaleFactor) < HALF_WINSIDE)
                     && (sy > -HALF_WINSIDE))
                 {
                     sy += HALF_WINSIDE;
                     ey = sy;
                     if ((sx =
-                         HALF_WINSIDE - (me->p_x - sl->begin_x) / SCALE) < 0)
+                         HALF_WINSIDE - (me->p_x - sl->begin_x) / scaleFactor) < 0)
                         sx = 0;
                     if (sx > (TWINSIDE - 1))
                         sx = TWINSIDE - 1;
                     if ((ex =
-                         HALF_WINSIDE - (me->p_x - sl->end_x) / SCALE) < 0)
+                         HALF_WINSIDE - (me->p_x - sl->end_x) / scaleFactor) < 0)
                         ex = 0;
                     if (ex > (TWINSIDE - 1))
                         ex = TWINSIDE - 1;
@@ -2392,12 +2456,13 @@ DrawMisc (void)
 #endif /* HOCKEY_LINES */
 
     /* Draw inforange box (if necessary) */
-    if ( infoRange && TWINSIDE > INFORANGE && !(me->p_x < 0 || me->p_x > GWIDTH))
+    if ( infoRange && TWINSIDE > (INFORANGE * SCALE / scaleFactor)
+         && !(me->p_x < 0 || me->p_x > GWIDTH))
     {
-        const int LEFT = (TWINSIDE / 2) - (INFORANGE / 2);
-        const int RIGHT = (TWINSIDE / 2) + (INFORANGE / 2);
-        const int TOP = (TWINSIDE / 2) - (INFORANGE / 2);
-        const int BOTTOM = (TWINSIDE / 2) + (INFORANGE / 2);
+        const int LEFT = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
+        const int RIGHT = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
+        const int TOP = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
+        const int BOTTOM = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
 
         long dist;
 
@@ -2406,12 +2471,12 @@ DrawMisc (void)
             dx = LEFT;
             dist = me->p_y - ((INFORANGE / 2) * SCALE);
             if (dist < 0)
-                sy = (TOP - dist/SCALE);
+                sy = (TOP - dist/scaleFactor);
             else
                 sy = TOP;
             dist = me->p_y + ((INFORANGE / 2) * SCALE);
             if (dist > GWIDTH)
-                ey = (BOTTOM - (dist - GWIDTH)/SCALE);
+                ey = (BOTTOM - (dist - GWIDTH)/scaleFactor);
             else
                 ey = BOTTOM;
             W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
@@ -2427,12 +2492,12 @@ DrawMisc (void)
             dx = RIGHT;
             dist = me->p_y - ((INFORANGE / 2) * SCALE);
             if (dist < 0)
-                sy = (TOP - dist/SCALE);
+                sy = (TOP - dist/scaleFactor);
             else
                 sy = TOP;
             dist = me->p_y + ((INFORANGE / 2) * SCALE);
             if (dist > GWIDTH)
-                ey = (BOTTOM - (dist - GWIDTH)/SCALE);
+                ey = (BOTTOM - (dist - GWIDTH)/scaleFactor);
             else
                 ey = BOTTOM;
             W_MakeDashedLine (w, dx, sy, dx, ey, W_White);
@@ -2448,12 +2513,12 @@ DrawMisc (void)
             dy = TOP;
             dist = me->p_x - ((INFORANGE / 2) * SCALE);
             if (dist < 0)
-                sx = (LEFT - dist/SCALE);
+                sx = (LEFT - dist/scaleFactor);
             else
                 sx = LEFT;
             dist = me->p_x + ((INFORANGE / 2) * SCALE);
             if (dist > GWIDTH)
-                ex = (RIGHT - (dist - GWIDTH)/SCALE);
+                ex = (RIGHT - (dist - GWIDTH)/scaleFactor);
             else
                 ex = RIGHT;
             W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
@@ -2469,12 +2534,12 @@ DrawMisc (void)
             dy = BOTTOM;
             dist = me->p_x - ((INFORANGE / 2) * SCALE);
             if (dist < 0)
-                sx = (LEFT - dist/SCALE);
+                sx = (LEFT - dist/scaleFactor);
             else
                 sx = LEFT;
             dist = me->p_x + ((INFORANGE / 2) * SCALE);
             if (dist > GWIDTH)
-                ex = (RIGHT - (dist - GWIDTH)/SCALE);
+                ex = (RIGHT - (dist - GWIDTH)/scaleFactor);
             else
                 ex = RIGHT;
             W_MakeDashedLine (w, sx, dy, ex, dy, W_White);
@@ -2487,11 +2552,11 @@ DrawMisc (void)
     }
 
     /* Draw Edges */
-    if (me->p_x < (TWINSIDE / 2) * SCALE)
+    if (me->p_x < (TWINSIDE / 2) * scaleFactor)
     {
-        dx = (TWINSIDE / 2) - (me->p_x) / SCALE;
-        sy = (TWINSIDE / 2) + (0 - me->p_y) / SCALE;
-        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
+        dx = (TWINSIDE / 2) - (me->p_x) / scaleFactor;
+        sy = (TWINSIDE / 2) + (0 - me->p_y) / scaleFactor;
+        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / scaleFactor;
         if (sy < 0)
             sy = 0;
         if (ey > TWINSIDE - 1)
@@ -2505,11 +2570,11 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if ((GWIDTH - me->p_x) < (TWINSIDE / 2) * SCALE)
+    if ((GWIDTH - me->p_x) < (TWINSIDE / 2) * scaleFactor)
     {
-        dx = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
-        sy = (TWINSIDE / 2) + (0 - me->p_y) / SCALE;
-        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
+        dx = (TWINSIDE / 2) + (GWIDTH - me->p_x) / scaleFactor;
+        sy = (TWINSIDE / 2) + (0 - me->p_y) / scaleFactor;
+        ey = (TWINSIDE / 2) + (GWIDTH - me->p_y) / scaleFactor;
         if (sy < 0)
             sy = 0;
         if (ey > TWINSIDE - 1)
@@ -2523,11 +2588,11 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if (me->p_y < (TWINSIDE / 2) * SCALE)
+    if (me->p_y < (TWINSIDE / 2) * scaleFactor)
     {
-        dy = (TWINSIDE / 2) - (me->p_y) / SCALE;
-        sx = (TWINSIDE / 2) + (0 - me->p_x) / SCALE;
-        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
+        dy = (TWINSIDE / 2) - (me->p_y) / scaleFactor;
+        sx = (TWINSIDE / 2) + (0 - me->p_x) / scaleFactor;
+        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / scaleFactor;
         if (sx < 0)
             sx = 0;
         if (ex > TWINSIDE - 1)
@@ -2541,11 +2606,11 @@ DrawMisc (void)
         clearlcount++;
     }
 
-    if ((GWIDTH - me->p_y) < (TWINSIDE / 2) * SCALE)
+    if ((GWIDTH - me->p_y) < (TWINSIDE / 2) * scaleFactor)
     {
-        dy = (TWINSIDE / 2) + (GWIDTH - me->p_y) / SCALE;
-        sx = (TWINSIDE / 2) + (0 - me->p_x) / SCALE;
-        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / SCALE;
+        dy = (TWINSIDE / 2) + (GWIDTH - me->p_y) / scaleFactor;
+        sx = (TWINSIDE / 2) + (0 - me->p_x) / scaleFactor;
+        ex = (TWINSIDE / 2) + (GWIDTH - me->p_x) / scaleFactor;
         if (sx < 0)
             sx = 0;
         if (ex > TWINSIDE - 1)
@@ -2686,10 +2751,10 @@ DrawMisc (void)
                 dy = j->p_y - me->p_y;
                 if (ABS (dx) < view && ABS (dy) < view)
                 {
-                    dx = dx / SCALE + TWINSIDE / 2;
-                    dy = dy / SCALE + TWINSIDE / 2;
+                    dx = dx / scaleFactor + TWINSIDE / 2;
+                    dy = dy / scaleFactor + TWINSIDE / 2;
                     tri_x = dx + 0;
-                    tri_y = dy + 20;    /* below ship */
+                    tri_y = dy + 20 * SCALE / scaleFactor;    /* below ship */
                     facing = 1;
                 }
             }
@@ -2703,10 +2768,10 @@ DrawMisc (void)
             dy = l->pl_y - me->p_y;
             if (ABS (dx) < view && ABS (dy) < view)
             {
-                dx = dx / SCALE + TWINSIDE / 2;
-                dy = dy / SCALE + TWINSIDE / 2;
+                dx = dx / scaleFactor + TWINSIDE / 2;
+                dy = dy / scaleFactor + TWINSIDE / 2;
                 tri_x = dx;
-                tri_y = dy - 20;        /* below planet */
+                tri_y = dy - 20 * SCALE / scaleFactor;        /* above planet */
                 facing = 0;
             }
         }
@@ -2807,6 +2872,7 @@ clearLocal (void)
         clearcount = 0;
         clearlcount = 0;
         tractcurrent = tracthead;
+        W_FastClear = 0;
     }
     else
     {

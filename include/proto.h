@@ -387,6 +387,7 @@ void Key131 (W_Event * data),
   Key163 (W_Event * data),
   Key175 (W_Event * data),
   Key180 (W_Event * data),
+  Key193 (void),
   Key194 (W_Event * data),
   Key195 (W_Event * data),
   Key197 (W_Event * data),
@@ -397,7 +398,8 @@ void Key131 (W_Event * data),
   Key204 (W_Event * data),
   Key205 (W_Event * data),
   Key208 (W_Event * data),
-  Key212 (W_Event * data);
+  Key212 (W_Event * data),
+  Key218 (void);
 
 /******************************************************************************/
 /***  interface.c

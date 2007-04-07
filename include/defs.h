@@ -45,6 +45,8 @@
 
 #define GWIDTH 100000           /* galaxy is 100000 spaces
                                  * on a side */
+#define SCALE 40                /* Window will be one pixel for
+                                   these # spaces */
 #define WARP1 20                /* warp one will move 20
                                  * spaces per update */
 #define EXPDIST 350             /* At this range a torp will

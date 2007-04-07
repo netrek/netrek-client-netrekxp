@@ -4049,7 +4049,17 @@ W_WriteScaleBitmap (int x,
     
     SelectObject (GlobalMemDC, bitmap->bm);
     SelectObject (GlobalMemDC2, newbmp);
-    
+
+    // Need to setup colors and stuff
+    if (NetrekPalette)
+    {
+        SelectPalette (GlobalMemDC2, NetrekPalette, FALSE);
+        RealizePalette (GlobalMemDC2);
+    }
+
+    SetBkColor (GlobalMemDC2, colortable[color].rgb);
+    SetTextColor (GlobalMemDC2, colortable[BLACK].rgb);
+
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
     StretchBlt(GlobalMemDC2, 0, 0, destwidth, destheight, GlobalMemDC,
@@ -4841,12 +4851,18 @@ checkGeometry (char *name,
         if (!strcmp("local", name))
         {
             if (*height > *width)
+            {
+                *width = *height;
                 TWINSIDE = *height;
+            }
         }
         else if (!strcmp("map", name))
         {
             if (*height > *width)
+            {
+                *width = *height;
                 GWINSIDE = *height;
+            }
         }
         result |= G_SET_HEIGHT;
         if (*s == 0)
@@ -5263,6 +5279,16 @@ W_OverlayScaleBitmap (int x,
     
     SelectObject (GlobalMemDC, bitmap->bm);
     SelectObject (GlobalMemDC2, newbmp);
+
+    // Need to setup colors and stuff
+    if (NetrekPalette)
+    {
+        SelectPalette (GlobalMemDC2, NetrekPalette, FALSE);
+        RealizePalette (GlobalMemDC2);
+    }
+
+    SetBkColor (GlobalMemDC2, colortable[color].rgb);
+    SetTextColor (GlobalMemDC2, colortable[BLACK].rgb);
 
     // Copy selected section of main bitmap into newbmp before rotation
     SetStretchBltMode(GlobalMemDC2, COLORONCOLOR);
@@ -5937,8 +5963,8 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
         W_ChangeBorder ((W_Window) win, W_White);
         break;*/
 
-    case WM_KEYDOWN:
-        return (0);
+ //   case WM_KEYDOWN:
+ //       return (0);
     case WM_LBUTTONDOWN:
         BringWindowToTop (hwnd);
         break;

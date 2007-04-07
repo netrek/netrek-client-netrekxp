@@ -267,7 +267,7 @@ key_handler_type key_handlers[MAXKEY] = {
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
-    emptyKey,                   /* 31 */
+    Key193,                     /* ^a */
     Key194,                     /* ^b */
     Key195,                     /* ^c */
     emptyKey,                   /* 31 */
@@ -292,7 +292,7 @@ key_handler_type key_handlers[MAXKEY] = {
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
-    emptyKey,                   /* 31 */
+    Key218,                     /* ^z */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
@@ -350,8 +350,8 @@ lockPlanetOrBase (W_Window ww,
     }
     else
     {
-        g_x = me->p_x + ((x - TWINSIDE / 2) * SCALE);
-        g_y = me->p_y + ((y - TWINSIDE / 2) * SCALE);
+        g_x = me->p_x + ((x - TWINSIDE / 2) * scaleFactor);
+        g_y = me->p_y + ((y - TWINSIDE / 2) * scaleFactor);
     }
     closedist = GWIDTH;
 
@@ -3538,6 +3538,34 @@ void
 Key212 (W_Event * data)
 {
     emergency (take, data);
+}
+
+/******************************************************************************/
+/***  Key193()                                                              ***/
+/******************************************************************************/
+void
+Key193 (void)
+{
+    scaleFactor -= 5;
+    if (scaleFactor < 10)
+        scaleFactor = 10;
+    W_FastClear = 1;
+    if (viewBox)
+        redrawall = 1;
+}
+
+/******************************************************************************/
+/***  Key218()                                                              ***/
+/******************************************************************************/
+void
+Key218 (void)
+{
+    scaleFactor += 5;
+    if (scaleFactor > 40)
+        scaleFactor = 40;
+    W_FastClear = 1;
+    if (viewBox)
+        redrawall = 1;
 }
 
 /******************************************************************************/

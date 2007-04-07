@@ -600,6 +600,13 @@ struct save_options save_options[] = {
         }
     },
 #endif
+    {"scaleFactor", &scaleFactor, RC_INT,
+        {
+            "Scale of local map graphics",
+            "10-40 range",
+            NULL
+        }
+    },
 #ifdef TOOLS
     {"shellTools", &shellTools, RC_BOOL,
         {
@@ -1690,6 +1697,11 @@ resetdefaults (void)
     viewRange = intDefault ("viewRange", viewRange);
     warpStreaks = booleanDefault ("warpStreaks", warpStreaks);
     showStars = booleanDefault ("showStars", showStars);
+    scaleFactor = intDefault ("scaleFactor", scaleFactor);
+    if (scaleFactor > 40)
+        scaleFactor = 40;
+    else if (scaleFactor < 10)
+        scaleFactor = 10;
 
 #ifdef HOCKEY_LINES
     showHockeyLinesLocal = booleanDefault ("showHockeyLinesLocal", showHockeyLinesLocal);

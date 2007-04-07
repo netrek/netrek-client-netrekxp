@@ -327,6 +327,10 @@ saveBeeplite: on
 # Save RCM to saveFile
 saveRCM: on
 
+# Scale of local map graphics
+# 10-40 range
+scaleFactor: 40
+
 # Shift+Mouse gives additional commands
 shiftedMouse: on
 

@@ -237,6 +237,7 @@ saveMacro:                (on/off) save macros to saveFile
 saveRCD:                  (on/off) save receiver configurable distresses to saveFile
 saveRCM:                  (on/off) save receiver configurable messages to saveFile
 saveWindow:               (on/off) save window placements to saveFile
+scaleFactor:              (10-40) scale of local map graphics
 server:                   (address) default server (only listed on TCP metaserver)
 server.<server>:          (address) <server> is a nickname for (address)
 shiftedMouse:             (on/off) shift+mouse buttons will work as commands

@@ -22,8 +22,6 @@ Things that are sorta fixed, but could use improvement:
 is rotated.  Only solution so far is to moderate border refresh with scaled bitmaps.
 2) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
-3) planet resource placement and refresh (for new planet bitmaps) will need adjusting if 
-local is scaled
 
 Things to do:
 1) resizeable message windows.  Perhaps memory of window positions if you choose

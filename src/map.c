@@ -432,7 +432,10 @@ static inline void
 mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                   int dx, int dy, W_Window window)
 /*
- *  Draw the map resources for a colorized planet.
+ *  Draw the map resources for a colorized planet.  Destwidth and destheight
+ *  are the dimensions of the planet (not the resources) bitmap.  Dx and
+ *  dy are the coordinates of the upper left corner of the planet bitmap.
+ *  Resources are aligned based on those factors. 
  */
 {   
     if ((p->pl_info & me->p_team)
@@ -443,9 +446,9 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
     {
     	/* Select resources */
         if (p->pl_armies > 4)
-            W_WriteScaleBitmap(dx - 7 * destwidth / 8 - 1,
-                               dy - (destheight / 2),
-                               destwidth/3 + 1,
+            W_WriteScaleBitmap(dx - destwidth/3,
+                               dy,
+                               destwidth/3,
                                destheight,
                                BMP_ARMY_WIDTH,
                                BMP_ARMY_HEIGHT,
@@ -453,19 +456,19 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                                marmy_bitmap, planetColor(p),
                                window);       
         if (p->pl_flags & PLREPAIR)
-            W_WriteScaleBitmap(dx - (destwidth / 2),
-                               dy - (5 * destheight / 6),
+            W_WriteScaleBitmap(dx,
+                               dy - destheight/3,
                                destwidth,
-                               destheight/3 + 1,
+                               destheight/3,
                                BMP_WRENCH_WIDTH,
                                BMP_WRENCH_HEIGHT,
                                0,
                                mwrench_bitmap, planetColor(p),
                                window);
         if (p->pl_flags & PLFUEL)
-            W_WriteScaleBitmap(dx + 3 * destwidth / 5 - 1,
-                               dy - (destheight / 2),
-                               destwidth/3 + 1,
+            W_WriteScaleBitmap(dx + destwidth,
+                               dy,
+                               destwidth/3,
                                destheight,
                                BMP_FUEL_WIDTH,
                                BMP_FUEL_HEIGHT,
@@ -546,14 +549,16 @@ DrawPlanets ()
             ody = pl_update[l->pl_no].plu_y * GWINSIDE / GWIDTH;
 
             /* XFIX */
-            if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, odx - (7 * BMP_MPLANET_WIDTH / 8 + 1),
+            if (planetBitmapGalaxy == 3)
+                W_ClearArea (mapw, odx - (5 * BMP_MPLANET_WIDTH / 6),
                              ody - (5 * BMP_MPLANET_HEIGHT / 6),
-                             7 * BMP_MPLANET_WIDTH / 4 + 2, 4 * BMP_MPLANET_HEIGHT / 3);
+                             5 * BMP_MPLANET_WIDTH / 3,
+                             4 * BMP_MPLANET_HEIGHT / 3);
             else
                 W_ClearArea (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                              ody - (BMP_MPLANET_HEIGHT / 2),
-                             BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT);
+                             BMP_MPLANET_WIDTH,
+                             BMP_MPLANET_HEIGHT);
             W_WriteText (mapw, odx - (BMP_MPLANET_WIDTH / 2),
                          ody + (BMP_MPLANET_HEIGHT / 2),
                          backColor, l->pl_name, 3, planetFont (l));
@@ -564,15 +569,18 @@ DrawPlanets ()
             /* Clear the planet normally */
 
             /* XFIX */
-            if (planetBitmapGalaxy == 3)  // Needs adjusting
-                W_ClearArea (mapw, dx - (7 * BMP_MPLANET_WIDTH / 8 + 5),
-                             dy - (5 * BMP_MPLANET_HEIGHT / 6 + 4),
-                             7 * BMP_MPLANET_WIDTH / 4 + 10, 4 * BMP_MPLANET_HEIGHT / 3 + 8);
-
+            if (planetBitmapGalaxy == 3)
+                W_ClearArea (mapw, dx - (5 * BMP_MPLANET_WIDTH / 6),
+                             dy - (5 * BMP_MPLANET_HEIGHT / 6),
+                             5 * BMP_MPLANET_WIDTH / 3,
+                             4 * BMP_MPLANET_HEIGHT / 3 + 4);
             else
+                /* The +4 and +8 are for beeplite, as it uses a
+                   24x24 overlay bitmap compared to 16x16 planet */
                 W_ClearArea (mapw, dx - (BMP_MPLANET_WIDTH / 2 + 4),
                              dy - (BMP_MPLANET_HEIGHT / 2 + 4),
-                             BMP_MPLANET_WIDTH + 8, BMP_MPLANET_HEIGHT + 8);
+                             BMP_MPLANET_WIDTH + 8,
+                             BMP_MPLANET_HEIGHT + 8);
             l->pl_flags &= ~PLCLEAR;
         }
 
@@ -602,7 +610,12 @@ DrawPlanets ()
 			           mapw);
 			           
                 /* Draw planet resources */
-                mplanetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
+                mplanetResourcesC(l,
+                                  BMP_MPLANET_WIDTH ,
+                                  BMP_MPLANET_HEIGHT,
+                                  dx - (BMP_MPLANET_WIDTH / 2),
+                                  dy - (BMP_MPLANET_HEIGHT / 2),
+                                  mapw);
             }
             else
             {
@@ -636,7 +649,12 @@ DrawPlanets ()
                                 planetColor (l),
                                 mapw);                  
             /* Draw planet resources */
-            mplanetResourcesC(l, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT, dx, dy, mapw);
+            mplanetResourcesC(l,
+                              BMP_MPLANET_WIDTH ,
+                              BMP_MPLANET_HEIGHT,
+                              dx - (BMP_MPLANET_WIDTH / 2),
+                              dy - (BMP_MPLANET_HEIGHT / 2),
+                              mapw);
         }
         else
         {
@@ -838,8 +856,8 @@ map (void)
     static int viewx = 0, viewy = 0;
     static char clearviewbox = 0;
     static char viewboxcleared = 0;
-    int viewdist = (TWINSIDE / 2 * SCALE) / (GWIDTH / GWINSIDE);
-    int view = TWINSIDE * SCALE / 2;
+    int viewdist = (TWINSIDE / 2 * scaleFactor) / (GWIDTH / GWINSIDE);
+    int view = TWINSIDE * scaleFactor / 2;
     int mvx, mvy;
 
 #ifdef RECORDGAME
