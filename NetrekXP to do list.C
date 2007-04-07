@@ -49,7 +49,7 @@ redraws
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 
 Stas's list:
-- color coded (?) and scrollable playerlist.
+- two column and/or scrollable playerlist.
 - add "reset to defaults" to options menu
 - add shiftMouse, controlMouse on/off
 - fix accelerated scroll for microsoft mice

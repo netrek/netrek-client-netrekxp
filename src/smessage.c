@@ -157,6 +157,7 @@ smessage (char ichar)
         {
             /* print error message */
             messpend = 0;
+            showHUD = 0;
             message_off ();
             return;
         }
@@ -260,6 +261,7 @@ smessage (char ichar)
     case '\r':                 /* send message */
         buf[lcount - ADDRLEN] = '\0';
         messpend = 0;
+        showHUD = 0;
         for (i = 0; i < MAX_MLENGTH; i++)
         {
             outmessage[i] = '\0';
@@ -348,7 +350,6 @@ smessage (char ichar)
             warning ("Not legal recipient");
         }
         BlankChar (0, lcount + 1);
-        showHUD = 0;
         lcount = 0;
         break;
 
