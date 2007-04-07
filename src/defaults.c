@@ -245,7 +245,7 @@ struct save_options save_options[] = {
     },
     {"lockLine", &lockLine, RC_BOOL,
         {
-            "Draw dashed green line on map from your ship to lock target,"
+            "Draw dashed green line on map from your ship to lock target,",
             "requires showLock to be on for map",
             NULL
         }
@@ -550,7 +550,7 @@ struct save_options save_options[] = {
     },
     {"richText", &richText, RC_BOOL,
         {
-            "Use rich text message windows, currently disabled",
+            "Use rich text message windows",
             NULL
         }
     },
@@ -647,7 +647,7 @@ struct save_options save_options[] = {
     {"showCloakers", &showCloakers, RC_BOOL, 
         {
             "Show other cloakers on local",
-            "Server god decides whether to enable it on server",
+            "Server god decides whether to enable this feature",
             NULL
         }
     },
@@ -954,10 +954,10 @@ struct save_options save_options[] = {
     {"viewRange", &viewRange, RC_INT,
         {
             "Show range at which enemies can see you as a circle on map",
-            "0 - Don't show range circle",
-            "1 - Only show range circle when cloaked",
-            "2 - Only show range circle when carrying",
-            "3 - Show range circle at all times",
+            "0 - don't show range circle",
+            "1 - only show range circle when cloaked",
+            "2 - only show range circle when carrying",
+            "3 - show range circle at all times",
             NULL
         }
     },
@@ -2178,7 +2178,7 @@ saveOptions ()
     if (saveBig && strlen (str) != 0)
     {
         fputs ("# Key mapping\n", fp);
-        fputs ("# Define you keymap here.  The format is newkey defaultkey.  For example, the\n", fp);
+        fputs ("# Define your keymap here.  The format is newkey defaultkey.  For example, the\n", fp);
         fputs ("# default key for shield toggle is 's', if you want to remap shield toggle to\n", fp);
         fputs ("# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to\n", fp);
         fputs ("# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old\n", fp);
