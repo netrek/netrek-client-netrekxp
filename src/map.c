@@ -1111,7 +1111,8 @@ map (void)
 #endif
 
 	/* Draw range circle */
-	if (viewRange && (myPlayer(j) || isObsLockPlayer(j)))
+	if (viewRange && (myPlayer(j) || isObsLockPlayer(j))
+	    && j->p_ship.s_type != STARBASE)
         {
           /* Orbitting any non-owned planet gets you seen,
              so don't draw the circle */

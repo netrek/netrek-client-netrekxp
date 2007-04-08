@@ -1510,7 +1510,17 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.sender = victim;
             dist.tclose_j = killer;
             dist.arms = armies;
-            dist.dam = (unsigned char) (damage / 100);
+            /* Kills > 255 need to be stuffed into another field */
+            if (damage > 25500)
+            {
+                dist.dam = (unsigned char) (255);
+                dist.etmp = (unsigned char) ((damage - 25500) / 100);
+            }
+            else
+            {
+                dist.dam = (unsigned char) (damage / 100);
+                dist.etmp = 0;
+            }
             dist.shld = (unsigned char) (damage % 100);
             dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[1].macro);
@@ -1735,7 +1745,17 @@ handleSWarning (struct warning_s_spacket *packet)
             dist.sender = packet->argument;
             dist.tclose_j = packet->argument;
             dist.arms = '\0';
-            dist.dam = (unsigned char) (damage / 100);
+            /* Kills > 255 need to be stuffed into another field */
+            if (damage > 25500)
+            {
+                dist.dam = (unsigned char) (255);
+                dist.etmp = (unsigned char) ((damage - 25500) / 100);
+            }
+            else
+            {
+                dist.dam = (unsigned char) (damage / 100);
+                dist.etmp = 0;
+            }
             dist.shld = (unsigned char) (damage % 100);
             dist.wtmp = (unsigned char) karg5;
             makedistress (&dist, msg.mesg, rcm_msg[6].macro);

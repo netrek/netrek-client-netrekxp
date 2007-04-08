@@ -797,7 +797,7 @@ makedistress (struct distress *dist,
 #ifdef RCM
                 if (dist->distype == rcm)
                 {
-                    APPEND_INT (pbuf1, dist->dam);
+                    APPEND_INT (pbuf1, dist->dam + dist->etmp);
                     *pbuf1++ = '.';
                     itoapad (dist->shld, pbuf1, 1, 2);
                     pbuf1 += 2;

@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- fixed a bug with RCM kill messages when kills were higher than 255 but less than 320
 - added new function keys, control-z and control-a, for zooming.  Control-z zooms in,
   and control-a zooms out.  As part of the benefit of having all graphics scale, ALL ship
   bitmap sets now show ships to 256 positions.
@@ -7,13 +8,15 @@ Netrek XP 2006, Version 1.3:
   to 1000x1000 and see the great graphics!  Default scale is 40 (this is the traditional
   scale used in clients, changing scale to 20 will effectively double the scale).
 - added netrekrc option "richText: (on)/off" to allow stuff like cut/paste from message
-  windows and clickable URLs.  The 2nd part works, the first part..not so much yet.
+  windows and clickable URLs.
 - added the ability to change the size of the local or map windows!  This is a huge improvement,
   and is probably the most often requested feature.  There really is no limit on how big or small
   you can make the windows.  As you increase local window size, you can see further, giving
   somewhat of a gameplay advantage - you can see ships, shields, explosions, but not weapons
   fire other than your own torps.  Just as important, you can now choose a different size
   for local vs map window.  A typical user may want a 750x750 local but only a 400x400 map.
+  The upper pixel limit is 5000x5000 for either map or local window, but I don't expect
+  anyone has a monitor to support even close to that limit.
 - most netrekrc window's geometries are now commented out (all except map and local), this
   is because adjusting the size of local or map will now do a pretty good job of autoplacing
   all the other windows for you
@@ -74,7 +77,8 @@ Netrek XP 2006, Version 1.3:
 - added "viewRange: (0-3)" option to draw a dashed circle on the map showing
   the range at which enemies can see you.  You can choose to draw it at all times,
   only when you are cloaked, only when carrying, or not at all.  If orbitting a
-  foreign planet, no circle is drawn, as you are visible to all.
+  foreign planet, no circle is drawn, as you are visible to all.  View range is
+  disabled if your ship is a starbase.
 - fixed flicker experienced sometimes seen with stationary ships near a planet
   on the galactic map
 - the old mono torps are now default.  Big torps are nice and all, but I think

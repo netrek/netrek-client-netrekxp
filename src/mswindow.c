@@ -4840,9 +4840,18 @@ checkGeometry (char *name,
             s++;
         *width = atoi (geom_default);
         if (!strcmp("local", name))
+        {
             TWINSIDE = *width;
+            /* Sanity checks .. */
+            if (TWINSIDE > 5000)
+                TWINSIDE = 5000;
+        }
         else if (!strcmp("map", name))
+        {
             GWINSIDE = *width;
+            if (GWINSIDE > 5000)
+                GWINSIDE = 5000;
+        }
         result |= G_SET_WIDTH;
         if (*s == 0)
             return result;
@@ -4857,6 +4866,8 @@ checkGeometry (char *name,
             {
                 *width = *height;
                 TWINSIDE = *height;
+                if (TWINSIDE > 5000)
+                    TWINSIDE = 5000;
             }
         }
         else if (!strcmp("map", name))
@@ -4865,6 +4876,8 @@ checkGeometry (char *name,
             {
                 *width = *height;
                 GWINSIDE = *height;
+                if (GWINSIDE > 5000)
+                    GWINSIDE = 5000;
             }
         }
         result |= G_SET_HEIGHT;
