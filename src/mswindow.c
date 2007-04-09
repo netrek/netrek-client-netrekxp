@@ -1983,7 +1983,6 @@ NetrekWndProc (HWND hwnd,
             free (localSDB);
             localSDB = W_InitSDB (w);
             // and stars
-            free (stars);
             initStars();
 
             // All windows based on TWINSIDE are out of position now, but the team

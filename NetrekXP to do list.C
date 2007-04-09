@@ -28,7 +28,6 @@ Things to do:
 to save settings.  Text in windows should adjust to new window size.
 2) Save options for observer/servernick/servertype need to be saved
 3) Get square planet bitmaps so I can turn them into mapped rotating globes.
-4) Pop-up dialog box for bad version response
 5) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
 this is fixed.
 7) Some sort of click action on player list brings up a menu with settings for that
@@ -47,6 +46,7 @@ redraws
 12) minor richtext issue with scrolling - extra line at the end
 13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
+14) make richtext windows moveable
 
 Stas's list:
 - two column and/or scrollable playerlist.

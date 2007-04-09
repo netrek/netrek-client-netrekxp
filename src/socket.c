@@ -2164,6 +2164,7 @@ handleBadVersion (struct badversion_spacket *packet)
     case 4:
     case 5:
     case 6:
+        MessageBox(NULL, "Sorry, but you cannot play netrek now.", "Try again later", MB_OK);
         LineToConsole ("Sorry, but you cannot play netrek now.\n");
         LineToConsole ("Try again later.\n");
         break;
