@@ -258,7 +258,7 @@ struct save_options save_options[] = {
     },
     {"mainResizeable", &mainResizeable, RC_BOOL,
         {
-            "Make main window resizeable",
+            "Make main window + local/map windows resizeable",
             NULL
         }
     },
@@ -1673,6 +1673,8 @@ resetdefaults (void)
         timerType = T_SHIP;
 
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
+    mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
+    mainTitleBar = booleanDefault ("mainTitleBar", mainTitleBar);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     richText = booleanDefault ("richText", richText);
     newQuit = booleanDefault ("newQuit", newQuit);

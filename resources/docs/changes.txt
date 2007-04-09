@@ -1,4 +1,9 @@
 Netrek XP 2006, Version 1.3:
+- the mainResizeable netrekrc option now allows map/local to be resizeable via dragging
+  the window border, local/map will now adjust viewable area to match the new window
+  size.  Some windows (team select, quit) will resize properly to match new local size,
+  others (position of options menu, dashboard, etc.) will not move.  Interesting sidenote:
+  resizing local window will reinitialize background star positions.
 - fixed a bug with RCM kill messages when kills were higher than 255 but less than 320
 - added new function keys, control-z and control-a, for zooming.  Control-z zooms in,
   and control-a zooms out.  As part of the benefit of having all graphics scale, ALL ship

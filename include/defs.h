@@ -73,6 +73,9 @@
                                 /* At this range a player can be
                                    seen while visible (uncloaked) */
 
+#define MAXSECTORS 10           /* Max # of star sectors */
+#define MAXSTARS 100            /* Max # of stars in a sector */
+
 /* 6 minutes is maximum for autoquit -- anything more causes problems in the
  * server.  (?) */
 #define AUTOQUIT 9*60           /* auto logout in 5 minutes */

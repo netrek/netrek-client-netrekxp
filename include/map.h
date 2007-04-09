@@ -15,12 +15,10 @@
 /*
  *  Global Variables:
  *
- *  redrawall		-- Erase and redraw the galactic?
  *  redrawPlayer[]	-- Flag for each player on whether their position
  *				on the galactic is not out of date.
  */
 
-extern int redrawall;
 extern unsigned char redrawPlayer[];
 
 

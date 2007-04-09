@@ -7,6 +7,12 @@
 #ifndef _h_struct
 #define _h_struct
 
+/* Background Stars Definitions */
+struct _star {
+    int s_x, s_y;
+    int s_color;
+};
+
 struct distress
 {
     unsigned char sender;

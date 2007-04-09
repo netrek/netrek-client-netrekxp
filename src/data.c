@@ -31,6 +31,7 @@ struct phaser *phasers;
 struct message *messages;
 struct mctl *mctl;
 struct memory universe;
+struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
 int TWINSIDE = 500;             /* Size of tactical window */
 int GWINSIDE = 500;             /* Size of galactic window */
@@ -97,6 +98,7 @@ time_t delay = 0;                  /* time stamp for decaring war */
 time_t rdelay = 0;                 /* time stamp for refitting */
 time_t tdelay = 0;                 /* time stamp for T mode extension */
 int showPlanetNames = 1;
+int redrawall = 1;
 int autoQuit = 60;
 int showStats = 0;
 int showHints = 1;

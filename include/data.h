@@ -47,6 +47,7 @@ extern struct team *teams;
 extern struct ship shipvals[];
 extern struct memory universe;
 extern struct planet pdata[];
+extern struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
 /* These used to be defines ... */
 extern int TWINSIDE;
@@ -636,6 +637,7 @@ HANDLE InputThread;
 DWORD InputThreadID;
 
 // Missing global variables
+extern int redrawall;  /* Erase and redraw the galactic? */
 extern int autoQuit;
 
 extern int forceDisplay;

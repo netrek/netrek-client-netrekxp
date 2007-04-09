@@ -640,11 +640,13 @@ W_Cleanup (void)
     SelectObject (localSDB->mem_dc, localSDB->old_bmp);
     DeleteObject (localSDB->mem_bmp);
     ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
+    DeleteDC (localSDB->mem_dc);
     free (localSDB);
 
     SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
     DeleteObject (mapSDB->mem_bmp);
-    DeleteDC (mapSDB->win_dc);
+    ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+    DeleteDC (mapSDB->mem_dc);
     free (mapSDB);
 
     //WinKey Kill Library Stop
@@ -1137,8 +1139,6 @@ newWindow (char *name,
             sprintf (title_buff, "Netrek  @  %s", serverName);
         }
         // WS_THICKFRAME adds resizing frame to window without adding titlebar
-        mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
-        mainTitleBar = booleanDefault ("mainTitleBar", mainTitleBar);
         SpecialStyle |= WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
         if (mainResizeable)
             SpecialStyle |= WS_THICKFRAME;
@@ -1165,6 +1165,12 @@ newWindow (char *name,
         SpecialStyle =
             WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
         parentwin = &myroot;
+    }
+    else if (strncmp (name, "local", 5) == 0 || strncmp (name, "map", 3) == 0)
+    {
+        s = name;
+        if (mainResizeable)
+            SpecialStyle = WS_THICKFRAME;
     }
     else
         s = name;
@@ -1959,6 +1965,57 @@ NetrekWndProc (HWND hwnd,
     case WM_EXITSIZEMOVE:
         //Disable possibility to move internal windows
         GET_STRUCT_PTR;
+
+        // Adjust TWINSIDE and GWINSIDE
+        // Reinitialize whatever is necessary (so many things are created based on
+        // a fixed TWINSIDE)
+        // Redo critical windows
+        // Clear window
+        if (windowMove && (Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
+        {
+            TWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right);
+
+            // Have to reinitialize SDB
+            SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+            DeleteObject (localSDB->mem_bmp);
+            ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
+            DeleteDC (localSDB->mem_dc);
+            free (localSDB);
+            localSDB = W_InitSDB (w);
+            // and stars
+            free (stars);
+            initStars();
+
+            // All windows based on TWINSIDE are out of position now, but the team
+            // select/quit windows are now the wrong size too, so we need to redo them
+            for (i = 0; i < 4; i++)
+            {
+                W_UnmapWindow (teamWin[i]);
+                teamWin[i] = W_MakeWindow (teamshort[1 << i], i * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5),
+                                           (TWINSIDE / 5), (TWINSIDE / 5), w, 1, foreColor);
+            }
+            W_UnmapWindow (qwin);
+            qwin = W_MakeWindow ("quit", 4 * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5), (TWINSIDE / 5),
+                                 (TWINSIDE / 5), w, 1, foreColor);
+
+            W_FastClear = 1;
+            if (viewBox)
+                redrawall = 1;
+        }
+        else if (windowMove && (Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
+        {
+            GWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right);
+
+            // Have to reinitialize SDB
+            SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+            DeleteObject (mapSDB->mem_bmp);
+            ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+            DeleteDC (mapSDB->mem_dc);
+            free (mapSDB);
+            mapSDB = W_InitSDB (mapw);
+
+            redrawall = 1;
+        }
 
         /* this has to be the same as for WM_ENTERSIZEMOVE */
         if (windowMove || 

@@ -69,13 +69,10 @@ static int orbit_planet_refresh = 0;
 /*
  *  Global Variables:
  *
- *  redrawall           -- Erase and redraw the galactic?  Must be true
- *                              on first map() call.
  *  redrawPlayer[]      -- Flag for each player on whether their position
  *                              on the galactic is not out of date.
  */
 
-int redrawall = 1;
 unsigned char redrawPlayer[MAXPLAYER];
 
 

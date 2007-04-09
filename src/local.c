@@ -58,12 +58,6 @@ static unsigned int twarpflag = 0;
 static int cloak_phases = 0;
 #endif
 
-/* Background Stars Definitions */
-struct _star {
-    int s_x, s_y;
-    int s_color;
-};
-
 static void redrawStarSector(int sectorx, int sectory);
 
 #define scaleLocal(pt)           ((pt)/scaleFactor + (TWINSIDE/2))
@@ -72,8 +66,6 @@ static void redrawStarSector(int sectorx, int sectory);
 #define INFORANGE 500         /* Range at which server stops sending some data */
 /* Max range at which other's torps can be seen, used in scaling sound volume */
 #define SOUND_MAXRANGE (int)(sqrt)(INFORANGE * INFORANGE/2)
-
-static struct _star stars[10][10][16];
 
 /* Function Defininitions */
 
@@ -130,11 +122,22 @@ void
 initStars()
 {
     register int i, j, k;
+    int imax, jmax, kmax;
+    
+    imax = 5 * STARSIDE / TWINSIDE + 1;
+    if (imax > MAXSECTORS)
+        imax = MAXSECTORS;
+    jmax = 5 * STARSIDE / TWINSIDE + 1;
+    if (jmax > MAXSECTORS)
+        jmax = MAXSECTORS;
+    kmax = 16 * TWINSIDE / STARSIDE * TWINSIDE / STARSIDE;
+    if (kmax > MAXSTARS)
+        kmax = MAXSTARS;
 
     /* Star density: 16 stars per 20000 x 20000 galactic region */
-    for (i = 0; i < (5 * STARSIDE / TWINSIDE + 1); i++) {
-       for (j = 0; j < (5 * STARSIDE / TWINSIDE + 1); j++) {
-            for (k = 0; k < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); k++) {
+    for (i = 0; i < imax; i++) {
+       for (j = 0; j < jmax; j++) {
+            for (k = 0; k < kmax; k++) {
                 stars[i][j][k].s_x = RANDOM() % 20000 * TWINSIDE / STARSIDE;
                 stars[i][j][k].s_y = RANDOM() % 20000 * TWINSIDE / STARSIDE;
                 stars[i][j][k].s_color = randcolor();
@@ -147,8 +150,8 @@ initStars()
 void
 DrawStars()
 {
-    const int fullview = TWINSIDE * SCALE;
-    const int view = TWINSIDE * SCALE / 2;
+    int fullview = TWINSIDE * SCALE;
+    int view = TWINSIDE * SCALE / 2;
     /*
        note: cpp symbols in expressions (TWINSIDE*SCALE) will be precalculated
        by any C optimizer
@@ -239,8 +242,8 @@ DrawStars()
 static void
 redrawStarSector (int sectorx, int sectory)
 {
-    const int fullview = TWINSIDE * SCALE;
-    const int view = TWINSIDE * SCALE / 2;
+    int fullview = TWINSIDE * SCALE;
+    int view = TWINSIDE * SCALE / 2;
     register int i, dx, dy, dxx, dyy;
     register int xbase = sectorx * fullview;
     register int ybase = sectory * fullview;
@@ -300,7 +303,7 @@ redrawStarSector (int sectorx, int sectory)
             }
             dxx = (int) (Cos[mydir] * streaklength / 10);
             dyy = (int) (Sin[mydir] * streaklength / 10);
-            for (i = 0, s = star_sector; i < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); i++, s++)
+            for (i = 0, s = star_sector; i < (16 * TWINSIDE / STARSIDE * TWINSIDE / STARSIDE); i++, s++)
             {
                 if (s->s_x + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
                     continue;
@@ -323,7 +326,7 @@ redrawStarSector (int sectorx, int sectory)
             return;
         }
     }
-    for (i = 0, s = star_sector; i < (16 * (TWINSIDE / STARSIDE) * (TWINSIDE / STARSIDE)); i++, s++)
+    for (i = 0, s = star_sector; i < (16 * TWINSIDE / STARSIDE * TWINSIDE / STARSIDE); i++, s++)
     {
         if (s->s_x  + xbase > GWIDTH || s->s_y + ybase > GWIDTH)
             continue;
@@ -523,7 +526,7 @@ DrawPlanets (void)
 {
     register int dx, dy;
     register struct planet *l;
-    const int view = scaleFactor * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
+    int view = scaleFactor * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
@@ -704,7 +707,7 @@ DrawShips (void)
     int buflen = 1;
     static int ph_col = 0;
     static int scaled_ph_col = 0;
-    const int view = scaleFactor * TWINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
+    int view = scaleFactor * TWINSIDE / 2 + BMP_SHIELD_WIDTH * SCALE / 2;
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
     int startx, starty, endx, endy;
@@ -1919,7 +1922,7 @@ DrawTorps (void)
     int torpCount;
     int torpTeam;
     int frame;
-    const int view = scaleFactor * TWINSIDE / 2;
+    int view = scaleFactor * TWINSIDE / 2;
 
     for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
     {
@@ -2157,7 +2160,7 @@ DrawPlasmaTorps (void)
 {
     register struct plasmatorp *pt;
     register int dx, dy;
-    const int view = scaleFactor * TWINSIDE / 2;
+    int view = scaleFactor * TWINSIDE / 2;
     int ptorpTeam;
     int frame;
 
@@ -2381,11 +2384,11 @@ DrawMisc (void)
 {
     register struct player *j;
     register int dx, dy;
-    const int view = scaleFactor * TWINSIDE / 2;
+    int view = scaleFactor * TWINSIDE / 2;
 
 #ifdef HOCKEY_LINES
     register struct s_line *sl;
-    const int HALF_WINSIDE = TWINSIDE / 2;
+    int HALF_WINSIDE = TWINSIDE / 2;
     int ex, ey, sx, sy;
 #endif
 
@@ -2459,10 +2462,10 @@ DrawMisc (void)
     if ( infoRange && TWINSIDE > (INFORANGE * SCALE / scaleFactor)
          && !(me->p_x < 0 || me->p_x > GWIDTH))
     {
-        const int LEFT = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
-        const int RIGHT = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
-        const int TOP = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
-        const int BOTTOM = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
+        int LEFT = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
+        int RIGHT = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
+        int TOP = (TWINSIDE / 2) - (INFORANGE / 2) * SCALE / scaleFactor;
+        int BOTTOM = (TWINSIDE / 2) + (INFORANGE / 2) * SCALE / scaleFactor;
 
         long dist;
 
