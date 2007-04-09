@@ -1460,7 +1460,7 @@ char *
 getServerNick (char *srvName)
 {
     struct stringlist *sl;
-	char *tmpServerNick;
+    char *tmpServerNick;
 
     sl = defaults;
     while (sl != NULL)
@@ -1573,6 +1573,21 @@ stringDefault (char *def)
         return (NULL);
 }
 
+/******************************************************************************/
+/***  geometryDefault()                                                     ***/
+/******************************************************************************/
+char *
+geometryDefault (char *def)
+{
+    char *str;
+
+    str = getdefault (def);
+
+    if (str && strcmpi(str, "auto") != 0)
+        return strdup (str);
+    else
+        return (NULL);
+}
 
 /******************************************************************************/
 /***  booleanDefault()                                                      ***/
@@ -1886,15 +1901,10 @@ resetdefaults (void)
 #ifdef BEEPLITE
     defLite = booleanDefault("defLite", defLite);
     useLite = booleanDefault("useLite", useLite);
-	
+
     if (defLite)
 	litedefaults();
-	
-    beep_lite_cycle_time_planet =
-	intDefault("planetCycleTime", beep_lite_cycle_time_planet);
-    beep_lite_cycle_time_player =
-	intDefault("playerCycleTime", beep_lite_cycle_time_player);
-	
+
     tts_time = intDefault("tts_time", tts_time);
     tts_max_len = intDefault("tts_max_len", tts_max_len);
     tts_ypos = intDefault("tts_ypos", TWINSIDE / 2 - 16);
@@ -2099,9 +2109,11 @@ saveOptions ()
     struct save_options *so;
     struct dmacro_list *dm;
     unsigned int i;
+    int j;
     unsigned char c;
     char *adefault;
     char macroKey[3] = "";
+    struct stringlist *sl;
 
     if (!saveFile)
         saveFile = stringDefault ("saveFile");
@@ -2118,7 +2130,7 @@ saveOptions ()
         if (exe_dir[len - 1] == '/' || exe_dir[len - 1] == '\\')
             sprintf (save_file, "%s%s", exe_dir, saveFile);
         else
-            sprintf (save_file, "%s/%s", exe_dir, saveFile);
+            sprintf (save_file, "%s\\%s", exe_dir, saveFile);
     }
 
     fp = fopen (save_file, "w+");
@@ -2185,7 +2197,7 @@ saveOptions ()
         fputs ("# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to\n", fp);
         fputs ("# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old\n", fp);
         fputs ("# one.  If you want shields on 'w' as well, put 'ws' in your keymap.  If you\n", fp);
-        fputs ("# had instead put 'wq', it would have mapped quit, the default action of 'q',\n", fp);
+        fputs ("# had instead put 'wq', it would have mapped quit (the default action of 'q')\n", fp);
         fputs ("# onto 'w'.\n", fp);
     }
     if (strlen (str) != 0)
@@ -2333,6 +2345,16 @@ saveOptions ()
     }
 #endif
 
+    // savefile
+    if (saveFile != NULL)
+    {
+    	if (saveBig)
+    	    fputs ("# Save file (for using in-game save feature)\n", fp);
+    	sprintf (str, "saveFile: %s\n", saveFile);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
+    }
     // metacache
     if (metaCache != NULL)
     {
@@ -2403,11 +2425,11 @@ saveOptions ()
     	{
     	    fputs ("# Window placements section\n", fp);
     	    fputs ("# Local and map windows MUST be square.  Size can be adjusted.\n", fp);
-    	    fputs ("# If sizing downwards, don't forget to remap any windows nested\n", fp);
-    	    fputs ("# inside these windows, such as team select and quit windows.\n", fp);
     	    fputs ("# Most windows will autoadjust to the right spot if local or\n", fp);
-    	    fputs ("# map size are changed, so most window placements are commented\n", fp);
-    	    fputs ("# out.  Uncomment them if you wish to customize.\n", fp);
+    	    fputs ("# map size are changed, so most window placements are autoset\n", fp);
+    	    fputs ("# If you wish to customize, window geometry should be of the form\n", fp);
+    	    fputs ("# 502x885+1+1, 502x885, or +1+1.  The +1+1 indicates (x,y) point of\n", fp);
+    	    fputs ("# top left corner of window, the 502x885 indicates width x height.\n", fp);
     	    fputs ("\n", fp);
     	}
 
@@ -2417,11 +2439,10 @@ saveOptions ()
             sprintf (str, "netrek.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("netrek.geometry")) != NULL)
-        {
-            sprintf (str, "netrek.geometry:        %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("netrek.geometry");
+        sprintf (str, "netrek.geometry:        %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Local window - always mapped
@@ -2430,11 +2451,10 @@ saveOptions ()
             sprintf (str, "local.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("local.geometry")) != NULL)
-        {
-            sprintf (str, "local.geometry:         %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("local.geometry");
+        sprintf (str, "local.geometry:         %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Map window - always mapped
@@ -2443,11 +2463,10 @@ saveOptions ()
             sprintf (str, "map.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("map.geometry")) != NULL)
-        {
-            sprintf (str, "map.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("map.geometry");
+        sprintf (str, "map.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Dashboard window - always mapped
@@ -2456,11 +2475,10 @@ saveOptions ()
             sprintf (str, "tstat.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("tstat.geometry")) != NULL)
-        {
-            sprintf (str, "tstat.geometry:         %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("tstat.geometry");
+        sprintf (str, "tstat.geometry:         %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Message window - preferred mapped
@@ -2469,15 +2487,12 @@ saveOptions ()
             sprintf (str, "message.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("message.geometry")) != NULL)
-        {
-            sprintf (str, "message.geometry:       %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("message.mapped", 1))
-            sprintf (str, "message.mapped:         on\n");
-        else
-            sprintf (str, "message.mapped:         off\n");
+        adefault = geometryDefault ("message.geometry");
+        sprintf (str, "message.geometry:       %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "message.mapped:         %s\n",
+                 booleanDefault ("message.mapped", 1) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2487,11 +2502,10 @@ saveOptions ()
             sprintf (str, "warn.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("warn.geometry")) != NULL)
-        {
-            sprintf (str, "warn.geometry:          %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("warn.geometry");
+        sprintf (str, "warn.geometry:          %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Planet window
@@ -2500,15 +2514,12 @@ saveOptions ()
             sprintf (str, "planet.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("planet.geometry")) != NULL)
-        {
-            sprintf (str, "planet.geometry:        %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("planet.mapped", 0))
-            sprintf (str, "planet.mapped:          on\n");
-        else
-            sprintf (str, "planet.mapped:          off\n");
+        adefault = geometryDefault ("planet.geometry");
+        sprintf (str, "planet.geometry:        %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "planet.mapped:          %s\n",
+                 booleanDefault ("planet.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2518,15 +2529,12 @@ saveOptions ()
             sprintf (str, "rank.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("rank.geometry")) != NULL)
-        {
-            sprintf (str, "rank.geometry:          %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("rank.mapped", 0))
-            sprintf (str, "rank.mapped:            on\n");
-        else
-            sprintf (str, "rank.mapped:            off\n");
+        adefault = geometryDefault ("rank.geometry");
+        sprintf (str, "rank.geometry:          %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "rank.mapped:            %s\n",
+                 booleanDefault ("rank.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2536,15 +2544,12 @@ saveOptions ()
             sprintf (str, "player.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("player.geometry")) != NULL)
-        {
-            sprintf (str, "player.geometry:        %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("player.mapped", 1))
-            sprintf (str, "player.mapped:          on\n");
-        else
-            sprintf (str, "player.mapped:          off\n");
+        adefault = geometryDefault ("player.geometry");
+        sprintf (str, "player.geometry:        %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "player.mapped:          %s\n",
+                  booleanDefault ("player.mapped", 1) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2554,15 +2559,12 @@ saveOptions ()
             sprintf (str, "player2.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("player2.geometry")) != NULL)
-        {
-            sprintf (str, "player2.geometry:       %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("player2.mapped", 0))
-            sprintf (str, "player2.mapped:         on\n");
-        else
-            sprintf (str, "player2.mapped:         off\n");
+        adefault = geometryDefault ("player2.geometry");
+        sprintf (str, "player2.geometry:       %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "player2.mapped:         %s\n",
+                  booleanDefault ("player2.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2572,15 +2574,12 @@ saveOptions ()
             sprintf (str, "help.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("help.geometry")) != NULL)
-        {
-            sprintf (str, "help.geometry:          %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("help.mapped", 0))
-            sprintf (str, "help.mapped:            on\n");
-        else
-            sprintf (str, "help.mapped:            off\n");
+        adefault = geometryDefault ("help.geometry");
+        sprintf (str, "help.geometry:          %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "help.mapped:            %s\n",
+                  booleanDefault ("help.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
         
@@ -2590,15 +2589,12 @@ saveOptions ()
             sprintf (str, "review_all.parent:      %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review_all.geometry")) != NULL)
-        {
-            sprintf (str, "review_all.geometry:    %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review_all.mapped", 0))
-            sprintf (str, "review_all.mapped:      on\n");
-        else
-            sprintf (str, "review_all.mapped:      off\n");
+        adefault = geometryDefault ("review_all.geometry");
+        sprintf (str, "review_all.geometry:    %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review_all.mapped:      %s\n",
+                  booleanDefault ("review_all.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_all.allow")) != NULL)
         {
@@ -2613,15 +2609,12 @@ saveOptions ()
             sprintf (str, "review_team.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review_team.geometry")) != NULL)
-        {
-            sprintf (str, "review_team.geometry:   %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review_team.mapped", 0))
-            sprintf (str, "review_team.mapped:     on\n");
-        else
-            sprintf (str, "review_team.mapped:     off\n");
+        adefault = geometryDefault ("review_team.geometry");
+        sprintf (str, "review_team.geometry:   %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review_team.mapped:     %s\n",
+                  booleanDefault ("review_team.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_team.allow")) != NULL)
         {
@@ -2636,15 +2629,12 @@ saveOptions ()
             sprintf (str, "review_your.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review_your.geometry")) != NULL)
-        {
-            sprintf (str, "review_your.geometry:   %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review_your.mapped", 0))
-            sprintf (str, "review_your.mapped:     on\n");
-        else
-            sprintf (str, "review_your.mapped:     off\n");
+        adefault = geometryDefault ("review_your.geometry");
+        sprintf (str, "review_your.geometry:   %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review_your.mapped:     %s\n",
+                  booleanDefault ("review_your.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_your.allow")) != NULL)
         {
@@ -2659,15 +2649,12 @@ saveOptions ()
             sprintf (str, "review_kill.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review_kill.geometry")) != NULL)
-        {
-            sprintf (str, "review_kill.geometry:   %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review_kill.mapped", 0))
-            sprintf (str, "review_kill.mapped:     on\n");
-        else
-            sprintf (str, "review_kill.mapped:     off\n");
+        adefault = geometryDefault ("review_kill.geometry");
+        sprintf (str, "review_kill.geometry:   %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review_kill.mapped:     %s\n",
+                  booleanDefault ("review_kill.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_kill.allow")) != NULL)
         {
@@ -2682,15 +2669,12 @@ saveOptions ()
             sprintf (str, "review_phaser.parent:   %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review_phaser.geometry")) != NULL)
-        {
-            sprintf (str, "review_phaser.geometry: %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review_phaser.mapped", 0))
-            sprintf (str, "review_phaser.mapped:   on\n");
-        else
-            sprintf (str, "review_phaser.mapped:   off\n");
+        adefault = geometryDefault ("review_phaser.geometry");
+        sprintf (str, "review_phaser.geometry: %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review_phaser.mapped:   %s\n",
+                  booleanDefault ("review_phaser.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_phaser.allow")) != NULL)
         {
@@ -2705,15 +2689,12 @@ saveOptions ()
             sprintf (str, "review.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("review.geometry")) != NULL)
-        {
-            sprintf (str, "review.geometry:        %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("review.mapped", 1))
-            sprintf (str, "review.mapped:          on\n");
-        else
-            sprintf (str, "review.mapped:          off\n");
+        adefault = geometryDefault ("review.geometry");
+        sprintf (str, "review.geometry:        %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "review.mapped:          %s\n",
+                  booleanDefault ("review.mapped", 1) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review.allow")) != NULL)
         {
@@ -2728,15 +2709,12 @@ saveOptions ()
             sprintf (str, "pingStats.parent:       %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("pingStats.geometry")) != NULL)
-        {
-            sprintf (str, "pingStats.geometry:     %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("pingStats.mapped", 0))
-            sprintf (str, "pingStats.mapped:       on\n");
-        else
-            sprintf (str, "pingStats.mapped:       off\n");
+        adefault = geometryDefault ("pingStats.geometry");
+        sprintf (str, "pingStats.geometry:     %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "pingStats.mapped:       %s\n",
+                  booleanDefault ("pingStats.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2746,15 +2724,12 @@ saveOptions ()
             sprintf (str, "UDP.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("UDP.geometry")) != NULL)
-        {
-            sprintf (str, "UDP.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("UDP.mapped", 0))
-            sprintf (str, "UDP.mapped:             on\n");
-        else
-            sprintf (str, "UDP.mapped:             off\n");
+        adefault = geometryDefault ("UDP.geometry");
+        sprintf (str, "UDP.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "UDP.mapped:             %s\n",
+                  booleanDefault ("UDP.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2765,15 +2740,12 @@ saveOptions ()
             sprintf (str, "network.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("network.geometry")) != NULL)
-        {
-            sprintf (str, "network.geometry:       %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("network.mapped", 0))
-            sprintf (str, "network.mapped:         on\n");
-        else
-            sprintf (str, "network.mapped:         off\n");
+        adefault = geometryDefault ("network.geometry");
+        sprintf (str, "network.geometry:       %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "network.mapped:         %s\n",
+                  booleanDefault ("network.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2785,15 +2757,12 @@ saveOptions ()
             sprintf (str, "tools.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("tools.geometry")) != NULL)
-        {
-            sprintf (str, "tools.geometry:         %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("tools.mapped", 0))
-            sprintf (str, "tools.mapped:           on\n");
-        else
-            sprintf (str, "tools.mapped:           off\n");
+        adefault = geometryDefault ("tools.geometry");
+        sprintf (str, "tools.geometry:         %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "tools.mapped:           %s\n",
+                  booleanDefault ("tools.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2805,15 +2774,12 @@ saveOptions ()
             sprintf (str, "xtrekrc_help.parent:    %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("xtrekrc_help.geometry")) != NULL)
-        {
-            sprintf (str, "xtrekrc_help.geometry:  %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("xtrekrc_help.mapped", 0))
-            sprintf (str, "xtrekrc_help.mapped:    on\n");
-        else
-            sprintf (str, "xtrekrc_help.mapped:    off\n");
+        adefault = geometryDefault ("xtrekrc_help.geometry");
+        sprintf (str, "xtrekrc_help.geometry:  %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "xtrekrc_help.mapped:    %s\n",
+                  booleanDefault ("xtrekrc_help.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2825,15 +2791,12 @@ saveOptions ()
             sprintf (str, "DocWin.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("DocWin.geometry")) != NULL)
-        {
-            sprintf (str, "DocWin.geometry:        %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("DocWin.mapped", 0))
-            sprintf (str, "DocWin.mapped:          on\n");
-        else
-            sprintf (str, "DocWin.mapped:          off\n");
+        adefault = geometryDefault ("DocWin.geometry");
+        sprintf (str, "DocWin.geometry:        %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "DocWin.mapped:          %s\n",
+                  booleanDefault ("DocWin.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2843,15 +2806,12 @@ saveOptions ()
             sprintf (str, "xtrekrcWin.parent:      %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("xtrekrcWin.geometry")) != NULL)
-        {
-            sprintf (str, "xtrekrcWin.geometry:    %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("xtrekrcWin.mapped", 0))
-            sprintf (str, "xtrekrcWin.mapped:      on\n");
-        else
-            sprintf (str, "xtrekrcWin.mapped:      off\n");
+        adefault = geometryDefault ("xtrekrcWin.geometry");
+        sprintf (str, "xtrekrcWin.geometry:    %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "xtrekrcWin.mapped:      %s\n",
+                  booleanDefault ("xtrekrcWin.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2862,11 +2822,10 @@ saveOptions ()
             sprintf (str, "fed.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("fed.geometry")) != NULL)
-        {
-            sprintf (str, "fed.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("fed.geometry");
+        sprintf (str, "fed.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Kli team window - always mapped
@@ -2875,11 +2834,10 @@ saveOptions ()
             sprintf (str, "kli.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("kli.geometry")) != NULL)
-        {
-            sprintf (str, "kli.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("kli.geometry");
+        sprintf (str, "kli.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Ori team window - always mapped
@@ -2888,11 +2846,10 @@ saveOptions ()
             sprintf (str, "ori.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("ori.geometry")) != NULL)
-        {
-            sprintf (str, "ori.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("ori.geometry");
+        sprintf (str, "ori.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Rom team window - always mapped
@@ -2901,11 +2858,10 @@ saveOptions ()
             sprintf (str, "rom.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("rom.geometry")) != NULL)
-        {
-            sprintf (str, "rom.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("rom.geometry");
+        sprintf (str, "rom.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Quit window - always mapped
@@ -2914,11 +2870,10 @@ saveOptions ()
             sprintf (str, "quit.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("quit.geometry")) != NULL)
-        {
-            sprintf (str, "quit.geometry:          %s\n", adefault);
-            fputs (str, fp);
-        }
+        adefault = geometryDefault ("quit.geometry");
+        sprintf (str, "quit.geometry:          %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
         fputs ("\n", fp);
 
         // Stats window
@@ -2927,15 +2882,12 @@ saveOptions ()
             sprintf (str, "stats.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("stats.geometry")) != NULL)
-        {
-            sprintf (str, "stats.geometry:         %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("stats.mapped", 0))
-            sprintf (str, "stats.mapped:           on\n");
-        else
-            sprintf (str, "stats.mapped:           off\n");
+        adefault = geometryDefault ("stats.geometry");
+        sprintf (str, "stats.geometry:         %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "stats.mapped:           %s\n",
+                  booleanDefault ("stats.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2945,15 +2897,12 @@ saveOptions ()
             sprintf (str, "war.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("war.geometry")) != NULL)
-        {
-            sprintf (str, "war.geometry:           %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("war.mapped", 0))
-            sprintf (str, "war.mapped:             on\n");
-        else
-            sprintf (str, "war.mapped:             off\n");
+        adefault = geometryDefault ("war.geometry");
+        sprintf (str, "war.geometry:           %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "war.mapped:             %s\n",
+                  booleanDefault ("war.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2963,15 +2912,12 @@ saveOptions ()
             sprintf (str, "sound.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        if ((adefault = stringDefault ("sound.geometry")) != NULL)
-        {
-            sprintf (str, "sound.geometry:         %s\n", adefault);
-            fputs (str, fp);
-        }
-        if (booleanDefault ("sound.mapped", 0))
-            sprintf (str, "sound.mapped:           on\n");
-        else
-            sprintf (str, "sound.mapped:           off\n");
+        adefault = geometryDefault ("sound.geometry");
+        sprintf (str, "sound.geometry:         %s\n",
+                 (adefault != NULL) ? adefault : "auto");
+        fputs (str, fp);
+        sprintf (str, "sound.mapped:           %s\n",
+                  booleanDefault ("sound.mapped", 0) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
         
@@ -3341,8 +3287,81 @@ saveOptions ()
             sprintf (str, "msg.%s: %s\n", dm->name, dm->macro);
             fputs (str, fp);
         }
+        fputs ("\n", fp);
+
+        if (saveBig)
+            fputs ("\n", fp);
     }
 #endif
+
+    if (saveBig)
+    {
+        fputs ("# Esoteric features such as individual ship rcfiles/keymaps\n", fp);
+        fputs ("# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer\n", fp);
+        fputs ("# /servertype options (i.e. keymap.bronco: <keymap>)\n", fp);
+    }
+    // Individual ship type settings
+    for (j = NUM_TYPES; j >= 0; j--)
+    {
+        STRNCPY (str1, "rcfile-", 8);
+        strcat (str1, shipdefaults[j].name);
+        adefault = stringDefault (str1);
+        if (adefault != NULL)
+        {
+            sprintf (str, "%s: %s\n", str1, adefault);
+            fputs (str, fp);
+        }
+
+
+        STRNCPY (str1, "keymap-", 8);
+        strcat (str1, shipdefaults[j].name);
+        adefault = stringDefault (str1);
+        if (adefault != NULL)
+        {
+            sprintf (str, "%s: %s\n", str1, adefault);
+            fputs (str, fp);
+        }
+
+        STRNCPY (str1, "ckeymap-", 9);
+        strcat (str1, shipdefaults[j].name);
+        adefault = stringDefault (str1);
+        if (adefault != NULL)
+        {
+            sprintf (str, "%s: %s\n", str1, adefault);
+            fputs (str, fp);
+        }
+
+        STRNCPY (str1, "buttonmap-", 11);
+        strcat (str1, shipdefaults[j].name);
+        adefault = stringDefault (str1);
+        if (adefault != NULL)
+        {
+            sprintf (str, "%s: %s\n", str1, adefault);
+            fputs (str, fp);
+        }
+    }
+    if (saveBig)
+        fputs ("\n", fp);
+
+    // Servername/nick/observer settings 
+    sl = defaults;
+    while (sl != NULL)
+    {
+        if (strstr (sl->string, ".observer")
+            || strstr (sl->string, ".paradise")
+            || strstr (sl->string, ".bronco")
+            || strstr (sl->string, ".chaos")
+            || strstr (sl->string, ".inl")
+            || strstr (sl->string, ".sturgeon")
+            || strstr (sl->string, ".hockey")
+            || strstr (sl->string, ".dogfight")
+            || strstr (sl->string, ".unknown"))
+        {
+            sprintf (str, "%s: %s\n", sl->string, sl->value);
+            fputs (str, fp);
+        }
+        sl = sl->next;
+    }
 
     fclose (fp);
 }

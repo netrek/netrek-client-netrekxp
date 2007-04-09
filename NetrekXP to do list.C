@@ -1,4 +1,4 @@
-List for the netrekrc/installer:
+List for the installer:
 1) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
 2) fix netrekrc append so that it doesn't keep adding new lines to the netrekrc
@@ -26,7 +26,6 @@ old AddFontResource function.
 Things to do:
 1) resizeable message windows.  Perhaps memory of window positions if you choose
 to save settings.  Text in windows should adjust to new window size.
-2) Save options for observer/servernick/servertype need to be saved
 3) Get square planet bitmaps so I can turn them into mapped rotating globes.
 5) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
 this is fixed.

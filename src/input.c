@@ -2259,7 +2259,10 @@ Key38 (void)
 void
 Key39 (void)
 {
-    emptyKey ();
+    if (W_IsMapped (playerw2))
+        W_UnmapWindow (playerw2);
+    else
+        W_MapWindow (playerw2);
 }
 
 /******************************************************************************/
@@ -2567,12 +2570,6 @@ void
 Key65 (W_Event * data)
 {
     emptyKey ();
-/*
-    if (W_IsMapped (playerw2))
-        W_UnmapWindow (playerw2);
-    else
-        W_MapWindow (playerw2);
-*/
 }
 
 /******************************************************************************/

@@ -1,4 +1,17 @@
 Netrek XP 2006, Version 1.3:
+- working on getting window placements and sizes to save with the in-game save key,
+  For the most part you the user will never need to manually edit the netrekrc again,
+  well maybe for changing login name or making macros.
+- new netrekrc option "saveFile: name" to control what filename you write to when you
+  save your options in game (either with " key or via the save menu).  Default is now
+  netrekrc, so that means if you save in-game, it will overwrite your netrekrc with
+  your current settings (I have a feeling the benefits of this strongly outweigh the
+  negatives such as mistakenly remapping things then mistakenly saving your netrekrc)
+- the netrekrc save feature now saves ship specific keymaps/ckeymaps/buttonmaps/netrekrc,
+  and observer/servertype specific options.  Saving servernick options is not supported,
+  but I doubt anyone uses those to begin with.
+- the ' key (single quote) is now the default key for toggling on and off the expanded
+  playerlist window
 - now get a popup box when client receives a game shutdown message from server, indicating
   that the game has been terminated and to try again later
 - the mainResizeable netrekrc option now allows map/local to be resizeable via dragging

@@ -4886,7 +4886,7 @@ checkGeometry (char *name,
     int result = 0;
 
     sprintf (buf, "%s.geometry", name);
-    geom_default = stringDefault (buf);
+    geom_default = geometryDefault (buf);
     if (!geom_default)
         return 0;               /* nothing set */
     s = geom_default;

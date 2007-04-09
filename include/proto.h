@@ -105,6 +105,7 @@ int strncmpi (char *str1, char *str2, int max);
 int booleanDefault (char *def, int preferred);
 int intDefault (char *def, int preferred);
 char *stringDefault (char *str);
+char *geometryDefault (char *str);
 int findDefaults (char *deffile, char *file);
 void resetdefaults (void);
 void shipchange (int type);

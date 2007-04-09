@@ -1112,11 +1112,6 @@ text left over is ignored.  Only the highlite argument matter.
  
      Additional defaults:
 
-planetCycleTime:        highlighting time for planets
-playerCycleTime:        highlighting time for players
-
-tts_color:              color of TTS message (should be dark)
-tts_font:               Font (large prefered)
 tts_max_len:            Max length of a message
 tts_time:               Time a TTS message is displayed
 tts_ypos:               y location of the TTS message
