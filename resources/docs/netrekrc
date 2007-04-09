@@ -1083,6 +1083,7 @@ msg.destroy: %N->%Z %N destroyed by %i (%T%c)
 msg.take: %N->%O %N taken by %i (%T%c)
 msg.ghostbust: GOD->ALL %i (%S) (%T%c) was kill %k for the GhostBusters
 
+
 # Esoteric features such as individual ship rcfiles/keymaps
-# /ckeymaps/buttonmaps, and observer/servernick/servertype
-# options (i.e. keymap.bronco: <keymap>)
+# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer
+# /servertype options (i.e. keymap.bronco: <keymap>)

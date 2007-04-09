@@ -7,9 +7,9 @@ Netrek XP 2006, Version 1.3:
   netrekrc, so that means if you save in-game, it will overwrite your netrekrc with
   your current settings (I have a feeling the benefits of this strongly outweigh the
   negatives such as mistakenly remapping things then mistakenly saving your netrekrc)
-- the netrekrc save feature now saves ship specific keymaps/ckeymaps/buttonmaps/netrekrc,
-  and observer/servertype specific options.  Saving servernick options is not supported,
-  but I doubt anyone uses those to begin with.
+- the netrekrc save feature now saves all ckeymaps, ship specific keymaps/ckeymap
+  /buttonmaps/netrekrc, and observer/servertype specific options.  Saving servernick
+  options is not supported, but I doubt anyone uses those to begin with.
 - the ' key (single quote) is now the default key for toggling on and off the expanded
   playerlist window
 - now get a popup box when client receives a game shutdown message from server, indicating

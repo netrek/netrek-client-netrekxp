@@ -2210,6 +2210,18 @@ saveOptions ()
     if (saveBig && strlen (str) != 0)
         fputs ("\n", fp);
 
+    // Ckeymap
+    if (saveBig && (adefault = stringDefault ("ckeymap")) != 0)
+        fputs ("# Control-key key mapping\n", fp);
+        
+    if (adefault)
+    {
+        sprintf (str, "ckeymap: %s\n", adefault);
+        fputs (str, fp);
+    }
+    if (saveBig && adefault)
+        fputs ("\n", fp);
+        
     // Let's print buttonmap
     str[0] = '\0';
     str1[0] = '\0';
@@ -3340,8 +3352,6 @@ saveOptions ()
             fputs (str, fp);
         }
     }
-    if (saveBig)
-        fputs ("\n", fp);
 
     // Servername/nick/observer settings 
     sl = defaults;
