@@ -490,6 +490,7 @@ struct save_options save_options[] = {
             "1 - players",
             "2 - observers",
             "3 - players, then observers",
+            "4 - playerlist is off",
             NULL
         }
     },
@@ -2451,7 +2452,7 @@ saveOptions ()
             sprintf (str, "netrek.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("netrek.geometry");
+        adefault = checkWindowsGeometry (baseWin);
         sprintf (str, "netrek.geometry:        %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2463,7 +2464,7 @@ saveOptions ()
             sprintf (str, "local.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("local.geometry");
+        adefault = checkWindowsGeometry (w);
         sprintf (str, "local.geometry:         %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2475,7 +2476,7 @@ saveOptions ()
             sprintf (str, "map.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("map.geometry");
+        adefault = checkWindowsGeometry (mapw);
         sprintf (str, "map.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2487,24 +2488,24 @@ saveOptions ()
             sprintf (str, "tstat.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("tstat.geometry");
+        adefault = checkWindowsGeometry (tstatw);
         sprintf (str, "tstat.geometry:         %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         fputs ("\n", fp);
 
-        // Message window - preferred mapped
+        // Message window
         if ((adefault = stringDefault ("message.parent")) != NULL)
         {
             sprintf (str, "message.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("message.geometry");
+        adefault = checkWindowsGeometry (messagew);
         sprintf (str, "message.geometry:       %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "message.mapped:         %s\n",
-                 booleanDefault ("message.mapped", 1) ? "on" : "off");
+                 W_IsMapped (messagew) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2514,7 +2515,7 @@ saveOptions ()
             sprintf (str, "warn.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("warn.geometry");
+        adefault = checkWindowsGeometry (warnw);
         sprintf (str, "warn.geometry:          %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2526,12 +2527,12 @@ saveOptions ()
             sprintf (str, "planet.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("planet.geometry");
+        adefault = checkWindowsGeometry (planetw);
         sprintf (str, "planet.geometry:        %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "planet.mapped:          %s\n",
-                 booleanDefault ("planet.mapped", 0) ? "on" : "off");
+                 W_IsMapped (planetw) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2541,27 +2542,27 @@ saveOptions ()
             sprintf (str, "rank.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("rank.geometry");
+        adefault = checkWindowsGeometry (rankw);
         sprintf (str, "rank.geometry:          %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "rank.mapped:            %s\n",
-                 booleanDefault ("rank.mapped", 0) ? "on" : "off");
+                 W_IsMapped (rankw) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
-        // Playerlist window - preferred mapped
+        // Playerlist window
         if ((adefault = stringDefault ("player.parent")) != NULL)
         {
             sprintf (str, "player.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("player.geometry");
+        adefault = checkWindowsGeometry (playerw);
         sprintf (str, "player.geometry:        %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "player.mapped:          %s\n",
-                  booleanDefault ("player.mapped", 1) ? "on" : "off");
+                  W_IsMapped (playerw) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2571,12 +2572,12 @@ saveOptions ()
             sprintf (str, "player2.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("player2.geometry");
+        adefault = checkWindowsGeometry (playerw2);
         sprintf (str, "player2.geometry:       %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "player2.mapped:         %s\n",
-                  booleanDefault ("player2.mapped", 0) ? "on" : "off");
+                  W_IsMapped (playerw2) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2586,12 +2587,12 @@ saveOptions ()
             sprintf (str, "help.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("help.geometry");
+        adefault = checkWindowsGeometry (helpWin);
         sprintf (str, "help.geometry:          %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "help.mapped:            %s\n",
-                  booleanDefault ("help.mapped", 0) ? "on" : "off");
+                  W_IsMapped (helpWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
         
@@ -2601,12 +2602,12 @@ saveOptions ()
             sprintf (str, "review_all.parent:      %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review_all.geometry");
+        adefault = checkWindowsGeometry (messwa);
         sprintf (str, "review_all.geometry:    %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review_all.mapped:      %s\n",
-                  booleanDefault ("review_all.mapped", 0) ? "on" : "off");
+                  W_IsMapped (messwa) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_all.allow")) != NULL)
         {
@@ -2621,12 +2622,12 @@ saveOptions ()
             sprintf (str, "review_team.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review_team.geometry");
+        adefault = checkWindowsGeometry (messwt);
         sprintf (str, "review_team.geometry:   %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review_team.mapped:     %s\n",
-                  booleanDefault ("review_team.mapped", 0) ? "on" : "off");
+                  W_IsMapped (messwt) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_team.allow")) != NULL)
         {
@@ -2641,12 +2642,12 @@ saveOptions ()
             sprintf (str, "review_your.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review_your.geometry");
+        adefault = checkWindowsGeometry (messwi);
         sprintf (str, "review_your.geometry:   %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review_your.mapped:     %s\n",
-                  booleanDefault ("review_your.mapped", 0) ? "on" : "off");
+                  W_IsMapped (messwi) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_your.allow")) != NULL)
         {
@@ -2661,12 +2662,12 @@ saveOptions ()
             sprintf (str, "review_kill.parent:     %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review_kill.geometry");
+        adefault = checkWindowsGeometry (messwk);
         sprintf (str, "review_kill.geometry:   %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review_kill.mapped:     %s\n",
-                  booleanDefault ("review_kill.mapped", 0) ? "on" : "off");
+                  W_IsMapped (messwk) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_kill.allow")) != NULL)
         {
@@ -2681,12 +2682,12 @@ saveOptions ()
             sprintf (str, "review_phaser.parent:   %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review_phaser.geometry");
+        adefault = checkWindowsGeometry (phaserwin);
         sprintf (str, "review_phaser.geometry: %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review_phaser.mapped:   %s\n",
-                  booleanDefault ("review_phaser.mapped", 0) ? "on" : "off");
+                  W_IsMapped (phaserwin) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review_phaser.allow")) != NULL)
         {
@@ -2695,18 +2696,18 @@ saveOptions ()
         }
         fputs ("\n", fp);
 
-        // Review window - preferred mapped
+        // Review window
         if ((adefault = stringDefault ("review.parent")) != NULL)
         {
             sprintf (str, "review.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("review.geometry");
+        adefault = checkWindowsGeometry (reviewWin);
         sprintf (str, "review.geometry:        %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "review.mapped:          %s\n",
-                  booleanDefault ("review.mapped", 1) ? "on" : "off");
+                  W_IsMapped (reviewWin) ? "on" : "off");
         fputs (str, fp);
         if ((adefault = stringDefault ("review.allow")) != NULL)
         {
@@ -2721,12 +2722,12 @@ saveOptions ()
             sprintf (str, "pingStats.parent:       %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("pingStats.geometry");
+        adefault = checkWindowsGeometry (pStats);
         sprintf (str, "pingStats.geometry:     %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "pingStats.mapped:       %s\n",
-                  booleanDefault ("pingStats.mapped", 0) ? "on" : "off");
+                  W_IsMapped (pStats) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2736,12 +2737,12 @@ saveOptions ()
             sprintf (str, "UDP.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("UDP.geometry");
+        adefault = checkWindowsGeometry (udpWin);
         sprintf (str, "UDP.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "UDP.mapped:             %s\n",
-                  booleanDefault ("UDP.mapped", 0) ? "on" : "off");
+                  W_IsMapped (udpWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2752,12 +2753,12 @@ saveOptions ()
             sprintf (str, "network.parent:         %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("network.geometry");
+        adefault = checkWindowsGeometry (spWin);
         sprintf (str, "network.geometry:       %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "network.mapped:         %s\n",
-                  booleanDefault ("network.mapped", 0) ? "on" : "off");
+                  W_IsMapped (spWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2769,12 +2770,12 @@ saveOptions ()
             sprintf (str, "tools.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("tools.geometry");
+        adefault = checkWindowsGeometry (toolsWin);
         sprintf (str, "tools.geometry:         %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "tools.mapped:           %s\n",
-                  booleanDefault ("tools.mapped", 0) ? "on" : "off");
+                  W_IsMapped (toolsWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2786,12 +2787,12 @@ saveOptions ()
             sprintf (str, "xtrekrc_help.parent:    %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("xtrekrc_help.geometry");
+        adefault = checkWindowsGeometry (defWin);
         sprintf (str, "xtrekrc_help.geometry:  %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "xtrekrc_help.mapped:    %s\n",
-                  booleanDefault ("xtrekrc_help.mapped", 0) ? "on" : "off");
+                  W_IsMapped (defWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2803,12 +2804,12 @@ saveOptions ()
             sprintf (str, "DocWin.parent:          %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("DocWin.geometry");
+         adefault = checkWindowsGeometry (docwin);
         sprintf (str, "DocWin.geometry:        %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "DocWin.mapped:          %s\n",
-                  booleanDefault ("DocWin.mapped", 0) ? "on" : "off");
+                  W_IsMapped (docwin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2818,12 +2819,12 @@ saveOptions ()
             sprintf (str, "xtrekrcWin.parent:      %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("xtrekrcWin.geometry");
+        adefault = checkWindowsGeometry (xtrekrcwin);
         sprintf (str, "xtrekrcWin.geometry:    %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "xtrekrcWin.mapped:      %s\n",
-                  booleanDefault ("xtrekrcWin.mapped", 0) ? "on" : "off");
+                  W_IsMapped (xtrekrcwin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 #endif
@@ -2834,7 +2835,7 @@ saveOptions ()
             sprintf (str, "fed.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("fed.geometry");
+        adefault = checkWindowsGeometry (teamWin[0]);
         sprintf (str, "fed.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2846,7 +2847,7 @@ saveOptions ()
             sprintf (str, "kli.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("kli.geometry");
+        adefault = checkWindowsGeometry (teamWin[2]);
         sprintf (str, "kli.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2858,7 +2859,7 @@ saveOptions ()
             sprintf (str, "ori.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("ori.geometry");
+        adefault = checkWindowsGeometry (teamWin[3]);
         sprintf (str, "ori.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2870,7 +2871,7 @@ saveOptions ()
             sprintf (str, "rom.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("rom.geometry");
+        adefault = checkWindowsGeometry (teamWin[1]);
         sprintf (str, "rom.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2882,7 +2883,7 @@ saveOptions ()
             sprintf (str, "quit.parent:            %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("quit.geometry");
+         adefault = checkWindowsGeometry (qwin);
         sprintf (str, "quit.geometry:          %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
@@ -2894,12 +2895,12 @@ saveOptions ()
             sprintf (str, "stats.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("stats.geometry");
+        adefault = checkWindowsGeometry (statwin);
         sprintf (str, "stats.geometry:         %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "stats.mapped:           %s\n",
-                  booleanDefault ("stats.mapped", 0) ? "on" : "off");
+                  W_IsMapped (statwin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2909,12 +2910,12 @@ saveOptions ()
             sprintf (str, "war.parent:             %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("war.geometry");
+        adefault = checkWindowsGeometry (war);
         sprintf (str, "war.geometry:           %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "war.mapped:             %s\n",
-                  booleanDefault ("war.mapped", 0) ? "on" : "off");
+                  W_IsMapped (war) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
 
@@ -2924,12 +2925,12 @@ saveOptions ()
             sprintf (str, "sound.parent:           %s\n", adefault);
             fputs (str, fp);
         }
-        adefault = geometryDefault ("sound.geometry");
+        adefault = checkWindowsGeometry (soundWin);
         sprintf (str, "sound.geometry:         %s\n",
                  (adefault != NULL) ? adefault : "auto");
         fputs (str, fp);
         sprintf (str, "sound.mapped:           %s\n",
-                  booleanDefault ("sound.mapped", 0) ? "on" : "off");
+                  W_IsMapped (soundWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
         

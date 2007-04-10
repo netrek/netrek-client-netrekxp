@@ -202,10 +202,12 @@ playerListHack:           (on/off) if player's letter is greater than 'f' suppos
 playerListMessaging:      (on/off) allow messages to be sent to players by clicking player
                                    on the player list window
 
-playerlistObserver:       (0-2) what kind of players to show
+playerlistObserver:       (0-4) what kind of players to show
 # 0 - all (default)
 # 1 - players
 # 2 - observers
+# 3 - players, then observers
+# 4 - playerlist is off
 
 playerListStyle:          (0-4) what player list style to use
 # 0 - custom style as defined in playerList

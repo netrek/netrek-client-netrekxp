@@ -1118,6 +1118,7 @@ newWindow (char *name,
     HDC hdc;
     char title_buff[100];
     char *s;
+    int actual_x, actual_y, actual_width, actual_height;
     DWORD SpecialStyle = 0;
 
     if (!(window = (Window *) malloc (sizeof (Window))))
@@ -1209,22 +1210,26 @@ newWindow (char *name,
     strcpy (window->name, name);
     window->parent = parentwin;
 
+    /* Preprocess the actual coordinates */
+    actual_x = x + parentwin->border;
+    actual_y = y + parentwin->border;
+    actual_width = width + border * 2;
+    actual_height = height + border * 2;
+
     //Actually create the window
     //Hacked to allow negative create locations -SAC
     if (window->type == WIN_RICHTEXT)
     {
         window->hwnd = CreateWindowEx (0, RICHEDIT_CLASS, "",
-                                       WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CHILD |
+                                       WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CHILD | WS_THICKFRAME |
                                        WS_VSCROLL | WS_BORDER | ES_READONLY | ES_MULTILINE,
-                                       x + parentwin->border, y + parentwin->border,
-                                       width + border * 2, height + border * 2,
+                                       actual_x, actual_y, actual_width, actual_height,
                                        parentwin->hwnd, NULL, MyInstance, (void *) window);
     }
     else
     {
         window->hwnd = CreateWindow (ClassName, s, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | SpecialStyle, 
-                                    x + parentwin->border, y + parentwin->border, 
-                                    width + border * 2, height + border * 2 + 
+                                    actual_x, actual_y, actual_width, actual_height + 
                                     ((SpecialStyle & WS_CAPTION) ? GetSystemMetrics (SM_CYCAPTION) : 0), 
                                     parentwin->hwnd, NULL, MyInstance, (void *) window);      
                                     //Pass Window struct * as user param
@@ -1236,6 +1241,13 @@ newWindow (char *name,
         return (0);
     }
 
+    /* Set actual locations for later comparison, note we don't
+       record any height adjustment caused by title bar (WS_CAPTION) */
+    window->actual_x = actual_x;
+    window->actual_y = actual_y;
+    window->actual_width = actual_width;
+    window->actual_height = actual_height;
+    
     //Select the custom palette if we're in a paletted mode
     hdc = GetDC (window->hwnd);
     if (NetrekPalette)
@@ -1262,12 +1274,6 @@ W_MakeWindow (char *name,
               W_Color color)
 {
     Window *newwin;
-    int orig_x, orig_y, orig_width, orig_height;
-
-    orig_x = x;
-    orig_y = y;
-    orig_width = width;
-    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1282,10 +1288,10 @@ W_MakeWindow (char *name,
         return (0);
         
     /* Set original coordinates, so we will be able to restore to them */
-    newwin->orig_x = orig_x;
-    newwin->orig_y = orig_y;
-    newwin->orig_width = orig_width;
-    newwin->orig_height = orig_height;
+    newwin->orig_x = x;
+    newwin->orig_y = y;
+    newwin->orig_width = width;
+    newwin->orig_height = height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1310,12 +1316,6 @@ W_MakeTextWindow (char *name,
                   int border)
 {
     Window *newwin;
-    int orig_x, orig_y, orig_width, orig_height;
-
-    orig_x = x;
-    orig_y = y;
-    orig_width = width;
-    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1334,10 +1334,10 @@ W_MakeTextWindow (char *name,
     newwin->TextWidth = (short) width;
     
     /* Set original coordinates, so we will be able to restore to them */
-    newwin->orig_x = orig_x;
-    newwin->orig_y = orig_y;
-    newwin->orig_width = orig_width;
-    newwin->orig_height = orig_height;
+    newwin->orig_x = x;
+    newwin->orig_y = y;
+    newwin->orig_width = width;
+    newwin->orig_height = height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1359,12 +1359,6 @@ W_MakeScrollingWindow (char *name,
                        int border)
 {
     Window *newwin;
-    int orig_x, orig_y, orig_width, orig_height;
-
-    orig_x = x;
-    orig_y = y;
-    orig_width = width;
-    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1384,10 +1378,10 @@ W_MakeScrollingWindow (char *name,
     newwin->TextWidth = (short) width;
     
     /* Set original coordinates, so we will be able to restore to them */
-    newwin->orig_x = orig_x;
-    newwin->orig_y = orig_y;
-    newwin->orig_width = orig_width;
-    newwin->orig_height = orig_height;
+    newwin->orig_x = x;
+    newwin->orig_y = y;
+    newwin->orig_width = width;
+    newwin->orig_height = height;
 
     //Give it a scroll bar, and set the range (to zero, initially)
     SetWindowLongPtr (newwin->hwnd, GWL_STYLE,
@@ -1416,14 +1410,7 @@ W_MakeMenu (char *name,
 {
     struct menuItem *items;
     Window *newwin;
-
     int i;
-    int orig_x, orig_y, orig_width, orig_height;
-
-    orig_x = x;
-    orig_y = y;
-    orig_width = width;
-    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -1453,10 +1440,10 @@ W_MakeMenu (char *name,
     newwin->TextHeight = (short) height;
     
     /* Set original coordinates, so we will be able to restore to them */
-    newwin->orig_x = orig_x;
-    newwin->orig_y = orig_y;
-    newwin->orig_width = orig_width;
-    newwin->orig_height = orig_height;
+    newwin->orig_x = x;
+    newwin->orig_y = y;
+    newwin->orig_width = width;
+    newwin->orig_height = height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1972,8 +1959,8 @@ NetrekWndProc (HWND hwnd,
         // Redo critical windows
         // Clear window
         if (windowMove && (Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
-        {
-            TWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right);
+        { 
+            TWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right) + win->border;
 
             // Have to reinitialize SDB
             SelectObject (localSDB->mem_dc, localSDB->old_bmp);
@@ -2003,7 +1990,7 @@ NetrekWndProc (HWND hwnd,
         }
         else if (windowMove && (Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
         {
-            GWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right);
+            GWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right) + win->border;
 
             // Have to reinitialize SDB
             SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
@@ -2253,6 +2240,7 @@ NetrekWndProc (HWND hwnd,
                 r.left -= GetSystemMetrics (SM_CXBORDER);
                 r.top -= GetSystemMetrics (SM_CYBORDER);
             }
+            mainTitleBar = !mainTitleBar;
             SetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE, wl);
             // Update the window since the height has changed
             MoveWindow (((Window *) baseWin)->hwnd, r.left, r.top,
@@ -5621,7 +5609,79 @@ SetTrekSysColors (void)
     return;
 }
 
-/* Reread rc for geometry changes and update window if geometry was changed */
+/* Check window's original position against current position, if different,
+   return a char string that is the equivalent of what the netrekrc entry
+   for that window geometry would be */
+   
+char *
+checkWindowsGeometry (W_Window window)
+{
+    char str[256];
+    WINDOWPLACEMENT loc;
+    int x, y, width, height;
+    register Window *win;
+
+    if (!window)
+        return (NULL);
+
+    win = (Window *)window;
+
+    loc.length = sizeof (WINDOWPLACEMENT); /* Have to set this */
+    
+    if (GetWindowPlacement (win->hwnd, &loc))
+    {
+        x = loc.rcNormalPosition.left;
+        y = loc.rcNormalPosition.top;
+        width = loc.rcNormalPosition.right - loc.rcNormalPosition.left;
+        height = loc.rcNormalPosition.bottom - loc.rcNormalPosition.top;
+
+        if (x != win->actual_x || y != win->actual_y
+         || width != win->actual_width || height != win->actual_height)
+        {
+            /* TODO: fix main window so it takes into account all
+               the SYS_CAPTION/border size changes, too messy for now */
+            if (strcmpi (win->name, "netrek") == 0)
+                return (geometryDefault (str));
+            /* Let's keep local and map windows square! */
+            else if (strcmpi (win->name, "local") == 0)
+            {
+                if (width > height)
+                    width = height;
+                else if (height > width)
+                    height = width;
+            }
+            else if (strcmpi (win->name, "map") == 0)
+            {
+                if (width > height)
+                    width = height;
+                else if (height > width)
+                    height = width;
+            }
+            
+            /* To convert actual window location into a netrekrc format,
+               we need to know the inherent conversion difference between
+               what the netrekrc says (e.g. local.geometry: 500x500+0+0)
+               and what size/location window is actually created (e.g. 
+               local window is 506x506 pixels at (x,y) = (1,1)).  So we
+               subtract the actual values minus the original values to
+               get the conversion factor */
+            sprintf (str, "%dx%d+%d+%d",
+		    width - (win->actual_width - win->orig_width),
+		    height - (win->actual_height - win->orig_height),
+		    x - (win->actual_x - win->orig_x),
+		    y - (win->actual_y - win->orig_y));
+            return strdup (str);
+        }
+    }
+    /* Geometry hasn't changed, so use the default string from netrekrc
+       if there is one */
+    strcpy(str, win->name);
+    strcat(str, ".geometry");
+    return (geometryDefault (str));
+}
+
+/* Reread rc for geometry changes and update window if geometry was changed,
+*  currently unused and non-functional */
 void
 updateWindowsGeometry (W_Window window)
 {
@@ -5857,12 +5917,6 @@ W_MakeScrollingRichTextWindow (char *name,
                                int border)
 {
     Window *newwin;
-    int orig_x, orig_y, orig_width, orig_height;
-
-    orig_x = x;
-    orig_y = y;
-    orig_width = width;
-    orig_height = height;
 
     //Get the default position, etc.
     checkGeometry (name, &x, &y, &width, &height);
@@ -5890,10 +5944,10 @@ W_MakeScrollingRichTextWindow (char *name,
     newwin->TextWidth = width;
 
     /* Set original coordinates, so we will be able to restore to them */
-    newwin->orig_x = orig_x;
-    newwin->orig_y = orig_y;
-    newwin->orig_width = orig_width;
-    newwin->orig_height = orig_height;
+    newwin->orig_x = x;
+    newwin->orig_y = y;
+    newwin->orig_width = width;
+    newwin->orig_height = height;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))

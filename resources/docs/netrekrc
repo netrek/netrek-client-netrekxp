@@ -272,6 +272,7 @@ playerListMessaging: on
 # 1 - players
 # 2 - observers
 # 3 - players, then observers
+# 4 - playerlist is off
 playerListObserver: 3
 
 # Predefined player list

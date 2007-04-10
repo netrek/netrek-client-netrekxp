@@ -656,6 +656,10 @@ typedef struct tagWindow
     int orig_y;
     int orig_width;
     int orig_height;
+    int actual_x;
+    int actual_y;
+    int actual_width;
+    int actual_height;
     int wam;                    /* Window Allowed Messages */
     int sdb_flags;              /* SDB flags */
 }

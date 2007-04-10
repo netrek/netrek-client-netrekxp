@@ -767,6 +767,7 @@ void W_SetWindowName (W_Window window,
                       char *name);
 inline void ResetSysColors (void);
 inline void SetTrekSysColors (void);
+char * checkWindowsGeometry (W_Window win);
 void updateWindowsGeometry (W_Window win);
 void W_MessageAllowedWindows (int messtype,
                               int x,
