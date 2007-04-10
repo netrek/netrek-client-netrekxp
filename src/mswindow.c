@@ -1221,7 +1221,7 @@ newWindow (char *name,
     if (window->type == WIN_RICHTEXT)
     {
         window->hwnd = CreateWindowEx (0, RICHEDIT_CLASS, "",
-                                       WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CHILD | WS_THICKFRAME |
+                                       WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CHILD |
                                        WS_VSCROLL | WS_BORDER | ES_READONLY | ES_MULTILINE,
                                        actual_x, actual_y, actual_width, actual_height,
                                        parentwin->hwnd, NULL, MyInstance, (void *) window);

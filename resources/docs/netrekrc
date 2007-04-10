@@ -348,7 +348,7 @@ showAllTractorPressor: on
 # 1 - show army counts on local map only (default)
 # 2 - show army counts on galactic map only
 # 3 - show army counts on both maps
-showArmy: 1
+showArmy: 3
 
 # Show other cloakers on local
 # Server god decides whether to enable this feature

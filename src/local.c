@@ -1581,14 +1581,24 @@ DrawShips (void)
                 if (php->ph_status == PHMISS)
                 {
                     /* Here I will have to compute end coordinate */
-                    tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                Cos[php->ph_dir]);
+                    /* Server will sometimes send us this information though,
+                       so check if we have it first */
+                    if (php->ph_x > 0 && php->ph_y > 0)
+                    {
+                        tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
+                        ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
+                    }
+                    else
+                    {
+                        tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                    Cos[php->ph_dir]);
 
-                    ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                Sin[php->ph_dir]);
+                        ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                    Sin[php->ph_dir]);
 
-                    tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
-                    ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
+                        tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
+                        ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
+                    }
                 }
                 else if (php->ph_status == PHHIT2)
                 {

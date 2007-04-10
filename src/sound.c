@@ -437,6 +437,9 @@ extern void ChangeVolume (int vol)
     if (mvolume < 0)
         mvolume = 0;
     Mix_VolumeMusic(mvolume);
+    
+    // Change default
+    soundVolume = volume;
 }
 
 /* Sound options window stuff */

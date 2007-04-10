@@ -1130,7 +1130,7 @@ optiondone (void)
     *newbuttons = '\0';
     
     /* update login */
-    if (newlogin)
+    if (newlogin[0] != '\0')
     {
         STRNCPY (login, newlogin, PSEUDOSIZE);
         *newlogin = '\0';

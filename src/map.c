@@ -1202,10 +1202,20 @@ map (void)
                 {
                     case PHMISS:
                         /* Here I will have to compute end coordinate */
-                        tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
-                            * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
-                        ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
-                            * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
+                        /* Server will sometimes send us this information though,
+                           so check if we have it first */
+                        if (ph->ph_x > 0 && ph->ph_y > 0)
+                        {
+                            tx = ph->ph_x * GWINSIDE / GWIDTH;
+                            ty = ph->ph_y * GWINSIDE / GWIDTH;
+                        }
+                        else
+                        {
+                            tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
+                                * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
+                            ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
+                                * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
+                        }
                         break;
                     case PHHIT2:
                         tx = ph->ph_x * GWINSIDE / GWIDTH;
