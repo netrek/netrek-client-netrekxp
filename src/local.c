@@ -836,7 +836,7 @@ DrawShips (void)
            the ship drawing code with the goto statement */
         if (j->p_flags & PFCLOAK && (j->p_cloakphase == (cloak_phases - 1)))
         {
-            if (myPlayer (j) || (showCloakers && F_show_cloakers)
+            if (myPlayer (j) || (showCloakers && F_show_cloakers && !isObsLockPlayer(j))
 #ifdef RECORDGAME
                 || playback
 #endif

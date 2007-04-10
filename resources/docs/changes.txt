@@ -1,7 +1,15 @@
 Netrek XP 2006, Version 1.3:
+- richtext message windows are now resizeable, it works a little different than sizing
+  other windows.  First you left click on the window once to activate the sizing border,
+  then grab border with mouse and size normally.  The window will now have a larger border,
+  which you will probably want to get rid of.  To get rid of it, double left-click the
+  window.  The reason the procedure is a little complicated is because having a border
+  which can both resize the window requires a larger border, which cuts into precious
+  screen space for messages.  So this sizing border needs to be activated first, then
+  deactivated when the window is done sizing.
 - richtext message windows are now moveable, it works a little different than moving other
   windows.  Instead of clicking on border, you click on body of window, hold down mouse,
-  and move window.
+  and move the window.
 - phaser misses on sturgeon servers now show proper phaser length
 - can now change login name via options menu, saved via in-game save key
 - preference for showing main title bar (toggled via alt+enter) is now saved via

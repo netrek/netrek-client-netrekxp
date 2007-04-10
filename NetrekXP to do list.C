@@ -21,27 +21,23 @@ is rotated.  Only solution so far is to moderate border refresh with scaled bitm
 old AddFontResource function.
 
 Things to do:
-1) resizeable message windows.  Perhaps memory of window positions if you choose
-to save settings.  Text in windows should adjust to new window size.
-3) Get square planet bitmaps so I can turn them into mapped rotating globes.
-5) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
+1) Have font in windows adjust as window size increases.
+2) Get square planet bitmaps so I can turn them into mapped rotating globes.
+3) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
 this is fixed.
-7) Some sort of click action on player list brings up a menu with settings for that
+4) Some sort of click action on player list brings up a menu with settings for that
 player's candock, cantranswarp, ban, ignore, etc.
-8) Maybe fix galactic new planet bitmap redraw sequence, caused incredible lag on a P166
-Win98 xp computer (already profiled for CPU usage, not so bad, plus 50 updates/sec has
-more impact).
-9) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
+5) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
 rect doesn't take these into account.
-10) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
+6) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
-11) CPU profile cambot - revealed draw border issue (fixed, turned off extra border
-refreshes during playback), the rest is just the usual CPU use from doing very fast
-redraws
-12) minor richtext issue with scrolling - extra line at the end
-13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
+7) minor richtext issue with scrolling - extra line at the end
+8) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
+
+Wish list:
+1) Rewrite graphics engine using SDL
 
 Stas's list:
 - two column and/or scrollable playerlist.

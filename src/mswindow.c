@@ -6089,6 +6089,16 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
         // fake a caption hit to move window
         SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         break;
+    case WM_NCLBUTTONDOWN:
+        // set sizing border
+        SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_SIZEBOX);
+        break;
+    case WM_LBUTTONUP:
+    case WM_NCLBUTTONUP:
+        SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
+        // remove sizing border and redraw
+        SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+        break;
     }
     return CallWindowProc (lpfnDefRichEditWndProc, hwnd, msg, wParam, lParam);
 }
