@@ -27,6 +27,7 @@ int notdone;                    /* not done flag */
 
 static char newkeys[14];
 static char newbuttons[10];
+static char newlogin[PSEUDOSIZE];
 
 char *localmes[] = { "Show owner on local planets",
                      "Show resources on local planets",
@@ -347,6 +348,7 @@ struct option Control_Menu[] = {
     {1, "allow wheel actions", &allowWheelActions, 0, 0, 0, NULL, NULL},
     {1, "new keymap entries: %s", 0, 0, newkeys, 13, NULL, NULL},
     {1, "new buttonmap entries: %s", 0, 0, newbuttons, 9, NULL, NULL},
+    {1, "new login name: %s", 0, 0, newlogin, PSEUDOSIZE, NULL, NULL},
     {1, "ignore the capslock key", &ignoreCaps, 0, 0, 0, NULL, NULL},
     {1, "%d updates per second", &updatesPerSec, 0, 0, 0, 0, &updates_range},
     {1, "%d 1/10 sec screen refresh delay", &redrawDelay, 0, 0, 0, 0,
@@ -486,6 +488,7 @@ optionwindow (void)
 
     *newkeys = '\0';
     *newbuttons = '\0';
+    *newlogin = '\0';
     if (FirstMenu == NULL)
     {
         MaxOptions = InitOptionMenus ();
@@ -1125,7 +1128,13 @@ optiondone (void)
         }
     }
     *newbuttons = '\0';
-
+    
+    /* update login */
+    if (newlogin)
+    {
+        STRNCPY (login, newlogin, PSEUDOSIZE);
+        *newlogin = '\0';
+    }
     if (updatesPerSec != lastUpdateSpeed)
     {
         sendUpdatePacket (1000000 / updatesPerSec);
