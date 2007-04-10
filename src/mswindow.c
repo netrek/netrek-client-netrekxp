@@ -6084,13 +6084,10 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
 
     switch (msg)
     {
-/*    case WM_PAINT:
-        GET_STRUCT_PTR;
-        W_ChangeBorder ((W_Window) win, W_White);
-        break;*/
-
     case WM_LBUTTONDOWN:
         BringWindowToTop (hwnd);
+        // fake a caption hit to move window
+        SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         break;
     }
     return CallWindowProc (lpfnDefRichEditWndProc, hwnd, msg, wParam, lParam);

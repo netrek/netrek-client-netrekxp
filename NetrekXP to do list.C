@@ -13,9 +13,6 @@ Things not gonna happen, or server problems:
 9) on daemon exit in newbie/pret, kill any hosed bot slots
 10) end game bots are stupid, and on timericide don't act right
 11) feature packet for rank names and requirements
-15) phaser misses have the client computer phaser length, but with phaser upgrades,
-this causes a mismatch in the actual phaser length for other players.  Server needs
-to somehow relay phaser damage values for other ships, perhaps in generic_32?
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -45,7 +42,6 @@ redraws
 12) minor richtext issue with scrolling - extra line at the end
 13) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
-14) make richtext windows moveable
 
 Stas's list:
 - two column and/or scrollable playerlist.

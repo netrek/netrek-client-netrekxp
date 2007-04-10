@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- richtext message windows are now moveable, it works a little different than moving other
+  windows.  Instead of clicking on border, you click on body of window, hold down mouse,
+  and move window.
+- phaser misses on sturgeon servers now show proper phaser length
 - can now change login name via options menu, saved via in-game save key
 - preference for showing main title bar (toggled via alt+enter) is now saved via
   in-game save key
