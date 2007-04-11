@@ -35,6 +35,8 @@ host names.
 7) minor richtext issue with scrolling - extra line at the end
 8) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
+9) if cursor is in window and it receives a message, it scrolls to bottom automatically,
+bad if you are scrolling up reading history
 
 Wish list:
 1) Rewrite graphics engine using SDL

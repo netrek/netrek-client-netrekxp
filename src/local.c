@@ -735,8 +735,7 @@ DrawShips (void)
 /* Twarp sounds put up here so observers can hear them */            
 #ifdef SOUND
        /* Have to use me->p_flags because server doesn't send us twarp flag info
-        on other players.  Current Vanilla does not let observer change players
-        if the player they are observing is transwarping. */
+        on other players. */
         if (twarpflag != (me->p_flags & PFTWARP))
         {
             /* change in warp state */

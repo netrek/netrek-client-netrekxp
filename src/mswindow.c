@@ -1953,6 +1953,7 @@ NetrekWndProc (HWND hwnd,
         //Disable possibility to move internal windows
         {   // have to add bracket to be able to declare variables
         int width, height;
+        RECT baseRect;  // baseWin rectangle
         RECT winRect;   // current window rectangle       
 
         GET_STRUCT_PTR;
@@ -1966,6 +1967,7 @@ NetrekWndProc (HWND hwnd,
         if (windowMove && (Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
         { 
             GetWindowRect (((Window *) w)->hwnd, &winRect);
+            GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
 
             // Have to reinitialize SDB
             SelectObject (localSDB->mem_dc, localSDB->old_bmp);
@@ -1986,11 +1988,32 @@ NetrekWndProc (HWND hwnd,
                 height = width;
             TWINSIDE = width - 2 * win->border;
 
-            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size */
-            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
-                winRect.top -= GetSystemMetrics (SM_CYCAPTION);
+            /* Have to take into account basewin border */
+            winRect.left -= baseRect.left;
+            winRect.top -= baseRect.top;
+
+            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size and
+               additional borders to get screen coordinates.
+               If the main window is also resizeable then border sizes change from SM_CnFIXEDFRAME
+               to SM_CnSIZEFRAME
+            */
+            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && !mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXFIXEDFRAME);
+                winRect.top -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            }
+            else if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXSIZEFRAME);
+                winRect.top -= (GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            }
+            else if (!(GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION) && mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
+                winRect.top -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
+            }
  
-            MoveWindow (((Window *) w)->hwnd, winRect.left - win->border, winRect.top - win->border,
+            MoveWindow (((Window *) w)->hwnd, winRect.left, winRect.top,
                         width, height, TRUE);
  
             // All windows based on TWINSIDE are out of position now, but the team
@@ -2013,6 +2036,7 @@ NetrekWndProc (HWND hwnd,
         else if (windowMove && (Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
         {
             GetWindowRect (((Window *) mapw)->hwnd, &winRect);
+            GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
 
             // Have to reinitialize SDB
             SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
@@ -2030,12 +2054,33 @@ NetrekWndProc (HWND hwnd,
             else
                 height = width;
             GWINSIDE = width - 2 * win->border;
-            
-            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size */
-            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
-                winRect.top -= GetSystemMetrics (SM_CYCAPTION);
 
-            MoveWindow (((Window *) mapw)->hwnd, winRect.left - win->border, winRect.top - win->border,
+            /* Have to take into account basewin border */
+            winRect.left -= baseRect.left;
+            winRect.top -= baseRect.top;
+
+            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size and
+               additional borders to get screen coordinates.
+               If the main window is also resizeable then border sizes change from SM_CnFIXEDFRAME
+               to SM_CnSIZEFRAME
+            */
+            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && !mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXFIXEDFRAME);
+                winRect.top -= (GetSystemMetrics (SM_CYFIXEDFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            }
+            else if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION && mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXSIZEFRAME);
+                winRect.top -= (GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION));
+            }
+            else if (!(GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION) && mainResizeable)
+            {
+                winRect.left -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
+                winRect.top -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
+            }
+
+            MoveWindow (((Window *) mapw)->hwnd, winRect.left, winRect.top,
                         width, height, TRUE);
 
             redrawall = 1;
