@@ -1085,6 +1085,22 @@ msg.take: %N->%O %N taken by %i (%T%c)
 msg.ghostbust: GOD->ALL %i (%S) (%T%c) was kill %k for the GhostBusters
 
 
+# Color settings
+color.white: white
+color.black: black
+color.red: red
+color.green: green
+color.yellow: yellow
+color.cyan: cyan
+color.light grey: gray63
+color.God: white
+color.Rom: red
+color.Kli: green
+color.Fed: yellow
+color.Ori: cyan
+color.Ind: gray63
+
+
 # Esoteric features such as individual ship rcfiles/keymaps
 # /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer
 # /servertype options (i.e. keymap.bronco: <keymap>)

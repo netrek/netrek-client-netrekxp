@@ -41,35 +41,6 @@
 #include "resource.h"
 #include "math.h"
 
-#undef WHITE
-#undef BLACK
-#undef RED
-#undef GREEN
-#undef YELLOW
-#undef CYAN
-
-#define WHITE   0
-#define BLACK   1
-#define RED     2
-#define GREEN   3
-#define YELLOW  4
-#define CYAN    5
-#define GREY    6
-
-#ifdef RACE_COLORS
-#define C_ROM   7
-#define C_KLI   8
-#define C_FED   9
-#define C_ORI   10
-#define C_IND   11
-#endif
-
-#ifdef RACE_COLORS
-#define COLORS  12
-#else
-#define COLORS  7
-#endif
-
 #define RaceDefaultOffset (C_ROM - RED)
 
 
@@ -211,10 +182,8 @@ W_Font W_BigFont, W_RegularFont;
 W_Font W_HighlightFont, W_UnderlineFont;
 W_Color W_White = WHITE, W_Black = BLACK, W_Red = RED, W_Green = GREEN;
 W_Color W_Yellow = YELLOW, W_Cyan = CYAN, W_Grey = GREY;
-#ifdef RACE_COLORS
-W_Color W_Ind = C_IND, W_Fed = C_FED, W_Rom = C_ROM, W_Kli = C_KLI, W_Ori =
+W_Color W_God = C_GOD, W_Ind = C_IND, W_Fed = C_FED, W_Rom = C_ROM, W_Kli = C_KLI, W_Ori =
     C_ORI;
-#endif
 
 int W_Textwidth = 6, W_Textheight = 10;
 int forceMono = 0;
@@ -260,7 +229,9 @@ colortable[COLORS] =
     ,                           //Cyan
     {
     RGB (0xa0, 0xa0, 0xa0), 0, 0, 0}    //Light grey
-#ifdef RACE_COLORS
+    ,
+    {
+    RGB (0xff, 0xff, 0xff), 0, 0, 0}    //God
     ,
     {
     RGB (0xff, 0x5f, 0x5f), 0, 0, 0}
@@ -276,7 +247,6 @@ colortable[COLORS] =
     ,                           //Ori
     {
     RGB (0xa0, 0xa0, 0xa0), 0, 0, 0}    //Ind
-#endif
 }
 
 ,
@@ -304,7 +274,9 @@ colortable[COLORS] =
     ,                           //Cyan
     {
     RGB (0xa0, 0xa0, 0xa0), 0, 0, 0}    //Light grey
-#ifdef RACE_COLORS
+    ,
+    {
+    RGB (0xff, 0xff, 0xff), 0, 0, 0}    //God
     ,
     {
     RGB (0xff, 0x00, 0x00), 0, 0, 0}
@@ -320,7 +292,6 @@ colortable[COLORS] =
     ,                           //Ori
     {
     RGB (0xa0, 0xa0, 0xa0), 0, 0, 0}    //Ind
-#endif
 };
 
 char *colornames[COLORS] = {
@@ -330,15 +301,13 @@ char *colornames[COLORS] = {
     {"green"},
     {"yellow"},
     {"cyan"},
-    {"light grey"}
-#ifdef RACE_COLORS
-    ,
+    {"light grey"},
+    {"God"},
     {"Rom"},
     {"Kli"},
     {"Fed"},
     {"Ori"},
     {"Ind"}
-#endif
 };
 
 HPALETTE NetrekPalette = 0;
@@ -968,13 +937,11 @@ GetColors ()
             char buf[30];
             sprintf (buf, "color.%s", colornames[i]);   //Check netrekrc file
             def = stringDefault (buf);
-#ifdef RACE_COLORS
-            if (!def && i >= COLORS - RaceDefaultOffset)        // For race colors we use default color
+            if (!def && i >= COLORS - RaceDefaultOffset)  // For race colors we use default color
             {                   // color for that race if not set, i.e.
                 sprintf (buf, "color.%s", colornames[i - RaceDefaultOffset]);
                 def = stringDefault (buf); // if "color.rom" is not set, "color.red"
             }
-#endif
             if (def)
                 if (def[0] == '#')      //Explicit RGB color
                 {

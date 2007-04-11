@@ -120,9 +120,6 @@
 /*      RCM                     - Receiver configurable Server messages         */
 #define RCM
 
-/*      RACE_COLORS             - additional bitplane for race colors           */
-#define RACE_COLORS
-
 #define PLIST1 
 #define PLIST 
 #define CONTROL_KEY

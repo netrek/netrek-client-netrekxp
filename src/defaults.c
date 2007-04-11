@@ -3308,6 +3308,24 @@ saveOptions ()
 #endif
 
     if (saveBig)
+        fputs ("# Color settings\n", fp);
+
+    for (j = 0; j < COLORS; j++)
+    {
+        sprintf (str1, "color.%s", colornames[j]);
+        adefault = stringDefault (str1);
+        if (adefault)
+        {
+            sprintf(str, "%s: %s\n", str1, adefault);
+            fputs (str, fp);
+        }
+    }
+    fputs ("\n", fp);
+    
+    if (saveBig)
+        fputs ("\n", fp);
+
+    if (saveBig)
     {
         fputs ("# Esoteric features such as individual ship rcfiles/keymaps\n", fp);
         fputs ("# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer\n", fp);

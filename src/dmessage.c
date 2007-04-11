@@ -142,7 +142,7 @@ dmessage (char *message,
     if (from == 255)
     {
         /* From God */
-        color = textColor;
+        color = W_God;
     }
     else
     {

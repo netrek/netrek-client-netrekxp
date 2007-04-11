@@ -364,6 +364,7 @@ extern W_Icon bplanets[PLANET_VIEWS];
 extern W_Icon bmplanets[MPLANET_VIEWS];
 extern W_Color borderColor, backColor, textColor, myColor, warningColor,
     shipCol[5], rColor, yColor, gColor, unColor, foreColor;
+extern char *colornames[COLORS];
 
 /* jn - SMARTMACRO */
 extern char lastMessage[];

@@ -463,4 +463,20 @@
 /* The maximum length of message in buffer */
 #define MAX_MLENGTH 286
 
+/* Colors */
+#define WHITE   0
+#define BLACK   1
+#define RED     2
+#define GREEN   3
+#define YELLOW  4
+#define CYAN    5
+#define GREY    6
+#define C_GOD   7
+#define C_ROM   8
+#define C_KLI   9
+#define C_FED   10
+#define C_ORI   11
+#define C_IND   12
+#define COLORS  13
+
 #endif /* _h_defs */

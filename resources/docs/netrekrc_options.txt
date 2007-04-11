@@ -28,6 +28,7 @@ ckeymap:                  (string) change control keymap
 ckeymap-<ship>:           (string) use this ckeymap for ship (sc,dd,ca,bb,as,sb,ga,att)
 cloakChars:               (two chars) how to display cloaker on galactic
 clickDelay:               (0-50) delay before continuous mouse clicks, in updates (0 = no delay)
+color.God:                (color) replace God message color with (color)
 color.<color>:            (color) replace first <color> with (color)
 color.<race>:             (color) replace that race color with (color)
 colorClient:              (0-3) what type of ship bitmaps to use

@@ -1208,7 +1208,7 @@ map (void)
                         /* Here I will have to compute end coordinate */
                         /* Server will sometimes send us this information though,
                            so check if we have it first */
-                        if (ph->ph_x > 0 && ph->ph_y > 0)
+                        if (ph->ph_x > 0 && ph->ph_y > 0 && ph->ph_x < GWIDTH && ph->ph_y < GWIDTH)
                         {
                             tx = ph->ph_x * GWINSIDE / GWIDTH;
                             ty = ph->ph_y * GWINSIDE / GWIDTH;

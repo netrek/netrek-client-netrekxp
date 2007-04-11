@@ -1588,7 +1588,7 @@ DrawShips (void)
                     /* Here I will have to compute end coordinate */
                     /* Server will sometimes send us this information though,
                        so check if we have it first */
-                    if (php->ph_x > 0 && php->ph_y > 0)
+                    if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
                     {
                         tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;

@@ -55,9 +55,8 @@ typedef int W_Color;
 extern W_Font W_BigFont, W_RegularFont, W_UnderlineFont, W_HighlightFont,
     W_IndyFont;
 extern W_Color W_White, W_Black, W_Red, W_Green, W_Yellow, W_Cyan, W_Grey;
-#ifdef RACE_COLORS
-extern W_Color W_Ind, W_Fed, W_Rom, W_Kli, W_Ori;
-#endif
+extern W_Color W_God, W_Ind, W_Fed, W_Rom, W_Kli, W_Ori;
+
 extern int W_Textwidth, W_Textheight;
 extern int W_FastClear;
 extern W_Font W_MyPlanetFont, W_FriendlyPlanetFont, W_EnemyPlanetFont;
