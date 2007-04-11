@@ -853,7 +853,7 @@ map (void)
     static int viewx = 0, viewy = 0;
     static char clearviewbox = 0;
     static char viewboxcleared = 0;
-    int viewdist = (TWINSIDE / 2 * scaleFactor) / (GWIDTH / GWINSIDE);
+    int viewdist;
     int view = TWINSIDE * scaleFactor / 2;
     int mvx, mvy;
 
@@ -866,6 +866,10 @@ map (void)
 #endif
     clearMap ();
 
+    if (GWINSIDE == 0)
+       return;
+ 
+    viewdist = (TWINSIDE / 2 * scaleFactor) / (GWIDTH / GWINSIDE);
     dx = (me->p_x) / (GWIDTH / GWINSIDE);
     dy = (me->p_y) / (GWIDTH / GWINSIDE);
 

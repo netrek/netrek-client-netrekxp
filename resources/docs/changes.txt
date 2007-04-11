@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- resizing the local and map windows now only lets you size them as squares
 - richtext message windows are now resizeable, it works a little different than sizing
   other windows.  First you left click on the window once to activate the sizing border,
   then grab border with mouse and size normally.  The window will now have a larger border,

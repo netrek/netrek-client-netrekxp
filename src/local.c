@@ -124,6 +124,9 @@ initStars()
     register int i, j, k;
     int imax, jmax, kmax;
     
+    if (TWINSIDE == 0)
+        return;
+
     imax = 5 * STARSIDE / TWINSIDE + 1;
     if (imax > MAXSECTORS)
         imax = MAXSECTORS;
@@ -156,11 +159,16 @@ DrawStars()
        note: cpp symbols in expressions (TWINSIDE*SCALE) will be precalculated
        by any C optimizer
     */ 
-    int sectorx = me->p_x / (fullview);
-    int sectory = me->p_y / (fullview);
-    int sector_offx = me->p_x - sectorx * (fullview);
-    int sector_offy = me->p_y - sectory * (fullview);
+    int sectorx, sectory, sector_offx, sector_offy;
     int l = 0, r = 0, t = 0, b = 0;
+    
+    if (fullview == 0)
+        return;
+        
+    sectorx = me->p_x / (fullview);
+    sectory = me->p_y / (fullview);
+    sector_offx = me->p_x - sectorx * (fullview);
+    sector_offy = me->p_y - sectory * (fullview);
     
     if (warpStreaks && streaks_on)
     /* Streaks_on is toggled on by redrawStarSector with a change in warp state,
@@ -181,8 +189,6 @@ DrawStars()
         sectory--;
         sector_offy += fullview; 
     }   
-
-#define MAXSECTOR   (5 * STARSIDE / TWINSIDE) + 1
   
     /* at worst we have to redraw 4 star sectors */
 
@@ -191,13 +197,13 @@ DrawStars()
        check first to make sure it's valid.  This is mainly important for if
        it tries to redraw and we're already dead
     */
-    if (sectorx < 0 || sectory < 0 || sectorx > MAXSECTOR || sectory > MAXSECTOR )
+    if (sectorx < 0 || sectory < 0 || sectorx > MAXSECTORS || sectory > MAXSECTORS )
         return;
 
     l = sector_offx < view && sectorx > 0;
-    r = sector_offx > view && sectorx + 1 < MAXSECTOR;
+    r = sector_offx > view && sectorx + 1 < MAXSECTORS;
     t = sector_offy < view && sectory > 0;
-    b = sector_offy > view && sectory + 1 < MAXSECTOR;
+    b = sector_offy > view && sectory + 1 < MAXSECTORS;
 
     if (t) 
     {

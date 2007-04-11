@@ -1951,16 +1951,21 @@ NetrekWndProc (HWND hwnd,
 
     case WM_EXITSIZEMOVE:
         //Disable possibility to move internal windows
+        {   // have to add bracket to be able to declare variables
+        int width, height;
+        RECT winRect;   // current window rectangle       
+
         GET_STRUCT_PTR;
 
-        // Adjust TWINSIDE and GWINSIDE
         // Reinitialize whatever is necessary (so many things are created based on
         // a fixed TWINSIDE)
+        // Adjust window to be square
+        // Adjust TWINSIDE and GWINSIDE
         // Redo critical windows
         // Clear window
         if (windowMove && (Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
         { 
-            TWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right) + win->border;
+            GetWindowRect (((Window *) w)->hwnd, &winRect);
 
             // Have to reinitialize SDB
             SelectObject (localSDB->mem_dc, localSDB->old_bmp);
@@ -1972,6 +1977,22 @@ NetrekWndProc (HWND hwnd,
             // and stars
             initStars();
 
+            // Keep window square
+            width = winRect.right - winRect.left;
+            height = winRect.bottom - winRect.top;
+            if (width > height)
+                width = height;
+            else
+                height = width;
+            TWINSIDE = width - 2 * win->border;
+
+            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size */
+            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
+                winRect.top -= GetSystemMetrics (SM_CYCAPTION);
+ 
+            MoveWindow (((Window *) w)->hwnd, winRect.left - win->border, winRect.top - win->border,
+                        width, height, TRUE);
+ 
             // All windows based on TWINSIDE are out of position now, but the team
             // select/quit windows are now the wrong size too, so we need to redo them
             for (i = 0; i < 4; i++)
@@ -1980,6 +2001,7 @@ NetrekWndProc (HWND hwnd,
                 teamWin[i] = W_MakeWindow (teamshort[1 << i], i * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5),
                                            (TWINSIDE / 5), (TWINSIDE / 5), w, 1, foreColor);
             }
+
             W_UnmapWindow (qwin);
             qwin = W_MakeWindow ("quit", 4 * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5), (TWINSIDE / 5),
                                  (TWINSIDE / 5), w, 1, foreColor);
@@ -1990,7 +2012,7 @@ NetrekWndProc (HWND hwnd,
         }
         else if (windowMove && (Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
         {
-            GWINSIDE = MAX(win->ClipRect.bottom, win->ClipRect.right) + win->border;
+            GetWindowRect (((Window *) mapw)->hwnd, &winRect);
 
             // Have to reinitialize SDB
             SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
@@ -1999,6 +2021,22 @@ NetrekWndProc (HWND hwnd,
             DeleteDC (mapSDB->mem_dc);
             free (mapSDB);
             mapSDB = W_InitSDB (mapw);
+
+            // Keep window square
+            width = winRect.right - winRect.left;
+            height = winRect.bottom - winRect.top;
+            if (width > height)
+                width = height;
+            else
+                height = width;
+            GWINSIDE = width - 2 * win->border;
+            
+            /* In case of WS_CAPTION (titlebar on) we have to subtract caption size */
+            if (GetWindowLongPtr (((Window *) baseWin)->hwnd, GWL_STYLE) & WS_CAPTION)
+                winRect.top -= GetSystemMetrics (SM_CYCAPTION);
+
+            MoveWindow (((Window *) mapw)->hwnd, winRect.left - win->border, winRect.top - win->border,
+                        width, height, TRUE);
 
             redrawall = 1;
         }
@@ -2019,6 +2057,7 @@ NetrekWndProc (HWND hwnd,
                     movingr.right - movingr.left,
                     movingr.bottom - movingr.top,
                     TRUE);
+        }
         break;
 
     case WM_PAINT:
