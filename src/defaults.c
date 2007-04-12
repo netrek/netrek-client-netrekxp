@@ -2151,13 +2151,35 @@ saveOptions ()
     	if (saveBig)
     	    fputs ("\n", fp);
     }
-    
+
+    // Password
+    if (defpasswd != NULL)
+    {
+        if (saveBig)
+    	    fputs ("# Default password\n", fp);
+    	sprintf (str, "password: %s\n", defpasswd);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
+    }
+
     // Login
     if (login != NULL)
     {
     	if (saveBig)
     	    fputs ("# Login name\n", fp);
     	sprintf (str, "login: %s\n", login);
+    	fputs (str, fp);
+    	if (saveBig)
+    	    fputs ("\n", fp);
+    }
+
+    // Metaserver
+    if ((adefault = stringDefault ("metaServer")) != 0)
+    {
+    	if (saveBig)
+    	    fputs ("# Metaserver(s)\n", fp);
+    	sprintf (str, "metaServer: %s\n", adefault);
     	fputs (str, fp);
     	if (saveBig)
     	    fputs ("\n", fp);
@@ -2212,16 +2234,15 @@ saveOptions ()
         fputs ("\n", fp);
 
     // Ckeymap
-    if (saveBig && (adefault = stringDefault ("ckeymap")) != 0)
-        fputs ("# Control-key key mapping\n", fp);
-        
-    if (adefault)
+    if ((adefault = stringDefault ("ckeymap")) != 0)
     {
+        if (saveBig)
+            fputs ("# Control-key key mapping\n", fp);
         sprintf (str, "ckeymap: %s\n", adefault);
         fputs (str, fp);
+        if (saveBig)
+            fputs ("\n", fp);
     }
-    if (saveBig && adefault)
-        fputs ("\n", fp);
         
     // Let's print buttonmap
     str[0] = '\0';
@@ -2424,12 +2445,16 @@ saveOptions ()
         }
         sprintf (str, "playerList: %s\n", plistLayout);
         fputs (str, fp);
-
-        if (saveBig)
-            fputs ("\n", fp);
     }
-
+    // player2 list
+    if (strlen (plist2Layout) != 0)
+    {   
+        sprintf (str, "playerList2: %s\n", plist2Layout);
+        fputs (str, fp);
+    }
     fputs ("\n", fp);
+    if (saveBig)
+        fputs ("\n", fp);
 
     // Window placements
     if (saveWindow)
@@ -3328,8 +3353,9 @@ saveOptions ()
     if (saveBig)
     {
         fputs ("# Esoteric features such as individual ship rcfiles/keymaps\n", fp);
-        fputs ("# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer\n", fp);
-        fputs ("# /servertype options (i.e. keymap.bronco: <keymap>)\n", fp);
+        fputs ("# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>), observer\n", fp);
+        fputs ("# /servertype options (i.e. keymap.bronco: <keymap>), and\n", fp);
+        fputs ("# button keymaps (b1keymap through b5keymap)\n", fp);
     }
     // Individual ship type settings
     for (j = NUM_TYPES; j >= 0; j--)
@@ -3390,6 +3416,38 @@ saveOptions ()
             fputs (str, fp);
         }
         sl = sl->next;
+    }
+    
+    // Button keymaps
+    adefault = stringDefault ("b1keymap");
+    if (adefault)
+    {
+        sprintf (str, "b1keymap: %s\n", adefault);
+        fputs (str, fp);
+    }
+    adefault = stringDefault ("b2keymap");
+    if (adefault)
+    {
+        sprintf (str, "b2keymap: %s\n", adefault);
+        fputs (str, fp);
+    }
+    adefault = stringDefault ("b3keymap");
+    if (adefault)
+    {
+        sprintf (str, "b3keymap: %s\n", adefault);
+        fputs (str, fp);
+    }
+    adefault = stringDefault ("b4keymap");
+    if (adefault)
+    {
+        sprintf (str, "b4keymap: %s\n", adefault);
+        fputs (str, fp);
+    }
+    adefault = stringDefault ("b5keymap");
+    if (adefault)
+    {
+        sprintf (str, "b5keymap: %s\n", adefault);
+        fputs (str, fp);
     }
 
     fclose (fp);

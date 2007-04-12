@@ -1590,6 +1590,7 @@ DrawShips (void)
                        so check if we have it first */
                     if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
                     {
+                        LineToConsole("x, y %d %d\n", php->ph_x, php->ph_y);
                         tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
                     }

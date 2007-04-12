@@ -2016,6 +2016,8 @@ handleVPhaser (unsigned char *sbuf)
         target = (unsigned char) packet->target & 0x3f;
         break;
     case PHMISS:
+        x = 0;
+        y = 0;
         dir = (unsigned char) packet->target;
         break;
     case PHHIT2:

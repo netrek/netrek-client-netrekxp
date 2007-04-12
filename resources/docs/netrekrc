@@ -1,6 +1,9 @@
 # Default character name
 name: guest
 
+# Default password
+password: 
+
 # Login name
 login: netrek_player
 
@@ -583,6 +586,7 @@ metaUDPCache: metaUDPcache
 # 'V' - Kills per hour
 # 'W' - Wins
 playerList: nTR N  K l M
+playerList2: n T R N l M K W L r O D d 
 
 
 # Window placements section
@@ -1102,5 +1106,6 @@ color.Ind: gray63
 
 
 # Esoteric features such as individual ship rcfiles/keymaps
-# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>) and observer
-# /servertype options (i.e. keymap.bronco: <keymap>)
+# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>), observer
+# /servertype options (i.e. keymap.bronco: <keymap>), and
+# button keymaps (b1keymap through b5keymap)

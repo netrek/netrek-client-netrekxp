@@ -34,6 +34,7 @@
 
 extern int partitionPlist;
 extern char *plistCustomLayout;
+extern char *plist2CustomLayout;
 extern int plistReorder;
 extern int playerListStyle;
 extern int plistUpdated;
@@ -42,6 +43,7 @@ extern int sortPlayers;
 extern char updatePlayer[MAXPLAYER + 1];
 extern int playerListObserver;
 extern char *plistLayout;
+extern char *plist2Layout;
 
 #ifdef PLIST2
 extern int plistHasHostile = FALSE;
