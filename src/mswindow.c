@@ -6017,6 +6017,7 @@ AddToRichText (Window * win,
     struct stringList *p = win->strings;
     struct stringList *end, *p2;
     int NumStrings = win->NumItems;
+    int diff;
     char str1[256];
     CHARFORMAT2 cf;
     POINT point;
@@ -6106,13 +6107,10 @@ AddToRichText (Window * win,
     SendMessage (win->hwnd, EM_SETSEL, -1, -1);
     SendMessage (win->hwnd, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM) &cf);
     SendMessage (win->hwnd, EM_REPLACESEL, FALSE, (LPARAM) str1);
-    if (numLines - point.y / W_Textheight > visibleLines + 1)
+    diff = numLines - point.y / W_Textheight - visibleLines;
+    if (diff >= 1)
     {
-        SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
-    }
-    else if (numLines - point.y / W_Textheight == visibleLines + 1)
-    {
-        point.y += W_Textheight;
+        point.y += W_Textheight * diff;
         SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
     }
     //SendMessage (win->hwnd, EM_HIDESELECTION, FALSE, 0);
