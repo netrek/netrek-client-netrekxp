@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- text dashboard now adjusts for font size
 - added the huge list of color names and color RGB codes to netrekxp manual, this was
   always confusing to me as to what color names were actually allowed.  They were buried
   in the code, now they are visible in the manual.

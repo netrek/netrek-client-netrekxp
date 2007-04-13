@@ -161,7 +161,7 @@ stline (int flag)
         oldbuf = buf1;
     }
     /* TIMER */
-    db_timer (flag, 428, 27);
+    db_timer (flag, 50 + 63 * W_Textwidth, 5 + 2 * W_Textheight + 2);
 
     light_erase();
 
@@ -323,7 +323,7 @@ stline (int flag)
     if (whichbuf == 0)
     {
         /* Draw status line */
-        W_WriteText (tstatw, 50, 16, textColor, buf, 64, W_RegularFont);
+        W_WriteText (tstatw, 50, 5 + W_Textheight + 1, textColor, buf, 64, W_RegularFont);
         whichbuf = 1;
     }
     else
@@ -351,7 +351,7 @@ stline (int flag)
                 j++;
                 if (j == 20)
                 {               /* Random number */
-                    W_WriteText (tstatw, 50 + W_Textwidth * k, 16, textColor,
+                    W_WriteText (tstatw, 50 + W_Textwidth * k, 5 + W_Textheight + 1, textColor,
                                  s, i - k - 19, W_RegularFont);
                     j = -1;
                 }
@@ -359,7 +359,7 @@ stline (int flag)
         }
         if (j != -1)
         {
-            W_WriteText (tstatw, 50 + W_Textwidth * k, 16, textColor, s,
+            W_WriteText (tstatw, 50 + W_Textwidth * k, 5 + W_Textheight + 1, textColor, s,
                          i - k - j, W_RegularFont);
         }
     }
@@ -453,5 +453,5 @@ updateMaxStats (int redraw)
                  troop_capacity,
                  me->p_ship.s_maxfuel, me->p_ship.s_maxwpntemp / 10,
                  me->p_ship.s_maxegntemp / 10);
-    W_WriteText (tstatw, 50, 27, textColor, buf, strlen (buf), W_RegularFont);
+    W_WriteText (tstatw, 50, 5 + 2 * W_Textheight + 2, textColor, buf, strlen (buf), W_RegularFont);
 }

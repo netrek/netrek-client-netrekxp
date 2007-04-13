@@ -63,6 +63,7 @@ void terminate (int error);
 //static void    db_box(int x, int y, int w, int h, int f, int color);
 //static void    db_bar(char *lab, int x, int y, int value, int tmpmax, int max, int digits, int color);
 //static void    db_flags(int fr);
+int DashMaxWidth(void);
 void light_erase (void);
 void light_receive (void);
 void light_send (void);

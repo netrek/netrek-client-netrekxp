@@ -97,6 +97,16 @@ light_erase()
 }
 
 /******************************************************************************/
+/***  DashMaxWidth() - return width adjusted for text size (if font is      ***/
+/***  large), or if font is small, return the size of tactical window       ***/
+/******************************************************************************/
+int
+DashMaxWidth(void)
+{
+    return MAX(TWINSIDE + (2 * THICKBORDER - 2 * BORDER), 50 + 75 * W_Textwidth);
+}
+
+/******************************************************************************/
 /***  timerString()                                                         ***/
 /******************************************************************************/
 char * 

@@ -45,8 +45,6 @@ int MaxMotdLine = 0;
 #define BOXSIDE         (TWINSIDE / 5)
 #define MENU_PAD 4
 #define TILESIDE        16
-#define MESSAGESIZE     20
-#define STATSIZE        (MESSAGESIZE * 2 + BORDER * 2)
 #define YOFF            0
 
 /* Local function prototypes */
@@ -817,9 +815,14 @@ void
 newwin (char *hostmon,
         char *progname)
 {
+    int MESSAGESIZE, STATSIZE;
     int i;
 
     W_Initialize (hostmon);
+
+    // We now know the font size
+    MESSAGESIZE = 2 * W_Textheight;
+    STATSIZE = (MESSAGESIZE * 2 + BORDER * 2);
 
     baseWin = W_MakeWindow ("netrek", 0, 0, 1024, 768, NULL, BORDER, gColor);
 
@@ -832,7 +835,7 @@ newwin (char *hostmon,
 
     mapSDB = W_InitSDB (mapw);
 
-    tstatw = W_MakeWindow ("tstat", 0, TWINSIDE + 2 * THICKBORDER, TWINSIDE + (2 * THICKBORDER - 2 * BORDER),
+    tstatw = W_MakeWindow ("tstat", 0, TWINSIDE + 2 * THICKBORDER, DashMaxWidth(),
                             STATSIZE, baseWin, BORDER, foreColor);
 
     W_SetWindowExposeHandler (tstatw, redrawTstats);
