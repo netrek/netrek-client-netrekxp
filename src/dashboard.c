@@ -36,9 +36,33 @@
 #define DB_3DIGITS 0
 #define DB_5DIGITS 1
 
-#define BAR_LENGTH 56
-
 #define SPACING 4
+
+/* COW/KRP dashboard width spacing is as follows:
+
+1/3 blank char, 14 text chars for flags/dash message/clock, 2/3 blank char,
+11 text chars for shield/speed/hull labels, BAR_LENGTH for shield/speed/hull bars,
+1 blank char, 11 text chars for army/wtemp/etemp labels, BAR_LENGTH for army/
+wtemp/etemp bars, 1 blank char, 15 text chars for fuel label, BAR_LENGTH for fuel
+bar.  For the normal text width (6 pixels) this works out to a dashboard width of:
+
+(1/3)*6 + 14*6 + (2/3)*6 + 11*6 + (9 1/3)*6 + 1*6 + 11*6 + (9 1/3)*6
+        + 1*6 + 15*6 + (9 1/3)*6 = 482 pixels
+
+To be safe, dash width should be defined as at least 82 chars wide, which it is
+in DashMaxWidth().
+
+Height spacing is as follows:
+3 blank pixels, first line of text, 4 blank pixels (SPACING), second line of text, 4
+blank pixels (SPACING), 3rd line of text.  For the normal text height (10 pixels)
+this works out to a dashboard height of:
+
+3 + 1*10 + 4 + 1*10 + 4 + 1*10 = 41 pixels
+
+To be safe, dash height should be defined as 4 times text height, which it is
+in newwin().
+
+*/
 
 /* code to draw and erase packet lights 2/5/94 [BDyess] */
 
@@ -103,7 +127,10 @@ light_erase()
 int
 DashMaxWidth(void)
 {
-    return MAX(TWINSIDE + (2 * THICKBORDER - 2 * BORDER), 50 + 75 * W_Textwidth);
+    /* Text dashboard uses slightly less space due to having a larger fixed
+       entry spacing of 50 pixels, but we handle the largest case here, which
+       is the COW/KRP dashboards */
+    return MAX(TWINSIDE + (2 * THICKBORDER - 2 * BORDER), 83 * W_Textwidth);
 }
 
 /******************************************************************************/
@@ -246,6 +273,8 @@ db_box (int x,
         int f,
         int color)
 {
+    /* Was 56, too bad it wasn't defined as an even multiple of text width. */
+    register int BAR_LENGTH = W_Textwidth/3 + 9 * W_Textwidth;
     int border = W_White;
 
     if (color == W_Red)
@@ -261,7 +290,8 @@ db_box (int x,
         break;
     case DB_LINE:
         W_MakeLine (tstatw, x + w, y, x + w, y + h, border);
-        W_MakeLine (tstatw, x + w, y + 4, x + BAR_LENGTH, y + 4, border);
+        W_MakeLine (tstatw, x + w, y + 2 * W_Textheight / 3,
+                    x + BAR_LENGTH, y + 2 * W_Textheight / 3, border);
         break;
     case DB_NOFILL:
         W_MakeLine (tstatw, x, y, x + w, y, border);
@@ -288,6 +318,8 @@ db_bar (char *lab,
     register int wt, wv;
     register int tc = 11;
     register int tw = W_Textwidth * tc;
+    /* Was 56, too bad it wasn't defined as an even multiple of text width. */
+    register int BAR_LENGTH = W_Textwidth/3 + 9 * W_Textwidth;
     int sign_change = 0;
     char valstr[32];
     
@@ -310,7 +342,7 @@ db_bar (char *lab,
         valstr[6] = '/';
         itoapad (tmpmax, &(valstr[7]), 0, 3);
         valstr[10] = ']';
-        W_ClearArea (tstatw, x, y, tw + BAR_LENGTH, 10);
+        W_ClearArea (tstatw, x, y, tw + BAR_LENGTH, W_Textheight);
         break;
     case DB_5DIGITS:
         tc = 15;
@@ -322,7 +354,7 @@ db_bar (char *lab,
         valstr[8] = '/';
         itoapad (tmpmax, &(valstr[9]), 0, 5);
         valstr[14] = ']';
-        W_ClearArea (tstatw, x, y, tw + BAR_LENGTH, 10);
+        W_ClearArea (tstatw, x, y, tw + BAR_LENGTH, W_Textheight);
         break;
     }
 
@@ -339,12 +371,12 @@ db_bar (char *lab,
     W_WriteText (tstatw, x + (tc / 2 + 1) * W_Textwidth, y, textColor,
                  (&valstr[tc / 2 + 1]), tc / 2, W_RegularFont);
 
-    db_box (x + tw, y, BAR_LENGTH, 9, DB_NOFILL, color);
+    db_box (x + tw, y, BAR_LENGTH, W_Textheight - 1, DB_NOFILL, color);
     if (wt >= wv && wt > 0)
-        db_box (x + tw, y, wt, 9, DB_LINE, color);
+        db_box (x + tw, y, wt, W_Textheight - 1, DB_LINE, color);
 
     if (wv > 0)
-        db_box (x + tw, y, wv, 9, DB_FILL, color);
+        db_box (x + tw, y, wv, W_Textheight - 1, DB_FILL, color);
 }
 
 /******************************************************************************/
@@ -494,6 +526,7 @@ db_flags (int fr)
     static int old_torp = -1;
     static unsigned int old_flags = (unsigned int) -1;
     static int old_tourn = 0;
+    register int BAR_LENGTH = W_Textwidth/3 + 9 * W_Textwidth;
     char buf[16];
     struct player *plr;
 
@@ -534,12 +567,12 @@ db_flags (int fr)
             buf[11] = 'd';
         else
             buf[11] = ' ';
-            
+   
         if (me->p_flags & (PFWEP | PFENG))
-            W_WriteText (tstatw, 2, 3, W_Red, "Flags", 5, W_RegularFont);
+            W_WriteText (tstatw, W_Textwidth/3, 3, W_Red, "Flags", 5, W_RegularFont);
         else
-            W_WriteText (tstatw, 2, 3, textColor, "Flags", 5, W_RegularFont);
-        W_WriteText (tstatw, 2, 17, textColor, buf, 12, W_RegularFont);
+            W_WriteText (tstatw, W_Textwidth/3, 3, textColor, "Flags", 5, W_RegularFont);
+        W_WriteText (tstatw, W_Textwidth/3, 3 + W_Textheight + SPACING, textColor, buf, 12, W_RegularFont);
         old_flags = me->p_flags;
 #ifdef SOUND
         if (ingame && oldengflag != (me->p_flags & PFENG))
@@ -552,19 +585,19 @@ db_flags (int fr)
         oldengflag = (me->p_flags & PFENG);
 #endif
     }
-    
+
     if (fr || status->tourn != old_tourn)
     {
         if (status->tourn)
         {
-            W_WriteText (tstatw, 74, 17, textColor, "T", 1, W_BoldFont);
+            W_WriteText (tstatw, W_Textwidth/3 + 12 * W_Textwidth, 3 + W_Textheight + SPACING, textColor, "T", 1, W_BoldFont);
             tdelay = 0;
         }
         else
         {
             if (status->tourn != old_tourn && !tdelay)
                 tdelay = time (0) + TOURNEXTENDTIME;
-            W_WriteText (tstatw, 74, 17, textColor, " ", 1, W_BoldFont);
+            W_WriteText (tstatw, W_Textwidth/3 + 12 * W_Textwidth, 3 + W_Textheight + SPACING, textColor, " ", 1, W_BoldFont);
         }
         old_tourn = status->tourn;
     }
@@ -573,15 +606,16 @@ db_flags (int fr)
     {
         if (plr->p_kills > 0.0)
         {
-            W_WriteText (tstatw, 346, 17, textColor, "Kills:", 6,
+            W_WriteText (tstatw, 173 * W_Textwidth / 3, 3 + W_Textheight + SPACING, textColor, "Kills:", 6,
                          W_RegularFont);
             ftoa (plr->p_kills, buf, 0, 3, 2);
-            W_WriteText (tstatw, 386, 17, textColor, buf, strlen (buf),
-                         W_RegularFont);
+            W_WriteText (tstatw, 173 * W_Textwidth / 3 + 6 * W_Textwidth + 2 * W_Textwidth / 3,
+                         3 + W_Textheight + SPACING, textColor, buf, strlen (buf), W_RegularFont);
         }
         else
         {
-            W_ClearArea (tstatw, 346, 17, 96, 10);
+            W_ClearArea (tstatw, 173 * W_Textwidth / 3, 3 + W_Textheight + SPACING,
+                         12 * W_Textwidth + 2 * W_Textwidth / 3, W_Textheight);
         }
         old_kills = plr->p_kills;
     }
@@ -590,14 +624,16 @@ db_flags (int fr)
     {
         if (plr->p_ntorp > 0)
         {
-            W_WriteText (tstatw, 346, 30, textColor, "Torps:", 6,
+            W_WriteText (tstatw, 173 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING), textColor, "Torps:", 6,
                          W_RegularFont);
             buf[0] = (char) (plr->p_ntorp % 10 + '0');
-            W_WriteText (tstatw, 386, 30, textColor, buf, 1, W_RegularFont);
+            W_WriteText (tstatw, 173 * W_Textwidth / 3 + 6 * W_Textwidth + 2 * W_Textwidth / 3,
+                         3 + 2 * (W_Textheight + SPACING), textColor, buf, 1, W_RegularFont);
         }
         else
         {
-            W_ClearArea (tstatw, 346, 30, 96, 10);
+            W_ClearArea (tstatw, 173 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING), 
+                         8 * W_Textwidth + 2 * W_Textwidth / 3, W_Textheight);
         }
         old_torp = plr->p_ntorp;
     }
@@ -629,10 +665,10 @@ db_redraw_krp (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special (fr, 38, 3);
+    db_special (fr, W_Textwidth/3 + 6 * W_Textwidth, 3);
 
     /* TIMER */
-    db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
+    db_timer (fr, W_Textwidth/3, 3 + 2 * (W_Textheight + SPACING));
 
     light_erase();
 
@@ -653,7 +689,7 @@ db_redraw_krp (int fr)
             color = W_Red;
         else
             color = W_Green;
-        db_bar ("Sp", 90, 3,
+        db_bar ("Sp", 15 * W_Textwidth, 3,
                 me->p_speed, cur_max, me->p_ship.s_maxspeed, DB_3DIGITS,
                 color);
         old_spd = me->p_speed;
@@ -670,11 +706,11 @@ db_redraw_krp (int fr)
         else
             color = W_Green;
         if (me->p_ship.s_type == ATT)
-            db_bar ("Sh", 90, 17,
+            db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
                     DB_5DIGITS, color);
         else
-            db_bar ("Sh", 90, 17,
+            db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
                     DB_3DIGITS, color);
         old_shl = me->p_shield;
@@ -692,12 +728,12 @@ db_redraw_krp (int fr)
         else
             color = W_Green;
         if (me->p_ship.s_type == ATT)
-            db_bar ("Hu", 90, 31,
+            db_bar ("Hu", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     (me->p_ship.s_maxdamage - me->p_damage),
                     me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_5DIGITS,
                     color);
         else
-            db_bar ("Hu", 90, 31,
+            db_bar ("Hu", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     (me->p_ship.s_maxdamage - me->p_damage),
                     me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_3DIGITS,
                     color);
@@ -722,7 +758,7 @@ db_redraw_krp (int fr)
         else
             color = W_Red;
 
-        db_bar ("Ar", 218, 3,
+        db_bar ("Ar", 109 * W_Textwidth / 3, 3,
                 me->p_armies, cur_max, me->p_ship.s_maxarmies, DB_3DIGITS,
                 color);
         old_arm = me->p_armies;
@@ -740,7 +776,7 @@ db_redraw_krp (int fr)
         else
             color = W_Red;
         if (me->p_ship.s_type != ATT)
-            db_bar ("Wt", 218, 17,
+            db_bar ("Wt", 109 * W_Textwidth / 3, 3 + W_Textheight + SPACING,
                     me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
                     me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
         old_wpn = me->p_wtemp;
@@ -756,7 +792,7 @@ db_redraw_krp (int fr)
         else
             color = W_Red;
         if (me->p_ship.s_type != ATT)
-            db_bar ("Et", 218, 31,
+            db_bar ("Et", 109 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING),
                     me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
                     me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
         old_egn = me->p_etemp;
@@ -771,7 +807,7 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Green;
-        db_bar ("Fu", 346, 3,
+        db_bar ("Fu", 173 * W_Textwidth / 3, 3,
                 me->p_fuel, me->p_ship.s_maxfuel, me->p_ship.s_maxfuel,
                 DB_5DIGITS, color);
         old_ful = me->p_fuel;
@@ -804,9 +840,10 @@ db_redraw_COW (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special (fr, 38, 3);
+    db_special (fr, W_Textwidth/3 + 6 * W_Textwidth, 3);
 
-    db_timer (fr, 2, 3 + 2 * (W_Textheight + SPACING));
+    /* TIMER */
+    db_timer (fr, W_Textwidth/3, 3 + 2 * (W_Textheight + SPACING));
 
     light_erase();
 
@@ -827,7 +864,7 @@ db_redraw_COW (int fr)
             color = W_Yellow;
         else
             color = W_White;
-        db_bar ("Sp", 90, 3,
+        db_bar ("Sp", 15 * W_Textwidth, 3,
                 me->p_speed, cur_max, me->p_ship.s_maxspeed, DB_3DIGITS,
                 color);
         old_spd = me->p_speed;
@@ -844,11 +881,11 @@ db_redraw_COW (int fr)
         else
             color = W_White;
         if (me->p_ship.s_type == ATT)
-            db_bar ("Sh", 90, 17,
+            db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
                     me->p_ship.s_maxshield, DB_5DIGITS, color);
         else
-            db_bar ("Sh", 90, 17,
+            db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
                     me->p_ship.s_maxshield, DB_3DIGITS, color);
         old_shl = me->p_shield;
@@ -864,11 +901,11 @@ db_redraw_COW (int fr)
         else
             color = W_Yellow;
         if (me->p_ship.s_type == ATT)
-            db_bar ("Da", 90, 31,
+            db_bar ("Da", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
                     DB_5DIGITS, color);
         else
-            db_bar ("Da", 90, 31,
+            db_bar ("Da", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
                     DB_3DIGITS, color);
         old_dam = me->p_damage;
@@ -893,7 +930,7 @@ db_redraw_COW (int fr)
             color = W_Red;
         else
             color = W_Yellow;
-        db_bar ("Ar", 218, 3,
+        db_bar ("Ar", 109 * W_Textwidth / 3, 3,
                 me->p_armies, cur_max, me->p_ship.s_maxarmies, DB_3DIGITS,
                 color);
         old_arm = me->p_armies;
@@ -911,7 +948,7 @@ db_redraw_COW (int fr)
         else
             color = W_Yellow;
         if (me->p_ship.s_type != ATT)
-            db_bar ("Wt", 218, 17,
+            db_bar ("Wt", 109 * W_Textwidth / 3, 3 + W_Textheight + SPACING,
                     me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
                     me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
         old_wpn = me->p_wtemp;
@@ -928,7 +965,7 @@ db_redraw_COW (int fr)
         else
             color = W_Red;
         if (me->p_ship.s_type != ATT)
-            db_bar ("Et", 218, 31,
+            db_bar ("Et", 109 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING),
                     me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
                     me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
         old_egn = me->p_etemp;
@@ -944,7 +981,7 @@ db_redraw_COW (int fr)
             color = W_White;
         else
             color = W_Yellow;
-        db_bar ("Fu", 346, 3,
+        db_bar ("Fu", 173 * W_Textwidth / 3, 3,
                 me->p_fuel, me->p_ship.s_maxfuel, me->p_ship.s_maxfuel,
                 DB_5DIGITS, color);
         old_ful = me->p_fuel;
