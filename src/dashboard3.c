@@ -24,6 +24,32 @@
 #include "data.h"
 #include "proto.h"
 
+/* LABs dashboard width spacing is as follows:
+
+1/3 blank char, 12 1/2 text chars for db bar (speed), 5 blank pixels, 12 1/2 text
+chars for db bar (fuel), 5 blank pixels, 12 1/2 text chars for db bar (shield),
+5 blank pixels, 12 1/2 text chars for db bar (damage), 5 blank pixels, 12 1/2 text
+chars for db bar (engine), 4 blank chars, 12 chars for clock.
+For the normal text width (6 pixels) this works out to a dashboard width of:
+
+(1/3)*6 + 12.5*6 + 5 + 12.5*6 + 5 + 12.5*6 + 5 + 12.5*6 + 5 + 12.5*6 +
+        + 4*6 + 12*6 = 493 pixels
+
+To be safe, dash width should be defined as at least 83 chars wide, which it is
+in DashMaxWidth().
+
+Height spacing is as follows:
+2 blank pixels, first line of text, 2 blank pixels, second line of text, 8
+blank pixels, 3rd line of text.  For the normal text height (10 pixels)
+this works out to a dashboard height of:
+
+2 + 1*10 + 2 + 1*10 + 8 + 1*10 = 42 pixels
+
+To be safe, dash height should be defined as 4 times text height, which it is
+in newwin().
+
+*/
+
 /******************************************************************************/
 /***  db_itoa()                                                             ***/
 /******************************************************************************/
@@ -324,7 +350,8 @@ db_flags (int fr)
                 tdelay = time (0) + TOURNEXTENDTIME;
         }
 
-        W_WriteText (tstatw, 2, 32, W_White, buf, 13, W_RegularFont);
+        W_WriteText (tstatw, W_Textwidth/3, 12 + 2 * W_Textheight,
+                     W_White, buf, 13, W_RegularFont);
 
         old_flags = me->p_flags;
         old_tourn = status->tourn;
@@ -355,6 +382,8 @@ db_redraw_lab2 (int fr)
     static float old_kills = -1;
     static int old_torp = -1;
     int cur_max, cur_arm, label_len;
+    /* Was 75, too bad it wasn't defined as an even multiple of text width. */
+    register int BAR_LENGTH = W_Textwidth/2 + 12 * W_Textwidth;
     char label[32];
     float kills; 
     int torp;
@@ -374,10 +403,10 @@ db_redraw_lab2 (int fr)
         W_ClearWindow (tstatw);
 
     db_flags (fr);
-    db_special (fr, 160, 32);
+    db_special (fr, 12 + 2 * BAR_LENGTH, 12 + 2 * W_Textheight);
 
     /* TIMER */
-    db_timer (fr, 428, 32);
+    db_timer (fr, 22 + 5 * BAR_LENGTH + 4 * W_Textwidth, 12 + 2 * W_Textheight);
 
     light_erase();
 
@@ -391,29 +420,29 @@ db_redraw_lab2 (int fr)
         cur_max = 0;
     else if (cur_max > me->p_ship.s_maxspeed)
         cur_max = me->p_ship.s_maxspeed;
-    
+
     if (fr || (me->p_speed != old_spd) || (old_cur_max != cur_max))
     {
-        db_bar ("Spd", 2, 2, 75, 25,
+        db_bar ("Spd", W_Textwidth/3, 2, BAR_LENGTH, 2 * W_Textheight + 5,
                 me->p_ship.s_maxspeed, cur_max, me->p_speed, 1);
     }
 
     if (fr || (old_ful != me->p_fuel))
     {
-        db_bar ("Ful", 82, 2, 75, 25,
+        db_bar ("Ful", W_Textwidth/3 + BAR_LENGTH + 5, 2, BAR_LENGTH, 2 * W_Textheight + 5,
                 me->p_ship.s_maxfuel, me->p_ship.s_maxfuel, me->p_fuel, 0);
     }
 
     if (fr || (old_shl != me->p_shield))
     {
-        db_bar ("Shl", 162, 2, 75, 25,
+        db_bar ("Shl", W_Textwidth/3 + 2 * (BAR_LENGTH + 5), 2, BAR_LENGTH, 2 * W_Textheight + 5,
                 me->p_ship.s_maxshield,
                 me->p_ship.s_maxshield, me->p_shield, 0);
     }
 
     if (fr || (old_dam != me->p_damage))
     {
-        db_bar ("Dam", 242, 2, 75, 25,
+        db_bar ("Dam", W_Textwidth/3 + 3 * (BAR_LENGTH + 5), 2, BAR_LENGTH, 2 * W_Textheight + 5,
                 me->p_ship.s_maxdamage,
                 me->p_ship.s_maxdamage, me->p_damage, 1);
     }
@@ -422,14 +451,15 @@ db_redraw_lab2 (int fr)
     {
         if (fr || (old_wpn != me->p_wtemp))
         {
-            db_bar ("Wpn", 322, 2, 75, 25,
+            db_bar ("Wpn", W_Textwidth/3 + 4 * (BAR_LENGTH + 5), 2, BAR_LENGTH, 2 * W_Textheight + 5,
                     me->p_ship.s_maxwpntemp / 10,
                     me->p_ship.s_maxwpntemp / 10, me->p_wtemp / 10, 1);
         }
 
         if (fr || (old_egn != me->p_etemp))
         {
-            W_ClearArea (tstatw, 324, 32, 78, W_Textheight);
+            W_ClearArea (tstatw, W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2,
+                         12 + 2 * W_Textheight, 13 * W_Textwidth, W_Textheight);
 
             label[0] = 'E';
             label[1] = 'g';
@@ -444,12 +474,12 @@ db_redraw_lab2 (int fr)
             if (me->p_etemp > (me->p_ship.s_maxegntemp / 2))
             {
                 W_WriteText (tstatw,
-                             324, 32, W_White, label, label_len, W_BoldFont);
+                             W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2, 12 + 2 * W_Textheight, W_White, label, label_len, W_BoldFont);
             }
             else
             {
                 W_WriteText (tstatw,
-                             324, 32,
+                             W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2, 12 + 2 * W_Textheight,
                              W_Grey, label, label_len, W_RegularFont);
             }
         }
@@ -458,14 +488,15 @@ db_redraw_lab2 (int fr)
     {
         if (fr || (old_egn != me->p_etemp))
         {
-            db_bar ("Egn", 322, 2, 75, 25,
+            db_bar ("Egn", W_Textwidth/3 + 4 * (BAR_LENGTH + 5), 2, BAR_LENGTH, 2 * W_Textheight + 5,
                     me->p_ship.s_maxegntemp / 10,
                     me->p_ship.s_maxegntemp / 10, me->p_etemp / 10, 1);
         }
 
         if (fr || (old_wpn != me->p_wtemp))
         {
-            W_ClearArea (tstatw, 324, 32, 78, W_Textheight);
+            W_ClearArea (tstatw, W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2,
+                        12 + 2 * W_Textheight, 13 * W_Textwidth, W_Textheight);
 
             label[0] = 'W';
             label[1] = 'p';
@@ -480,12 +511,12 @@ db_redraw_lab2 (int fr)
             if (me->p_wtemp > (me->p_ship.s_maxwpntemp / 2))
             {
                 W_WriteText (tstatw,
-                             324, 32, W_White, label, label_len, W_BoldFont);
+                             W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2, 12 + 2 * W_Textheight, W_White, label, label_len, W_BoldFont);
             }
             else
             {
                 W_WriteText (tstatw,
-                             324, 32,
+                             W_Textwidth/3 + 4 * (BAR_LENGTH + 5) + 2, 12 + 2 * W_Textheight,
                              W_Grey, label, label_len, W_RegularFont);
             }
         }
@@ -503,7 +534,8 @@ db_redraw_lab2 (int fr)
         
     if (fr || (old_arm != me->p_armies) || (old_cur_arm != cur_arm))
     {
-        W_ClearArea (tstatw, 402, 2, 98, W_Textheight);
+        W_ClearArea (tstatw, W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 2,
+                     16 * W_Textwidth, W_Textheight);
 
         if (cur_arm > 0)
         {
@@ -522,24 +554,25 @@ db_redraw_lab2 (int fr)
             if (me->p_armies >= cur_arm)
             {
                 W_WriteText (tstatw,
-                             402, 2, W_Red, label, label_len, W_BoldFont);
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 2, W_Red, label, label_len, W_BoldFont);
             }
             else if (me->p_armies > 0)
             {
                 W_WriteText (tstatw,
-                             402, 2, W_Yellow, label, label_len, W_BoldFont);
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 2, W_Yellow, label, label_len, W_BoldFont);
             }
             else
             {
                 W_WriteText (tstatw,
-                             402, 2, W_Green, label, label_len, W_BoldFont);
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 2, W_Green, label, label_len, W_BoldFont);
             }
         }
     }
 
     if (fr || (old_kills != kills))
     {
-        W_ClearArea (tstatw, 402, 4 + W_Textheight, 98, W_Textheight);
+        W_ClearArea (tstatw, W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 4 + W_Textheight,
+                     13 * W_Textwidth, W_Textheight);
 
         if (kills > 0.0)
         {
@@ -556,19 +589,19 @@ db_redraw_lab2 (int fr)
             if (cur_arm > 4)
             {
                 W_WriteText (tstatw,
-                             402, 4 + W_Textheight,
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 4 + W_Textheight,
                              W_White, label, label_len, W_BoldFont);
             }
             else if (cur_arm > 1)
             {
                 W_WriteText (tstatw,
-                             402, 4 + W_Textheight,
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 4 + W_Textheight,
                              W_White, label, label_len, W_RegularFont);
             }
             else
             {
                 W_WriteText (tstatw,
-                             402, 4 + W_Textheight,
+                             W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 4 + W_Textheight,
                              W_Grey, label, label_len, W_RegularFont);
             }
         }
@@ -578,7 +611,8 @@ db_redraw_lab2 (int fr)
     
     if (fr || (old_torp != torp))
     {
-    	W_ClearArea (tstatw, 242, 32, 72, W_Textheight);
+    	W_ClearArea (tstatw, W_Textwidth/3 + 3 * (BAR_LENGTH + 5), 12 + 2 * W_Textheight,
+    	             12 * W_Textwidth, W_Textheight);
     	
         if (torp > 0)
         {
@@ -593,7 +627,7 @@ db_redraw_lab2 (int fr)
             label_len = 8 + db_itoa (&label[8], torp);
             
             W_WriteText (tstatw,
-                         242, 32,
+                         W_Textwidth/3 + 3 * (BAR_LENGTH + 5), 12 + 2 * W_Textheight,
                          W_White, label, label_len, W_RegularFont);
         }
         old_torp = torp;
