@@ -37,9 +37,7 @@ host names.
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 9) if cursor is in window and it receives a message, it scrolls to bottom automatically,
 bad if you are scrolling up reading history
-10) check if scrolling is working ok with recent fix to setting position
-11) things to fix with font size: dashboard, doc window, xtrekrc window,
-macro window
+10) things to fix with font size: dashboard
 
 Wish list:
 1) Rewrite graphics engine using SDL

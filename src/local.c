@@ -640,12 +640,12 @@ DrawPlanets (void)
                 armbuf[3] = '\0';
                 armbuflen = 4;
             }
-            W_MaskText (w, dx - (7 * BMP_PLANET_WIDTH / 8) * SCALE / scaleFactor,
-                        dy - (5 * BMP_PLANET_HEIGHT / 6) * SCALE / scaleFactor,
+            W_MaskText (w, dx - (W_Textwidth * (armbuflen - 1)) - (2 * BMP_PLANET_WIDTH / 3) * SCALE / scaleFactor,
+                        dy - W_Textheight - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
                         planetColor (l),
                         armbuf, armbuflen, planetFont (l));
-            clearzone[0][clearcount] = dx - (7 * BMP_PLANET_WIDTH / 8) * SCALE / scaleFactor;
-            clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6) * SCALE / scaleFactor;
+            clearzone[0][clearcount] = dx - (W_Textwidth * (armbuflen - 1)) - (2 * BMP_PLANET_WIDTH / 3) * SCALE / scaleFactor;
+            clearzone[1][clearcount] = dy - W_Textheight - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor;
             clearzone[2][clearcount] = W_Textwidth * armbuflen;
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;

@@ -1003,8 +1003,14 @@ newwin (char *hostmon,
 #endif
 
 #ifdef DOC_WIN
-    docwin = W_MakeWindow ("DocWin", 0, 181, 500, 500, 0, 2, foreColor);
-    xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, 500, 500, 0, 2, foreColor);
+    docwin = W_MakeWindow ("DocWin", 0, 181,
+                           TWINSIDE * W_Textwidth / 6,
+                           TWINSIDE,
+                           0, 2, foreColor);
+    xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200,
+                                TWINSIDE * W_Textwidth / 6,
+                                TWINSIDE,
+                                0, 2, foreColor);
 #endif
 
     for (i = 0; i < 4; i++)

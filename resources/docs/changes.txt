@@ -1,4 +1,5 @@
 Netrek XP 2006, Version 1.3:
+- adjusted documentation window and netrekrc window to scale properly with font size
 - entry window now scales properly with font size, and team/quit windows no longer
   disappear on resizing or moving the entry window
 - main title bar now defaults to on

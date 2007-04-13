@@ -52,7 +52,7 @@ showdocs (int atline)
     W_Font font = W_RegularFont;
 
     if (!docwin)
-        docwin = W_MakeWindow ("DocWin", 0, 181, 500, 500, 0, 2, foreColor);
+        docwin = W_MakeWindow ("DocWin", 0, 181, TWINSIDE * W_Textwidth / 6, TWINSIDE, 0, 2, foreColor);
 
     W_ClearWindow (docwin);
 
@@ -61,12 +61,12 @@ showdocs (int atline)
 
     sprintf (buf, "---  %s  ---", (char *) query_cowid ());
     length = strlen (buf);
-    center = 250 - (length * W_Textwidth) / 2;
+    center = (TWINSIDE * W_Textwidth / 6) / 2 - (length * W_Textwidth) / 2;
     W_WriteText (docwin, center, W_Textheight, textColor,
                  buf, length, W_BoldFont);
     sprintf (buf, CBUGS);
     length = strlen (buf);
-    center = 250 - (length * W_Textwidth) / 2;
+    center = (TWINSIDE * W_Textwidth / 6) / 2 - (length * W_Textwidth) / 2;
     W_WriteText (docwin, center, 3 * W_Textheight, textColor,
                  buf, length, W_RegularFont);
 
@@ -229,7 +229,7 @@ showxtrekrc (int atline)
     W_Font font = W_RegularFont;
 
     if (!xtrekrcwin)
-        xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, TWINSIDE, TWINSIDE, 0, 2,
+        xtrekrcwin = W_MakeWindow ("xtrekrcWin", 0, 200, TWINSIDE * W_Textwidth / 6, TWINSIDE, 0, 2,
                                    foreColor);
 
     W_ClearWindow (xtrekrcwin);
@@ -239,12 +239,12 @@ showxtrekrc (int atline)
 
     sprintf (buf, "---  %s  ---", (char *) query_cowid ());
     length = strlen (buf);
-    center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
+    center = (TWINSIDE * W_Textwidth / 6) / 2 - (length * W_Textwidth) / 2;
     W_WriteText (xtrekrcwin, center, W_Textheight, textColor,
                  buf, length, W_BoldFont);
     sprintf (buf, CBUGS);
     length = strlen (buf);
-    center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
+    center = (TWINSIDE * W_Textwidth / 6) / 2 - (length * W_Textwidth) / 2;
     W_WriteText (xtrekrcwin, center, 3 * W_Textheight, textColor,
                  buf, length, W_RegularFont);
 

@@ -40,12 +40,12 @@ DisplayMessage ()
     if (length == 0)
         return;
 
-    if (length > 80)
+    if (length > (80 * 6 / W_Textwidth))
     {
         strncpy (tmp, outmessage, 10);
         tmp[10] = '\0';         // have to null terminate, because strncpy doesn't
-        strncat (tmp, outmessage + length - 70, 80);
-        length = 80;
+        strncat (tmp, outmessage + length - (80 * 6 / W_Textwidth) + 10, (80 * 6 / W_Textwidth));
+        length = (80 * 6 / W_Textwidth);
     }
     else
         strcpy (tmp, outmessage);
