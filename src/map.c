@@ -556,7 +556,7 @@ DrawPlanets ()
                              ody - (BMP_MPLANET_HEIGHT / 2),
                              BMP_MPLANET_WIDTH,
                              BMP_MPLANET_HEIGHT);
-            W_WriteText (mapw, odx - (BMP_MPLANET_WIDTH / 2),
+            W_WriteText (mapw, odx - (W_Textwidth * 3 / 2),
                          ody + (BMP_MPLANET_HEIGHT / 2),
                          backColor, l->pl_name, 3, planetFont (l));
             pl_update[l->pl_no].plu_update = 0;
@@ -674,20 +674,20 @@ DrawPlanets ()
                 agri_name[0] = (char) (toupper (l->pl_name[0]));
                 agri_name[1] = (char) (toupper (l->pl_name[1]));
                 agri_name[2] = (char) (toupper (l->pl_name[2]));
-                W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
+                W_WriteText (mapw, dx - (W_Textwidth * 3 / 2),
                             dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
                             agri_name, 3, planetFont (l));
             }
             else
             {
-                W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
+                W_WriteText (mapw, dx - (W_Textwidth * 3 / 2),
                             dy + (BMP_MPLANET_HEIGHT / 2), getAgriColor (l),
                             l->pl_name, 3, planetFont (l));
             }
         }
         else
         {
-            W_WriteText (mapw, dx - (BMP_MPLANET_WIDTH / 2),
+            W_WriteText (mapw, dx - (W_Textwidth * 3 / 2),
                         dy + (BMP_MPLANET_HEIGHT / 2), planetColor (l),
                         l->pl_name, 3, planetFont (l));
         }
@@ -719,7 +719,7 @@ DrawPlanets ()
                 armbuflen = 4;
             }
                 
-            W_MaskText (mapw, dx - (BMP_MPLANET_WIDTH / 4) -  2*(armbuflen - 2),
+            W_MaskText (mapw, dx - (W_Textwidth * (armbuflen - 1) / 2),
                          dy - (BMP_MPLANET_HEIGHT / 4), W_White,
                          armbuf, armbuflen, W_BoldFont);
         }

@@ -641,6 +641,7 @@ DWORD InputThreadID;
 extern int redrawall;  /* Erase and redraw the galactic? */
 extern int autoQuit;
 
+extern int fontSize;
 extern int forceDisplay;
 extern int forceMono;
 extern int metaType;

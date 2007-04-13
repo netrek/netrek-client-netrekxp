@@ -23,18 +23,14 @@
 #include "data.h"
 #include "proto.h"
 
-#define MIN(a,b)        (((a) < (b)) ? (a) : (b))
-
 #define BX_OFF()        ((textWidth + 1) * W_Textwidth + S_IBORDER)
 #define BY_OFF(line)    ((line) * (W_Textheight + S_IBORDER) + S_IBORDER)
 #define TX_OFF(len)     ((textWidth - len) * W_Textwidth + S_IBORDER)
 #define TY_OFF(line)    BY_OFF(line)
 
-#if 0
-#define STAT_WIDTH              160
-#else
-#define STAT_WIDTH              st_width
-#endif
+/* left side labels, assumes no label longer than 2 chars */
+#define TEXT_WIDTH		(2*W_Textwidth + 2*STAT_BORDER)
+#define STAT_WIDTH              (MAX(80,TEXT_WIDTH) + TEXT_WIDTH)
 #define STAT_HEIGHT             BY_OFF(NUM_SLIDERS)
 #define STAT_BORDER             2
 #define S_IBORDER               5
@@ -79,7 +75,17 @@ static SLIDER sliders[] = {
 static int textWidth = 0;
 static int initialized = 0;
 
-static int st_width = -1;
+int
+StatsHeight (void)
+{
+    return STAT_HEIGHT;
+}
+
+int
+StatsWidth (void)
+{
+    return STAT_WIDTH;
+}
 
 static void
 box (int filled,
@@ -144,7 +150,6 @@ initStats ()
         sliders[i].diff = sliders[i].max - sliders[i].min;
         sliders[i].lastVal = 0;
     }
-    st_width = W_WindowWidth (statwin);
 }
 
 void

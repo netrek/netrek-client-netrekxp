@@ -10,8 +10,6 @@
 #include "data.h"
 #include "proto.h"
 
-#define	MIN(a,b)	(((a) < (b)) ? (a) : (b))
-
 #define	BX_OFF()	((textWidth + 1) * W_Textwidth + S_IBORDER)
 #define	BY_OFF(line)	((line) * (W_Textheight + S_IBORDER) + S_IBORDER)
 #define	TX_OFF(len)	((textWidth - len) * W_Textwidth + S_IBORDER)
@@ -19,7 +17,8 @@
 
 /* right side labels */
 #define TEXT_WIDTH		(5*W_Textwidth + 2*STAT_BORDER)
-#define STAT_WIDTH		(260 + TEXT_WIDTH)
+/* width assumes no label longer than 17 chars */
+#define STAT_WIDTH		(MAX(260, TEXT_WIDTH + 17*W_Textwidth) + TEXT_WIDTH)
 #define STAT_HEIGHT		BY_OFF(NUM_SLIDERS)
 #define STAT_BORDER		2
 #define S_IBORDER		5
@@ -27,7 +26,7 @@
 #define STAT_Y			13
 
 #define SL_WID			\
-	(STAT_WIDTH -TEXT_WIDTH - 2 * S_IBORDER - (textWidth + 1) * W_Textwidth)
+	(STAT_WIDTH - TEXT_WIDTH - 2 * S_IBORDER - (textWidth + 1) * W_Textwidth)
 #define SL_HEI			(W_Textheight)
 
 #define NUM_ELS(a)		(sizeof (a) / sizeof (*(a)))

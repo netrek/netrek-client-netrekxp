@@ -52,7 +52,7 @@ typedef char *W_Icon;
 typedef char *W_Font;
 typedef int W_Color;
 
-extern W_Font W_BigFont, W_RegularFont, W_UnderlineFont, W_HighlightFont,
+extern W_Font W_BigFont, W_SmallFont, W_RegularFont, W_UnderlineFont, W_HighlightFont,
     W_IndyFont;
 extern W_Color W_White, W_Black, W_Red, W_Green, W_Yellow, W_Cyan, W_Grey;
 extern W_Color W_God, W_Ind, W_Fed, W_Rom, W_Kli, W_Ori;

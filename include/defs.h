@@ -162,6 +162,7 @@
 #ifndef MAX
 #define MAX(a,b)		((a) > (b) ? (a) : (b))
 #endif
+#define MIN(a,b)                ((a) < (b) ? (a) : (b))
 
 #define myPlasmaTorp(t)		(me->p_no == (t)->pt_owner)
 #define myTorp(t)		(me->p_no == (t)->t_owner)

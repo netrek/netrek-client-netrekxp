@@ -736,6 +736,7 @@ HANDLE MainThread = NULL;
 HANDLE InputThread = NULL;
 
 // missing variables
+int fontSize = 10;
 int forceDisplay = 0;
 int mungScrollbarColors = 0;
 int showMotd = 1;

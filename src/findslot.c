@@ -142,8 +142,8 @@ findslot (void)
     W_MapWindow (waitqWin);
     if (showMotd)
     {
-        motdWin = W_MakeWindow ("waitmotd", 1, WAITWIDTH + 1, 500,
-                                500, 0, 2, foreColor);
+        motdWin = W_MakeWindow ("waitmotd", 1, WAITWIDTH + 1, TWINSIDE,
+                                TWINSIDE, 0, 2, foreColor);
         W_MapWindow (motdWin);
         showMotdWin (motdWin, WaitMotdLine);
     }

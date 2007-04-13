@@ -189,6 +189,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"fontSize", &fontSize, RC_INT,
+        {
+            "Height in pixels of font, default 10",
+            NULL
+        }
+    },
     {"forceDisplay", &forceDisplay, RC_INT,
         {
             "Number of colors the client will display",

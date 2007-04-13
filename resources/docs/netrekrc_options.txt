@@ -55,7 +55,7 @@ fedship1bmpfile:          (path) - new color bitmaps
 fedshipGbmpfile:          (path) - your own ship's grayscale bitmaps
 fedshipTbmpfile:          (path) - shaded color bitmaps
 fedshipMbmpfile:          (path) - mono bitmaps
-fontSize:                 (int) default 10
+fontSize:                 (int) - height in pixels of font, default 10
 forceDisplay:             (0/3) how many colors to display
 # 0 - find best available color option (default)
 # 1 - 16 colors

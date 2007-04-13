@@ -1016,7 +1016,7 @@ newwin (char *hostmon,
                          BOXSIDE, w, 1, foreColor);
 
     statwin = W_MakeWindow ("stats", TWINSIDE + 2 * THICKBORDER - 100, TWINSIDE + 2 * THICKBORDER,
-                            100, 80, baseWin, BORDER, foreColor);
+                            StatsWidth(), StatsHeight(), baseWin, BORDER, foreColor);
     W_SetWindowExposeHandler (statwin, redrawStats);
 
     W_DefineTrekCursor (baseWin);
@@ -1935,12 +1935,12 @@ showMotdWin (W_Window motdwin, int atline)
 
     sprintf (buf, "---  %s  ---", (char *) query_cowid ());
     length = strlen (buf);
-    center = 250 - (length * W_Textwidth) / 2;
+    center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
     W_WriteText (motdwin, center, W_Textheight, textColor,
                  buf, length, W_BoldFont);
     sprintf (buf, CBUGS);
     length = strlen (buf);
-    center = 250 - (length * W_Textwidth) / 2;
+    center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
     W_WriteText (motdwin, center, 3 * W_Textheight, textColor,
                  buf, length, W_RegularFont);
 

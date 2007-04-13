@@ -1172,6 +1172,8 @@ char *strcpy_return (register char *s1,
 /******************************************************************************/
 /***  stats.c
 /******************************************************************************/
+     int StatsHeight (void);
+     int StatsWidth (void);
      void initStats ();
      void redrawStats ();
      void updateStats ();

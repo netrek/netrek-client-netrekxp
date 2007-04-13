@@ -60,7 +60,7 @@ noautologin (void)
 
     autologin = 0;
     *defpasswd = *password1 = *password2 = '\0';
-    W_WriteText (w, 100, 130, textColor, alf, strlen (alf), W_BoldFont);
+    W_WriteText (w, 100, 30 + 10 * W_Textheight, textColor, alf, strlen (alf), W_BoldFont);
 
 }
 
@@ -97,7 +97,7 @@ showreadme (void)
     {
         length = strlen (README[i]);
 
-        W_WriteText (w, 20, i * W_Textheight + 220, textColor, README[i],
+        W_WriteText (w, 20, i * W_Textheight + 30 + 19 * W_Textheight, textColor, README[i],
                      length, W_RegularFont);
     }
 }
@@ -185,7 +185,7 @@ checkpassword ()
     if (loginAccept == 0)
     {
         s = "Bad password!";
-        W_WriteText (w, 100, 110, textColor, s, strlen (s), W_BoldFont);
+        W_WriteText (w, 100, 30 + 8 * W_Textheight, textColor, s, strlen (s), W_BoldFont);
         (void) W_EventsPending ();
         sleep (1);
         W_ClearWindow (w);
@@ -230,7 +230,7 @@ makeNewGuy ()
     if (strcmp (password1, password2) != 0)
     {
         s = "Passwords do not match";
-        W_WriteText (w, 100, 160, textColor, s, strlen (s), W_BoldFont);
+        W_WriteText (w, 100, 30 + 13 * W_Textheight, textColor, s, strlen (s), W_BoldFont);
         (void) W_EventsPending ();
         sleep (3);
         W_ClearWindow (w);
@@ -255,16 +255,17 @@ displayFormat (char *defname)
     W_WriteText (w, 40, 30, textColor, t, strlen (t), W_RegularFont);
 
     t = "a temporary name or hit ^G (CTRL-G) to autologin as guest.";
-    W_WriteText (w, 40, 40, textColor, t, strlen (t), W_RegularFont);
+    W_WriteText (w, 40, 30 + W_Textheight, textColor, t, strlen (t), W_RegularFont);
 
     t = "Or, hit ^D (CTRL-D) with a blank name to exit immediately.";
-    W_WriteText (w, 40, 50, textColor, t, strlen (t), W_RegularFont);
+    W_WriteText (w, 40, 30 + 2 * W_Textheight, textColor, t, strlen (t), W_RegularFont);
 
     sprintf (s, "Character name (\"%s\"): ", defname);
-    W_WriteText (w, 40, 70, textColor, s, strlen (s), W_RegularFont);
+    W_WriteText (w, 40, 30 + 4 * W_Textheight, textColor, s, strlen (s), W_RegularFont);
 
     t = ".               .";
-    W_WriteText (w, 40 + ((20 + strlen (defname)) * W_Textwidth), 68,
+    W_WriteText (w, 40 + ((20 + strlen (defname)) * W_Textwidth),
+                 30 + 4 * W_Textheight - W_Textheight / 5,
                  textColor, t, strlen (t), W_RegularFont);
 }
 
@@ -288,65 +289,65 @@ displayStartup (char *defname)
 
     sprintf (buf, "Connection established to %s", serverName);
     t = buf;
-    W_WriteText (w, 100, 170, textColor, t, strlen (t), W_BoldFont);
+    W_WriteText (w, 100, 30 + 14 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
 
 
     sprintf (s, "%-15s", tempname);
-    W_WriteText (w, 40 + (21 + strlen (defname)) * W_Textwidth, 70, textColor,
+    W_WriteText (w, 40 + (21 + strlen (defname)) * W_Textwidth, 30 + 4 * W_Textheight, textColor,
                  s, strlen (s), W_BoldFont);
     t = " ^ ";
     W_WriteText (w,
                  40 + (20 + strlen (defname) +
-                       strlen (tempname)) * W_Textwidth, 80, textColor, t, 3,
+                       strlen (tempname)) * W_Textwidth, 30 + 5 * W_Textheight, textColor, t, 3,
                  W_RegularFont);
 
     if (state == ST_GETPASS)
     {
         t = "Enter password: ";
-        W_WriteText (w, 100, 90, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 6 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = ".               .";
-        W_WriteText (w, 100 + ((16) * W_Textwidth), 88,
+        W_WriteText (w, 100 + ((16) * W_Textwidth), 30 + 6 * W_Textheight - W_Textheight / 5,
                      textColor, t, strlen (t), W_RegularFont);
         for (i = 0; i < strlen (password1); i++)
-            W_WriteText (w, 100 + ((16 + 1 + i) * W_Textwidth), 90,
+            W_WriteText (w, 100 + ((16 + 1 + i) * W_Textwidth), 30 + 6 * W_Textheight,
                         textColor, "x", 1, W_BoldFont);
         t = " ^ ";
         W_WriteText (w, 100 + (16 + strlen (password1)) * W_Textwidth,
-                     100, textColor, t, 3, W_RegularFont);
+                     30 + 7 * W_Textheight, textColor, t, 3, W_RegularFont);
     }
     if (state > ST_GETPASS)
     {
         t = "You need to make a password.";
-        W_WriteText (w, 100, 90, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 6 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = "So think of a password you can remember, and enter it.";
-        W_WriteText (w, 100, 100, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 7 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = "What is your password? :";
-        W_WriteText (w, 100, 110, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 8 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = ".               .";
-        W_WriteText (w, 100 + ((24) * W_Textwidth), 108,
+        W_WriteText (w, 100 + ((24) * W_Textwidth), 30 + 8 * W_Textheight - W_Textheight / 5,
                      textColor, t, strlen (t), W_RegularFont);
         for (i = 0; i < strlen (password1); i++)
-            W_WriteText (w, 100 + ((24 + 1 + i) * W_Textwidth), 110,
+            W_WriteText (w, 100 + ((24 + 1 + i) * W_Textwidth), 30 + 8 * W_Textheight,
                         textColor, "x", 1, W_BoldFont);
         t = " ^ ";
         W_WriteText (w, 100 + (24 + strlen (password1)) * W_Textwidth,
-                     120, textColor, t, 3, W_RegularFont);
+                     30 + 9 * W_Textheight, textColor, t, 3, W_RegularFont);
     }
     if (state == ST_MAKEPASS2)
     {
         t = "Enter it again to make sure you typed it right.";
-        W_WriteText (w, 100, 130, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 10 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = "Your password? :";
-        W_WriteText (w, 100, 140, textColor, t, strlen (t), W_BoldFont);
+        W_WriteText (w, 100, 30 + 11 * W_Textheight, textColor, t, strlen (t), W_BoldFont);
         t = ".               .";
-        W_WriteText (w, 100 + ((16) * W_Textwidth), 138,
+        W_WriteText (w, 100 + ((16) * W_Textwidth), 30 + 11 * W_Textheight - W_Textheight / 5,
                      textColor, t, strlen (t), W_RegularFont);
         for (i = 0; i < strlen (password2); i++)
-            W_WriteText (w, 100 + ((16 + 1 + i) * W_Textwidth), 140,
+            W_WriteText (w, 100 + ((16 + 1 + i) * W_Textwidth), 30 + 11 * W_Textheight,
                         textColor, "x", 1, W_BoldFont);
         t = " ^ ";
         W_WriteText (w, 100 + (16 + strlen (password2)) * W_Textwidth,
-                     150, textColor, t, 3, W_RegularFont);
+                     30 + 12 * W_Textheight, textColor, t, 3, W_RegularFont);
 
     }
 }

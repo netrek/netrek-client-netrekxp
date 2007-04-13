@@ -112,6 +112,9 @@ enemyPhasers: 1
 # Change window border on enemy approach
 extraAlertBorder: on
 
+# Height in pixels of font, default 10
+fontSize: 10
+
 # Number of colors the client will display
 # 0 - find best available color option (default)
 # 1 - 16 colors
@@ -153,7 +156,7 @@ logging: off
 mainResizeable: on
 
 # Start main window with title bar on (can be toggled by alt+enter)
-mainTitleBar: off
+mainTitleBar: on
 
 # Maximum number of scroll lines in a message window (range of values 50-500)
 maxScrollLines: 300

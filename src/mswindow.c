@@ -178,7 +178,7 @@ extern int DefaultsLoaded;
 HWND AnyWindow;
 
 int W_FastClear = 0;
-W_Font W_BigFont, W_RegularFont;
+W_Font W_BigFont, W_SmallFont, W_RegularFont;
 W_Font W_HighlightFont, W_UnderlineFont;
 W_Color W_White = WHITE, W_Black = BLACK, W_Red = RED, W_Green = GREEN;
 W_Color W_Yellow = YELLOW, W_Cyan = CYAN, W_Grey = GREY;
@@ -401,6 +401,7 @@ W_Cleanup (void)
     DeleteObject ((HFONT) W_RegularFont);
     DeleteObject ((HFONT) W_HighlightFont);
     DeleteObject ((HFONT) W_UnderlineFont);
+    DeleteObject ((HFONT) W_SmallFont);
     DeleteObject ((HFONT) W_BigFont);
 
     strcpy (FileName, GetExeDir ());
@@ -751,7 +752,7 @@ W_Initialize (char *display)
     lf.lfPitchAndFamily = FF_MODERN | FIXED_PITCH;
 
     strcpy (lf.lfFaceName, "Netrek");
-    lf.lfHeight = -intDefault ("fontsize", 10);
+    lf.lfHeight = -intDefault ("fontSize", fontSize);
     lf.lfWeight = FW_REGULAR;
 
     W_RegularFont = (W_Font) CreateFontIndirect (&lf);
@@ -765,9 +766,15 @@ W_Initialize (char *display)
     lf.lfUnderline = TRUE;
     W_UnderlineFont = (W_Font) CreateFontIndirect (&lf);
 
+    //Make a small font for whatever we need
+    strcpy (lf.lfFaceName, "Netrek");
+    lf.lfUnderline = FALSE;
+    lf.lfHeight = 10;
+    lf.lfWidth = 6;
+    W_SmallFont = (W_Font) CreateFontIndirect (&lf);
+
     //Use arial for the BigFont
     strcpy (lf.lfFaceName, "Arial");
-    lf.lfUnderline = FALSE;
     lf.lfWeight = FW_MEDIUM;
     lf.lfHeight = 52;
     lf.lfWidth = 32;
@@ -1990,11 +1997,15 @@ NetrekWndProc (HWND hwnd,
                 W_UnmapWindow (teamWin[i]);
                 teamWin[i] = W_MakeWindow (teamshort[1 << i], i * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5),
                                            (TWINSIDE / 5), (TWINSIDE / 5), w, 1, foreColor);
+                if (!ingame)
+                    W_MapWindow (teamWin[i]);
             }
 
             W_UnmapWindow (qwin);
             qwin = W_MakeWindow ("quit", 4 * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5), (TWINSIDE / 5),
                                  (TWINSIDE / 5), w, 1, foreColor);
+            if (!ingame)
+                W_MapWindow (qwin);
 
             W_FastClear = 1;
             if (viewBox)
