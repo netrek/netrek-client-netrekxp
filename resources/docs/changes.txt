@@ -1,4 +1,8 @@
 Netrek XP 2006, Version 1.3:
+- changed how sizing border works on windows (local, map, message windows), they now
+  all follow the same procedure.  Right click on window border to activate sizing border,
+  and right click again to deactivate sizing border.  Remember, mainResizeable needs to
+  be on for this to work with the local and map windows.
 - new netrekrc option "fullBitmapRotation: (on)/off" that lets you choose to draw the
   old ship bitmaps to 32 positions (off) instead of 256 (on).  Useful for those with
   custom bitmap sets, as it will use all 32 bitmaps in a set rather than just rotating
@@ -24,16 +28,16 @@ Netrek XP 2006, Version 1.3:
 - added netrekrc option "color.God: <color>" to alter color of God messages
 - resizing the local and map windows now only lets you size them as squares
 - richtext message windows are now resizeable, it works a little different than sizing
-  other windows.  First you left click on the window once to activate the sizing border,
+  other windows.  First you right click on the window once to activate the sizing border,
   then grab border with mouse and size normally.  The window will now have a larger border,
-  which you will probably want to get rid of.  To get rid of it, double left-click the
-  window.  The reason the procedure is a little complicated is because having a border
+  which you will probably want to get rid of.  To get rid of it, right click the window
+  again.  The reason the procedure is a little complicated is because having a border
   which can both resize the window requires a larger border, which cuts into precious
   screen space for messages.  So this sizing border needs to be activated first, then
   deactivated when the window is done sizing.
 - richtext message windows are now moveable, it works a little different than moving other
-  windows.  Instead of clicking on border, you click on body of window, hold down mouse,
-  and move the window.
+  windows.  Instead of clicking on border, you click on body of window, hold down left
+  mouse button, and move the window.
 - phaser misses on sturgeon servers now show proper phaser length
 - can now change login name via options menu, saved via in-game save key
 - preference for showing main title bar (toggled via alt+enter) is now saved via

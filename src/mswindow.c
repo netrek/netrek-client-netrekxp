@@ -1141,12 +1141,6 @@ newWindow (char *name,
             WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
         parentwin = &myroot;
     }
-    else if (strncmp (name, "local", 5) == 0 || strncmp (name, "map", 3) == 0)
-    {
-        s = name;
-        if (mainResizeable)
-            SpecialStyle = WS_THICKFRAME;
-    }
     else
         s = name;
 
@@ -2157,7 +2151,30 @@ NetrekWndProc (HWND hwnd,
         EventQueue[EventTail].type = W_EV_BUTTON;
         return (0);
 
+    case WM_NCRBUTTONDOWN:
+        BringWindowToTop (hwnd);
+        GET_STRUCT_PTR;
 
+        if (mainResizeable && (((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
+             || ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)) )
+        {
+            if (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_SIZEBOX)
+            {
+                // remove sizing border and redraw
+                SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
+                SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+                // Flag local window as needing redraw
+                if (win->hwnd == ((Window *) w)->hwnd)
+                    W_FastClear = 1;
+            }
+            else
+            {
+                // set sizing border and redraw
+                SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_SIZEBOX);
+                SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+            }
+        }
+        break;
     case WM_MBUTTONDOWN:
         BringWindowToTop (hwnd);
         GET_STRUCT_PTR;
@@ -2196,6 +2213,20 @@ NetrekWndProc (HWND hwnd,
 
         STORE_EVENT_MOUSE;
         LastPressHwnd = hwnd;
+
+        if (mainResizeable && (((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
+             || ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)) )
+        {
+            if (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_SIZEBOX)
+            {
+                // remove sizing border and redraw
+                SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
+                SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+                // Flag local window as needing redraw
+                if (win->hwnd == ((Window *) w)->hwnd)
+                    W_FastClear = 1;
+            }
+        }
 
 #ifdef SHIFTED_MOUSE
         if (shiftedMouse)
@@ -6149,16 +6180,27 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
         // fake a caption hit to move window
         SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         break;
-    case WM_NCLBUTTONDOWN:
-        // set sizing border
-        SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_SIZEBOX);
+    case WM_NCRBUTTONDOWN:
+        if (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_SIZEBOX)
+        {
+            // remove sizing border and redraw
+            SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
+            SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+        }
+        else
+        {
+            // set sizing border and redraw
+            SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_SIZEBOX);
+            SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+        }
         break;
-    case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
-        SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
-        // remove sizing border and redraw
-        SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
-        break;
+    case WM_RBUTTONDOWN:
+        if (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_SIZEBOX)
+        {
+            // remove sizing border and redraw
+            SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_SIZEBOX);
+            SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+        }
     }
     return CallWindowProc (lpfnDefRichEditWndProc, hwnd, msg, wParam, lParam);
 }
