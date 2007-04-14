@@ -6067,6 +6067,7 @@ AddToRichText (Window * win,
     HWND hwnd;
     CHARRANGE cr;
     int numLines, visibleLines;
+    int x, y;
 
     //Find the end of the linked-list of strings...
     if (p)                      // ...if the list has been created
@@ -6152,7 +6153,10 @@ AddToRichText (Window * win,
     diff = numLines - point.y / W_Textheight - visibleLines;
     if (diff >= 1)
     {
-        point.y += W_Textheight * diff;
+        // Scroll if mouse isn't in window, or if mouse is in
+        // window but scrollback is already at bottom
+        if (!findMouseInWin (& x, &y, (W_Window) win) || diff == 1)
+            point.y += W_Textheight * diff;
         SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
     }
     //SendMessage (win->hwnd, EM_HIDESELECTION, FALSE, 0);

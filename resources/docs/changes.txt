@@ -1,4 +1,11 @@
 Netrek XP 2006, Version 1.3:
+- changed how message scrolling works in richtext windows.  If the mouse is over a
+  message window AND message position isn't already at the bottom of the window,
+  it will not scroll upon receiving a new message, as it is likely you are scrolling
+  back to read old messages.  If mouse is not in a window that receives a message,
+  that window will scroll to the bottom, solving the problem of sometimes accidentally
+  not resetting window scrollback to bottom and the failing to see new messages as
+  they come in.
 - changed how sizing border works on windows (local, map, message windows), they now
   all follow the same procedure.  Right click on window border to activate sizing border,
   and right click again to deactivate sizing border.  Remember, mainResizeable needs to
