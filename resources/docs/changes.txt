@@ -1,4 +1,12 @@
 Netrek XP 2006, Version 1.3:
+- the left and right arrow keys are now mapped to turn left and turn right, they execute
+  a turn request for a 1/16 turn in the desired direction.  I personally find it awkward
+  but if someone is playing without a mouse for whatever reason, it allows them to move
+  at least.  Since using the arrow pad requires a keyboard equivalent key, and these
+  are new keyactions, there are now 2 less available key sequences.  Control+[ is now
+  mapped to turn left, and control+] is turn right, these keys were selected to be as
+  out of the way as possible to avoid conflicts with existing keymaps.
+- the up and down arrow keys now are mapped to accelerate and deccelerate
 - changed how message scrolling works in richtext windows.  If the mouse is over a
   message window AND message position isn't already at the bottom of the window,
   it will not scroll upon receiving a new message, as it is likely you are scrolling

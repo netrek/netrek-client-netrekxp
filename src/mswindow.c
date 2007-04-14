@@ -820,6 +820,10 @@ W_Initialize (char *display)
     }
     VKMap[VK_ESCAPE] = 27;      // 27 is mapped as Ctrl-[ by Windows
     VKMap[VK_TAB] = (char) 201; //'i'+96;     // Make it look like '^i' so macroKey: TAB will work
+    VKMap[VK_UP] = '>'; // accelerate
+    VKMap[VK_DOWN] = '<'; // decelerate
+    VKMap[VK_LEFT] = 187; // turn left ^[
+    VKMap[VK_RIGHT] = 189; // turn right ^]
     VKMap[VK_NUMPAD0] = '0';    // I want to use Numeric Keypad!
     VKMap[VK_NUMPAD1] = '1';    // Added these mappings SRS 4/10/98
     VKMap[VK_NUMPAD2] = '2';

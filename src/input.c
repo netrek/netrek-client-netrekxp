@@ -261,9 +261,9 @@ key_handler_type key_handlers[MAXKEY] = {
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
+    Key187,                     /* ^[ */
     emptyKey,                   /* 31 */
-    emptyKey,                   /* 31 */
-    emptyKey,                   /* 31 */
+    Key189,                     /* ^] */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
     emptyKey,                   /* 31 */
@@ -3535,6 +3535,38 @@ void
 Key212 (W_Event * data)
 {
     emergency (take, data);
+}
+
+/******************************************************************************/
+/***  Key187() - turn left 1/16 turn                                        ***/
+/******************************************************************************/
+void
+Key187 (void)
+{
+    unsigned char course;
+
+    /* Observers can't turn */
+    if (me->p_flags & PFOBSERV) return;
+
+    course = (unsigned char) (me->p_dir - 16);
+    set_course (course);
+    me->p_flags &= ~(PFPLOCK | PFPLLOCK);
+}
+
+/******************************************************************************/
+/***  Key189() - turn right 1/16 turn                                       ***/
+/******************************************************************************/
+void
+Key189 (void)
+{
+    unsigned char course;
+
+    /* Observers can't turn */
+    if (me->p_flags & PFOBSERV) return;
+
+    course = (unsigned char) (me->p_dir + 16);
+    set_course (course);
+    me->p_flags &= ~(PFPLOCK | PFPLLOCK);
 }
 
 /******************************************************************************/
