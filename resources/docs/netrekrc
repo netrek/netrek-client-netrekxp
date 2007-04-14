@@ -155,6 +155,9 @@ lockLine: on
 # Log all messages to file. Requires "logfile" option
 logging: off
 
+# Make main window maximized on client start
+mainMaximized: on
+
 # Make main window + local/map windows resizeable
 mainResizeable: on
 

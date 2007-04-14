@@ -30,6 +30,8 @@ static int clearcount = 0;
 static int clearzone[4][(MAXTORP + 1) * MAXPLAYER +
                         (MAXPLASMA + 1) * MAXPLAYER + MAXPLANETS];
 static int clearlcount = 0;
+static int clearx, cleary, clearr;	/* x,y,radius for range circle */
+static int clearccount = 0;
 #ifdef HOCKEY_LINES
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
 #else
@@ -2492,12 +2494,10 @@ DrawMisc (void)
 
             rad = MAXDISTCLOAK / scaleFactor;
             W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, rad, 0, 1, W_Yellow);
-            /* This could use improvement .. */
-            clearzone[0][clearcount] = TWINSIDE/2 - (rad);
-            clearzone[1][clearcount] = TWINSIDE/2 - (rad);
-            clearzone[2][clearcount] = 2*rad + 1;
-            clearzone[3][clearcount] = 2*rad + 1;
-            clearcount++;
+            clearx = TWINSIDE/2;
+            cleary = TWINSIDE/2;
+            clearr = rad;
+            clearccount++;
         }
     }
 
@@ -2921,6 +2921,7 @@ clearLocal (void)
         W_ClearWindow (w);
         clearcount = 0;
         clearlcount = 0;
+        clearccount = 0;
         tractcurrent = tracthead;
         W_FastClear = 0;
     }
@@ -2947,5 +2948,11 @@ clearLocal (void)
         W_MakeLines (w, clearline[0], clearline[1], clearline[2],
                      clearline[3], clearlcount, backColor);
         clearlcount = 0;
+        
+        if (clearccount)
+        {
+            W_WriteCircle(w, clearx, cleary, clearr, 0, 0, backColor);
+            clearccount--;
+        }
     }
 }

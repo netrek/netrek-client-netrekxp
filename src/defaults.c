@@ -268,6 +268,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"mainMaximized", &mainMaximized, RC_BOOL,
+        {
+            "Make main window maximized on client start",
+            NULL
+        }
+    },
     {"mainResizeable", &mainResizeable, RC_BOOL,
         {
             "Make main window + local/map windows resizeable",
@@ -1702,6 +1708,7 @@ resetdefaults (void)
 
     doubleBuffering = booleanDefault ("doubleBuffering", doubleBuffering);
     mainResizeable = booleanDefault ("mainResizeable", mainResizeable);
+    mainMaximized = booleanDefault ("mainMaximized", mainMaximized);
     mainTitleBar = booleanDefault ("mainTitleBar", mainTitleBar);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     richText = booleanDefault ("richText", richText);

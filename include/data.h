@@ -673,6 +673,7 @@ extern int agriColor;   /* agri planets font color on map */
 extern int windowMove;          /* allow moving of internal windows */
 extern int maxScrollLines;      /* maximum number of scroll lines in a window */
 extern int mainResizeable;      /* allow resize of netrek window */
+extern int mainMaximized;       /* start netrek window maximized */
 extern int mainTitleBar;        /* start netrek window with title bar on */
 extern int playerListMessaging; /* allow message zoom when clicking on player list */
 extern int messageKeyOnly;	/* only start messages with the actual message key(s),

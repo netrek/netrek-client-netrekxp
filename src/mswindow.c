@@ -1451,6 +1451,9 @@ W_MapWindow (W_Window window)
 
     ShowWindow (win->hwnd, SW_SHOWNORMAL);
     BringWindowToTop (win->hwnd);
+    
+    if (window == baseWin && mainMaximized)
+        ShowWindow (((Window *) baseWin)->hwnd, SW_MAXIMIZE);
 }
 
 //Hides the window.
@@ -1959,6 +1962,9 @@ NetrekWndProc (HWND hwnd,
             else
                 height = width;
             TWINSIDE = width - 2 * win->border;
+
+            /* Beeplite TTS may need to be adjusted */
+            tts_ypos = intDefault("tts_ypos", TWINSIDE / 2 - 16);
 
             /* Have to take into account basewin border */
             winRect.left -= baseRect.left;
