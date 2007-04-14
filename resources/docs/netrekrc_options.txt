@@ -64,7 +64,7 @@ forceDisplay:             (0/3) how many colors to display
 
 forceMono:                (on/off) outdated option, that will force display to
                                    16 colors (but only works if forceDisplay = 0).
-fullScreen:               (on/off) create border for main window
+fullBitmapRotation:       (on/off) draw old bitmap sets to 256 angles instead of 32
 headingTic:               (on/off) draw a tic mark indicating your ship's direction
 highlightFriendlyPhasers: (on/off) use white color for friendly phasers
 ignoreCaps:               (on/off) ignore CapsLock key state

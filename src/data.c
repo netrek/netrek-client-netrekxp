@@ -832,3 +832,4 @@ int sortPlanets = 1;		/* sort planet list by team and army count */
 int packetLights = 1;           /* show packet send/receive via dashboard */
 int infoRange = 1;              /* show limit on info with large tactical windows */
 int scaleFactor = 40;           /* allows for scaling of graphics */
+int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */

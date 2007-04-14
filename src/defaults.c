@@ -212,6 +212,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"fullBitmapRotation", &fullBitmapRotation, RC_BOOL,
+        {
+            "Draw old bitmap sets to 256 angles instead of 32",
+            NULL
+        }
+    },
     {"headingTic", &headingTic, RC_BOOL,
         {
             "Draw a tic mark indicating your ship's direction",
@@ -1833,6 +1839,7 @@ resetdefaults (void)
     extraAlertBorder = booleanDefault ("extraAlertBorder", extraAlertBorder);
     showPlanetNames = booleanDefault ("showPlanetNames", 1);
     reportKills = booleanDefault ("reportKills", reportKills);
+    fullBitmapRotation = booleanDefault ("fullBitmapRotation", fullBitmapRotation);
 
     udpDebug = intDefault ("udpDebug", udpDebug);
     udpClientSend = intDefault ("udpClientSend", udpClientSend);

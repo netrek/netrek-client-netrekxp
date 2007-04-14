@@ -1027,8 +1027,12 @@ DrawShips (void)
                                     j->p_ship.s_height * SCALE / scaleFactor,
                                     BMP_SHIP_WIDTH,
                                     BMP_SHIP_HEIGHT,
-                                    (360 * j->p_dir/255), // Converted to angle
-                                    ship_bits[j->p_ship.s_type][0], // Use pointing "up" bitmap
+                                    // If fullBitmapRotation, use actual angle and ship bitmap in 
+                                    // pointing up position.  If not, find the correct bitmap in
+                                    // the ship rosette and set angle to 0.
+                                    fullBitmapRotation ? (360 * j->p_dir/255) : 0,
+                                    fullBitmapRotation ? ship_bits[j->p_ship.s_type][0] :
+                                                         ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
                                     playerColor (j),
                                     w);
             }
@@ -2473,6 +2477,30 @@ DrawMisc (void)
                                  * Ends the if, too */
 #endif /* HOCKEY_LINES */
 
+    /* Draw viewrange circle IF tactical is large enough.  Draw cloak case only */
+    if (viewRange && (MAXDISTCLOAK / scaleFactor < TWINSIDE / 2) &&
+       (me->p_flags & PFCLOAK) && me->p_ship.s_type != STARBASE)
+    {
+        /* Orbitting any non-owned planet gets you seen,
+           so don't draw the circle */
+        if ((me->p_flags & PFORBIT) && (planets[me->p_planet].pl_owner != me->p_team)) ;
+        /* Don't draw if not carrying and viewRange is 2 */
+        else if (me->p_armies == 0 && viewRange == 2) ;
+        else
+        {
+            int rad;
+
+            rad = MAXDISTCLOAK / scaleFactor;
+            W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, rad, 0, 1, W_Yellow);
+            /* This could use improvement .. */
+            clearzone[0][clearcount] = TWINSIDE/2 - (rad);
+            clearzone[1][clearcount] = TWINSIDE/2 - (rad);
+            clearzone[2][clearcount] = 2*rad + 1;
+            clearzone[3][clearcount] = 2*rad + 1;
+            clearcount++;
+        }
+    }
+
     /* Draw inforange box (if necessary) */
     if ( infoRange && TWINSIDE > (INFORANGE * SCALE / scaleFactor)
          && !(me->p_x < 0 || me->p_x > GWIDTH))
@@ -2702,7 +2730,7 @@ DrawMisc (void)
             break;
         }
     }
-    /* Force a border redraw?  Bitmaps rotated realtime as well as viewRange circles 
+    /* Force a border redraw?  Bitmaps rotated realtime as well as viewRange circles
        will overwrite the border.  Since it is very CPU expensive to write
        rectangles (drawborder function) to the active window, especially if double
        buffering is off, let's slow down redraws to at most 10 per second.

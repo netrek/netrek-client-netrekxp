@@ -742,4 +742,5 @@ extern int sortPlanets; 	/* sort planet list by team and army count */
 extern int packetLights;        /* show packet send/receive via dashboard */
 extern int infoRange;           /* show limit on info with large tactical windows */
 extern int scaleFactor;         /* allows for scaling of graphics */
+extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 #endif /* _h_data */

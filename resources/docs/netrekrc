@@ -126,6 +126,9 @@ forceDisplay: 1
 # (but only works if forceDisplay = 0).
 forceMono: off
 
+# Draw old bitmap sets to 256 angles instead of 32
+fullBitmapRotation: on
+
 # Draw a tic mark indicating your ship's direction
 headingTic: off
 

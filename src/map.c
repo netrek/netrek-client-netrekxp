@@ -1140,7 +1140,7 @@ map (void)
             if (j->p_flags & PFCLOAK)
             {
                 rad = MAXDISTCLOAK * GWINSIDE / GWIDTH;
-                color = W_Red;
+                color = W_Yellow;
             }
             else
             {
