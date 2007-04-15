@@ -1461,7 +1461,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-' Netrek Configurator v1.3 - written by Joe Evango
+' Netrek XP 2006 Configuration Program v1.1 - written by Joe Evango
 '
 ' Program notes from Joe 4/15/07-
 ' Code contains some comments, pretty easy to follow the logic.
