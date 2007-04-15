@@ -1460,7 +1460,23 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-' Netrek XP 2006 Configuration Program v1.3 - written by Joe Evango
+'Copyright (C) 2007  Joe Evango - Netrek XP 2006 Configuration Program v1.3
+'
+'This program is free software; you can redistribute it and/or
+'modify it under the terms of the GNU General Public License
+'as published by the Free Software Foundation; either version 2
+'of the License, or (at your option) any later version.
+'
+'This program is distributed in the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty of
+'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License for more details.
+'
+'You should have received a copy of the GNU General Public License
+'along with this program; if not, write to the Free Software
+'Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'
+'To contact the author email joe@playnetrek.org
 '
 ' Program notes from Joe 4/15/07-
 ' Code contains some comments, pretty easy to follow the logic.
@@ -2105,10 +2121,6 @@ Private Sub Command2_Click()
     Unload Form3
 End Sub
 
-
-Private Sub Form_Load()
-
-End Sub
 
 Private Sub Option2_Click()
  Form1.Show
