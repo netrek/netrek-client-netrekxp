@@ -1461,7 +1461,23 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-' Netrek XP 2006 Configuration Program v1.3 - written by Joe Evango
+'Copyright (C) 2007  Joe Evango - Netrek XP 2006 Configuration Program v1.3
+'
+'This program is free software; you can redistribute it and/or
+'modify it under the terms of the GNU General Public License
+'as published by the Free Software Foundation; either version 2
+'of the License, or (at your option) any later version.
+'
+'This program is distributed in the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty of
+'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'GNU General Public License for more details.
+'
+'You should have received a copy of the GNU General Public License
+'along with this program; if not, write to the Free Software
+'Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'
+'To contact the author email joe@playnetrek.org
 '
 ' Program notes from Joe 4/15/07-
 ' Code contains some comments, pretty easy to follow the logic.
@@ -1475,6 +1491,7 @@ Attribute VB_Exposed = False
 ' a Windows client.  Also feel free to use the logic in this code to create a config utility for another OS.  It
 ' took a while to put the keymap portion of this together but it works well. I only ask that if any modifications
 ' are made you also make your code changes available to the community and give me a mention as a contributor
+
 
 'Checks if Classic Mode is enabled and swaps the Classic Mode graphic
 
