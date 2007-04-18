@@ -573,6 +573,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"richTextMove", &richTextMove, RC_BOOL,
+        {
+            "Enable rich text windows moving",
+            NULL
+        }
+    },
     {"rotatePlanets", &rotatePlanets, RC_BOOL,
         {
             "Rotate planets (only works with new planet bitmaps)",
@@ -1712,6 +1718,7 @@ resetdefaults (void)
     mainTitleBar = booleanDefault ("mainTitleBar", mainTitleBar);
     allowWheelActions = booleanDefault ("allowWheelActions", allowWheelActions);
     richText = booleanDefault ("richText", richText);
+    richTextMove = booleanDefault ("richTextMove", richTextMove);
     newQuit = booleanDefault ("newQuit", newQuit);
     newTeams = booleanDefault ("newTeams", newTeams);
     soundVolume= intDefault ("soundVolume", soundVolume);

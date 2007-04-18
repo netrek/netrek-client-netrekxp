@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.3:
+- new netrekrc option "richTextMove: on/(off)" to allow rich text message windows to be
+  moved.  Since left mouse is used to move window, and left mouse is also used to highlight
+  text, this option defaults to off, to make it easier to highlight text.
 - new netrekrc option "mainMaximized: (on)/off" to make main window maximized on client
   start
 - the left and right arrow keys are now mapped to turn left and turn right, they execute

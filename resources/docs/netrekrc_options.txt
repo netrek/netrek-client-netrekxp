@@ -227,7 +227,8 @@ rcfile-<ship>:            (path) use this file as netrekrc for ship (sc,dd,ca,bb
 redrawDelay:              (0-10) how many updates to wait before redraw
 rejectMacro:              (on/off) reject macros
 reportKills:              (on/off) report kills
-richText:                 (on/off) use rich text message windows, currently disabled
+richText:                 (on/off) use rich text message windows
+richTextMove:             (on/off) enable rich text windows moving
 romshipbmpfile:           (path) - old color bitmaps
 romship1bmpfile:          (path) - new color bitmaps
 romshipGbmpfile:          (path) - your own ship's grayscale bitmaps

@@ -319,6 +319,9 @@ reportKills: on
 # Use rich text message windows
 richText: on
 
+# Enable rich text windows moving
+richTextMove: off
+
 # Rotate planets (only works with new planet bitmaps)
 rotatePlanets: on
 

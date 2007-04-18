@@ -6167,12 +6167,12 @@ AddToRichText (Window * win,
     {
         // Scroll if mouse isn't in window, or if mouse is in
         // window but scrollback is already at bottom
-        if (!findMouseInWin (& x, &y, (W_Window) win) || diff == 1)
+        if (!findMouseInWin (&x, &y, (W_Window) win) || diff == 1)
             point.y += W_Textheight * diff;
         SendMessage (win->hwnd, EM_SETSCROLLPOS, 0, (LPARAM) &point);
     }
     //SendMessage (win->hwnd, EM_HIDESELECTION, FALSE, 0);
-    SendMessage (win->hwnd, EM_SCROLLCARET, 0, 0);
+    //SendMessage (win->hwnd, EM_SCROLLCARET, 0, 0);
 
     if (cr.cpMin != cr.cpMax)
         SendMessage (win->hwnd, EM_SETSEL, 0, (LPARAM) &cr);
@@ -6194,7 +6194,8 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
     case WM_LBUTTONDOWN:
         BringWindowToTop (hwnd);
         // fake a caption hit to move window
-        SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+        if (richTextMove)
+            SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         break;
     case WM_NCRBUTTONDOWN:
         if (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_SIZEBOX)
