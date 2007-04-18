@@ -1857,6 +1857,25 @@ NetrekWndProc (HWND hwnd,
         win->ClipRect.left = win->ClipRect.top = win->border;
         win->ClipRect.right = LOWORD (lParam) - win->border;
         win->ClipRect.bottom = HIWORD (lParam) - win->border;
+        // Reinitialize SDB as size/borders of window have changed
+        if ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
+        {
+            SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+            DeleteObject (localSDB->mem_bmp);
+            ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
+            DeleteDC (localSDB->mem_dc);
+            free (localSDB);
+            localSDB = W_InitSDB (w);
+        }
+        else if ((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
+        {
+            SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+            DeleteObject (mapSDB->mem_bmp);
+            ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+            DeleteDC (mapSDB->mem_dc);
+            free (mapSDB);
+            mapSDB = W_InitSDB (mapw);
+        }
         break;
 
     case WM_ENTERSIZEMOVE:
@@ -1933,26 +1952,15 @@ NetrekWndProc (HWND hwnd,
 
         GET_STRUCT_PTR;
 
-        // Reinitialize whatever is necessary (so many things are created based on
-        // a fixed TWINSIDE)
         // Adjust window to be square
-        // Adjust TWINSIDE and GWINSIDE
-        // Redo critical windows
-        // Clear window
+        // Adjust TWINSIDE or GWINSIDE
+        // Reinitialize whatever is necessary
+        // Redo other critical windows
+        // Move and refresh window
         if (windowMove && (Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
         { 
             GetWindowRect (((Window *) w)->hwnd, &winRect);
             GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
-
-            // Have to reinitialize SDB
-            SelectObject (localSDB->mem_dc, localSDB->old_bmp);
-            DeleteObject (localSDB->mem_bmp);
-            ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
-            DeleteDC (localSDB->mem_dc);
-            free (localSDB);
-            localSDB = W_InitSDB (w);
-            // and stars
-            initStars();
 
             // Keep window square
             width = winRect.right - winRect.left;
@@ -1963,6 +1971,9 @@ NetrekWndProc (HWND hwnd,
                 height = width;
             TWINSIDE = width - 2 * win->border;
 
+            // Have to reinitialize stars
+            initStars();
+ 
             /* Beeplite TTS may need to be adjusted */
             tts_ypos = intDefault("tts_ypos", TWINSIDE / 2 - 16);
 
@@ -1990,10 +2001,7 @@ NetrekWndProc (HWND hwnd,
                 winRect.left -= GetSystemMetrics (SM_CXSIZEFRAME) - 1;
                 winRect.top -= GetSystemMetrics (SM_CYSIZEFRAME) - 1;
             }
- 
-            MoveWindow (((Window *) w)->hwnd, winRect.left, winRect.top,
-                        width, height, TRUE);
- 
+
             // All windows based on TWINSIDE are out of position now, but the team
             // select/quit windows are now the wrong size too, so we need to redo them
             for (i = 0; i < 4; i++)
@@ -2004,12 +2012,14 @@ NetrekWndProc (HWND hwnd,
                 if (!ingame)
                     W_MapWindow (teamWin[i]);
             }
-
             W_UnmapWindow (qwin);
             qwin = W_MakeWindow ("quit", 4 * (TWINSIDE / 5), TWINSIDE - (TWINSIDE / 5), (TWINSIDE / 5),
                                  (TWINSIDE / 5), w, 1, foreColor);
             if (!ingame)
                 W_MapWindow (qwin);
+
+            MoveWindow (((Window *) w)->hwnd, winRect.left, winRect.top,
+                        width, height, TRUE);
 
             W_FastClear = 1;
             if (viewBox)
@@ -2019,14 +2029,6 @@ NetrekWndProc (HWND hwnd,
         {
             GetWindowRect (((Window *) mapw)->hwnd, &winRect);
             GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
-
-            // Have to reinitialize SDB
-            SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
-            DeleteObject (mapSDB->mem_bmp);
-            ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
-            DeleteDC (mapSDB->mem_dc);
-            free (mapSDB);
-            mapSDB = W_InitSDB (mapw);
 
             // Keep window square
             width = winRect.right - winRect.left;
