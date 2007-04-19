@@ -1,4 +1,6 @@
 Netrek XP 2006, Version 1.3:
+- bug fix to cambot playback with richtext windows
+- bug fix to saving resized window geometries for text and scrolling windows
 - new netrekrc option "richTextMove: on/(off)" to allow rich text message windows to be
   moved.  Since left mouse is used to move window, and left mouse is also used to highlight
   text, this option defaults to off, to make it easier to highlight text.

@@ -34,8 +34,7 @@ to hostname not resolving.  Currently fixed by using mulitple attempts to resolv
 host names.
 7) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
-8) changing between sizing border messes up border alert draw, until you actually
-move window.
+8) change start music to not play on queue, only entry window
 
 Wish list:
 1) Rewrite graphics engine using SDL

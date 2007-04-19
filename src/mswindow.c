@@ -1308,8 +1308,8 @@ W_MakeTextWindow (char *name,
     /* Set original coordinates, so we will be able to restore to them */
     newwin->orig_x = x;
     newwin->orig_y = y;
-    newwin->orig_width = width;
-    newwin->orig_height = height;
+    newwin->orig_width = width * W_Textwidth + WIN_EDGE * 2;
+    newwin->orig_height = MENU_PAD * 2 + height * W_Textheight;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1352,8 +1352,9 @@ W_MakeScrollingWindow (char *name,
     /* Set original coordinates, so we will be able to restore to them */
     newwin->orig_x = x;
     newwin->orig_y = y;
-    newwin->orig_width = width;
-    newwin->orig_height = height;
+    newwin->orig_width = width * W_Textwidth + WIN_EDGE * 2 +
+                              GetSystemMetrics (SM_CXVSCROLL);
+    newwin->orig_height = height * W_Textheight + MENU_PAD * 2;
 
     //Give it a scroll bar, and set the range (to zero, initially)
     SetWindowLongPtr (newwin->hwnd, GWL_STYLE,
@@ -1414,8 +1415,9 @@ W_MakeMenu (char *name,
     /* Set original coordinates, so we will be able to restore to them */
     newwin->orig_x = x;
     newwin->orig_y = y;
-    newwin->orig_width = width;
-    newwin->orig_height = height;
+    newwin->orig_width = width * W_Textwidth + WIN_EDGE * 2;
+    newwin->orig_height = height * (W_Textheight + MENU_PAD * 2) +
+                              (height - 1) * MENU_BAR;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))
@@ -1897,6 +1899,13 @@ NetrekWndProc (HWND hwnd,
             (((Window *) motdWin != NULL && win->hwnd == ((Window *) motdWin)->hwnd)))
             break;
 
+        /* Note that this routine fails miserably for windows which are not set as
+           WS_CHILD as a result of not having a parent window defiined.  Certain windows
+           like sound, UDP options, short packets default (in the code) to no parent window,
+           though I should mention that the current netrekrc assigns a parent window to all
+           windows.  If WS_CHILD is NOT set, these windows can exist outside the boundaries
+           of the main client window (baseWin).  Which then in turn makes all these bounding
+           calculations wrong.  */
         GetWindowRect (win->hwnd, &winRect);
         GetWindowRect (((Window *) baseWin)->hwnd, &baseRect);
 
@@ -2445,8 +2454,12 @@ NetrekWndProc (HWND hwnd,
 
     case WM_MOUSEMOVE:
         GET_STRUCT_PTR;
-        if (richText) /* Richtext windows set focus, we need to get it back
+        if (richText /* Richtext windows set focus, we need to get it back
                          if mouse moves out of the window */
+#ifdef RECORDGAME
+        && !playback
+#endif
+        )
         {
             if (win->hwnd != GetFocus ())
                 SetFocus (win->hwnd);
@@ -5769,12 +5782,39 @@ checkWindowsGeometry (W_Window window)
                and what size/location window is actually created (e.g. 
                local window is 506x506 pixels at (x,y) = (1,1)).  So we
                subtract the actual values minus the original values to
-               get the conversion factor */
-            sprintf (str, "%dx%d+%d+%d",
-		    width - (win->actual_width - win->orig_width),
-		    height - (win->actual_height - win->orig_height),
-		    x - (win->actual_x - win->orig_x),
-		    y - (win->actual_y - win->orig_y));
+               get the conversion factor.  A further complication is that
+               text, richtext, menu and scroll windows have different formulas
+               for converting netrekrc window geometry entries into actual
+               pixel widths and heights.  All of these adjust window size
+               based on the size of text characters, not pixels.  Width,
+               win->actual_* and win->orig_* are in units of pixels, so
+               a back conversion needs to be performed to get the geometry
+               into a netrekrc entry */
+            width = width - (win->actual_width - win->orig_width);
+            height = height - (win->actual_height - win->orig_height);
+            x = x - (win->actual_x - win->orig_x);
+            y = y - (win->actual_y - win->orig_y);
+
+            switch (win->type)
+            {
+                case WIN_TEXT:
+                    width = (width - WIN_EDGE * 2) / W_Textwidth;
+                    height = (height - MENU_PAD * 2) / W_Textheight;
+                    break;
+                case WIN_MENU:
+                    width = (width - WIN_EDGE * 2) / W_Textwidth;
+                    height = (height - MENU_BAR) / (W_Textheight + MENU_PAD * 2 + MENU_BAR);
+                    break;
+                case WIN_RICHTEXT:
+                case WIN_SCROLL:
+                    width = (width - WIN_EDGE * 2 - GetSystemMetrics (SM_CXVSCROLL)) / W_Textwidth;
+                    height = (height - MENU_PAD * 2) / W_Textheight;
+                    break;
+                case WIN_GRAPH:
+                default:
+                    break;
+            }
+            sprintf (str, "%dx%d+%d+%d", width, height, x, y);
             return strdup (str);
         }
     }
@@ -6051,8 +6091,9 @@ W_MakeScrollingRichTextWindow (char *name,
     /* Set original coordinates, so we will be able to restore to them */
     newwin->orig_x = x;
     newwin->orig_y = y;
-    newwin->orig_width = width;
-    newwin->orig_height = height;
+    newwin->orig_width = width * W_Textwidth + WIN_EDGE * 2 +
+                              GetSystemMetrics (SM_CXVSCROLL);
+    newwin->orig_height = height * W_Textheight + MENU_PAD * 2;
 
     //Map (show) the window if the user spec'd it
     if (checkMapped (name))

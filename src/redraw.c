@@ -69,7 +69,11 @@ intrupt (void)
 
         updateMaxStats (0);     /* Update the max stats
                                  * <isae> */
-        if (!richText)
+        if (!richText
+#ifdef RECORDGAME
+        || (richText && playback)
+#endif
+        )
         {
             W_FlushScrollingWindow (messwa);
             W_FlushScrollingWindow (messwt);
