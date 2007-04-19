@@ -802,12 +802,6 @@ cowmain (char *server,
     setObserverMode (xtrekPort);
 
     savebitmaps ();
-    
-#if defined(SOUND)
-    /* Moved sound initialization to right after readdefaults() so
-     * the intro can start playing ASAP */
-    Init_Sound();
-#endif
 
     /* open memory...? */
     openmem ();
@@ -860,6 +854,11 @@ cowmain (char *server,
     findslot ();
 
     lastm = mctl->mc_current;
+    
+#if defined(SOUND)
+    /* Only play start sound once at login screen */
+    Init_Sound();
+#endif
 
     mapAll ();
 
