@@ -1,4 +1,4 @@
-set RSAKey="\netrek_files\rsa\NetrekXP-2006-RSA-Key-Win32.secret"
+set RSAKey="\netrek_files\rsa\NetrekXP-2006v3-RSA-Key-Win32.secret"
 set InstCWD="\netrek_files"
 set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
 rem set Compiler=VCC
