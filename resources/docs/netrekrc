@@ -1058,7 +1058,7 @@ mac.X.%p: My condition: %d%%D %s%%S %f%%F %a armies
 # Receiver configurable distress macros
 dist.^t.take: %T%c->%O (%S) Carrying %a to %l%?%n>-1%{ @ %n%}
 dist.^o.ogg: %T%c->%O Help Ogg %p at %l
-dist.^b.bomb: %T%c->%O %?%n>4%{bomb %l @ %n%!bomb%}
+dist.^b.bomb: %T%c->%O %?%n>4%{bomb %l @ %n%!bomb %l%}
 dist.^c.space_control: %T%c->%O Help Control at %L
 dist.^1.save_planet: %T%c->%O Emergency at %L!!!!
 dist.^2.base_ogg: %T%c->%O Sync with --]> %g <[-- OGG ogg OGG base!!

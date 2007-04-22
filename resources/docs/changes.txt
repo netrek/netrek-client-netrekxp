@@ -1,4 +1,7 @@
 Netrek XP 2006, Version 1.3:
+- whether main netrek window is maximized or not now saves via in-game save key
+- bomb RCD used on an unknown planet or planet with 4 or less armies will now say
+  "bomb <planetname>" instead of the more useless, unspecific "bomb"
 - start music will no longer play if you connect to a server and wind up on a wait queue,
   the music will instead play once you reach the login screen
 - bug fix to cambot playback with richtext windows

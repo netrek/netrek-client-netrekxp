@@ -1880,6 +1880,19 @@ NetrekWndProc (HWND hwnd,
         }
         break;
 
+    case WM_SYSCOMMAND:
+        // Just tracking main window maximum/restore status here
+        GET_STRUCT_PTR;
+
+        if (win->hwnd == ((Window *) baseWin)->hwnd)
+        {
+            if (wParam == SC_MAXIMIZE)
+                mainMaximized = 1;
+            else if (wParam = SC_RESTORE)
+                mainMaximized = 0;
+        }
+        break;
+
     case WM_ENTERSIZEMOVE:
         //Disable possibility to move internal windows
         {   // have to add bracket to be able to declare variables
