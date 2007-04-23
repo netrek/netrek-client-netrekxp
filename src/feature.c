@@ -97,6 +97,8 @@ struct feature features[] = {
     {"SHOW_ARMY_COUNT", &F_show_army_count, 'S', 1, 0, 0},
     {"SHOW_OTHER_SPEED", &F_show_other_speed, 'S', 1, 0, 0},
     {"SHOW_CLOAKERS", &F_show_cloakers, 'S', 1, 0, 0},
+    {"TURN_KEYS", &F_turn_keys, 'S', 1, 0, 0},
+    {"SHOW_VISIBILITY_RANGE", &F_show_visibility_range, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 
@@ -278,6 +280,8 @@ checkFeature (struct feature_cpacket *packet)
     F_show_army_count = 1;
     F_show_other_speed = 1;
     F_show_cloakers = 1;
+    F_turn_keys = 1;
+    F_show_visibility_range = 1;
 #endif
 #endif /* BEEPLITE */
 }

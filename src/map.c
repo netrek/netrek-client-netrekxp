@@ -504,8 +504,10 @@ DrawPlanets ()
 
     for (l = planets + MAXPLANETS - 1; l >= planets; --l)
     {
-        /* Synchronize planet info (up to 10 times/second) for current orbitted planet
-           and once every 5 seconds for all other planets we have info on */
+        /* Synchronize planet info (up to 10 times/second) for current orbitted
+           planet.  For all other planets, send info on planet 0 through planet
+           MAXPLANETS every MAXPLANETS/10 seconds, one planet at a time,
+           10 times/second.  Only send info is planet is "touched" */
         if (F_check_planets)
         {
             if ((me->p_flags & PFORBIT)
@@ -518,11 +520,9 @@ DrawPlanets ()
                         orbit_planet_refresh = 0;
                 }
             }
-            else if (l->pl_info & me->p_team)
-            {
-                if ((planet_refresh * 10 / server_ups) >= 50)
-                        sendPlanetsPacket(l->pl_no);
-            }
+            else if ((planet_refresh == l->pl_no * server_ups / 10)
+                 && (l->pl_info & me->p_team))
+                sendPlanetsPacket(l->pl_no);
         }
 
         if (!(l->pl_flags & PLREDRAW))
@@ -984,7 +984,7 @@ map (void)
     /* Increment counter for requesting planet sync (F_check_planets) */
     if (F_check_planets)
     {
-        if ((planet_refresh * 10 / server_ups) >= 50)
+        if ((planet_refresh * 10 / server_ups) >= MAXPLANETS)
             planet_refresh = 0;
         else
             planet_refresh++;
@@ -1112,7 +1112,8 @@ map (void)
 #endif
 
 	/* Draw range circle */
-	if (viewRange && (myPlayer(j) || isObsLockPlayer(j))
+	if (viewRange && F_show_visibility_range
+	    && (myPlayer(j) || isObsLockPlayer(j))
 	    && j->p_ship.s_type != STARBASE)
         {
           /* Orbitting any non-owned planet gets you seen,

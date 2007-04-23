@@ -529,6 +529,7 @@ varyShieldsColor: on
 viewBox: on
 
 # Show range at which enemies can see you as a circle on map
+# Server god decides whether to enable this feature
 # 0 - don't show range circle
 # 1 - only show range circle when cloaked
 # 2 - only show range circle when carrying

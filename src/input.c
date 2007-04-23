@@ -3545,6 +3545,9 @@ Key187 (void)
 {
     unsigned char course;
 
+    /* Server must allow turn keys */
+    if (!F_turn_keys) return;
+
     /* Observers can't turn */
     if (me->p_flags & PFOBSERV) return;
 
@@ -3560,6 +3563,9 @@ void
 Key189 (void)
 {
     unsigned char course;
+
+    /* Server must allow turn keys */
+    if (!F_turn_keys) return;
 
     /* Observers can't turn */
     if (me->p_flags & PFOBSERV) return;

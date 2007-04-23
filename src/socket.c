@@ -1550,8 +1550,13 @@ sendServerPacket (struct player_spacket *packet)
 #endif
 
     if (packetLights)
-        light_send();
- 
+    {
+    	// Planet cross-checks get sent very rapidly, thus negating the
+    	// usefulness of packet lights.
+    	if (packet->type != CP_PLANET)
+            light_send();
+    }
+
     if (commMode == COMM_UDP)
     {
         /* for now, just sent everything via TCP */

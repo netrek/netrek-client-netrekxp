@@ -1888,7 +1888,7 @@ NetrekWndProc (HWND hwnd,
         {
             if (wParam == SC_MAXIMIZE)
                 mainMaximized = 1;
-            else if (wParam = SC_RESTORE)
+            else if (wParam == SC_RESTORE)
                 mainMaximized = 0;
         }
         break;
