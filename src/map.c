@@ -507,7 +507,7 @@ DrawPlanets ()
         /* Synchronize planet info (up to 10 times/second) for current orbitted
            planet.  For all other planets, send info on planet 0 through planet
            MAXPLANETS every MAXPLANETS/10 seconds, one planet at a time,
-           10 times/second.  Only send info is planet is "touched" */
+           10 times/second. */
         if (F_check_planets)
         {
             if ((me->p_flags & PFORBIT)
@@ -520,8 +520,7 @@ DrawPlanets ()
                         orbit_planet_refresh = 0;
                 }
             }
-            else if ((planet_refresh == l->pl_no * server_ups / 10)
-                 && (l->pl_info & me->p_team))
+            else if (planet_refresh == l->pl_no * server_ups / 10)
                 sendPlanetsPacket(l->pl_no);
         }
 

@@ -1134,6 +1134,8 @@ struct ship_cap_spacket;
 void handleShipCap (struct ship_cap_spacket *packet);
 struct generic_32_spacket;
 void handleGeneric32 (struct generic_32_spacket *packet);
+struct flags_all_spacket;
+void handleFlagsAll (struct flags_all_spacket *packet);
 struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
 #ifdef INCLUDE_SCAN

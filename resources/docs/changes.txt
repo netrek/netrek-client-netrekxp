@@ -32,10 +32,12 @@ good job of autoplacing all the other windows for you.
 12) Added new function keys, control-z and control-a, for zooming.  Control-z
 zooms in, and control-a zooms out.  As part of the benefit of having all
 graphics scale, ALL ship bitmap sets can now show ships to 256 positions.
-13) Richtext message windows are now resizeable and moveable.  Moving works a
-little different than moving other windows.  Instead of clicking on border, you
-click on the body of the window, hold down left mouse button, and move the
-window.  This only works if the richTextMove option is on.
+13) Added richtext message windows, which allow stuff like cut and paste from
+within the message windows, and clickable URLs.  Richtext message windows are
+both resizeable and moveable.  Moving them works a little different than moving
+other windows.  Instead of clicking on the border, you click on the body of the
+window, hold down left mouse button, and move the window.  This only works if
+the richTextMove option is on.
 14) The mainResizeable netrekrc option now allows map/local to be resizeable.
 Note that resizing local and map windows only lets you size them as squares.
 Some windows (team select, quit) will resize properly to match new local size,
@@ -44,7 +46,7 @@ sidenote: resizing local window will reinitialize background star positions.
 To resize the local/map/richtext windows, right click on window border to
 activate sizing border, resize the window as you want, then right click again
 to deactivate sizing border. The reason the procedure is a little complicated is
-because having a border which can both resize the window requires a larger border,
+because having a border which can resize the window requires a larger border,
 which cuts into precious screen space.  So this sizing border needs to be
 activated first, then deactivated when the window is done sizing.
 15) The ' key (single quote) is now the default key for toggling on and off the
@@ -83,7 +85,7 @@ Sound:
 wait queue, the music will instead play once you reach the login screen.
   
 General bug fixes:
-1) Fixed bug with metaserver not sorting correcty sometimes, and some server
+1) Fixed bug with metaserver not sorting correctly sometimes, and some server
 entries not having their metaping field initialized.
 2) Fixed bug where alert border was not working right upon death with old ship
 bitmaps.
@@ -183,8 +185,9 @@ checks with the server to make sure your planet info is up to date, so no more
 phantom armies on a planet or delay on bombing a planet flat because you lost a
 planet packet.  Also no more wondering if you missed a planet packet while
 dropping if planet army count doesn't go down.  This cross-check with server
-occurs 10 times/second for a planet you are orbitting (critical), and once
-every 4 seconds for all the planets your team has info on (non-critical).
+occurs 10 times/second for a planet you are orbitting (critical), and will cycle
+through the rest of the planets at a rate of 1 planet every 100 ms.  Adds 100
+bytes/sec in upstream data from client to server.
 22) New netrekrc option "infoRange: (on)/off" to draw a dashed white box on your
 tactical if you increase the tactical size beyond 500 x 500.  This box is drawn
 to show the 500 x 500 range, which is important because other people's weapons
@@ -241,7 +244,11 @@ highlight text.
 undocumented and horribly buggy).  This option controls the pixel height of the
 font used in game.  As a result of changing font size, most windows should adjust
 to a new proper size.  Such as dashboards and playerlist and message windows.
-
+32) Added support for SP_FLAGS_ALL feature packet, this is a packet that sends
+important flags (cloak/shields/alive) on all players every update, if you are
+using long packets for players, or if you are using the FULL_DIRECTION_RESOLUTION
+feature packet.  This solves a problem with packet loss using the aforementioned
+full direction resolution feature.
 
 Netrek XP 2006, Version 1.2: (Released Mar-2007)
 - added "messageKeyOnly: (on)/off" so that you will only start messages with the actual

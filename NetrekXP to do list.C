@@ -21,7 +21,6 @@ is rotated.  Only solution so far is to moderate border refresh with scaled bitm
 old AddFontResource function.
 
 Things to do:
-1) Have font in windows adjust as window size increases.
 2) Get square planet bitmaps so I can turn them into mapped rotating globes.
 3) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
 this is fixed.

@@ -688,6 +688,7 @@ int F_show_other_speed = 0;
 int F_show_cloakers = 0;
 int F_turn_keys = 0;
 int F_show_visibility_range = 0;
+int F_sp_flags_all = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;

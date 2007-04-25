@@ -147,7 +147,7 @@ struct packet_handler handlers[] = {
 #endif
 
     {sizeof (struct generic_32_spacket), handleGeneric32},  /* SP_GENERIC_32 */
-    {0, dummy},                 /* 33 */
+    {sizeof (struct flags_all_spacket), handleFlagsAll}, /* SP_FLAGS_ALL */
     {0, dummy},                 /* 34 */
     {0, dummy},                 /* 35 */
     {0, dummy},                 /* 36 */
@@ -2529,6 +2529,12 @@ handleGeneric32 (struct generic_32_spacket *packet)
     me->p_repair_time = packet->repair_time;
     me->pl_orbit = packet->pl_orbit;
     if (packet->version < 'b') return;
+}
+
+void
+handleFlagsAll (struct flags_all_spacket *packet)
+{
+    new_flags(ntohl(packet->flags), packet->offset);
 }
 
 #ifdef RSA

@@ -84,6 +84,7 @@
 #endif
 
 #define SP_GENERIC_32	32	/* 32 byte generic, see struct */
+#define SP_FLAGS_ALL	33	/* abbreviated flags for all players */
 #define SP_SHIP_CAP	39	/* Handles server ship mods */
 
 #ifdef SHORT_PACKETS
@@ -118,9 +119,8 @@
 
 /* variable length packets */
 #define VPLAYER_SIZE    4
-#define SHORTVERSION    11      /* other number blocks, like
-                                 * UDP Version */
-#define OLDSHORTVERSION 10      /* S_P2 */
+#define SHORTVERSION    11      /* S_P2 */
+#define OLDSHORTVERSION 10      /* Short packets version 1*/
 #endif
 
 
@@ -884,7 +884,8 @@ struct ship_cap_spacket
     unsigned short s_bitmap;
 };
 
-struct generic_32_spacket {
+struct generic_32_spacket
+{
     char type;			/* SP_GENERIC_32 */
     char version;		/* alphabetic */
     short repair_time;		/* server estimate of repair time in seconds */
@@ -900,6 +901,16 @@ struct generic_32_spacket {
    fields in struct that were defined at a particular version.
 */
 
+struct flags_all_spacket
+{
+    char type;			/* SP_FLAGS_ALL */
+    char offset;		/* slot number of first flag */
+    int flags;			/* two bits per slot */
+};
+#define FLAGS_ALL_DEAD                   0
+#define FLAGS_ALL_CLOAK_ON               1
+#define FLAGS_ALL_CLOAK_OFF_SHIELDS_UP   2
+#define FLAGS_ALL_CLOAK_OFF_SHIELDS_DOWN 3
 
 #ifdef SHORT_PACKETS
 struct shortreq_cpacket

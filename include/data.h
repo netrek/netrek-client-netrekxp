@@ -588,6 +588,7 @@ extern int F_show_other_speed;
 extern int F_show_cloakers;
 extern int F_turn_keys;
 extern int F_show_visibility_range;
+extern int F_sp_flags_all;
 
 #ifdef RECORDGAME
 extern int F_many_self;
