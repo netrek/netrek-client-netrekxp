@@ -117,10 +117,14 @@ reportFeatures (void)
     {
         if (strcmpi (f->name, "FEATURE_PACKETS") != 0)
         {
-            if (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION"))
+            if (!strcmp(f->name, "CHECK_PLANETS"))
+                value = useCheckPlanets;
+            else if (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION"))
                 value = useFullShipInfo;
             else if (!strcmp(f->name, "FULL_WEAPON_RESOLUTION"))
                 value = useFullWeapInfo;
+            else if (!strcmp(f->name, "SP_GENERIC_32"))
+                value = useGeneric32;
             else
                 value = f->value;
             sendFeature (f->name,

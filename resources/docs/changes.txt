@@ -242,13 +242,19 @@ also used to highlight text, this option defaults to off, to make it easier to
 highlight text.
 31) Added fontSize option to netrekrc (this option always existed, but was
 undocumented and horribly buggy).  This option controls the pixel height of the
-font used in game.  As a result of changing font size, most windows should adjust
-to a new proper size.  Such as dashboards and playerlist and message windows.
+font used in game.  As a result of changing font size, most windows should
+adjust to a new proper size.  Such as dashboards and playerlist and message
+windows.
 32) Added support for SP_FLAGS_ALL feature packet, this is a packet that sends
 important flags (cloak/shields/alive) on all players every update, if you are
-using long packets for players, or if you are using the FULL_DIRECTION_RESOLUTION
-feature packet.  This solves a problem with packet loss using the aforementioned
-full direction resolution feature.
+using long packets for players, or if you are using the
+FULL_DIRECTION_RESOLUTION feature packet.  This solves a problem with packet
+loss using the aforementioned full direction resolution feature.
+33) New netrekrc options "useCheckPlanets: (on)/off" and "useGeneric32:
+(on)/off" to control whether to use the CHECK_PLANETS or SP_GENERIC_32 feature
+packets.
+34) Added improved explanation to netrekrc for the bandwidth costs of using the
+4 new(ish) feature packets which actually increase bandwidth use.
 
 Netrek XP 2006, Version 1.2: (Released Mar-2007)
 - added "messageKeyOnly: (on)/off" so that you will only start messages with the actual

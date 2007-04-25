@@ -323,8 +323,10 @@ udpClientSend:            (0-3) how to send data to server
 udpDebug:                 (0/1) debug UDP traffic
 udpSequenceCheck:         (on/off) check UDP sequence
 updatesPerSec:            (1-50 generally) how many data updates per second to request from server
+useCheckPlanets:          (on/off) crosscheck with server to make sure planet info always correct
 useFullShipInfo:          (on/off) display other ships to 256 directions instead of 16
 useFullWeapInfo:          (on/off) support showing more weapon info on galaxy map
+useGeneric32:             (on/off) receive generic_32 server packets which carry repair time, etc.
 useLite:                  (on/off) use beeplite
 defLite:                  (on/off) use default beeplite settings
 useRSA:                   (on/off) use RSA client verification

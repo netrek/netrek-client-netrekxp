@@ -5772,7 +5772,7 @@ checkWindowsGeometry (W_Window window)
             /* TODO: fix main window so it takes into account all
                the SYS_CAPTION/border size changes, too messy for now */
             if (strcmpi (win->name, "netrek") == 0)
-                return (geometryDefault (str));
+                return (geometryDefault ("netrek.geometry"));
             /* Let's keep local and map windows square! */
             else if (strcmpi (win->name, "local") == 0)
             {

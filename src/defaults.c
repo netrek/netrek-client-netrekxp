@@ -917,11 +917,21 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"useCheckPlanets", &useCheckPlanets, RC_BOOL,
+        {
+            "Crosscheck with server to make sure all planet information is",
+            "correct.  Prevents against lost planet updates which can cause",
+            "problems like phantom armies or not realizing a planet has",
+            "popped.  Increases upstream (client to server) bandwidth usage",
+            "by 100 bytes/second.",
+            NULL
+        }
+    },
     {"useFullShipInfo", &useFullShipInfo, RC_BOOL,
         {
             "Display other ships to 256 directions instead of 16",
             "by using long ship packets instead of short ship packets,",
-            "slight increase in bandwidth usage",
+            "increases bandwidth usage by several kb/second.",
             NULL
         }
     },
@@ -929,8 +939,17 @@ struct save_options save_options[] = {
         {
             "Allows observers to see all weapons fire on galaxy map",
             "by using long torp packets instead of short torp packets,",
-            "slight increase in bandwidth usage.  Also allows self torps",
-            "to be seen beyond tactical range, again via galactic map",
+            "can increase bandwidth usage on the order of 10 kb/second.",
+            "Also allows self torps to be seen beyond tactical range,",
+            "again via the galaxy map.",
+            NULL
+        }
+    },
+    {"useGeneric32", &useGeneric32, RC_BOOL,
+        {
+            "Receive SP_GENERIC_32 packets, which are used to convey things",
+            "like repair time and planet being orbitted.  Increases bandwidth",
+            "usage by 320 bytes/second for a server running at 10 UPS.",
             NULL
         }
     },
@@ -979,6 +998,7 @@ struct save_options save_options[] = {
     {"viewRange", &viewRange, RC_INT,
         {
             "Show range at which enemies can see you as a circle on map",
+            "Server god decides whether to enable this feature",
             "0 - don't show range circle",
             "1 - only show range circle when cloaked",
             "2 - only show range circle when carrying",
@@ -1726,8 +1746,10 @@ resetdefaults (void)
     soundMusic = booleanDefault ("soundMusic", soundMusic);
     soundMusicBkgd = booleanDefault ("soundMusicBkgd", soundMusicBkgd);
     soundAngles = booleanDefault ("soundAngles", soundAngles);
+    useCheckPlanets = booleanDefault ("useCheckPlanets", useCheckPlanets);
     useFullShipInfo = booleanDefault ("useFullShipInfo", useFullShipInfo);
     useFullWeapInfo = booleanDefault ("useFullWeapInfo", useFullWeapInfo);
+    useGeneric32 = booleanDefault ("useGeneric32", useGeneric32);
     headingTic = booleanDefault ("headingTic", headingTic);
     tractorID = booleanDefault ("tractorID", tractorID);
     lockLine = booleanDefault ("lockLine", lockLine);

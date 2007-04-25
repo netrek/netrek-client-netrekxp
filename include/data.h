@@ -736,9 +736,11 @@ extern int soundMusic;		/* Use music playback */
 extern int soundMusicBkgd;	/* Play random background music continuously */
 extern int soundAngles; 	/* Use 3D sound */
 
+extern int useCheckPlanets;	/* Send CP_PLANET packets to server checking planet status */
 extern int useFullShipInfo;	/* Prefer SP_PLAYER packets over SP_S_PLAYER packets */
 extern int useFullWeapInfo;	/* Receive larger torp packets, get self torp info beyond
 				   tactical, allow observer to see all weapons fire */
+extern int useGeneric32;	/* Receive SP_GENERIC_32 packets */
 extern int headingTic;		/* show ship heading tic */
 extern int tractorID;		/* show ID of player you are tractoring */
 extern int lockLine;		/* draw dashed line on map from you to lock target */
