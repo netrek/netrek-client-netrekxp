@@ -609,7 +609,10 @@ W_Cleanup (void)
 
     if (localSDB)
     {
-        SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+        HBITMAP localObj;
+
+        localObj = SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+        DeleteObject (localObj);
         DeleteObject (localSDB->mem_bmp);
         ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
         DeleteDC (localSDB->mem_dc);
@@ -618,7 +621,10 @@ W_Cleanup (void)
 
     if (mapSDB)
     {
-        SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+        HBITMAP mapObj;
+
+        mapObj = SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+        DeleteObject (mapObj);
         DeleteObject (mapSDB->mem_bmp);
         ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
         DeleteDC (mapSDB->mem_dc);
@@ -1865,25 +1871,11 @@ NetrekWndProc (HWND hwnd,
         win->ClipRect.left = win->ClipRect.top = win->border;
         win->ClipRect.right = LOWORD (lParam) - win->border;
         win->ClipRect.bottom = HIWORD (lParam) - win->border;
-        // Reinitialize SDB as size/borders of window have changed
+        // Update SDB as size/borders of window have changed
         if ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd && localSDB)
-        {
-            SelectObject (localSDB->mem_dc, localSDB->old_bmp);
-            DeleteObject (localSDB->mem_bmp);
-            ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
-            DeleteDC (localSDB->mem_dc);
-            free (localSDB);
-            localSDB = W_InitSDB (w);
-        }
+            W_UpdateSDB((W_Window) w, localSDB);
         else if ((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd && mapSDB)
-        {
-            SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
-            DeleteObject (mapSDB->mem_bmp);
-            ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
-            DeleteDC (mapSDB->mem_dc);
-            free (mapSDB);
-            mapSDB = W_InitSDB (mapw);
-        }
+            W_UpdateSDB((W_Window) mapw, mapSDB);
         break;
 
     case WM_SYSCOMMAND:
@@ -5990,12 +5982,67 @@ updateWindowsGeometry (W_Window window)
 	}
 }
 
+//
+// Rebuilds the DCs for the SDBUFFER, either because of resize or on first creation.
+// Returns 0 on failure, 1 on success.
+//
+int
+W_RecreateSDBDCs(W_Window window, SDBUFFER* sdb)
+{
+    Window * win = ((Window *)window);
+    HBITMAP junk;
+
+    sdb->win_dc = GetDC (win->hwnd);
+    if (sdb->win_dc == NULL)
+        return 0;
+
+    sdb->mem_dc = CreateCompatibleDC (sdb->win_dc);
+    if (sdb->mem_dc == NULL)
+        return 0;
+
+    GetClientRect (win->hwnd, &(sdb->wr));
+    //This code ripped from W_Initialize, better safe than sorry
+    junk = CreateBitmap (1, 1, 1, 1, NULL);
+    GlobalOldMemDCBitmap = (HBITMAP) SelectObject (sdb->win_dc, junk);
+    SelectObject (sdb->win_dc, GlobalOldMemDCBitmap);
+    GlobalOldMemDC2Bitmap = (HBITMAP) SelectObject (sdb->mem_dc, junk);
+    SelectObject (sdb->mem_dc, GlobalOldMemDC2Bitmap);
+    DeleteObject (junk);
+
+    sdb->mem_bmp = CreateCompatibleBitmap (sdb->win_dc, sdb->wr.right, sdb->wr.bottom);
+    if (sdb->mem_bmp == NULL)
+        return 0;
+
+    sdb->old_bmp = (HBITMAP) SelectObject (sdb->mem_dc, sdb->mem_bmp);
+
+    FillRect (sdb->mem_dc, &sdb->wr, colortable[W_Black].brush);
+
+    return 1;
+}
+
+//
+// Deallocates and recreates the DCs associated with the SDBUFFER
+//
+void
+W_UpdateSDB(W_Window window, SDBUFFER * sdb)
+{
+    Window * win = ((Window *)window);
+    HBITMAP origObj;
+
+    origObj = SelectObject(sdb->mem_dc, sdb->old_bmp);
+    DeleteObject(sdb->mem_bmp);
+    DeleteObject(origObj);
+    ReleaseDC (((Window *)sdb->window)->hwnd, sdb->win_dc);
+    DeleteDC (sdb->mem_dc);
+
+    (void) W_RecreateSDBDCs(window, sdb);
+}
+
 SDBUFFER *
 W_InitSDB (W_Window window)
 {
     Window * win;
     SDBUFFER * sdb;
-    HBITMAP junk;
 
     win = ((Window *)window);
 
@@ -6011,31 +6058,8 @@ W_InitSDB (W_Window window)
 
     sdb->window = window;
 
-    GetClientRect (win->hwnd, &(sdb->wr));
-
-    sdb->win_dc = GetDC (win->hwnd);
-    if (sdb->win_dc == NULL)
+    if (0 == W_RecreateSDBDCs(window, sdb))
         return NULL;
-
-    sdb->mem_dc = CreateCompatibleDC (sdb->win_dc);
-    if (sdb->mem_dc == NULL)
-        return NULL;
-
-    //This code ripped from W_Initialize, better safe than sorry
-    junk = CreateBitmap (1, 1, 1, 1, NULL);
-    GlobalOldMemDCBitmap = (HBITMAP) SelectObject (sdb->win_dc, junk);
-    SelectObject (sdb->win_dc, GlobalOldMemDCBitmap);
-    GlobalOldMemDC2Bitmap = (HBITMAP) SelectObject (sdb->mem_dc, junk);
-    SelectObject (sdb->mem_dc, GlobalOldMemDC2Bitmap);
-    DeleteObject (junk);
-    
-    sdb->mem_bmp = CreateCompatibleBitmap (sdb->win_dc, sdb->wr.right, sdb->wr.bottom);
-    if (sdb->mem_bmp == NULL)
-        return NULL;
-
-    sdb->old_bmp = (HBITMAP) SelectObject (sdb->mem_dc, sdb->mem_bmp);
-
-    FillRect (sdb->mem_dc, &sdb->wr, colortable[W_Black].brush);
 
     return sdb;
 }

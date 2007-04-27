@@ -786,6 +786,7 @@ LRESULT CALLBACK RichTextWndProc (HWND hwnd,
                                   WPARAM wParam,
                                   LPARAM lParam);
 
+void W_UpdateSDB (W_Window window, SDBUFFER * sdb);
 SDBUFFER * W_InitSDB (W_Window window);
 SDBUFFER * SDB_lookup (W_Window window);
 void W_Win2Mem (SDBUFFER * sdb);
