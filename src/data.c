@@ -765,7 +765,7 @@ struct tractor *tractrunner;
 int agriCAPS = 1;
 int agriColor = 2;
 
-int windowMove = 0;
+int windowMove = 1;
 int mainResizeable = 1;
 int mainMaximized = 1;
 int maxScrollLines = 300;

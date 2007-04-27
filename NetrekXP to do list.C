@@ -19,19 +19,19 @@ Things that are sorta fixed, but could use improvement:
 is rotated.  Only solution so far is to moderate border refresh with scaled bitmaps.
 2) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
-
-Things to do:
-2) Get square planet bitmaps so I can turn them into mapped rotating globes.
 3) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
 this is fixed.
-4) Some sort of click action on player list brings up a menu with settings for that
-player's candock, cantranswarp, ban, ignore, etc.
-5) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
-rect doesn't take these into account.
-6) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
+4) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
 to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
 host names.
-7) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
+
+Things to do:
+1) Get square planet bitmaps so I can turn them into mapped rotating globes.
+2) Some sort of click action on player list brings up a menu with settings for that
+player's candock, cantranswarp, ban, ignore, etc.
+3) Out of bounds message window calcs don't work with taskbar or menu bar, basewin
+rect doesn't take these into account.
+4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 
 Wish list:
@@ -44,4 +44,4 @@ Stas's list:
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
 - parse Announcer messages in hockey games
-- pasting multiline prints \r\n instead of splitting lines
+

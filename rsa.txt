@@ -14,6 +14,9 @@ architecture - Win32 in our case
 creator - your mail address for bugs/suggestions
 comment - free text
 
+A minimal use of mkkey would look like this (it requires 5 fields to work):
+mkkey "testkey" "" "" "" ""
+
 After running mkkey.exe with parameters you will have following files created:
 
 key_name - public key part

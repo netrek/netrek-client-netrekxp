@@ -16,6 +16,10 @@ Compiler = VCC or BCC (default VCC)
 InstCWD = path to folder to copy files to (default \netrek_files)
 HelpCompiler = path to hhc.exe from Microsoft's HTML Help Workshop (available from microsoft.com)
 
+Step 1a:
+--------
+Generate your rsa_box files, see rsa.txt for instructions.
+
 Step 2:
 --------
 

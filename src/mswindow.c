@@ -607,17 +607,23 @@ W_Cleanup (void)
         p = tmp;
     }
 
-    SelectObject (localSDB->mem_dc, localSDB->old_bmp);
-    DeleteObject (localSDB->mem_bmp);
-    ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
-    DeleteDC (localSDB->mem_dc);
-    free (localSDB);
+    if (localSDB)
+    {
+        SelectObject (localSDB->mem_dc, localSDB->old_bmp);
+        DeleteObject (localSDB->mem_bmp);
+        ReleaseDC (((Window *)localSDB->window)->hwnd, localSDB->win_dc);
+        DeleteDC (localSDB->mem_dc);
+        free (localSDB);
+    }
 
-    SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
-    DeleteObject (mapSDB->mem_bmp);
-    ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
-    DeleteDC (mapSDB->mem_dc);
-    free (mapSDB);
+    if (mapSDB)
+    {
+        SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
+        DeleteObject (mapSDB->mem_bmp);
+        ReleaseDC (((Window *)mapSDB->window)->hwnd, mapSDB->win_dc);
+        DeleteDC (mapSDB->mem_dc);
+        free (mapSDB);
+    }
 
     //WinKey Kill Library Stop
     if (pfnFastCallKill != NULL)
@@ -822,8 +828,8 @@ W_Initialize (char *display)
     VKMap[VK_TAB] = (char) 201; //'i'+96;     // Make it look like '^i' so macroKey: TAB will work
     VKMap[VK_UP] = '>'; // accelerate
     VKMap[VK_DOWN] = '<'; // decelerate
-    VKMap[VK_LEFT] = 187; // turn left ^[
-    VKMap[VK_RIGHT] = 189; // turn right ^]
+    VKMap[VK_LEFT] = (char) 187; // turn left ^[
+    VKMap[VK_RIGHT] = (char) 189; // turn right ^]
     VKMap[VK_NUMPAD0] = '0';    // I want to use Numeric Keypad!
     VKMap[VK_NUMPAD1] = '1';    // Added these mappings SRS 4/10/98
     VKMap[VK_NUMPAD2] = '2';
@@ -1860,7 +1866,7 @@ NetrekWndProc (HWND hwnd,
         win->ClipRect.right = LOWORD (lParam) - win->border;
         win->ClipRect.bottom = HIWORD (lParam) - win->border;
         // Reinitialize SDB as size/borders of window have changed
-        if ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd)
+        if ((Window *) w != NULL && win->hwnd == ((Window *) w)->hwnd && localSDB)
         {
             SelectObject (localSDB->mem_dc, localSDB->old_bmp);
             DeleteObject (localSDB->mem_bmp);
@@ -1869,7 +1875,7 @@ NetrekWndProc (HWND hwnd,
             free (localSDB);
             localSDB = W_InitSDB (w);
         }
-        else if ((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd)
+        else if ((Window *) mapw != NULL && win->hwnd == ((Window *) mapw)->hwnd && mapSDB)
         {
             SelectObject (mapSDB->mem_dc, mapSDB->old_bmp);
             DeleteObject (mapSDB->mem_bmp);

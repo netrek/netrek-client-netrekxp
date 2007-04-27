@@ -931,7 +931,7 @@ struct save_options save_options[] = {
         {
             "Display other ships to 256 directions instead of 16",
             "by using long ship packets instead of short ship packets,",
-            "increases bandwidth usage by several kb/second.",
+            "increases bandwidth usage by 1-2 kb/second.",
             NULL
         }
     },
@@ -939,7 +939,7 @@ struct save_options save_options[] = {
         {
             "Allows observers to see all weapons fire on galaxy map",
             "by using long torp packets instead of short torp packets,",
-            "can increase bandwidth usage on the order of 10 kb/second.",
+            "can increase bandwidth usage by 1 kb/second.",
             "Also allows self torps to be seen beyond tactical range,",
             "again via the galaxy map.",
             NULL
@@ -2170,7 +2170,7 @@ saveOptions ()
     if (!saveFile)
     {
         saveFile = (char *) malloc (sizeof (char) * 13); 
-        sprintf (saveFile, "%s", "netrekrc.sav");
+        sprintf (saveFile, "%s", "netrekrc");
     }
 
     exe_dir = GetExeDir ();

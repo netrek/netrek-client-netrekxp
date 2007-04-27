@@ -508,12 +508,12 @@ useCheckPlanets: on
 
 # Display other ships to 256 directions instead of 16
 # by using long ship packets instead of short ship packets,
-# increases bandwidth usage by several kb/second.
+# increases bandwidth usage by 1-2 kb/second.
 useFullShipInfo: on
 
 # Allows observers to see all weapons fire on galaxy map
 # by using long torp packets instead of short torp packets,
-# can increase bandwidth usage on the order of 10 kb/second.
+# can increase bandwidth usage by 1 kb/second.
 # Also allows self torps to be seen beyond tactical range,
 # again via the galaxy map.
 useFullWeapInfo: on
