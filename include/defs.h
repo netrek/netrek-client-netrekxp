@@ -8,6 +8,8 @@
 
 #include "copyright.h"
 
+/* Error handling */
+#define RETURNBASE 10
 
 /* #$!@$#% length of address field of messages */
 #define ADDRLEN 10

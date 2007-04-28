@@ -560,7 +560,11 @@ connectToServer (int port)
     if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
         LineToConsole ("I can't create a socket\n");
+#ifdef THREADED
+        terminate2 (RETURNBASE + 2);
+#else
         terminate (2);
+#endif
     }
 
     /* allow local address resuse */
@@ -577,9 +581,12 @@ connectToServer (int port)
 
     if (bind (s, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
-
         perror ("bind");        /* NEW */
+#ifdef THREADED
+        terminate2 (RETURNBASE + 1);
+#else
         terminate (1);
+#endif
     }
     if (listen (s, 1) < 0)
         perror ("listen");
@@ -598,7 +605,11 @@ connectToServer (int port)
     if (select (max_fd, &readfds, NULL, NULL, &timeout) == 0)
     {
         LineToConsole ("Well, I think the server died!\n");
+#ifdef THREADED
+        terminate2 (RETURNBASE);
+#else
         terminate (0);
+#endif
     }
 
     sock = accept (s, (struct sockaddr *) &naddr, &len);
@@ -664,7 +675,11 @@ callServer (int port,
     if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
         LineToConsole ("I can't create a socket\n");
+#ifdef THREADED
+        terminate2 (RETURNBASE);
+#else
         terminate (0);
+#endif
     }
     addr.sin_family = AF_INET;
     addr.sin_port = htons ((u_short) port);
@@ -674,7 +689,11 @@ callServer (int port,
         if ((hp = gethostbyname (server)) == NULL)
         {
             LineToConsole ("Who is %s?\n", server);
+#ifdef THREADED
+            terminate2 (RETURNBASE);
+#else
             terminate (0);
+#endif
         }
         else
         {
@@ -686,7 +705,11 @@ callServer (int port,
     if (connect (s, (struct sockaddr *) &addr, sizeof (addr)) < 0)
     {
         LineToConsole ("Server not listening!\n");
+#ifdef THREADED
+        terminate2 (RETURNBASE);
+#else
         terminate (0);
+#endif
     }
     LineToConsole ("Got connection.\n");
 
@@ -721,7 +744,11 @@ callServer (int port,
             if (gwrite (s, &msg, sizeof (struct mesg_cpacket)) < 0)
             {
                 LineToConsole ("trekhopd init failure\n");
+#ifdef THREADED
+                terminate2 (RETURNBASE + 1);
+#else
                 terminate (1);
+#endif
             }
             LineToConsole ("--- trekhopd request sent, awaiting reply\n");
             /* now block waiting for reply */
@@ -732,7 +759,11 @@ callServer (int port,
                 if ((n = recv (s, buf, count, 0)) <= 0)
                 {
                     perror ("trekhopd read");
+#ifdef THREADED
+                    terminate2 (RETURNBASE + 1);
+#else
                     terminate (1);
+#endif
                 }
             }
 
@@ -740,7 +771,11 @@ callServer (int port,
             {
                 LineToConsole ("Got bogus reply from trekhopd (%d)\n",
                          reply.type);
+#ifdef THREADED
+                terminate2 (RETURNBASE + 1);
+#else
                 terminate (1);
+#endif
             }
             ip = (int *) reply.mesg;
             gw_serv_port = ntohl (*ip++);
@@ -2177,7 +2212,11 @@ handleBadVersion (struct badversion_spacket *packet)
         LineToConsole ("Unknown message from handleBadVersion.\n");
         return;
     }
+#ifdef THREADED
+    terminate2 (RETURNBASE + 1);
+#else
     terminate (1);
+#endif
 }
 
 long
@@ -2563,7 +2602,11 @@ handleRSAKey (struct rsa_key_spacket *packet)
         if (getpeername (sock, (struct sockaddr *) &saddr, &len) < 0)
         {
             perror ("getpeername(sock)");
+#ifdef THREADED
+            terminate2 (RETURNBASE + 1);
+#else
             terminate (1);
+#endif
         }
     }
     else
@@ -2577,7 +2620,11 @@ handleRSAKey (struct rsa_key_spacket *packet)
     if (getpeername (sock, (struct sockaddr *) &saddr, &len) < 0)
     {
         perror ("getpeername(sock)");
+#ifdef THREADED
+        terminate2 (RETURNBASE + 1);
+#else
         terminate (1);
+#endif
     }
 #endif
 
@@ -2945,7 +2992,11 @@ openUdpConn (void)
             if ((hp = gethostbyname (serverName)) == NULL)
             {
                 LineToConsole ("Who is %s?\n", serverName);
+#ifdef THREADED
+                terminate2 (RETURNBASE);
+#else
                 terminate (0);
+#endif
             }
             else
             {

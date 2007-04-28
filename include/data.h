@@ -176,6 +176,7 @@ extern int shortversion;        /* Which version do we use? */
 
 #endif
 
+extern int globalerr;
 extern int ingame;              /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
 extern int ghoststart;

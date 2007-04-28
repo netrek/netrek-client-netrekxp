@@ -56,6 +56,9 @@ int cowmain (char *server,
              char *name);
 // static RETSIGTYPE handle_exception(int _dummy);
 void terminate (int error);
+#ifdef THREADED
+void terminate2 (int error);
+#endif
 
 /******************************************************************************/
 /***  dashboard.c                                                           ***/

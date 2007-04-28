@@ -35,6 +35,7 @@ struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
 int TWINSIDE = 500;             /* Size of tactical window */
 int GWINSIDE = 500;             /* Size of galactic window */
+int globalerr = 0;              /* For sending error # between threads */
 int ingame = 0;                 /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
 int ghoststart = 0;             /* is this a ghostbust

@@ -42,7 +42,6 @@ jmp_buf env;
 int isFirstEntry;
 char defaulttmp[100];
 
-#define RETURNBASE 10
 #ifdef PACKET_LOG
 extern int log_packets;
 #endif
@@ -1101,3 +1100,21 @@ terminate (int error)
 {
     longjmp (env, RETURNBASE + error);
 }
+
+#ifdef THREADED
+/******************************************************************************/
+/***  terminate2() - for terminating inside the network thread              ***/
+/******************************************************************************/
+void
+terminate2 (int error)
+{
+    /* When using threads, a thread has been spawned to handle network
+       I/O and so we cannot longjmp into another thread! Instead we call
+       W_TerminateWait which makes the main thread's W_WaitForEvent()
+       return 0 and exitthread.  We pass the desired error value
+       to longjmp in input() via globalerr. */
+    globalerr = error;
+    W_TerminateWait ();
+    ExitThread (0);
+}
+#endif

@@ -246,15 +246,8 @@ death (void)
 
     longjmp (env, 0);
 #else
-    /* Threaded: when using threads, this thread has been spawned to handle network
-       I/O and so we cannot longjmp here, into another thread! Instead we call
-       W_TerminateWait which makes the main thead's W_WaitForEvent() return 0 
-       and exitthread */
-    if (!playback)
-    {                           /* If we are not playing back a recorded game, do this */
-        W_TerminateWait ();
-        ExitThread (0);
-    }
+    if (!playback) /* If we are not playing back a recorded game, do this */
+        terminate2 (0);
     else
     {                           /* Otherwise we aren't within a thread, so... */
         while (W_EventsPending ())
