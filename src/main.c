@@ -73,7 +73,7 @@ printUsage (char *prog)
 #endif
 
     LineToConsole (" [-D]   output debug info\n");
-    LineToConsole (" [-n]   show console window\n");
+    LineToConsole (" [-n]   hide console window\n");
     LineToConsole (" [-u]   show usage\n");
     LineToConsole (" [-v]   display client version info\n");
 
@@ -88,7 +88,7 @@ main2 (int argc,
 {
     int usage = 0;
     int err = 0;
-    int hideConsole = 1;
+    int hideConsole = 0;
     char *name, *ptr;
     int i;
     time_t tm;
@@ -145,12 +145,10 @@ main2 (int argc,
 
             case 'u':           /* program usage */
                 usage++;
-                hideConsole = 0;
                 break;
 
             case 'c':           /* run ck_players */
                 checking = 1;
-                hideConsole = 0;
                 break;
 
             case 's':           /* listen socket number */
@@ -361,15 +359,13 @@ main2 (int argc,
             
             case 'D':           /* add debug info */
                 debug++;
-                hideConsole = 0;
                 break;
             
-            case 'n':           /* don't hide console window */
-                hideConsole = 0;
+            case 'n':           /* hide console window */
+                hideConsole = 1;
                 break;
 
             case 'v':           /* output version info */
-                hideConsole = 0;
                 LineToConsole ("%s %s\n", version, mvers);
                 LineToConsole ("%s\n", CBUGS);
 #ifdef RSA

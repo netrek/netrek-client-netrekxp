@@ -33,6 +33,7 @@ player's candock, cantranswarp, ban, ignore, etc.
 rect doesn't take these into account.
 4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
+5) change netrekrc to netrekrc.txt
 
 Wish list:
 1) Rewrite graphics engine using SDL

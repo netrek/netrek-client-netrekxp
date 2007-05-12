@@ -939,7 +939,7 @@ struct save_options save_options[] = {
         {
             "Allows observers to see all weapons fire on galaxy map",
             "by using long torp packets instead of short torp packets,",
-            "can increase bandwidth usage by 1 kb/second.",
+            "can increase bandwidth usage by 1 kb/second, more if obs.",
             "Also allows self torps to be seen beyond tactical range,",
             "again via the galaxy map.",
             NULL

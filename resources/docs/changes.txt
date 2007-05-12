@@ -69,6 +69,11 @@ possible to avoid conflicts with existing keymaps.  Turn keys are controlled
 server side via the TURN_KEYS feature packet, so they will only work if the
 server allows it.
 21) The up and down arrow keys now are mapped to accelerate and deccelerate.
+22) The console window is now on by default.  To hide it, use the -n option,
+which was previously used to turn console window on (it now turns it off).
+23) Cambot playback, cambot record, and console window symbolic links are no
+longer included in the distribution.  Cambot is most easily played/recorded
+with the cambot utility, and console window is now default to on.
 
 Graphics:
 1) New graphics for the team select windows, and new option
@@ -118,7 +123,10 @@ say "bomb <planetname>" instead of the more useless, unspecific "bomb".
 16) Phaser misses on sturgeon servers now show proper phaser length based on
 how many phaser upgrades the ship has.
 17) Certain abnormal game terminations (such as caused by a server exiting
-the daemon) will no longer crash the client, instead client will just exit
+the daemon) will no longer crash the client, instead client will just exit.
+This fixes the last known "crash bug".  There still may exist times when the
+client is seen to freeze, such as upon ghostbust or slot being freed in INL,
+as the client hopes to re-establish a connection and thus doesn't exit.
 
 New features:
 1) Main window titlebar now shows your loginname and slot number, in addition

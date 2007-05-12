@@ -5,7 +5,7 @@ name: guest
 password: 
 
 # Login name
-login: netrek_player
+login: playnetrek
 
 # Key mapping
 # Define your keymap here.  The format is newkey defaultkey.  For example, the
@@ -513,7 +513,7 @@ useFullShipInfo: on
 
 # Allows observers to see all weapons fire on galaxy map
 # by using long torp packets instead of short torp packets,
-# can increase bandwidth usage by 1 kb/second.
+# can increase bandwidth usage by 1 kb/second, more if obs.
 # Also allows self torps to be seen beyond tactical range,
 # again via the galaxy map.
 useFullWeapInfo: on
@@ -874,8 +874,8 @@ singleMacro: EF
 macro.0.A:%    __    __   ______        __   Zoom in/out!  Anti-packet loss,
 macro.0.A:%   /  \  / /__/_  __/______ / /__ observers see all weapons, etc.
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ Plus 50 updates/sec support! 
-macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.3, released March 2007
-macro.0.A:%          Get it today at http://www.playnetrek.org
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.3, released May 2007
+macro.0.A:%          Get it today at http://www.netrek.org
 
 macro.a.A:.          o                        Just         |    Squeal boy...
 macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
@@ -1057,10 +1057,8 @@ macro.).A:/*   INL-style timed bronco games are every Wednesday         */
 macro.).A:/*   10pm EST/7pm PST                                         */
 
 macro.(.A:/*   Get the latest version of Netrek XP 2006 today!            */
-macro.(.A:/*   Current version is 1.3, released April 2007                */
+macro.(.A:/*   Current version is 1.3, released May 2007                  */
 macro.(.A:/*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
-macro.(.A:/*                      or                                      */
-macro.(.A:/*        http://www.playnetrek.org/                            */
 
 mac.e.T: Escorting %g (%d%%D %s%%S %f%%F)
 mac.V.A: %T%c  PING stats: Average: %v ms, Stdv: %V ms, Loss: %y%%
