@@ -91,7 +91,7 @@ int loadSounds(void) {
 
   for (i=0; i < NUM_WAVES; i++) {
     if (!sounds[i]) {
-      LineToConsole("Mix_LoadWAV sounds[%d] could not be loaded. Check soundDir in your .netrekrc: %s\n", i, Mix_GetError());
+      LineToConsole("Mix_LoadWAV sounds[%d] could not be loaded. Check soundDir in your netrekrc.txt: %s\n", i, Mix_GetError());
       return(-1);
     }
   }
@@ -117,7 +117,7 @@ int loadMusic(void) {
 
   for (i=0; i < NUM_MUSIC; i++) {
     if (!music[i]) {
-      LineToConsole("Mix_LoadMUS music[%d] could not be loaded. Check soundDir in your .netrekrc: %s\n", i, Mix_GetError());
+      LineToConsole("Mix_LoadMUS music[%d] could not be loaded. Check soundDir in your netrekrc.txt: %s\n", i, Mix_GetError());
       return(-1);
     }
   }

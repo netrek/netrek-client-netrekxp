@@ -74,6 +74,19 @@ which was previously used to turn console window on (it now turns it off).
 23) Cambot playback, cambot record, and console window symbolic links are no
 longer included in the distribution.  Cambot is most easily played/recorded
 with the cambot utility, and console window is now default to on.
+24) Cambot playback speed key 9 is now not quite the fastest speed, it's twice
+as fast as speed 8, but the fastest speed key is now !.
+25)
+                            *** Important ***
+The default configuration file filename has been changed from netrekrc to
+netrekrc.txt.  This is so that opening the netrekrc can be done with any text
+editor.  The convention of having a config file without a file extension dates
+back to the unix root of the client, and while previous client maintainers have
+danced around the issue by allowing support for either netrekrc or netrekrc.txt,
+none took the plunge and changed the default naming to be Windows friendly.
+Well, we have now took the plunge!  The config utility AND in game save key will
+now modify netrekrc.txt.
+                          *** End Important ***
 
 Graphics:
 1) New graphics for the team select windows, and new option
@@ -127,6 +140,10 @@ the daemon) will no longer crash the client, instead client will just exit.
 This fixes the last known "crash bug".  There still may exist times when the
 client is seen to freeze, such as upon ghostbust or slot being freed in INL,
 as the client hopes to re-establish a connection and thus doesn't exit.
+18) Cambot playback now recognizes the framerate that the game was recorded at,
+and adjusts default playback speed accordingly.
+19) Cambot now uses double buffering during playback, so that everything looks
+smoother.
 
 New features:
 1) Main window titlebar now shows your loginname and slot number, in addition

@@ -856,13 +856,9 @@ map (void)
     int view = TWINSIDE * scaleFactor / 2;
     int mvx, mvy;
 
-#ifdef RECORDGAME
-    if (doubleBuffering && !inplayback)
-        W_Win2Mem (mapSDB);
-#else
     if (doubleBuffering)
         W_Win2Mem (mapSDB);
-#endif
+
     clearMap ();
 
     if (GWINSIDE == 0)
@@ -1449,13 +1445,8 @@ map (void)
         }
     }
 
-#ifdef RECORDGAME
-    if (doubleBuffering && !inplayback)
-        W_Mem2Win (mapSDB);
-#else
     if (doubleBuffering)
         W_Mem2Win (mapSDB);
-#endif
 }
 
 

@@ -2733,12 +2733,8 @@ DrawMisc (void)
     /* Force a border redraw?  Bitmaps rotated realtime as well as viewRange circles
        will overwrite the border.  Since it is very CPU expensive to write
        rectangles (drawborder function) to the active window, especially if double
-       buffering is off, let's slow down redraws to at most 10 per second.
-       Turned off during playback due to excessive CPU usage.  */
+       buffering is off, let's slow down redraws to at most 10 per second. */
     else
-#ifdef RECORDGAME
-         if (!playback)
-#endif
     {
     	static int border_refresh = 0;
 
@@ -2858,13 +2854,8 @@ local (void)
    Draw out the 'tactical' map
 */
 {
-#ifdef RECORDGAME
-    if (doubleBuffering && !inplayback)
-        W_Win2Mem (localSDB);
-#else
     if (doubleBuffering)
         W_Win2Mem (localSDB);
-#endif
     clearLocal ();
 
     /* Keep redrawing for double buffered observers who get set out of normal gameplay bounds,
@@ -2895,13 +2886,9 @@ local (void)
         weaponUpdate = 0;
     DrawMisc ();
 
-#ifdef RECORDGAME
-    if (doubleBuffering && !inplayback)
-        W_Mem2Win (localSDB);
-#else
     if (doubleBuffering)
         W_Mem2Win (localSDB);
-#endif
+
     /* Fade all sounds on quit */
     if (me->p_whydead == KQUIT && me->p_status == PEXPLODE)
         Mix_FadeOutChannel(-1, 1000);

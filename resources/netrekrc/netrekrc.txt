@@ -577,7 +577,7 @@ soundExclude:
 sounddir: .\sounds
 
 # Save file (for using in-game save feature)
-saveFile: netrekrc
+saveFile: netrekrc.txt
 
 # Metacache file
 metaCache: metacache

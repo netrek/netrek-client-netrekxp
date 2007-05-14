@@ -85,6 +85,7 @@ extern int showHints;
 extern FILE *recordFile;        /* recorder */
 extern int inplayback;
 extern int playback;
+extern int pbdelay;
 #define PL_PAUSE 1
 #define PL_FORWARD 2
 #define PL_REVERSE 3

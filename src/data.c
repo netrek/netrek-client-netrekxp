@@ -175,6 +175,7 @@ FILE *recordFile = NULL;        /* recorder: slurp packets
                                  * here */
 int playback = 0;
 int inplayback = 0;
+int pbdelay = 100;		/* default sleep time in ms */
 #endif
 
 FILE *logFile = NULL;           /* log messages to this file */

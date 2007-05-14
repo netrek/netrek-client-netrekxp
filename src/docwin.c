@@ -318,7 +318,7 @@ loadxtrekrc (void)
 
     filename[0] = '\0';
 
-    if (!findfile ("netrekrc", filename) && !findfile ("xtrekrc", filename))
+    if (!findfile ("netrekrc.txt", filename) && !findfile ("netrekrc", filename))
         return;
 
     if ((fptr = fopen (filename, "r")) == NULL)

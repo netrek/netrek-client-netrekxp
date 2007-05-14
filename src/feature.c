@@ -192,6 +192,9 @@ checkFeature (struct feature_cpacket *packet)
     }
     if (strcmpi(packet->name, "UPS") == 0 && value != -1) {
         lastUpdateSpeed = updatesPerSec = server_ups = value;
+#ifdef RECORDGAME
+	pbdelay = 100 * 10 / server_ups;
+#endif
         LineToConsole("Server actually sending %d updates per second.\n", value);
         return;
     }

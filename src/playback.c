@@ -44,8 +44,6 @@ extern int opened_info;         /* counter for infowin
 
 extern jmp_buf env;
 
-int pbdelay = 150;
-
 struct player dummyme;
 
 struct player *packetsme;
@@ -359,6 +357,8 @@ pbmain (char *name)
     Play_Sound(ENTER_SHIP_WAV, SF_INFO);
 #endif
 
+    ingame = 1;
+
     while (1)
     {
 #ifdef BRMH
@@ -422,6 +422,8 @@ pbsetspeed (char key)
         pbdelay = 6;
         break;
     case '9':
+        pbdelay = 3;
+        break;
     case '#':
     case '!':
     case '@':
@@ -433,6 +435,8 @@ pbsetspeed (char key)
         break;
     case '>':
         pbdelay *= 2;
+        if (pbdelay == 0)
+            pbdelay = 3;
         if (pbdelay > 600)
             pbdelay = 600;
         break;
@@ -511,6 +515,7 @@ ckRecordPacket (char packet)
     case SP_S_PHASER:
     case SP_S_KILLS:
     case SP_S_STATS:
+    case SP_FEATURE:
 
         return 1;
     }

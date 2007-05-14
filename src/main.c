@@ -279,7 +279,7 @@ main2 (int argc,
                     servertmp = argv[i + 1];
                     if (metablock(servertmp))
                     {
-                        LineToConsole ("Default logins not welcome there, please edit your netrekrc file and add a 'login: yourhandle' line\n");
+                        LineToConsole ("Default logins not welcome there, please edit your netrekrc.txt file and add a 'login: yourhandle' line\n");
                         exit (0);
                     }
                     usemeta = 0;

@@ -1176,7 +1176,7 @@ ReadFromCache ()
 
     if (!metaCache)
     {
-        LineToConsole ("You must define the netrekrc variable `metaCache' in\n");
+        LineToConsole ("You must define the netrekrc.txt variable `metaCache' in\n");
         LineToConsole ("order to use the `show known servers' option.\n");
         return 0;
     }

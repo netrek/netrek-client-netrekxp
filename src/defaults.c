@@ -171,8 +171,8 @@ struct save_options save_options[] = {
     	{
     	    "Allow switching of ship bitmaps in game.  With this option disabled",
     	    "not all bitmaps load into memory.  This option is thus not changeable",
-    	    "in game.  Do not attempt to edit your netrekrc to turn dynamic bitmaps",
-    	    "on and then reload the netrekrc with the & key - restart the client instead.",
+    	    "in game.  Do not attempt to edit your netrekrc.txt to turn dynamic bitmaps",
+    	    "on and then reload netrekrc.txt with the & key - restart the client instead.",
     	    NULL
     	}
     },
@@ -1694,16 +1694,16 @@ findDefaults (char *deffile, char *file)
 {
 
     /* Check base names */
-    if (findfile (NETREKRC, file))
-        return 1;
-
     if (findfile (NETREKRCTXT, file))
         return 1;
 
-    if (findfile (XTREKRC, file))
+    if (findfile (NETREKRC, file))
         return 1;
 
     if (findfile (XTREKRCTXT, file))
+        return 1;
+
+    if (findfile (XTREKRC, file))
         return 1;
 
 #ifdef SYSTEM_DEFAULTFILE
@@ -2170,7 +2170,7 @@ saveOptions ()
     if (!saveFile)
     {
         saveFile = (char *) malloc (sizeof (char) * 13); 
-        sprintf (saveFile, "%s", "netrekrc");
+        sprintf (saveFile, "%s", "netrekrc.txt");
     }
 
     exe_dir = GetExeDir ();
