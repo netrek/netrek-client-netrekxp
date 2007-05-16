@@ -25,7 +25,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   195
       Left            =   7440
-      TabIndex        =   89
+      TabIndex        =   88
       ToolTipText     =   "Turns your sound on.  For better quality enable layered stereo sound."
       Top             =   8640
       Value           =   1  'Checked
@@ -46,7 +46,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   195
       Left            =   7440
-      TabIndex        =   88
+      TabIndex        =   87
       ToolTipText     =   "Shows a circle around your ship, you can Destroy Enemy Torpedoes that are in this circle."
       Top             =   8160
       Width           =   2415
@@ -67,7 +67,7 @@ Begin VB.Form Form3
       Height          =   195
       Left            =   7440
       MaskColor       =   &H00FFFFFF&
-      TabIndex        =   87
+      TabIndex        =   86
       ToolTipText     =   "Shows your speed next to your ship on the local map."
       Top             =   8400
       Value           =   1  'Checked
@@ -88,7 +88,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   195
       Left            =   7440
-      TabIndex        =   86
+      TabIndex        =   85
       ToolTipText     =   "Shows star streaks when tawrping to your base."
       Top             =   7920
       Value           =   1  'Checked
@@ -109,7 +109,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   195
       Left            =   7440
-      TabIndex        =   85
+      TabIndex        =   84
       ToolTipText     =   "Shows stars in the background on your local map."
       Top             =   8880
       Value           =   1  'Checked
@@ -130,7 +130,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   7440
-      TabIndex        =   84
+      TabIndex        =   83
       Top             =   9120
       Width           =   2415
    End
@@ -139,7 +139,7 @@ Begin VB.Form Form3
       ItemData        =   "Form3.frx":08CA
       Left            =   8880
       List            =   "Form3.frx":08D4
-      TabIndex        =   83
+      TabIndex        =   82
       Text            =   "Torpedoes"
       Top             =   5520
       Width           =   1935
@@ -149,7 +149,7 @@ Begin VB.Form Form3
       Index           =   30
       Left            =   9960
       MaxLength       =   1
-      TabIndex        =   81
+      TabIndex        =   80
       Text            =   "W"
       Top             =   6960
       Width           =   495
@@ -159,7 +159,7 @@ Begin VB.Form Form3
       Index           =   29
       Left            =   9960
       MaxLength       =   1
-      TabIndex        =   80
+      TabIndex        =   79
       Text            =   "Z"
       Top             =   6600
       Width           =   495
@@ -169,7 +169,7 @@ Begin VB.Form Form3
       Index           =   28
       Left            =   9960
       MaxLength       =   1
-      TabIndex        =   79
+      TabIndex        =   78
       Text            =   "V"
       Top             =   6240
       Width           =   495
@@ -189,7 +189,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   240
-      TabIndex        =   72
+      TabIndex        =   71
       Top             =   3600
       Width           =   2535
    End
@@ -208,7 +208,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   255
       Left            =   240
-      TabIndex        =   71
+      TabIndex        =   70
       Top             =   3360
       Value           =   -1  'True
       Width           =   2415
@@ -218,7 +218,7 @@ Begin VB.Form Form3
       Index           =   27
       Left            =   6360
       MaxLength       =   1
-      TabIndex        =   69
+      TabIndex        =   68
       Text            =   "y"
       Top             =   9000
       Width           =   495
@@ -228,7 +228,7 @@ Begin VB.Form Form3
       Index           =   26
       Left            =   6360
       MaxLength       =   1
-      TabIndex        =   68
+      TabIndex        =   67
       Text            =   "j"
       Top             =   8640
       Width           =   495
@@ -238,7 +238,7 @@ Begin VB.Form Form3
       Index           =   25
       Left            =   6360
       MaxLength       =   1
-      TabIndex        =   67
+      TabIndex        =   66
       Text            =   "p"
       Top             =   8280
       Width           =   495
@@ -256,18 +256,9 @@ Begin VB.Form Form3
       EndProperty
       Height          =   255
       Left            =   4200
-      TabIndex        =   63
+      TabIndex        =   62
       Top             =   10080
       Width           =   1095
-   End
-   Begin VB.TextBox Text2 
-      Height          =   285
-      Left            =   0
-      TabIndex        =   62
-      Text            =   "playnetrek.org"
-      Top             =   10440
-      Visible         =   0   'False
-      Width           =   1935
    End
    Begin VB.CheckBox Check2 
       BackColor       =   &H80000012&
@@ -597,7 +588,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   7560
-      TabIndex        =   82
+      TabIndex        =   81
       Top             =   5520
       Width           =   1215
    End
@@ -616,7 +607,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   7560
-      TabIndex        =   78
+      TabIndex        =   77
       Top             =   7080
       Width           =   2295
    End
@@ -635,7 +626,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   7560
-      TabIndex        =   77
+      TabIndex        =   76
       Top             =   6720
       Width           =   1575
    End
@@ -654,7 +645,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   7560
-      TabIndex        =   76
+      TabIndex        =   75
       Top             =   6360
       Width           =   1575
    End
@@ -673,7 +664,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   135
       Left            =   4800
-      TabIndex        =   75
+      TabIndex        =   74
       Top             =   10560
       Width           =   1455
    End
@@ -683,7 +674,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   615
       Left            =   3000
-      TabIndex        =   74
+      TabIndex        =   73
       Top             =   3120
       Width           =   7575
    End
@@ -702,7 +693,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00C0C000&
       Height          =   375
       Left            =   120
-      TabIndex        =   73
+      TabIndex        =   72
       Top             =   3000
       Width           =   2775
    End
@@ -712,7 +703,7 @@ Begin VB.Form Form3
       ForeColor       =   &H00FFFFFF&
       Height          =   495
       Left            =   120
-      TabIndex        =   70
+      TabIndex        =   69
       Top             =   2400
       Width           =   10695
    End
@@ -731,7 +722,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   4080
-      TabIndex        =   66
+      TabIndex        =   65
       Top             =   9120
       Width           =   1935
    End
@@ -750,7 +741,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   4080
-      TabIndex        =   65
+      TabIndex        =   64
       Top             =   8760
       Width           =   1215
    End
@@ -769,7 +760,7 @@ Begin VB.Form Form3
       ForeColor       =   &H8000000E&
       Height          =   255
       Left            =   4080
-      TabIndex        =   64
+      TabIndex        =   63
       Top             =   8400
       Width           =   1095
    End
@@ -1460,7 +1451,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Copyright (C) 2007  Joe Evango - Netrek XP 2006 Configuration Program v1.3
+'Copyright (C) 2007  Joe Evango - Netrek XP 2006 Configuration Program v1.4
 '
 'This program is free software; you can redistribute it and/or
 'modify it under the terms of the GNU General Public License
@@ -1490,7 +1481,19 @@ Attribute VB_Exposed = False
 ' a Windows client.  Also feel free to use the logic in this code to create a config utility for another OS.  It
 ' took a while to put the keymap portion of this together but it works well. I only ask that if any modifications
 ' are made you also make your code changes available to the community and give me a mention as a contributor
+'
+' Special thanks to Bill Barcerski for helping me out with the Classic Mode configuration addition and helping test
+'
+' Program notes from Joe - 5/15/07
+' Removed the repeated append functionality and replaced it with an imported rc file with default setting.
+' Options available in the config utility are added at the bottom of the file.  These options are excluded from the
+' imported file and appended only once to the bottom of the imported rc file.  Options are now only specified one time.
+' If a netrekrc file already exists it is save in the netrek root install folder as netrek.sav.
+' In order for the program to function there will need to be a file named netrekrc in the root of where it is executed
+' and a file named netrekrc.cfg in the docs folder.  Fixed several bugs that have been reported.
 
+
+'swaps the classic mode/xp mode images when the checkbox value changes
 
 Private Sub Check1_Click()
     If (Check1.Value = vbChecked) Then
@@ -1504,9 +1507,15 @@ End Sub
 
 
 
-'Keymap configuration
+
 Private Sub Command1_Click()
 
+'Saves your current netrekrc to netrekrc.sav and copies a static netrek config file from the docs directory
+    
+    FileCopy ".\netrekrc", ".\netrekrc.sav"
+    FileCopy ".\docs\netrekrc.cfg", ".\netrekrc"
+
+    
     Dim warp As Integer
     Dim det As Integer
     Dim speed As Integer
@@ -1618,10 +1627,12 @@ Private Sub Command1_Click()
     Dim a As Integer
     Dim b As Integer
     Dim c As Integer
-    
+    Dim d As Integer
+       
     
     Dim duplicate As Integer
     Dim speckey As Integer
+    Dim blank As Integer
     
     Dim currentdate As String
     
@@ -1748,7 +1759,8 @@ Private Sub Command1_Click()
         starstxt = "showStars: off"
     End If
               
-
+'Keymap configuration
+    
     If torpedo = Text1(0) Then
        keymap1 = ""
     Else
@@ -1943,6 +1955,8 @@ Private Sub Command1_Click()
       
     speckey = 0
     duplicate = 0
+    blank = 0
+    
     For a = 0 To 30
        For b = 0 To 30
             If a <> b And Text1(a) = Text1(b) Then
@@ -1954,7 +1968,7 @@ Private Sub Command1_Click()
                 MsgBox "The key '" + Text1(a) + "' is defined more than once.  This will cause problems while playing.  Please remove the duplicate controls and click on Finish."
                 Exit For
             End If
-       Next a
+    Next a
        
      
        For c = 0 To 30
@@ -1966,9 +1980,19 @@ Private Sub Command1_Click()
            Exit For
           End If
        Next c
+       
+       For d = 0 To 30
+           If Text1(d) = "" Then
+               blank = 1
+           End If
+           If blank = 1 Then
+                MsgBox "Blank values are not allowed.  If you meant to assign a key to the space bar please go to the key you would like to assign and enter a space by pressing the space bar"
+           Exit For
+          End If
+       Next d
     
     
-       If duplicate = 0 And speckey = 0 Then
+       If duplicate = 0 And speckey = 0 And blank = 0 Then
        ' Open the file for append.
        Open ".\netrekrc" For Append As fnum2
        
@@ -1987,6 +2011,7 @@ Private Sub Command1_Click()
            buttonmap = "buttonmap:" + "1" + Text1(0) + "2" + Text1(0)
        End If
       
+'Classic Mode / XP Mode options
        If classicmode = 1 Then
           mode1 = "colorClient: 0"
           mode2 = "colorWeapons: off"
@@ -2005,41 +2030,83 @@ Private Sub Command1_Click()
        
        
        keymap = "keymap:" + keymap1 + keymap2 + keymap3 + keymap4 + keymap5 + keymap6 + keymap7 + keymap8 + keymap9 + keymap10 + keymap11 + keymap12 + keymap13 + keymap14 + keymap15 + keymap16 + keymap17 + keymap18 + keymap19 + keymap20 + keymap21 + keymap22 + keymap23 + keymap24 + keymap25 + keymap26 + keymap27 + keymap28 + keymap29 + keymap30 + keymap31
-       keytag1 = "###Configuration changes made the Netrek Config Utility on " + currentdate
-       keytag2 = "###Warning: if you have these options defined earlier in the netrekrc, the settings below will take precedence."
-
+       keytag1 = "###Configuration below was added on - " + currentdate
+       
        Print #fnum2, Chr(13)
        Print #fnum2, Chr(13)
        Print #fnum2, keytag1
        Print #fnum2, Chr(13)
-       Print #fnum2, keytag2
-
-       Print #fnum2, Chr(13)
+       Print #fnum2, "# Key mapping"
+       Print #fnum2, "# Define you keymap here.  The format is newkey defaultkey.  For example, the"
+       Print #fnum2, "# default key for shield toggle is 's', if you want to remap shield toggle to"
+       Print #fnum2, "# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to"
+       Print #fnum2, "# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old"
+       Print #fnum2, "# one.  If you want shields on 'w' as well, put 'ws' in your keymap.  If you"
+       Print #fnum2, "# had instead put 'wq', it would have mapped quit, the default action of 'q',"
+       Print #fnum2, "# onto 'w'."
        Print #fnum2, keymap
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Mouse button mapping"
+       Print #fnum2, "# Button map lets you map the mouse buttons.  Unfortunately, it works in a"
+       Print #fnum2, "# different way than keymap.  The format is <mousebutton> <key>.  To map"
+       Print #fnum2, "# shields onto button 1 (the left one), you would put '1s' in your keymap."
+       Print #fnum2, "# The buttonmap works through the keymap, so if you have shields mapped to"
+       Print #fnum2, "# 'q', putting '1q' would make button 1 shields and not quit.  Buttons 4 and"
+       Print #fnum2, "# 5 are support for Microsoft Xbuttons.  If you have a wheel mouse, the up"
+       Print #fnum2, "# wheel is button 6 and the down wheel is button 7.  There is also support"
+       Print #fnum2, "# for shifted, controled, and control-shifted mouse actions, see the netrek"
+       Print #fnum2, "# help file for more details."
        Print #fnum2, buttonmap
        Print #fnum2, Chr(13)
-       Print #fnum2, logintxt
-       Print #fnum2, Chr(13)
+       Print #fnum2, "# Show hints window"
        Print #fnum2, tiptxt
        Print #fnum2, Chr(13)
+       Print #fnum2, "# What type of ship bitmaps to use"
+       Print #fnum2, "# 0 - mono"
+       Print #fnum2, "# 1 - new color bitmaps (default)"
+       Print #fnum2, "# 2 - old color bitmaps"
+       Print #fnum2, "# 3 - shaded old color bitmaps"
+       Print #fnum2, "# 4 - experimental high res bitmaps"
        Print #fnum2, mode1
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Use colored bitmaps for torps and plasmas"
        Print #fnum2, mode2
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Type of planet bitmaps on local map"
+       Print #fnum2, "# 0 - Bronco (default)"
+       Print #fnum2, "# 1 - Moo"
+       Print #fnum2, "# 2 - Rabbitear"
+       Print #fnum2, "# 3 - New color"
        Print #fnum2, mode4
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Type of planet bitmaps on galactic map"
+       Print #fnum2, "# 0 - Bronco (default)"
+       Print #fnum2, "# 1 - Moo"
+       Print #fnum2, "# 2 - Rabbitear"
+       Print #fnum2, "# 3 - New color"
        Print #fnum2, mode5
+       Print #fnum2, Chr(13)
+       
+       Print #fnum2, "# Highlight galactic planets by race and army status"
        Print #fnum2, mode6
+       Print #fnum2, "# Use beeplite"
        Print #fnum2, mode10
 
        
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Enable layered, stereo sound"
        Print #fnum2, soundtxt
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Draw background stars"
        Print #fnum2, starstxt
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Draw warp streaks while transwarping to starbase"
        Print #fnum2, warptxt
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Show det circle around your ship"
        Print #fnum2, dettxt
        Print #fnum2, Chr(13)
+       Print #fnum2, "# Show my speed on local"
        Print #fnum2, speedtxt
        Close fnum2
        
@@ -2111,7 +2178,7 @@ Private Sub Command1_Click()
        Print #fnum3, "Close Special Windows-  " + Text1(30)
        Close #fnum3
        Unload Form3
-       MsgBox "YOUR CONFIGURATION HAS BEEN CREATED!  After you click on OK a document with the controls you have chosen will open.  A shortcut to this document has been created in your Netrek Config Utility program group."
+       MsgBox "YOUR CONFIGURATION HAS BEEN CREATED!  After you click on OK a document with the controls you have chosen will open.  A shortcut to this document has been created in your Netrek Config Utility program group.  If you already had a configuration file in place it has been saved in your Netrek install directory as netrekrc.sav"
        Shell Application & " " & FileName, vbNormalFocus
      Else
      End If
