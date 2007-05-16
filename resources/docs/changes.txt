@@ -282,6 +282,8 @@ loss using the aforementioned full direction resolution feature.
 packets.
 34) Added improved explanation to netrekrc for the bandwidth costs of using the
 4 new(ish) feature packets which actually increase bandwidth use.
+35) INL servers will no longer save in the UDP metacache file, so they won't
+show up on the metaserver listing unless people are actually on the server.
 
 Netrek XP 2006, Version 1.2: (Released Mar-2007)
 - added "messageKeyOnly: (on)/off" so that you will only start messages with the actual

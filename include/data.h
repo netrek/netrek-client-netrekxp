@@ -37,6 +37,9 @@ extern struct player *me;
 extern struct torp *torps;
 extern struct plasmatorp *plasmatorps;
 extern struct status *status;
+#ifdef PARADISE
+extern struct status2 *status2;
+#endif
 extern struct ship *myship;
 extern struct stats *mystats;
 extern struct planet *planets;
@@ -95,6 +98,10 @@ extern int msgBeep;             /* ATM - msg beep */
 extern int warncount;
 extern int warntimer;
 extern int infomapped;
+extern void *infothing; 	/* infow contents [BDyess] */
+extern int infoupdate;		/* update flag for infow [BDyess] */
+extern int infotype;		/* type of info thing [BDyess] */
+extern int scanmapped;		/* ATM - scanner stuff */
 extern int mustexit;
 extern int messtime;
 extern int keepPeace;

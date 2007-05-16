@@ -66,9 +66,6 @@
 /*      NBT                     - Nick trown's macro code                       */
 #define NBT
 
-/*      MAXPLAYER               - Maximal number of players + observers         */
-#define MAXPLAYER 36
-
 /*      CORRUPTED_PACKETS       - prevents some seg faults but verbose output   */
 #define CORRUPTED_PACKETS
 
@@ -116,6 +113,9 @@
 
 /*      WARP_DEAD               - Use death detection                           */
 #undef  WARP_DEAD
+
+/*      PARADISE                - Support paradise servers                      */
+#undef	PARADISE
 
 /*      RCM                     - Receiver configurable Server messages         */
 #define RCM

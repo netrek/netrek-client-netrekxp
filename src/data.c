@@ -24,6 +24,9 @@ struct player *me = NULL;
 struct torp *torps;
 struct plasmatorp *plasmatorps;
 struct status *status;
+#ifdef PARADISE
+struct status2 *status2;
+#endif
 struct ship *myship;
 struct stats *mystats;
 struct planet *planets;
@@ -107,6 +110,9 @@ int warnShields = 0;
 int warncount = 0;
 int warntimer = -1;
 int infomapped = 0;
+void *infothing = NULL;            /* infow contents [BDyess] */
+int infoupdate = 0;                /* update flag for infow [BDyess] */
+int infotype = 0;                  /* type of info thing [BDyess] */
 int mustexit = 0;
 int messtime = 5;
 int keepPeace = 1;
@@ -117,6 +123,7 @@ unsigned LONG netaddr = 0;      /* for blessing */
 #endif
 
 int msgBeep = 1;                /* ATM - msg beep */
+int scanmapped = 0;             /* ATM - scanners */
 
 int planetBitmap = 0;
 int planetBitmapGalaxy = 0;

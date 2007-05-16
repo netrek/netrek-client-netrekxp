@@ -1142,10 +1142,19 @@ struct flags_all_spacket;
 void handleFlagsAll (struct flags_all_spacket *packet);
 struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
-#ifdef INCLUDE_SCAN
-void
-handleScan (packet)
-     struct scan_spacket *packet;
+#ifdef PARADISE
+void handleScan (struct scan_spacket *packet);
+void handleMotdPic (struct motd_pic_spacket * packet);
+void handleStats2 (struct stats_spacket2 * packet);
+void handleStatus2 (struct status_spacket2 * packet);
+void handlePlanet2 (struct planet_spacket2 * packet);
+void handleTerrain2 (struct terrain_packet2 * pkt);
+void handleTerrainInfo2 (struct terrain_info_packet2 *pkt);
+void handleTempPack (struct obvious_packet * packet);
+void handleThingy (struct thingy_spacket * packet);
+void handleThingyInfo (struct thingy_info_spacket * packet);
+void handleExtension1 (struct paradiseext1_spacket * packet);
+void handleGameparams (struct gameparam_spacket * packet);
 #endif
 void sendUdpReq (int req);
 struct udp_reply_spacket;

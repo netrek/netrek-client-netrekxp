@@ -8,6 +8,32 @@
 
 #include "copyright.h"
 
+#ifdef PARADISE
+/* defs for updatePlayer [BDyess] */
+#define NO_UPDATE	0
+#define SMALL_UPDATE	1	/* update non-blk_bozo players */
+#define LARGE_UPDATE	2	/* update blk_bozo players     */
+#define ALL_UPDATE	(SMALL_UPDATE|LARGE_UPDATE)	/* update both */
+
+/* defs for terrain */
+#define TERRAIN_STARTED 1
+#define TERRAIN_DONE    2
+
+/* defs for timer [BDyess] */
+#define T_NONE		0	/* no timer */
+#define T_DAY		1	/* time of day */
+#define T_SERVER	2	/* time on server */
+#define T_SHIP		3	/* time in ship */
+#define T_USER		4	/* user reset timer */
+#define T_TOTAL 	5	/* number of T_ defs */
+#define TIMESTRLEN	10	/* used in db_timer(), timeString() */
+
+/* defs for mapmode */
+#define GMAP_NEVER	0
+#define GMAP_FREQUENT 	1
+#define GMAP_INFREQUENT	2
+#endif /* PARADISE */
+
 /* Error handling */
 #define RETURNBASE 10
 
@@ -18,13 +44,19 @@
 #define MAX_MACRO       500
 #endif
 
-#ifndef MAXPLAYER
-#define MAXPLAYER 36            /* Defined in config.h as well */
+#ifdef PARADISE
+#define MAXPLAYER 257
+#else
+#define MAXPLAYER 36
 #endif
 
 #define TESTERS 4               /* Priveledged slots for
                                  * robots and game 'testers' */
+#ifdef PARADISE
+#define MAXPLANETS 60
+#else
 #define MAXPLANETS 40
+#endif
 #define MAXTORP 8
 #define MAXPLASMA 1
 #define PKEY 128
@@ -44,9 +76,12 @@
 #define DESIRED_TIC_LEN 10      /* for desired heading */
 
 /* These are configuration definitions */
-
+#ifdef PARADISE
+#define GWIDTH 200000
+#else
 #define GWIDTH 100000           /* galaxy is 100000 spaces
                                  * on a side */
+#endif
 #define SCALE 40                /* Window will be one pixel for
                                    these # spaces */
 #define WARP1 20                /* warp one will move 20

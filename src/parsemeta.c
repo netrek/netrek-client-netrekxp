@@ -845,6 +845,9 @@ static void SaveMetasCache()
          instead they default to "Active". */
       for (i = 0; i < num_servers; i++)
       {
+      	  /* Don't cache INL servers */
+      	  if (serverlist[i].typeflag == 'I')
+      	      continue;
 #ifdef METAPING	
       	  /* Don't cache servers that aren't responding to ping, they are likely 
       	     defunct. */

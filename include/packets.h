@@ -68,9 +68,10 @@
 #define SP_RESERVED	25      /* for future use */
 #define SP_PLANET_LOC	26      /* planet name, x, y */
 
-/* NOTE: not implemented */
+#ifdef PARADISE
 #define SP_SCAN         27      /* ATM: results of player
                                  * scan */
+#endif
 
 #define SP_UDP_REPLY    28      /* notify client of UDP
                                  * status */
@@ -83,8 +84,19 @@
                                  * verification */
 #endif
 
+#ifdef PARADISE
+#define SP_MOTD_PIC     32	/* motd bitmap pictures */
+#define SP_STATS2	33	/* new stats packet */
+#define SP_STATUS2	34	/* new status packet */
+#define SP_PLANET2	35	/* new planet packet */
+#define SP_NEW_MOTD     36	/* New MOTD info notification uses */
+#define SP_THINGY	37	/* thingy location */
+#define SP_THINGY_INFO	38	/* thingy status */
+#else
 #define SP_GENERIC_32	32	/* 32 byte generic, see struct */
 #define SP_FLAGS_ALL	33	/* abbreviated flags for all players */
+#endif
+
 #define SP_SHIP_CAP	39	/* Handles server ship mods */
 
 #ifdef SHORT_PACKETS
@@ -109,6 +121,18 @@
 #define SP_S_TORP_INFO  48      /* SP_S_TORP with TorpInfo */
 #define SP_S_8_TORP     49      /* optimized SP_S_TORP */
 #define SP_S_PLANET     50      /* see SP_PLANET */
+
+#ifdef PARADISE
+#define SP_GPARAM	51	/* game params packet */
+/* the following is a family of packets with the same type, but a
+   discriminating subtype */
+#define SP_PARADISE_EXT1	52
+#define SP_PE1_MISSING_BITMAP	0
+#define SP_PE1_NUM_MISSILES	1
+/* end of packet 52 subtypes */
+#define SP_TERRAIN2	53	/* Terrain packets */
+#define SP_TERRAIN_INFO2 54	/* Terrain info */
+#endif
 
 /* S_P2 */
 #define SP_S_SEQUENCE   56      /* SP_SEQUENCE for
@@ -1092,6 +1116,183 @@ struct stats_s_spacket
     unsigned short armies;      /* non-tourn armies */
     unsigned short planets;     /* non-tourn planets */
     unsigned int sbmaxkills;    /* max kills as sb * 100 */
+};
+
+#endif
+
+#ifdef PARADISE
+/* Shapes of thingys.  It would be best to add to the end of this list and
+   try to coordinate your additions with other hackers. */
+enum thingy_types {
+    SHP_BLANK, SHP_MISSILE, SHP_BOOM, SHP_TORP, SHP_PLASMA, SHP_MINE,
+    SHP_PBOOM, SHP_FIGHTER, SHP_WARP_BEACON, SHP_FBOOM, SHP_DBOOM
+};
+
+struct thingy_info_spacket {
+    char    type;		/* SP_THINGY_INFO */
+    char    war;
+    unsigned short   shape;		/* a thingy_types */
+    unsigned short   tnum;
+    unsigned short   owner;
+};
+
+struct thingy_spacket {
+    char    type;		/* SP_THINGY */
+    char    dir;
+    unsigned short   tnum;
+    LONG    x, y;
+};
+
+/* terrain info for Paradise terrain */
+/* 5/16/95 rpg */
+
+struct terrain_info_packet2 {
+    char   type;		/* SP_TERRAIN_INFO2 */
+    char   pad;
+    unsigned short  pad2;
+    unsigned short  xdim;
+    unsigned short  ydim;
+};
+
+struct terrain_packet2 {
+    char   type;		/* SP_TERRAIN2 */
+    char   sequence;
+    char   total_pkts;
+    char   length;
+    char   terrain_type[128];	/* Ugh... this needs to be fixed 5/16/95 rpg */
+ /* unsigned short  terrain_alt1[128]; */
+ /* unsigned short  terrain_alt2[128]; */
+};
+
+struct scan_spacket {		/* ATM */
+    char    type;		/* SP_SCAN */
+    char    pnum;
+    char    success;
+    char    pad1;
+    LONG    p_fuel;
+    LONG    p_armies;
+    LONG    p_shield;
+    LONG    p_damage;
+    LONG    p_etemp;
+    LONG    p_wtemp;
+};
+
+struct motd_pic_spacket {
+    char    type;		/* SP_MOTD_PIC */
+    char    pad1;
+    unsigned short   x, y, page;
+    unsigned short   width, height;
+    char    bits[1016];
+};
+
+ /* This is used to send paradise style stats */
+struct stats_spacket2 {
+    char    type;		/* SP_STATS2 */
+    char    pnum;
+    char    pad1;
+    char    pad2;
+
+    LONG   genocides;		/* number of genocides participated in */
+    LONG   maxkills;		/* max kills ever * 100  */
+    LONG   di;			/* destruction inflicted for all time * 100 */
+    LONG   kills;		/* Kills in tournament play */
+    LONG   losses;		/* Losses in tournament play */
+    LONG   armsbomb;		/* Tournament armies bombed */
+    LONG   resbomb;		/* resources bombed off */
+    LONG   dooshes;		/* armies killed while being carried */
+    LONG   planets;		/* Tournament planets conquered */
+    LONG   tticks;		/* Tournament ticks */
+    /* SB/WB/JS stats are entirely separate */
+    LONG   sbkills;		/* Kills as starbase */
+    LONG   sblosses;		/* Losses as starbase */
+    LONG   sbticks;		/* Time as starbase */
+    LONG   sbmaxkills;		/* Max kills as starbase * 100 */
+    LONG   wbkills;		/* Kills as warbase */
+    LONG   wblosses;		/* Losses as warbase */
+    LONG   wbticks;		/* Time as warbase */
+    LONG   wbmaxkills;		/* Max kills as warbase * 100 */
+    LONG   jsplanets;		/* planets assisted with in JS */
+    LONG   jsticks;		/* ticks played as a JS */
+    LONG   rank;		/* Ranking of the player */
+    LONG   royal;		/* royaly, specialty, rank */
+};
+
+ /* status info for paradise stats */
+struct status_spacket2 {
+    char    type;		/* SP_STATUS2 */
+    char    tourn;
+    char    pad1;
+    char    pad2;
+    unsigned int  dooshes;		/* total number of armies dooshed */
+    unsigned int  armsbomb;		/* all t-mode armies bombed */
+    unsigned int  resbomb;		/* resources bombed */
+    unsigned int  planets;		/* all t-mode planets taken */
+    unsigned int  kills;		/* all t-mode kills made */
+    unsigned int  losses;		/* all t-mode losses */
+    unsigned int  sbkills;		/* total kills in SB's */
+    unsigned int  sblosses;		/* total losses in Sb's */
+    unsigned int  sbtime;		/* total time in SB's */
+    unsigned int  wbkills;		/* kills in warbases */
+    unsigned int  wblosses;		/* losses in warbases */
+    unsigned int  wbtime;		/* total time played in wb's */
+    unsigned int  jsplanets;		/* total planets taken by jump ships */
+    unsigned int  jstime;		/* total time in a jump ship */
+    unsigned int  time;		/* t mode time in this game */
+    unsigned int  timeprod;		/* t-mode ship ticks--sort of like */
+};
+
+
+ /* planet info for a paradise planet */
+struct planet_spacket2 {
+    char    type;		/* SP_PLANET2 */
+    char    pnum;		/* planet number */
+    char    owner;		/* owner of the planet */
+    char    info;		/* who has touched planet */
+    LONG   flags;		/* planet's flags */
+    LONG   timestamp;		/* timestamp for info on planet */
+    LONG   armies;		/* armies on the planet */
+};
+
+struct obvious_packet {
+    char    type;		/* SP_NEW_MOTD */
+    char    pad1;		/* CP_ASK_MOTD */
+};
+
+struct paradiseext1_spacket {
+    char   type;
+    char   subtype;
+    short   pad;
+};
+
+struct pe1_missing_bitmap_spacket {
+    char    type;
+    char   subtype;
+
+    short   page;
+
+    short   x, y;
+    short   width, height;
+};
+
+struct pe1_num_missiles_spacket {
+    char    type;		/* SP_PARADISE_EXT1 */
+    char   subtype;		/* SP_PE1_NUM_MISSILES */
+
+    short   num;		/* number of missiles */
+};
+
+struct scan_cpacket {		/* ATM */
+    char    type;		/* CP_SCAN */
+    char    pnum;
+    char    pad1;
+    char    pad2;
+};
+
+struct gameparam_spacket {
+    char   type;
+    char   subtype;		/* this packet is not real */
+    /* generic game parameter packet */
+    int pad;
 };
 
 #endif

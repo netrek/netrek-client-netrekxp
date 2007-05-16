@@ -157,7 +157,7 @@ char *help_message[] = {
     "V     Increase sound volume",
 #endif
 
-    "&     Reread xtrekrc",
+    "&     Reread netrekrc.txt",
     "\"     Save current options",
     0
 };

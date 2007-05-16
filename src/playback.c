@@ -506,7 +506,9 @@ ckRecordPacket (char packet)
     case SP_S_YOU_SS:
     case SP_S_PLAYER:
     case SP_SHIP_CAP:
+#ifndef PARADISE
     case SP_GENERIC_32:
+#endif
     case SP_S_TORP:
     case SP_S_TORP_INFO:
     case SP_S_8_TORP:

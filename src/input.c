@@ -1892,8 +1892,11 @@ getcourse (W_Window ww,
 int
 detmine (void)
 {
-    register int i;
+    register int i = 0;
 
+#ifdef PARADISE
+    sendDetMineReq(-1);
+#else
     for (i = 0; i < MAXTORP; i++)
     {
         if (torps[i + (me->p_no * MAXTORP)].t_status == TMOVE ||
@@ -1907,6 +1910,7 @@ detmine (void)
 #endif
         }
     }
+#endif
     return (0);
 }
 

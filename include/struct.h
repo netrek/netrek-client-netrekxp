@@ -44,6 +44,35 @@ struct status
     unsigned LONG timeprod;
 };
 
+#ifdef PARADISE
+struct status2 {		/* paradise status struct */
+    int     active;		/* for interfacing with people who */
+    unsigned int wait, count;	/* want to get into the game */
+    unsigned int number, request, answer;
+    unsigned char tourn;	/* Tournament mode? */
+    unsigned long dooshes;	/* total number of armies dooshed */
+    unsigned long armsbomb;	/* all t-mode armies bombed */
+    unsigned long resbomb;	/* resources bombed */
+    unsigned long planets;	/* all t-mode planets taken */
+    unsigned long kills;	/* all t-mode kills made */
+    unsigned long losses;	/* all t-mode losses */
+    unsigned long genocides;	/* number of genocides */
+    unsigned long sbkills;	/* total kills in SB's */
+    unsigned long sblosses;	/* total losses in Sb's */
+    unsigned long sbtime;	/* total time in SB's */
+    unsigned long wbkills;	/* kills in warbases */
+    unsigned long wblosses;	/* losses in warbases */
+    unsigned long wbtime;	/* total time played in wb's */
+    unsigned long jsplanets;	/* total planets taken by jump ships */
+    unsigned long jstime;	/* total time in a jump ship */
+    unsigned long time;		/* t-mode time */
+    unsigned long timeprod;	/* t-mode ship ticks--sort of like */
+    /* manhours in t-mode */
+    int     gameup;		/* is game up */
+    unsigned long clock;	/* clock for planet info timestamp */
+};
+#endif
+
 enum dist_type
 {
     /* help me do series */
@@ -214,6 +243,37 @@ struct stats
     int st_rank;                /* Ranking of the player */
 };
 
+#ifdef PARADISE
+struct stats2 {			/* paradise stats */
+    int     st_genocides;	/* number of genocides participated in */
+    float   st_tmaxkills;	/* max kills ever */
+    float   st_di;		/* total destruction inflicted for all time */
+    int     st_tkills;		/* Kills in tournament play */
+    int     st_tlosses;		/* Losses in tournament play */
+    int     st_tarmsbomb;	/* Tournament armies bombed */
+    int     st_tresbomb;	/* resources bombed off */
+    int     st_tdooshes;	/* armies killed while being carried */
+    int     st_tplanets;	/* Tournament planets conquered */
+    int     st_tticks;		/* Tournament ticks */
+    /* SB/WB/JS stats are entirely separate */
+    int     st_sbkills;		/* Kills as starbase */
+    int     st_sblosses;	/* Losses as starbase */
+    int     st_sbticks;		/* Time as starbase */
+    float   st_sbmaxkills;	/* Max kills as starbase */
+    int     st_wbkills;		/* Kills as warbase */
+    int     st_wblosses;	/* Losses as warbase */
+    int     st_wbticks;		/* Time as warbase */
+    float   st_wbmaxkills;	/* Max kills as warbase */
+    int     st_jsplanets;	/* planets assisted with in JS */
+    int     st_jsticks;		/* ticks played as a JS */
+    long    st_lastlogin;	/* Last time this player was played */
+    int     st_flags;		/* Misc option flags */
+    unsigned char st_keymap[256];	/* keymap for this player */
+    int     st_rank;		/* Ranking of the player */
+    int     st_royal;		/* royaly, specialty, rank */
+};
+#endif
+
 #define ST_MAPMODE      1
 #define ST_NAMEMODE     2
 #define ST_SHOWSHIELDS  4
@@ -277,6 +337,9 @@ struct player
     short p_whydead;            /* Tells you why you died */
     short p_whodead;            /* Tells you who killed you */
     struct stats p_stats;       /* player statistics */
+#ifdef PARADISE
+    struct stats2 p_stats2;     /* Paradise stats */
+#endif
     short p_genoplanets;        /* planets taken since last
                                  * genocide */
     short p_genoarmsbomb;       /* armies bombed since last

@@ -31,7 +31,6 @@
 #include "local.h"
 #include "proto.h"
 
-/* #define INCLUDE_SCAN            /* include Amdahl scanning beams */
 #define INCLUDE_VISTRACT        /* include visible tractor beams */
 
 #define NETSTAT
@@ -130,8 +129,8 @@ struct packet_handler handlers[] = {
     {sizeof (struct reserved_spacket), handleReserved}, /* SP_RESERVED */
     {sizeof (struct planet_loc_spacket), handlePlanetLoc},      /* SP_PLANET_LOC */
 
-#ifdef HANDLE_SCAN
-    {sizeof (struct scan_spacket), handleScan}  /* SP_SCAN (ATM) */
+#ifdef PARADISE
+    {sizeof (struct scan_spacket), handleScan},  /* SP_SCAN (ATM) */
 #else
     {0, dummy},                 /* won't be called */
 #endif
@@ -146,6 +145,15 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* #31, and dummy won't */
 #endif
 
+#ifdef PARADISE
+    {sizeof (struct motd_pic_spacket), handleMotdPic}, /* SP_MOTD_PIC */
+    {sizeof (struct stats_spacket2), handleStats2}, /* SP_STATS2 */
+    {sizeof (struct status_spacket2), handleStatus2}, /* SP_STATUS2 */
+    {sizeof (struct planet_spacket2), handlePlanet2}, /* SP_PLANET2 */
+    {sizeof (struct obvious_packet), handleTempPack}, /* SP_TEMP_5 */
+    {sizeof (struct thingy_spacket), handleThingy}, /* SP_THINGY */
+    {sizeof (struct thingy_info_spacket), handleThingyInfo}, /* SP_THINGY_INFO */
+#else
     {sizeof (struct generic_32_spacket), handleGeneric32},  /* SP_GENERIC_32 */
     {sizeof (struct flags_all_spacket), handleFlagsAll}, /* SP_FLAGS_ALL */
     {0, dummy},                 /* 34 */
@@ -153,6 +161,7 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* 36 */
     {0, dummy},                 /* 37 */
     {0, dummy},                 /* 38 */
+#endif
     {sizeof (struct ship_cap_spacket), handleShipCap},  /* SP_SHIP_CAP */
 
 #ifdef SHORT_PACKETS
@@ -186,10 +195,17 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* 50 */
 #endif
 
+#ifdef PARADISE
+    {-1, /* variable */ handleGameparams},
+    {-1, /* variable */ handleExtension1},
+    {sizeof (struct terrain_packet2), handleTerrain2}, /* 53 */
+    {sizeof (struct terrain_info_packet2), handleTerrainInfo2},	/* 54 */
+#else
     {0, dummy},                 /* 51 */
     {0, dummy},                 /* 52 */
     {0, dummy},                 /* 53 */
     {0, dummy},                 /* 54 */
+#endif
     {0, dummy},                 /* 55 */
 
 #ifdef SHORT_PACKETS            /* S_P2 */
@@ -247,7 +263,7 @@ int sizes[] = {
     sizeof (struct resetstats_cpacket), /* CP_RESETSTATS */
     sizeof (struct reserved_cpacket),   /* CP_RESERVED */
 
-#ifdef INCLUDE_SCAN
+#ifdef PARADISE
     sizeof (struct scan_cpacket),       /* CP_SCAN (ATM) */
 #else
     0,
@@ -926,6 +942,50 @@ getvpsize (char *bufptr)
 
     switch (*bufptr)
     {
+#ifdef PARADISE
+    case SP_GPARAM:
+	switch ((unsigned char) bufptr[1]) {
+/*	case 0:
+	    size = sizeof(struct gp_sizes_spacket);
+	    break;
+	case 1:
+	    size = sizeof(struct gp_team_spacket);
+	    break;
+	case 2:
+	    size = sizeof(struct gp_teamlogo_spacket);
+	    break;
+	case 3:
+	    size = sizeof(struct gp_shipshape_spacket);
+	    break;
+	case 4:
+	    size = sizeof(struct gp_shipbitmap_spacket);
+	    break;
+	case 5:
+	    size = sizeof(struct gp_rank_spacket);
+	    break;
+	case 6:
+	    size = sizeof(struct gp_royal_spacket);
+	    break;
+	case 7:
+	    size = sizeof(struct gp_teamplanet_spacket);
+	    break;*/
+	default:
+	    size = 0;
+	    break;
+	}
+    case SP_PARADISE_EXT1:
+	switch ((unsigned char) bufptr[1]) {
+	case SP_PE1_MISSING_BITMAP:
+	    size = sizeof(struct pe1_missing_bitmap_spacket);
+	    break;
+	case SP_PE1_NUM_MISSILES:
+	    size = sizeof(struct pe1_num_missiles_spacket);
+	    break;
+	default:
+	    size = 0;
+	    break;
+	}
+#endif
     case SP_S_MESSAGE:
         size = ((unsigned char) bufptr[4]);     /* IMPORTANT  Changed */
         break;
@@ -1640,7 +1700,7 @@ sendServerPacket (struct player_spacket *packet)
         case CP_COUP:
         case CP_DOCKPERM:
 
-#ifdef INCLUDE_SCAN
+#ifdef PARADISE
         case CP_SCAN:
 #endif
 
@@ -1841,8 +1901,10 @@ sendLoginReq (char *name,
     strcpy (packet.login, login);
     packet.type = CP_LOGIN;
     packet.query = query;
-    //packet.pad2 = 0x69; /* Paradise support */
-    //packet.pad3 = 0x43; /* Paradise support */
+#ifdef PARADISE
+    packet.pad2 = 0x69; /* Paradise support */
+    packet.pad3 = 0x43; /* Paradise support */
+#endif
     sendServerPacket ((struct player_spacket *) &packet);
 }
 
@@ -2646,10 +2708,367 @@ handleRSAKey (struct rsa_key_spacket *packet)
 
 #endif
 
-#ifdef INCLUDE_SCAN
-void
-handleScan (packet)
-     struct scan_spacket *packet;
+#ifdef PARADISE
+void handleMotdPic (struct motd_pic_spacket *packet)
+{
+    int x, y, page, width, height;
+
+    x = ntohs(packet->x);
+    y = ntohs(packet->y);
+    width = ntohs(packet->width);
+    height = ntohs(packet->height);
+    page = ntohs(packet->page);
+
+    //newMotdPic(x, y, width, height, (char *) packet->bits, page);
+}
+
+void handleStats2 (struct stats_spacket2 *packet)
+{
+    struct stats2 *p;		/* to hold packet's player's stats2 struct */
+
+#ifdef CORRUPTED_PACKETS
+    if (packet->pnum >= MAXPLAYER)
+    {
+        LineToConsole ("handleStats2: bad index\n");
+        return;
+    }
+#endif
+
+    updatePlayer[packet->pnum] |= LARGE_UPDATE;
+    if (infomapped && infotype == PLAYERTYPE &&
+	((struct player *) infothing)->p_no == packet->pnum)
+	infoupdate = 1;
+    p = &(players[packet->pnum].p_stats2);	/* get player's stats2 struct */
+    p->st_genocides = ntohl(packet->genocides);
+    p->st_tmaxkills = (float) ntohl(packet->maxkills) / (float) 100.0;
+    p->st_di = (float) ntohl(packet->di) / (float) 100.0;
+    p->st_tkills = (int) ntohl(packet->kills);
+    p->st_tlosses = (int) ntohl(packet->losses);
+    p->st_tarmsbomb = (int) ntohl(packet->armsbomb);
+    p->st_tresbomb = (int) ntohl(packet->resbomb);
+    p->st_tdooshes = (int) ntohl(packet->dooshes);
+    p->st_tplanets = (int) ntohl(packet->planets);
+    p->st_tticks = (int) ntohl(packet->tticks);
+    p->st_sbkills = (int) ntohl(packet->sbkills);
+    p->st_sblosses = (int) ntohl(packet->sblosses);
+    p->st_sbticks = (int) ntohl(packet->sbticks);
+    p->st_sbmaxkills = (float) ntohl(packet->sbmaxkills) / (float) 100.0;
+    p->st_wbkills = (int) ntohl(packet->wbkills);
+    p->st_wblosses = (int) ntohl(packet->wblosses);
+    p->st_wbticks = (int) ntohl(packet->wbticks);
+    p->st_wbmaxkills = (float) ntohl(packet->wbmaxkills) / (float) 100.0;
+    p->st_jsplanets = (int) ntohl(packet->jsplanets);
+    p->st_jsticks = (int) ntohl(packet->jsticks);
+    if (p->st_rank != (int) ntohl(packet->rank) ||
+	p->st_royal != (int) ntohl(packet->royal)) {
+	p->st_rank = (int) ntohl(packet->rank);
+	p->st_royal = (int) ntohl(packet->royal);
+	updatePlayer[packet->pnum] |= ALL_UPDATE;
+    }
+}
+
+void handleStatus2 (struct status_spacket2 *packet)
+{
+/*
+    updatePlayer[me->p_no] |= LARGE_UPDATE;
+    if (infomapped && infotype == PLAYERTYPE &&
+	((struct player *) infothing)->p_no == me->p_no)
+	infoupdate = 1;
+    status2->tourn = packet->tourn;
+    status2->dooshes = ntohl(packet->dooshes);
+    status2->armsbomb = ntohl(packet->armsbomb);
+    status2->resbomb = ntohl(packet->resbomb);
+    status2->planets = ntohl(packet->planets);
+    status2->kills = ntohl(packet->kills);
+    status2->losses = ntohl(packet->losses);
+    status2->sbkills = ntohl(packet->sbkills);
+    status2->sblosses = ntohl(packet->sblosses);
+    status2->sbtime = ntohl(packet->sbtime);
+    status2->wbkills = ntohl(packet->wbkills);
+    status2->wblosses = ntohl(packet->wblosses);
+    status2->wbtime = ntohl(packet->wbtime);
+    status2->jsplanets = ntohl(packet->jsplanets);
+    status2->jstime = ntohl(packet->jstime);
+    status2->time = ntohl(packet->time);
+    status2->timeprod = ntohl(packet->timeprod);
+*/
+}
+
+void handlePlanet2 (struct planet_spacket2 *packet)
+{
+    static int first_planet_packet = 1;
+
+#ifdef CORRUPTED_PACKETS
+    if (packet->pnum >= MAXPLANETS)
+    {
+        LineToConsole ("handlePlanet2: bad index %d\n", packet->pnum);
+        return;
+    }
+#endif
+/*
+    if(first_planet_packet)
+    {
+      first_planet_packet = 0;
+      nplanets = packet->pnum+1;
+    }
+    else
+    {
+      if((packet->pnum+1) > nplanets)
+        nplanets = packet->pnum+1;
+    }
+
+    planets[packet->pnum].pl_owner = packet->owner;
+    planets[packet->pnum].pl_info = packet->info;
+    planets[packet->pnum].pl_flags = ntohl(packet->flags);
+    if(PL_TYPE(planets[packet->pnum]) != PLPLANET) {
+      planets[packet->pnum].pl_owner = ALLTEAM;
+    }
+    planets[packet->pnum].pl_timestamp = ntohl(packet->timestamp);
+    planets[packet->pnum].pl_armies = ntohl(packet->armies);
+    planets[packet->pnum].pl_flags |= PLREDRAW;
+    pl_update[packet->pnum].plu_update = 1;
+    pl_update[packet->pnum].plu_x = planets[packet->pnum].pl_x;
+    pl_update[packet->pnum].plu_y = planets[packet->pnum].pl_y;
+    if (infomapped && infotype == PLANETTYPE &&
+	((struct planet *) infothing)->pl_no == packet->pnum)
+	infoupdate = 1;
+*/
+}
+
+void handleTerrainInfo2 (struct terrain_info_packet2 *pkt)
+{
+/*
+#ifdef ZDIAG2
+    fprintf( stderr, "Receiving terrain info packet\n" );
+    fprintf( stderr, "Terrain dims: %d x %d\n", ntohs(pkt->xdim), ntohs(pkt->ydim) );
+#endif
+    received_terrain_info = TERRAIN_STARTED;
+    terrain_x = ntohs(pkt->xdim);
+    terrain_y = ntohs(pkt->ydim);
+*/
+}; 
+
+void handleTerrain2 (struct terrain_packet2 *pkt)
+{
+/*
+    static int curseq = 0, totbytes = 0, done = 0;
+    int i;
+#if defined(ZDIAG) || defined(ZDIAG2)
+    int status;
+#endif // ZDIAG || ZDIAG2
+    unsigned long dlen;
+#ifdef ZDIAG2
+    static unsigned char sum = 0;
+    static unsigned numnz = 0;
+#endif
+    static unsigned char *gzipTerrain = NULL, *orgTerrain = NULL;
+    
+#ifdef ZDIAG2
+    fprintf( stderr, "Receiving Terrain packet.  This should be %d.\n", curseq+1 );
+#endif
+
+    if( (done == TERRAIN_DONE) && (received_terrain_info == TERRAIN_STARTED ) ){
+      // receiving new terrain info 
+      free( gzipTerrain );
+      free( orgTerrain );
+      free( terrainInfo );
+      gzipTerrain = orgTerrain = NULL;
+      terrainInfo = NULL;
+      curseq = done = totbytes = 0;
+    }
+      
+    curseq++;
+    if( (curseq != pkt->sequence) || !(received_terrain_info) ){
+      // Should fill in a list of all packets missed
+      // or request header packet from server
+      fprintf( stderr, "Blech!  Received terrain packet before terrain_info\n" );
+      return;
+    }
+#ifdef ZDIAG2
+    fprintf( stderr, "Receiving packet %d out of %d\n", curseq, pkt->total_pkts );
+#endif
+    if( !gzipTerrain ){
+      gzipTerrain = (unsigned char *)malloc( pkt->total_pkts << 7 );
+#if defined(ZDIAG) || defined(ZDIAG2)
+      fprintf( stderr, "Allocating %d bytes for gzipTerrain.\n", pkt->total_pkts << 7 );
+#endif
+		// another yukko constant
+    }
+    if( !orgTerrain ){
+      orgTerrain = (unsigned char *)malloc( terrain_x*terrain_y );
+      dlen = terrain_x * terrain_y;
+#if defined(ZDIAG) || defined(ZDIAG2)
+      fprintf( stderr, "Allocating %d bytes for orgTerrain.\n", dlen );
+#endif
+    }
+    for( i = 0; i < pkt->length; i++ ){
+#ifdef ZDIAG2
+      if( !(i%10) ){
+        fprintf( stderr, "Params: %d, %d\n", ((curseq-1)<<7)+i, i );
+      }
+#endif
+      gzipTerrain[((curseq-1)<<7)+i] = pkt->terrain_type[i];
+    }
+    totbytes += pkt->length;
+    if( curseq == pkt->total_pkts ){
+#if defined(ZDIAG) || defined(ZDIAG2)
+      status = uncompress( orgTerrain, &dlen, gzipTerrain, totbytes );
+      if( status != Z_OK ){
+        if( status == Z_BUF_ERROR ){
+          fprintf( stderr, "Unable to uncompress -- Z_BUF_ERROR.\n" );
+        }
+        if( status == Z_MEM_ERROR ){
+          fprintf( stderr, "Unable to uncompress -- Z_MEM_ERROR.\n" );
+        }
+        if( status = Z_DATA_ERROR ){
+          fprintf( stderr, "Unable to uncompress -- Z_DATA_ERROR!\n" );
+        }
+      }
+      else{
+        fprintf( stderr, "Total zipped terrain received: %d bytes\n", totbytes );
+      }
+#else
+      uncompress( orgTerrain, &dlen, gzipTerrain, totbytes );
+#endif
+      terrainInfo = (struct t_unit *)malloc( dlen * sizeof( struct t_unit ) );
+      for( i = 0; i < dlen; i++ ){
+        terrainInfo[i].types = orgTerrain[i];
+#ifdef ZDIAG2
+	sum |= orgTerrain[i];
+        if( orgTerrain[i] != 0 ){
+          numnz++;
+        }
+#endif
+      }
+      done = received_terrain_info = TERRAIN_DONE;
+#ifdef ZDIAG2
+      fprintf( stderr, "Sum = %d, numnz = %d\n", sum, numnz );
+#endif
+    }
+*/
+}    
+
+void handleTempPack (struct obvious_packet *packet)
+{
+/*
+    struct obvious_packet reply;
+    // printf("New MOTD info available\n");
+    erase_motd();
+    reply.type = CP_ASK_MOTD;
+    sendServerPacket((struct player_spacket *) & reply);
+*/
+}
+
+/* handlers for the extension1 packet */
+
+int compute_extension1_size (char *pkt)
+{
+    if (pkt[0] != SP_PARADISE_EXT1)
+	return -1;
+
+    switch (pkt[1]) {
+    case SP_PE1_MISSING_BITMAP:
+	return sizeof(struct pe1_missing_bitmap_spacket);
+    case SP_PE1_NUM_MISSILES:
+	return sizeof(struct pe1_num_missiles_spacket);
+    default:
+	return -1;
+    }
+}
+
+void handleExtension1 (struct paradiseext1_spacket *packet)
+{
+/*
+    switch (packet->subtype) {
+    case SP_PE1_MISSING_BITMAP:
+	{
+	    struct pe1_missing_bitmap_spacket *pkt =
+	    (struct pe1_missing_bitmap_spacket *) packet;
+
+	    newMotdPic(ntohs(pkt->x), ntohs(pkt->y), ntohs(pkt->width), ntohs(pkt->height), 0, ntohs(pkt->page));
+	}
+	break;
+    case SP_PE1_NUM_MISSILES:
+	me->p_totmissiles = ntohs(((struct pe1_num_missiles_spacket *) packet)->num);
+	// printf("updated totmissiles to %d\n",me->p_totmissiles);
+	if (me->p_totmissiles < 0)
+	    me->p_totmissiles = 0;	// SB/WB have
+	break;
+    default:
+	printf("unknown paradise extension packet 1 subtype = %d\n",
+	       packet->subtype);
+    }
+*/
+}
+void handleThingy (struct thingy_spacket *packet)
+{
+/*
+    struct thingy *thetorp;
+
+    //SANITY_THINGYNUM(ntohs(packet->tnum));
+
+    thetorp = &thingies[ntohs(packet->tnum)];
+    thetorp->t_x = ntohl(packet->x);
+    thetorp->t_y = ntohl(packet->y);
+    // printf("drone at %d, %d\n", thetorp->t_x, thetorp->t_y);
+    thetorp->t_dir = packet->dir;
+
+
+    if (rotate) {
+	rotate_gcenter(&thetorp->t_x, &thetorp->t_y);
+	rotate_dir(&thetorp->t_dir, rotate_deg);
+    }
+
+    if (thetorp->t_shape == SHP_WARP_BEACON)
+	redrawall = 1;		// shoot, route has changed 
+*/
+}
+
+void handleThingyInfo (struct thingy_info_spacket *packet)
+{
+/*
+    struct thingy *thetorp;
+
+   //SANITY_THINGYNUM(ntohs(packet->tnum));
+
+    thetorp = &thingies[ntohs(packet->tnum)];
+
+    thetorp->t_owner = ntohs(packet->owner);
+
+    if (thetorp->t_shape == SHP_WARP_BEACON)
+	redrawall = 1;		// redraw the lines, I guess
+
+    if (ntohs(packet->shape) == SHP_BOOM && thetorp->t_shape == SHP_BLANK) {
+	// FAT: redundant explosion; don't update p_ntorp
+	// printf("texplode ignored\n");
+	return;
+    }
+
+    if (thetorp->t_shape == SHP_BLANK && ntohs(packet->shape) != SHP_BLANK) {
+	players[thetorp->t_owner].p_ndrone++;
+    }
+    if (thetorp->t_shape != SHP_BLANK && ntohs(packet->shape) == SHP_BLANK) {
+	players[thetorp->t_owner].p_ndrone--;
+    }
+    thetorp->t_war = packet->war;
+
+    if (ntohs(packet->shape) != thetorp->t_shape) {
+	// FAT: prevent explosion reset
+	int shape = ntohs(packet->shape);
+
+        if(shape == SHP_BOOM || shape == SHP_PBOOM) {
+	  if(thetorp->t_shape == SHP_FIGHTER)
+	    shape = SHP_FBOOM;
+	  if(thetorp->t_shape == SHP_MISSILE)
+	    shape = SHP_DBOOM;
+	  thetorp->t_fuse = BIGINT;
+	}
+	thetorp->t_shape = shape;
+    }
+*/
+}
+
+void handleScan (struct scan_spacket *packet)
 {
     struct player *pp;
 
@@ -2670,16 +3089,42 @@ handleScan (packet)
         pp->p_damage = ntohl (packet->p_damage);
         pp->p_etemp = ntohl (packet->p_etemp);
         pp->p_wtemp = ntohl (packet->p_wtemp);
-        informScan (packet->pnum);
     }
 }
 
-informScan (p)
-     int p;
+void handleGameparams (struct gameparam_spacket *packet)
 {
+    /*switch (pkt->subtype) {
+    case 0:
+	handleGPsizes((struct gp_sizes_spacket *) pkt);
+	break;
+    case 1:
+	handleGPteam((struct gp_team_spacket *) pkt);
+	break;
+    case 2:
+	handleGPteamlogo((struct gp_teamlogo_spacket *) pkt);
+	break;
+    case 3:
+	handleGPshipshape((struct gp_shipshape_spacket *) pkt);
+	break;
+    case 4:
+	handleGPshipbitmap((struct gp_shipbitmap_spacket *) pkt);
+	break;
+    case 5:
+	handleGPrank((struct gp_rank_spacket *) pkt);
+	break;
+    case 6:
+	handleGProyal((struct gp_royal_spacket *) pkt);
+	break;
+    case 7:
+	handleGPteamplanet((struct gp_teamplanet_spacket *) pkt);
+	break;
+    default:
+	fprintf(stderr, "Gameparams packet subtype %d not yet implemented\n",
+		pkt->subtype);
+    }*/
 }
-
-#endif /* INCLUDE_SCAN */
+#endif /* PARADISE*/
 
 /* UDP stuff */
 void
@@ -3698,8 +4143,7 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct planet_loc_spacket *) packet)->y),
 		   ((struct planet_loc_spacket *) packet)->name );
 	 break;
-#ifdef INCLUDE_SCAN
-       /* NOTE: not implemented */
+#ifdef PARADISE
        case SP_SCAN         :                  /* ATM: results of player *
 						* * scan */
 	 LineToConsole("\nS->C SP_SCAN\t");
@@ -4200,8 +4644,7 @@ void print_opacket(char *packet, int size)
 	  LineToConsole(",");
 	}
       break;
-#ifdef INCLUDE_SCAN
-      /* NOTE: not implemented. */
+#ifdef PARADISE
     case CP_SCAN         :                    /* ATM: request for player * 
 					       * 
 					       * * scan */
