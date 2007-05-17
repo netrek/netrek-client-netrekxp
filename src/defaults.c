@@ -23,6 +23,26 @@
 
 #define DEFAULTSHIP NUM_TYPES
 
+#ifdef PARADISE
+struct shipdef shipdefaults[NUM_TYPES + 1] = {
+    {"sc", NULL, NULL, NULL, NULL},
+    {"dd", NULL, NULL, NULL, NULL},
+    {"ca", NULL, NULL, NULL, NULL},
+    {"bb", NULL, NULL, NULL, NULL},
+    {"as", NULL, NULL, NULL, NULL},
+    {"sb", NULL, NULL, NULL, NULL},
+    {"ga", NULL, NULL, NULL, NULL},
+    {"js", NULL, NULL, NULL, NULL},
+    {"fl", NULL, NULL, NULL, NULL},
+    {"wb", NULL, NULL, NULL, NULL},
+    {"cl", NULL, NULL, NULL, NULL},
+    {"cv", NULL, NULL, NULL, NULL},
+    {"ut", NULL, NULL, NULL, NULL},
+    {"pt", NULL, NULL, NULL, NULL},
+    {"pu", NULL, NULL, NULL, NULL},
+    {"default", NULL, NULL, NULL, NULL}
+};
+#else
 struct shipdef shipdefaults[NUM_TYPES + 1] = {
     {"sc", NULL, NULL, NULL, NULL},
     {"dd", NULL, NULL, NULL, NULL},
@@ -34,6 +54,7 @@ struct shipdef shipdefaults[NUM_TYPES + 1] = {
     {"att", NULL, NULL, NULL, NULL},
     {"default", NULL, NULL, NULL, NULL}
 };
+#endif
 
 int myshiptype = DEFAULTSHIP;
 struct shipdef *myshipdef = &shipdefaults[DEFAULTSHIP];

@@ -9,6 +9,8 @@
 #include "copyright.h"
 
 #ifdef PARADISE
+#define GRIDSIZE 33333
+
 /* defs for updatePlayer [BDyess] */
 #define NO_UPDATE	0
 #define SMALL_UPDATE	1	/* update non-blk_bozo players */
@@ -110,7 +112,11 @@
                                 /* At this range a player can be
                                    seen while visible (uncloaked) */
 
+#ifdef PARADISE
+#define MAXSECTORS 20
+#else
 #define MAXSECTORS 10           /* Max # of star sectors */
+#endif
 #define MAXSTARS 100            /* Max # of stars in a sector */
 
 /* 6 minutes is maximum for autoquit -- anything more causes problems in the

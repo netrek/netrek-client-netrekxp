@@ -38,6 +38,9 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 #endif
 static int planet_frame = 0;
+#ifdef PARADISE
+static int star_frame = 0;
+#endif
 static int star_updates = 0;
 static int last_speed = 0;
 static int streaks_on = 0;
@@ -129,10 +132,10 @@ initStars()
     if (TWINSIDE == 0)
         return;
 
-    imax = 5 * STARSIDE / TWINSIDE + 1;
+    imax = 10 * STARSIDE / TWINSIDE + 1;
     if (imax > MAXSECTORS)
         imax = MAXSECTORS;
-    jmax = 5 * STARSIDE / TWINSIDE + 1;
+    jmax = 10 * STARSIDE / TWINSIDE + 1;
     if (jmax > MAXSECTORS)
         jmax = MAXSECTORS;
     kmax = 16 * TWINSIDE / STARSIDE * TWINSIDE / STARSIDE;
@@ -545,7 +548,29 @@ DrawPlanets (void)
 
         dx = dx / scaleFactor + TWINSIDE / 2;
         dy = dy / scaleFactor + TWINSIDE / 2;
-        
+
+#ifdef PARADISE
+        if (PL_TYPE(*l) == PLSTAR)
+        {
+            int j = star_frame * 10 / server_ups;
+            if ((j >= STAR_VIEWS - 1) || (j < 0))
+            {
+                j = 0;
+                star_frame = 0;
+            }
+            W_WriteScaleBitmap (dx - (BMP_STAR_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_STAR_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_STAR_WIDTH * SCALE / scaleFactor,
+                                BMP_STAR_HEIGHT * SCALE / scaleFactor,
+                                BMP_STAR_WIDTH,
+                                BMP_STAR_HEIGHT,
+                                0,
+                                star_bitmap[j],
+                                planetColor (l),
+                                w);
+        }
+        else
+#endif    
         if (planetBitmap == 3)
         {
             W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
@@ -553,8 +578,8 @@ DrawPlanets (void)
                                 BMP_PLANET_WIDTH * SCALE / scaleFactor,
                                 BMP_PLANET_HEIGHT * SCALE / scaleFactor,
                                 BMP_CPLANET_WIDTH,
-			        BMP_CPLANET_HEIGHT,
-			        0,
+                                BMP_CPLANET_HEIGHT,
+                                0,
                                 planetBitmapC (l),
                                 planetColor (l),
                                 w);
@@ -573,7 +598,7 @@ DrawPlanets (void)
                                 BMP_PLANET_WIDTH * SCALE / scaleFactor,
                                 BMP_PLANET_HEIGHT * SCALE / scaleFactor,
                                 BMP_PLANET_WIDTH,
-			        BMP_PLANET_HEIGHT,
+                                BMP_PLANET_HEIGHT,
                                 0,
                                 getPlanetBitmap (l),
                                 planetColor (l),
@@ -614,6 +639,9 @@ DrawPlanets (void)
         /* Allow army display if player/observer is orbitting a planet, or alternatively
            if observer is locked onto a planet, or is show_army_count feature packet is on */
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
+#ifdef PARADISE
+         && (PL_TYPE(*l) != PLSTAR)
+#endif
          && (F_show_army_count || 
            ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
           || ((me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
@@ -669,6 +697,9 @@ DrawPlanets (void)
         clearcount++;
     }
     planet_frame++;
+#ifdef PARADISE
+    star_frame++;
+#endif
 }
 
 
@@ -719,6 +750,7 @@ DrawShips (void)
     int dx, dy, px, py, wx, wy, tx, ty, lx, ly;
     int new_dx, new_dy;
     int startx, starty, endx, endy;
+    int type;
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
     W_Icon (*ship_bitsHR);
@@ -1021,6 +1053,49 @@ DrawShips (void)
                 }
             }
             
+            type = j->p_ship.s_type;
+#ifdef PARADISE
+            // We missing paradise bitmaps?
+            if (noParadiseBitmaps)
+                type = CRUISER;
+            // If it's a paradise ship, we only have 1 bitmap set
+            // so let's use it, rotating bitmaps realtime.
+            if (type >= PARADISE_SHIP_OFFSET)
+            {
+            	int pos;
+
+            	switch (j->p_team)
+                {
+                case FED:
+                    pos = 0;
+                    break;
+                case ROM:
+                    pos = 4;
+                    break;
+                case KLI:
+                    pos = 2;
+                    break;
+                case ORI:
+                    pos = 3;
+                    break;
+                default: // Ind 
+                    pos = 1;
+                    break;
+                }
+                W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
+                                    dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor,
+                                    j->p_ship.s_width * SCALE / scaleFactor,
+                                    j->p_ship.s_height * SCALE / scaleFactor,
+                                    BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT,
+                                    (360 * j->p_dir/255),
+                                    paradise_ships[type - PARADISE_SHIP_OFFSET][pos],
+                                    playerColor (j),
+                                    w);
+            }
+            else
+            {
+#endif
             if (colorClient != 4)
             {
                 W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
@@ -1033,8 +1108,8 @@ DrawShips (void)
                                     // pointing up position.  If not, find the correct bitmap in
                                     // the ship rosette and set angle to 0.
                                     fullBitmapRotation ? (360 * j->p_dir/255) : 0,
-                                    fullBitmapRotation ? ship_bits[j->p_ship.s_type][0] :
-                                                         ship_bits[j->p_ship.s_type][rosette (j->p_dir)],
+                                    fullBitmapRotation ? ship_bits[type][0] :
+                                                         ship_bits[type][rosette (j->p_dir)],
                                     playerColor (j),
                                     w);
             }
@@ -1047,10 +1122,13 @@ DrawShips (void)
                                       BMP_SHIP_WIDTH_HR,
                                       BMP_SHIP_HEIGHT_HR,
                                       (360 * j->p_dir/255), // Converted to angle
-                                      ship_bitsHR[j->p_ship.s_type],
+                                      ship_bitsHR[type],
                                       playerColor (j),
                                       w);
             }
+#ifdef PARADISE
+            }
+#endif
 
             /* If the ship is not yet fully cloaked, draw the cloak icon on top
                of the ship icon */
@@ -1601,12 +1679,19 @@ DrawShips (void)
                     }
                     else
                     {
+#ifdef PARADISE
+                        /* Paradise servers changed the ship cap protocol for
+                           phaser damage :( */
+                        tx = (int) (j->p_ship.s_phaserdamage * Cos[php->ph_dir]);
+
+                        ty = (int) (j->p_ship.s_phaserdamage * Sin[php->ph_dir]);
+#else
                         tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
                                     Cos[php->ph_dir]);
 
                         ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
                                     Sin[php->ph_dir]);
-
+#endif
                         tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
                     }

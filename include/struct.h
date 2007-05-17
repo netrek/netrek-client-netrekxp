@@ -71,6 +71,32 @@ struct status2 {		/* paradise status struct */
     int     gameup;		/* is game up */
     unsigned long clock;	/* clock for planet info timestamp */
 };
+
+struct teaminfo_s {
+    char    name[32];		/* this is not meant to limit the length of
+				   team names */
+    W_Icon  shield_logo;	/* logo that appears in the team choice
+				   window */
+    char    letter;		/* 1-letter abbreviation */
+    char    shortname[4];	/* 3-letter abbreviation */
+};
+
+/* MOTD structures */
+struct piclist {
+    int     page;
+    W_Icon  thepic;
+    int     x, y;
+    int     width, height;
+    struct piclist *next;
+};
+struct page {
+    struct list *text;
+    struct page *next;
+    struct page *prev;
+    int     first;
+    int     page;
+};
+
 #endif
 
 enum dist_type
@@ -161,6 +187,15 @@ enum dist_type
 #define PFPRESS  	0x800000        /* pressor beam activated */
 #define PFDOCKOK	0x1000000       /* docking permission */
 #define PFSEEN      0x2000000       /* seen by enemy on galactic map? */
+#ifdef PARADISE
+/* Note overlap with PFWARP/PFOBSERV and PFSNAKE/PFTWARP */
+#define PFWARPPREP	  (1<<26)	/* in warp prep [BDyess] */
+#define PFWARP		  (1<<27)	/* ship warping */
+#define PFAFTER		  (1<<28)	/* after burners on */
+#define PFWPSUSPENDED     (1<<29)	/* warp prep suspended [BDyess] */
+#define PFSNAKE	          (1<<30)	/* it's a space snake */
+#define PFBIRD	          (1<<31)	/* it's a space bird */
+#endif
 #define PFOBSERV	0x8000000       /* for observers */
 #define PFTWARP     0x40000000      /* transwarping to base */
 
@@ -183,7 +218,33 @@ enum dist_type
 #define KTORP2      0x10    /* killed by detted torps */
 #define KSHIP2      0x11    /* chain-reaction explosions */
 #define KPLASMA2    0x12    /* killed by zapped plasma */
+#ifdef PARADISE
+#define KMISSILE      0x10    /* missile, note the overlap with KTORP2! */
+#define KASTEROID     0x11    /* asteroid, note the overlap with KSHIP2! */
+#endif
 
+#ifdef PARADISE
+#define NUM_TYPES 15
+#define NUM_PSHIP_TYPES 7
+#define PARADISE_SHIP_OFFSET 7	/* To make jumpship first entry in the paradise ship bitmap array */
+#define SCOUT 0
+#define DESTROYER 1
+#define CRUISER 2
+#define BATTLESHIP 3
+#define ASSAULT 4
+#define STARBASE 5
+#define ATT 6
+#define SGALAXY 6		/* galaxy ships now supported - they look
+				   extremely similar to flagships :) [BDyess] */
+#define JUMPSHIP 7
+#define FLAGSHIP 8
+#define WARBASE 9
+#define LIGHTCRUISER 10
+#define CARRIER 11
+#define UTILITY 12
+#define PATROL 13
+#define PUCK 14
+#else
 #define NUM_TYPES 8
 #define SCOUT 0
 #define DESTROYER 1
@@ -193,6 +254,7 @@ enum dist_type
 #define STARBASE 5
 #define SGALAXY	6
 #define ATT	7
+#endif
 
 struct ship
 {
@@ -446,6 +508,94 @@ struct rsa_key
  * are in a 'known' order.  Ten planets per team, the first being the home
  * planet. */
 
+#ifdef PARADISE
+/*
+   pl_flags is an int of 32 bits:
+
+   bits 16 and 23 currently define the type of the planet.  The
+   interpretation of the other bits is dependent upon the planet
+   type.
+
+   Here is the interpretation for a planet
+   bits 0..3			unknown
+   bits 4..6			planetary facilities (REPAIR,FUEL,AGRI)
+   bit  7			redraw (archaic, recyclable?)
+   bits 8..11			old flags (archaic, recyclable?)
+   bits 12..15			paradise planetary facilities
+				(REPAIR,FUEL,AGRI,SHIPY)
+   bit  16			cosmic object type (also bit 23)
+   bits 17,18			planet atmosphere type
+   bits 19..21			planetary surface properties
+				(DILYTH,METAL,ARABLE)
+   bit  22			paradise planet flag (why?)
+   bits 23,24			cosmic object type (also bit 16)
+   bits 25..31	currently unallocated (7 bits to play with)
+
+   Asteroids are NYI but here is a draft standard:
+   bits 12,15			facilities
+				(REPAIR,FUEL,SHIPY)
+   bit  20			surface properties
+				(DILYTH,METAL)
+   other bits	currently unallocated
+
+   */
+
+/* facilities, bits 4..6 and 12..15
+   valid for planets and asteroids */
+#define PLREPAIR   ((1<<12) | (1<<4))	/* planet can repair ships */
+#define PLFUEL     ((1<<13) | (1<<5))	/* planet has fuel depot */
+#define PLAGRI     ((1<<14) | (1<<6))	/* agricultural thingies built here */
+#define PLSHIPYARD ((1<<15))	/* planet has a shipyard on it */
+#define PLORESMASK (0x7<<4)	/* mask for original resource flags */
+#define PLRESSHIFT       12	/* bit to shift right by for resources */
+#define PLRESMASK  (0xF<<PLRESSHIFT)	/* to mask off all but resource bits */
+
+#define PLREDRAW   (1<<7)	/* Player close for redraw */
+
+#define PLHOME 	   (1<< 8)	/* These 4 flags no longer are */
+#define PLCOUP     (1<< 9)	/* used in the server */
+#define PLCHEAP    (1<<10)
+#define PLCORE     (1<<11)
+
+/* cosmic object types, bits 16 and 23, and 24 */
+#define PLPLANET	0	/* object is a planet */
+#define PLSTAR     (1<<16)	/* object is a star */
+#define PLAST	   (1<<23)	/* object is an asteroid NYI */
+#define PLNEB	   ((1<<16)|(1<<23))	/* object is a nebula NYI */
+#define PLBHOLE    (1<<24)	/* object is a black hole NYI */
+#define PLPULSAR   ((1<<16)|(1<<24))	/* object is a pulsar NYI */
+#define PLUK1      ((1<<23)|(1<<24))	/* future expansion */
+#define PLWHOLE    ((1<<16)|(1<<23)|(1<<24))	/* object is a wormhole */
+#define PLTYPEMASK ((1<<16)|(1<<23)|(1<<24))	/* mask to extract object
+						   type */
+#define PL_TYPE(p) ( (p).pl_flags & PLTYPEMASK )
+
+/* Atmosphere Types, bits 17 and 18.
+   Valid for planets.
+   */
+#define PLATSHIFT	 17	/* number of right bit shifts for atmos bits */
+#define PLPOISON   (0<<PLATSHIFT)	/* poison atmosphere, no army growth */
+#define PLATYPE3   (1<<PLATSHIFT)	/* slightly toxic, very slow army
+					   growth */
+#define PLATYPE2   (2<<PLATSHIFT)	/* thin atmosphere, slow army growth */
+#define PLATYPE1   (3<<PLATSHIFT)	/* normal human atmosphere, normal
+					   growth */
+#define PLATMASK   (0x3<<PLATSHIFT)	/* to mask off everything but atmos
+					   bits */
+
+/* Surface Properties, bits 19..21
+   Valid for planets and asteroids.
+   */
+#define PLBARREN   0		/* rocky barren surface */
+#define PLSURSHIFT 	 19	/* number of bit shift to surface */
+#define PLDILYTH   (1<<(PLSURSHIFT+0))	/* dilythium deposits on the planet */
+#define PLMETAL    (1<<(PLSURSHIFT+1))	/* metal deposits on the planet */
+#define PLARABLE   (1<<(PLSURSHIFT+2))	/* planet has farmland */
+#define PLSURMASK  (0x7<<PLSURSHIFT)	/* number of surface combinations */
+
+
+#define PLPARADISE (1<<22)	/* Paradise server flag set to 1 for P server */
+#else
 /* the lower bits represent the original owning team */
 #define PLREPAIR 0x010
 #define PLFUEL 0x020
@@ -458,9 +608,7 @@ struct rsa_key
                                  * undefended team */
 #define PLCORE 0x800		/* A core world planet */
 
-#ifdef BRMH
-#define PLCLEAR 0x1000
-#endif
+#endif /* PARADISE */
 
 struct planet
 {
@@ -478,6 +626,9 @@ struct planet
                                  * support life */
     int pl_couptime;            /* Time before coup may take
                                  * place */
+#ifdef PARADISE
+    int pl_timestamp;           /* time the info was taken */
+#endif
 };
 
 #define MVALID 0x01

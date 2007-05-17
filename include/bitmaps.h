@@ -26,7 +26,9 @@
 #define BMP_KLI_SHIP 3
 #define BMP_ROM_SHIP 5
 #define BMP_IND_SHIP 2
-
+#ifdef PARADISE
+#define BMP_PSHIP 6
+#endif
 
 // Weapons
 // -------
@@ -188,3 +190,13 @@
 #define BMP_CPLANET_HEIGHT 120
 
 #define CPLANET_VIEWS 16
+
+#ifdef PARADISE
+#define BMP_STAR 12
+#define BMP_MSTAR 13
+#define BMP_STAR_WIDTH 30
+#define BMP_STAR_HEIGHT 30
+#define BMP_MSTAR_WIDTH 16
+#define BMP_MSTAR_HEIGHT 16
+#define STAR_VIEWS 5
+#endif

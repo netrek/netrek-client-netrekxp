@@ -99,7 +99,11 @@ struct feature features[] = {
     {"SHOW_CLOAKERS", &F_show_cloakers, 'S', 1, 0, 0},
     {"TURN_KEYS", &F_turn_keys, 'S', 1, 0, 0},
     {"SHOW_VISIBILITY_RANGE", &F_show_visibility_range, 'S', 1, 0, 0},
+#ifdef PARADISE
+    {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 0, 0, 0},
+#else
     {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 1, 0, 0},
+#endif
     {0, 0, 0, 0, 0, 0}
 };
 
@@ -285,6 +289,7 @@ checkFeature (struct feature_cpacket *packet)
     }
     /* Ignore these feature packets for testing purposes */
 #if DEBUG
+    motion_mouse_steering = 1;
     F_show_army_count = 1;
     F_show_other_speed = 1;
     F_show_cloakers = 1;

@@ -36,6 +36,23 @@ extern int metaHeight;   /* height of metaserver window */
 static int line = 0;
 int MaxMotdLine = 0;
 
+#ifdef PARADISE
+#define LINESPERPAGE        38
+#else
+#define LINESPERPAGE        28
+#endif
+
+#ifdef PARADISE
+#define S_MOTD 0
+#define S_SYSDEF 1
+#define S_CREDITS 2
+#define S_MAX 3
+static void showPics (W_Window win, int atline);
+int newMotdStuff = 0;	/* set to 1 when new motd packets arrive */
+static struct piclist *motdPics = NULL;
+static struct piclist **motd_buftail = &motdPics;
+#endif
+
 /* if a motd line from the server is this, the client will junk all motd *
  * data it currently has.  New data may be received */
 #define MOTDCLEARLINE  "\033\030CLEAR_MOTD\000"
@@ -54,6 +71,10 @@ void loadbitmapsT (void);
 void loadbitmapsM (void);
 void loadbitmapsG (void);
 void loadbitmapsHR (void);
+#ifdef PARADISE
+void loadbitmapsparadise (void);
+void loadparadisethings (void);
+#endif
 void loadweaponsC (void);
 void loadplanetsC (void);
 
@@ -429,8 +450,41 @@ void loadbitmapsM()
     }               
 }
 
+#ifdef PARADISE
 /******************************************************************************/
-/***  loadweaponsHR() - high quality ship bitmaps, 80x80
+/***  loadbitmapsParadise()
+/******************************************************************************/
+void loadbitmapsParadise()
+{
+    int j, k;
+                        
+    if ( access("bitmaps/shiplib/paradise_ships.bmp", R_OK) == 0 )
+    {
+        paradise_ship_bitmaps =
+            W_StoreBitmap3 ("bitmaps/shiplib/paradise_ships.bmp", BMP_SHIP_WIDTH * NUM_PSHIP_TYPES,
+                            BMP_SHIP_HEIGHT * NUMTEAMS, BMP_PSHIP, w, LR_MONOCHROME);
+    }
+    else  // No paradise ship bitmaps, doh!
+    {
+        LineToConsole("Failed to load paradise bitmaps, defaulting to cruiser for all ships.\n");
+        noParadiseBitmaps = 1;
+        return;
+    }
+
+    for (j = 0; j < NUM_PSHIP_TYPES; j++)
+    {
+        for (k = 0; k < NUMTEAMS; k++)
+        {
+            paradise_ships[j][k] =
+                W_PointBitmap2 (paradise_ship_bitmaps, j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+        }
+    }
+}
+#endif
+
+/******************************************************************************/
+/***  loadbitmapsHR() - high quality ship bitmaps, 80x80
 /******************************************************************************/
 void loadbitmapsHR()
 {
@@ -767,6 +821,29 @@ void loadmplanetsC()
                         LR_DEFAULTCOLOR);
 }
 
+#ifdef PARADISE
+/******************************************************************************/
+/***  loadparadisethings() - misc paradise art like stars, wormholes, etc
+/******************************************************************************/
+void loadparadisethings (void)
+{
+    int i;
+
+    base_star_bitmap =
+        W_StoreBitmap3 ("bitmaps/misclib/color/star.bmp", BMP_STAR_WIDTH,
+                        BMP_STAR_HEIGHT * STAR_VIEWS, BMP_STAR, w,
+                        LR_DEFAULTCOLOR);
+    for (i = 0; i < STAR_VIEWS; i++)
+        star_bitmap[i] =
+            W_PointBitmap2 (base_star_bitmap, 0, i, BMP_STAR_WIDTH, BMP_STAR_HEIGHT);
+
+    star_mbitmap =
+        W_StoreBitmap3 ("bitmaps/misclib/color/starm.bmp", BMP_MSTAR_WIDTH,
+                        BMP_MSTAR_HEIGHT, BMP_MSTAR, mapw,
+                        LR_DEFAULTCOLOR);
+}
+#endif
+
 /******************************************************************************/
 /***  handleMessageWindowKeyDown()
 /******************************************************************************/
@@ -852,7 +929,11 @@ newwin (char *hostmon,
 
     W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
 
+#ifdef PARADISE
+    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 70, MAXPLANETS + 8, baseWin, 2);
+#else
     planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, MAXPLANETS + 3, baseWin, 2);
+#endif
     W_SetWindowExposeHandler (planetw, planetlist);
 
     rankw = W_MakeTextWindow ("rank", 10, 300, 80, NUMRANKS + 9, baseWin, 2);
@@ -1149,6 +1230,9 @@ savebitmaps (void)
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);
     loadplanetsC();  // Always load new color planet bitmaps..for now
     loadmplanetsC();
+#ifdef PARADISE
+    loadparadisethings();
+#endif
     switch (planetBitmap) // Case 3 = new color, but we never use Planlib
     {
     case 1:
@@ -1196,6 +1280,9 @@ savebitmaps (void)
     			loadbitmapsM();
     			break;	
 	}
+#ifdef PARADISE
+        loadbitmapsParadise();
+#endif
     }
     else /* Load all bitmaps */
     {
@@ -1205,6 +1292,9 @@ savebitmaps (void)
     	loadbitmapsT();
     	loadbitmapsM();
     	loadbitmapsHR();
+#ifdef PARADISE
+        loadbitmapsParadise();
+#endif
     }
     
 #ifdef BEEPLITE
@@ -1535,6 +1625,13 @@ entrywindow (int *team,
                 updatedeath ();
                 if (W_IsMapped (playerw))
                     UpdatePlayerList ();
+#ifdef PARADISE
+                if (newMotdStuff)
+                {
+                    showMotdWin (w, line);
+                    //showValues(mapw);
+                }
+#endif
                 showTimeLeft (elapsed, autoQuit);
                 lasttime = time (0);
             }
@@ -1605,6 +1702,29 @@ entrywindow (int *team,
             case 'o':
                 *s_type = STARBASE;
                 break;
+#ifdef PARADISE
+            case 'j':
+                *s_type = JUMPSHIP;
+                break;
+            case 'f':
+                *s_type = FLAGSHIP;
+                break;    
+            case 'w':
+                *s_type = WARBASE;
+                break;
+            case 'l':
+                *s_type = LIGHTCRUISER;
+                break;        
+            case 'v':
+                *s_type = CARRIER;
+                break;
+            case 'u':
+                *s_type = UTILITY;
+                break;
+            case 'p':
+                *s_type = PATROL;
+                break;
+#endif
             case ' ':
                 switch (me->p_team)
                 {
@@ -1653,10 +1773,10 @@ entrywindow (int *team,
                     resetting = 1;
                     break;
                 case 'f':      /* Scroll motd forward */
-                    line = line + 28;
+                    line = line + LINESPERPAGE;
                     if (line > MaxMotdLine)
                     {
-                        line = line - 28;
+                        line = line - LINESPERPAGE;
                         break;
                     }
                     W_ClearWindow (w);
@@ -1665,13 +1785,14 @@ entrywindow (int *team,
                 case 'b':      /* Scroll motd backward */
                     if (line == 0)
                         break;
-                    line = line - 28;
+                    line = line - LINESPERPAGE;
                     if (line < 0)
                         line = 0;
                     W_ClearWindow (w);
                     showMotdWin (w, line);
                     break;
-                case 'F':      /* Scroll motd forward */
+#ifndef PARADISE	/* Paradise MOTD requires paging */
+                case 'F':      /* Scroll motd a bit forwards */
                     line = line + 4;
                     if (line > MaxMotdLine)
                     {
@@ -1681,7 +1802,7 @@ entrywindow (int *team,
                     W_ClearWindow (w);
                     showMotdWin (w, line);
                     break;
-                case 'B':      /* Scroll motd backward */
+                case 'B':      /* Scroll motd a bit backwards */
                     if (line == 0)
                         break;
                     line = line - 4;
@@ -1690,6 +1811,7 @@ entrywindow (int *team,
                     W_ClearWindow (w);
                     showMotdWin (w, line);
                     break;
+#endif
                 }
             }
             /* No break, we just fall through */
@@ -1942,18 +2064,30 @@ showMotdWin (W_Window motdwin, int atline)
     int count;
     char buf[128];
 
+#ifdef PARADISE
+    newMotdStuff = 0;		/* clear the flag */
+#endif
+
     sprintf (buf, "---  %s  ---", (char *) query_cowid ());
     length = strlen (buf);
     center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
+#ifndef PARADISE		/* no space for client header in paradise */
     W_WriteText (motdwin, center, W_Textheight, textColor,
                  buf, length, W_BoldFont);
+#endif
     sprintf (buf, CBUGS);
     length = strlen (buf);
     center = TWINSIDE / 2 - (length * W_Textwidth) / 2;
+#ifndef PARADISE		/* no space for client header in paradise */
     W_WriteText (motdwin, center, 3 * W_Textheight, textColor,
                  buf, length, W_RegularFont);
+#endif
 
+#ifdef PARADISE
+    top = 0;
+#else
     top = 10;
+#endif
 
     if (first)
     {
@@ -1977,7 +2111,8 @@ showMotdWin (W_Window motdwin, int atline)
         }
         data = data->next;
     }
-    count = 28;                 /* Magical # of lines to
+
+    count = LINESPERPAGE;       /* Magical # of lines to
                                  * display */
     for (i = top; i < 50; i++)
     {
@@ -2000,10 +2135,50 @@ showMotdWin (W_Window motdwin, int atline)
         if (count <= 0)
             break;
     }
-
+#ifdef PARADISE
+    if (motdwin == w) {
+	W_WriteText(mapw, GWINSIDE/2 - W_Textwidth * strlen(blk_refitstring) / 2, GWINSIDE - 20, textColor, blk_refitstring,
+		    strlen(blk_refitstring), W_RegularFont);
+    }
+    showPics(motdwin, atline);
+#endif
     showValues (data);
 }
 
+/******************************************************************************/
+/***  showPics()                                                              */
+/******************************************************************************/
+#ifdef PARADISE
+static void
+showPics(W_Window win, int atline)
+{
+    struct piclist *temp;
+
+    temp = motdPics;
+
+    while (temp != NULL) {
+	if (atline/LINESPERPAGE == temp->page) { /* hack for paging not working */
+	    if (temp->thepic)
+		W_WriteBitmap(temp->x, temp->y, temp->thepic, foreColor, win);
+	    else {
+		W_MakeLine(win, temp->x, temp->y,
+			   temp->x + temp->width - 1, temp->y + temp->height - 1, W_Grey);
+		W_MakeLine(win, temp->x, temp->y + temp->height - 1,
+			   temp->x + temp->width - 1, temp->y, W_Grey);
+		W_MakeLine(win, temp->x, temp->y,
+			   temp->x + temp->width - 1, temp->y, W_Grey);
+		W_MakeLine(win, temp->x, temp->y,
+			   temp->x, temp->y + temp->height - 1, W_Grey);
+		W_MakeLine(win, temp->x, temp->y + temp->height - 1,
+			   temp->x + temp->width - 1, temp->y + temp->height - 1, W_Grey);
+		W_MakeLine(win, temp->x + temp->width - 1, temp->y + temp->height - 1,
+			   temp->x + temp->width - 1, temp->y, W_Grey);
+	    }
+	}
+	temp = temp->next;
+    }
+}
+#endif
 
 /******************************************************************************/
 /***  showValues()
@@ -2028,7 +2203,11 @@ showValues (struct list *data)
 
     W_WriteText (mapw, 20, 14 * W_Textheight, textColor, msg,
                  strlen (msg), W_RegularFont);
+#ifdef PARADISE
+    for (i = 16; i < 50; i++)
+#else
     for (i = 16; i < 50; i += 2)
+#endif
     {
         if (data == NULL)
             break;
@@ -2072,6 +2251,29 @@ newMotdLine (char *line)
     static struct list **temp = &motddata;
     static int statmode = 0;    /* ATM */
 
+#ifdef PARADISE
+    /* Inlined blk_parsemotd() paradise client function */
+    if (strncmp("BLK: ", line, 5) == 0) {
+        /* See if it's a refit string.*/
+        if (strncmp(&line[5], "REFIT", 5) == 0) {
+    	    strncpy(blk_refitstring, &line[10], 79);
+    	    blk_refitstring[79] = '\0';
+        }
+        /* Check to see if it's a borgish feature being enabled. */
+        else if (strncmp(&line[5], "BORGISH ", 8) == 0) {
+    	    if (strncmp(&line[13], "FRCLOAK", 7) == 0)
+    	        blk_friendlycloak = 1;
+        }
+	return;
+    }
+    if ( strncmp("\t@@b", line, 4) == 0) // Between pages
+	return;
+    /*if (!currpage ||
+	(pagecount - 1) == currpage->page ||
+	motdlinestate == IN_SYSDEF) */
+	newMotdStuff = 1;	/* set flag for event loop */
+	first = 1;		/* check for bold again */
+#endif
     if (!statmode && !strcmp (line, STATUS_TOKEN))
         statmode = 1;
     if (!statmode)
@@ -2097,6 +2299,41 @@ newMotdLine (char *line)
     temp = &((*temp)->next);
 }
 
+#ifdef PARADISE
+/******************************************************************************/
+/***  newMotdPic()
+/******************************************************************************/
+void
+newMotdPic(int x, int y, int width, int height, char *bits, int page)
+{
+    struct piclist *tmp;
+    struct motd_pic_spacket dummy;
+
+    if ((width + 7) / 8 * height > sizeof(dummy.bits) && bits)
+    {
+        LineToConsole("MOTD picture from server is too big!  %dx%d couldn't possibly fit in the %d data bytes of the packet\n",
+                      width, height, (int) sizeof(dummy.bits));
+        return;
+    }
+ 
+    if ((currpage && page == currpage->page) || page == 0)
+    {
+	newMotdStuff = 1;	/* set flag for event loop */
+	first = 1;		/* check for bold again */
+    }
+
+    tmp = (*motd_buftail) = (struct piclist *) malloc(sizeof(struct piclist));
+    tmp->next = NULL;
+    tmp->x = x;
+    tmp->y = y - 112; /* 112 is magic number of height of the paradise header
+                         image which we do NOT have */
+    tmp->width = width;
+    tmp->height = height;
+    tmp->thepic = bits ? W_StoreBitmap(width, height, bits, w) : 0;
+    tmp->page = page;
+    motd_buftail = &(tmp->next);
+}
+#endif
 
 /******************************************************************************/
 /***  getResources()

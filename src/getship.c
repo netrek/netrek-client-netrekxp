@@ -145,6 +145,128 @@ getshipdefaults ()
     shipvals[CRUISER].s_type = CRUISER; /* cruiser: */
     shipvals[CRUISER].s_phaserfuse = 10; /* cruiser: */
     shipvals[CRUISER].s_repair = 110;   /* cruiser: */
+
+#ifdef PARADISE
+    shipvals[JUMPSHIP].s_phaserdamage = 25;
+    shipvals[JUMPSHIP].s_torpspeed = 18;
+    shipvals[JUMPSHIP].s_maxspeed = 20;
+    shipvals[JUMPSHIP].s_maxfuel = 50000;
+    shipvals[JUMPSHIP].s_maxarmies = 0;
+    shipvals[JUMPSHIP].s_maxshield = 5;
+    shipvals[JUMPSHIP].s_maxdamage = 60;
+    shipvals[JUMPSHIP].s_maxwpntemp = 1300;
+    shipvals[JUMPSHIP].s_maxegntemp = 5000;
+    shipvals[JUMPSHIP].s_type = JUMPSHIP;
+    shipvals[JUMPSHIP].s_width = 20;
+    shipvals[JUMPSHIP].s_height = 20;
+    shipvals[JUMPSHIP].s_phaserfuse = 4;
+    shipvals[JUMPSHIP].s_repair = 200;
+    
+    shipvals[FLAGSHIP].s_phaserdamage = 102;
+    shipvals[FLAGSHIP].s_torpspeed = 12;
+    shipvals[FLAGSHIP].s_maxspeed = 9;
+    shipvals[FLAGSHIP].s_maxfuel = 12500;
+    shipvals[FLAGSHIP].s_maxarmies = 6;
+    shipvals[FLAGSHIP].s_maxshield = 115;
+    shipvals[FLAGSHIP].s_maxdamage = 115;
+    shipvals[FLAGSHIP].s_maxwpntemp = 1000;
+    shipvals[FLAGSHIP].s_maxegntemp = 1500;
+    shipvals[FLAGSHIP].s_type = FLAGSHIP;
+    shipvals[FLAGSHIP].s_width = 20;
+    shipvals[FLAGSHIP].s_height = 20;
+    shipvals[FLAGSHIP].s_phaserfuse = 10;
+    shipvals[FLAGSHIP].s_repair = 118;
+
+    shipvals[WARBASE].s_phaserdamage = 125;
+    shipvals[WARBASE].s_torpspeed = 15;
+    shipvals[WARBASE].s_maxspeed = 3;
+    shipvals[WARBASE].s_maxfuel = 50000;
+    shipvals[WARBASE].s_maxarmies = 0;
+    shipvals[WARBASE].s_maxshield = 250;
+    shipvals[WARBASE].s_maxdamage = 500;
+    shipvals[WARBASE].s_maxwpntemp = 1500;
+    shipvals[WARBASE].s_maxegntemp = 1000;
+    shipvals[WARBASE].s_type = WARBASE;
+    shipvals[WARBASE].s_width = 20;
+    shipvals[WARBASE].s_height = 20;
+    shipvals[WARBASE].s_phaserfuse = 5;
+    shipvals[WARBASE].s_repair = 170;
+
+    shipvals[LIGHTCRUISER].s_phaserdamage = 90;
+    shipvals[LIGHTCRUISER].s_torpspeed = 13;
+    shipvals[LIGHTCRUISER].s_maxspeed = 10;
+    shipvals[LIGHTCRUISER].s_maxfuel = 8500;
+    shipvals[LIGHTCRUISER].s_maxarmies = 3;
+    shipvals[LIGHTCRUISER].s_maxshield = 95;
+    shipvals[LIGHTCRUISER].s_maxdamage = 90;
+    shipvals[LIGHTCRUISER].s_maxwpntemp = 1000;
+    shipvals[LIGHTCRUISER].s_maxegntemp = 1500;
+    shipvals[LIGHTCRUISER].s_type = LIGHTCRUISER;
+    shipvals[LIGHTCRUISER].s_width = 20;
+    shipvals[LIGHTCRUISER].s_height = 20;
+    shipvals[LIGHTCRUISER].s_phaserfuse = 10;
+    shipvals[LIGHTCRUISER].s_repair = 80;
+    
+    shipvals[CARRIER].s_phaserdamage = 95;
+    shipvals[CARRIER].s_torpspeed = 13;
+    shipvals[CARRIER].s_maxspeed = 9;
+    shipvals[CARRIER].s_maxfuel = 15000;
+    shipvals[CARRIER].s_maxarmies = 3;
+    shipvals[CARRIER].s_maxshield = 120;
+    shipvals[CARRIER].s_maxdamage = 150;
+    shipvals[CARRIER].s_maxwpntemp = 1000;
+    shipvals[CARRIER].s_maxegntemp = 1500;
+    shipvals[CARRIER].s_type = CARRIER;
+    shipvals[CARRIER].s_width = 20;
+    shipvals[CARRIER].s_height = 20;
+    shipvals[CARRIER].s_phaserfuse = 6;
+    shipvals[CARRIER].s_repair = 105;
+    
+    shipvals[UTILITY].s_phaserdamage = 80;
+    shipvals[UTILITY].s_torpspeed = 15;
+    shipvals[UTILITY].s_maxspeed = 7;
+    shipvals[UTILITY].s_maxfuel = 16000;
+    shipvals[UTILITY].s_maxarmies = 12;
+    shipvals[UTILITY].s_maxshield = 120;
+    shipvals[UTILITY].s_maxdamage = 220;
+    shipvals[UTILITY].s_maxwpntemp = 1000;
+    shipvals[UTILITY].s_maxegntemp = 1800;
+    shipvals[UTILITY].s_type = UTILITY;
+    shipvals[UTILITY].s_width = 20;
+    shipvals[UTILITY].s_height = 20;
+    shipvals[UTILITY].s_phaserfuse = 8;
+    shipvals[UTILITY].s_repair = 120;
+
+    shipvals[PATROL].s_phaserdamage = 50;
+    shipvals[PATROL].s_torpspeed = 15;
+    shipvals[PATROL].s_maxspeed = 13;
+    shipvals[PATROL].s_maxfuel = 4000;
+    shipvals[PATROL].s_maxarmies = 1;
+    shipvals[PATROL].s_maxshield = 50;
+    shipvals[PATROL].s_maxdamage = 40;
+    shipvals[PATROL].s_maxwpntemp = 1000;
+    shipvals[PATROL].s_maxegntemp = 1500;
+    shipvals[PATROL].s_type = PATROL;
+    shipvals[PATROL].s_width = 20;
+    shipvals[PATROL].s_height = 20;
+    shipvals[PATROL].s_phaserfuse = 8;
+    shipvals[PATROL].s_repair = 50;
+
+    shipvals[PUCK].s_phaserdamage = 75;
+    shipvals[PUCK].s_torpspeed = 16;
+    shipvals[PUCK].s_maxspeed = 12;
+    shipvals[PUCK].s_maxfuel = 5000;
+    shipvals[PUCK].s_maxarmies = 2;
+    shipvals[PUCK].s_maxshield = 75;
+    shipvals[PUCK].s_maxdamage = 75;
+    shipvals[PUCK].s_maxwpntemp = 1000;
+    shipvals[PUCK].s_maxegntemp = 1000;
+    shipvals[PUCK].s_type = PUCK;
+    shipvals[PUCK].s_width = 20;
+    shipvals[PUCK].s_height = 20;
+    shipvals[PUCK].s_phaserfuse = 10;
+    shipvals[PUCK].s_repair = 80;
+#endif
 }
 
 /******************************************************************************/

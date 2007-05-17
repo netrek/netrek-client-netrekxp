@@ -628,6 +628,13 @@ void W_WriteTriangle (W_Window window,
                       int s,
                       int t,
                       W_Color color);
+void W_WriteRectangle (W_Window window,
+                       int x,
+                       int y,
+                       int width,
+                       int height,
+                       int dashed,
+                       W_Color color);
 void W_WriteText (W_Window window,
                   int x,
                   int y,
@@ -816,6 +823,9 @@ void showMotdWin (W_Window motdwin, int atline);
 struct list;
 void showValues (struct list *data);
 void newMotdLine (char *line);
+#ifdef PARADISE
+void newMotdPic (int x, int y, int width, int height, char *bits, int page);
+#endif
 void getResources (char *prog);
 void redrawTeam (W_Window win,
                  int teamNo,

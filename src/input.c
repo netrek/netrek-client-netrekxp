@@ -1292,6 +1292,43 @@ keyaction (W_Event * data)
             localflags &= ~(PFREFIT);
             return;
             break;
+#ifdef PARADISE
+        case 'j':
+            sendRefitReq (JUMPSHIP);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'f':
+            sendRefitReq (FLAGSHIP);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'w':
+            sendRefitReq (WARBASE);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'l':
+            sendRefitReq (LIGHTCRUISER);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'v':
+            sendRefitReq (CARRIER);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'u':
+            sendRefitReq (UTILITY);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+        case 'p':
+            sendRefitReq (PATROL);
+            localflags &= ~(PFREFIT);
+            return;
+            break;
+#endif
         default:
             localflags &= ~(PFREFIT);
             return;

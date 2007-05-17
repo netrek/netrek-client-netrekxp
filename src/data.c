@@ -273,6 +273,29 @@ int macrocnt = 0;
 
 extern double Sin[], Cos[];
 
+#ifdef PARADISE
+int paradise = 0;			/* is the server a paradise server */
+int noParadiseBitmaps = 0;
+int gwidth = GWIDTH;			/* galaxy width, adjusted for zoom [BDyess] */
+int offsetx = 0;
+int offsety = 0;			/* offsets when zooming [BDyess] */
+int nplayers = 36;
+int nshiptypes = 15;
+int ntorps = 8;
+int npthingies = 20;
+int ngthingies = 0;
+int nplasmas = 1;
+int nphasers = 1;
+int nplanets = MAXPLANETS;	/* get this info dyn. from Pserver */
+struct teaminfo_s *teaminfo = NULL;
+int number_of_teams = 4;
+/* MOTD data */
+struct page *currpage = NULL;
+struct page *pmotddata = NULL;
+char blk_refitstring[80] = "s=scout, d=destroyer, c=cruiser, b=battleship, a=assault, o=starbase";
+int blk_friendlycloak = 0;	/* Show color of cloakers who are friendly. */
+#endif
+
 W_Icon fedteam, romteam, kliteam, oriteam;
 W_Icon stipple, clockpic, clockhandpic, genopic, genopic2, icon;
 
@@ -317,6 +340,14 @@ W_Icon base_hull;
 W_Icon hull[BMP_HULL_FRAMES];
 int vary_hull = 0;
 
+// Paradise bitmaps
+#ifdef PARADISE
+W_Icon base_star_bitmap;
+W_Icon star_bitmap[STAR_VIEWS];
+W_Icon star_mbitmap;
+W_Icon paradise_ship_bitmaps;
+W_Icon paradise_ships[NUM_PSHIP_TYPES][NUMTEAMS];
+#endif
 // Ships
 W_Icon ship_bitmaps[5];
 W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS], kli_bitmaps[NUM_TYPES][SHIP_VIEWS],

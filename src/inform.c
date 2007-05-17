@@ -32,9 +32,15 @@
  * There is a different sized window for each type player/planet * and we take
  * care to keep it from extending beyond the main * window boundaries. */
 
+#ifdef PARADISE
+static char *my_classes[NUM_TYPES] = {
+    "SC", "DD", "CA", "BB", "AS", "SB", "GA", "JS", "FL", "WB", "CL", "CV", "UT", "PT", "PU"
+};
+#else
 static char *my_classes[NUM_TYPES] = {
     "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT"
 };
+#endif
 
 /******************************************************************************/
 /***  inform()                                                              ***/

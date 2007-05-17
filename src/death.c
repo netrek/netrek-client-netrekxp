@@ -122,6 +122,14 @@ death (void)
                  shipnos[me->p_whodead]);
         break;
     case KPLANET:
+#ifdef PARADISE
+    	/* different message if killed by a star [BDyess] */
+        if(planets[me->p_whodead].pl_flags && PLSTAR)
+            sprintf (deathmessage,
+                     "You were burned to a crisp by %s [star]",
+                     planets[me->p_whodead].pl_name);
+	else
+#endif
         sprintf (deathmessage,
                  "You were killed by planetary fire from %s (%c).",
                  planets[me->p_whodead].pl_name,
@@ -217,12 +225,30 @@ death (void)
     case KBADBIN:
         strcpy (deathmessage, "Your netrek executable didn't verify correctly.");
         break;
+#ifdef PARADISE
+    /* Unfortunately the numbering of whydead messages is inconsistent between
+       paradise and Vanilla */
+    case KMISSILE:
+        sprintf (deathmessage, "You were killed by a missile from %s (%c%c).",
+                 players[me->p_whodead].p_name,
+                 teamlet[players[me->p_whodead].p_team],
+                 shipnos[me->p_whodead]);
+        break;
+#else
     case KTORP2:
         strcpy (deathmessage, "You were killed by detonated torpedo.");
         break;
+#endif
+#ifdef PARADISE
+    case KASTEROID:
+        /* asteroid death [BDyess] */
+        sprintf(deathmessage, "You were smashed to bits by an asteroid.");
+        break;
+#else
     case KSHIP2:
         strcpy (deathmessage, "You were killed by chain reaction explosion.");
         break;
+#endif
     case KPLASMA2:
         strcpy (deathmessage, "You were killed by zapped plasma.");
         break;

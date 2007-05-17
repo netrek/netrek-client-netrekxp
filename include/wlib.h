@@ -210,6 +210,13 @@ extern void W_WriteTriangle (W_Window,
                              int,
                              int,
                              W_Color);
+extern void W_WriteRectangle (W_Window,
+                              int,
+                              int,
+                              int,
+                              int,
+                              int,
+                              W_Color);
 extern void W_CacheClearArea (W_Window,
                               int,
                               int,

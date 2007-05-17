@@ -945,7 +945,7 @@ getvpsize (char *bufptr)
 #ifdef PARADISE
     case SP_GPARAM:
 	switch ((unsigned char) bufptr[1]) {
-/*	case 0:
+	case 0:
 	    size = sizeof(struct gp_sizes_spacket);
 	    break;
 	case 1:
@@ -968,11 +968,12 @@ getvpsize (char *bufptr)
 	    break;
 	case 7:
 	    size = sizeof(struct gp_teamplanet_spacket);
-	    break;*/
+	    break;
 	default:
 	    size = 0;
 	    break;
 	}
+	break;
     case SP_PARADISE_EXT1:
 	switch ((unsigned char) bufptr[1]) {
 	case SP_PE1_MISSING_BITMAP:
@@ -985,6 +986,7 @@ getvpsize (char *bufptr)
 	    size = 0;
 	    break;
 	}
+	break;
 #endif
     case SP_S_MESSAGE:
         size = ((unsigned char) bufptr[4]);     /* IMPORTANT  Changed */
@@ -1912,6 +1914,10 @@ void
 handleLogin (struct login_spacket *packet)
 {
     loginAccept = packet->accept;
+#ifdef PARADISE
+    if ((packet->pad2 == 69) && (packet->pad3 == 42))
+	paradise = 1;
+#endif
     if (packet->accept)
     {
         /* no longer needed .. we have it in xtrekrc bcopy(packet->keymap,
@@ -2526,7 +2532,7 @@ handlePlanetLoc (struct planet_loc_spacket *packet)
     pl->pl_y = ntohl (packet->y);
     strcpy (pl->pl_name, packet->name);
     pl->pl_namelen = strlen (packet->name);
-    pl->pl_flags |= (PLREDRAW | PLCLEAR);
+    pl->pl_flags |= PLREDRAW;
     reinitPlanets = 1;
 
 #ifdef ROTATERACE
@@ -2719,7 +2725,7 @@ void handleMotdPic (struct motd_pic_spacket *packet)
     height = ntohs(packet->height);
     page = ntohs(packet->page);
 
-    //newMotdPic(x, y, width, height, (char *) packet->bits, page);
+    newMotdPic(x, y, width, height, (char *) packet->bits, page);
 }
 
 void handleStats2 (struct stats_spacket2 *packet)
@@ -2805,7 +2811,7 @@ void handlePlanet2 (struct planet_spacket2 *packet)
         return;
     }
 #endif
-/*
+
     if(first_planet_packet)
     {
       first_planet_packet = 0;
@@ -2832,7 +2838,7 @@ void handlePlanet2 (struct planet_spacket2 *packet)
     if (infomapped && infotype == PLANETTYPE &&
 	((struct planet *) infothing)->pl_no == packet->pnum)
 	infoupdate = 1;
-*/
+
 }
 
 void handleTerrainInfo2 (struct terrain_info_packet2 *pkt)
@@ -3092,38 +3098,294 @@ void handleScan (struct scan_spacket *packet)
     }
 }
 
+void handleGPsizes (struct gp_sizes_spacket *pkt)
+{
+/*
+    free_ranks();
+    free_royal();
+
+    free_teams();
+    free_torps();
+    free_phasers();
+    free_plasmas();
+    free_thingies();
+
+    nplayers = pkt->nplayers;
+    number_of_teams = pkt->nteams;
+    // shiptypes
+    nranks2 = pkt->nranks;
+    nroyals = pkt->nroyal;
+    nphasers = pkt->nphasers;
+    ntorps = pkt->ntorps;
+    nplasmas = pkt->nplasmas;
+    npthingies = pkt->nthingies;
+    ngthingies = pkt->gthingies;
+
+    // gwidth
+    // flags
+
+    load_generic_teams();
+
+    reinit_ranks();
+    reinit_royal();
+
+    resize_players();
+    initialize_torps();
+    initialize_phasers();
+    initialize_plasmas();
+    initialize_thingies();
+*/
+}
+
+void handleGPteam (struct gp_team_spacket *pkt)
+{
+/*
+    struct teaminfo_s *currteam;
+
+    if ((int) pkt->index >= number_of_teams) {
+	fprintf(stderr, "Team #%d %s is out of range (0..%d)\n", pkt->index,
+		pkt->teamname, number_of_teams);
+	return;
+    }
+    currteam = &teaminfo[pkt->index];
+
+    currteam->letter = pkt->letter;
+
+    strncpy(currteam->shortname, pkt->shortname, 3);
+    currteam->shortname[3] = 0;
+
+    strncpy(currteam->name, pkt->teamname, sizeof(currteam->name) - 1);
+    currteam->name[sizeof(currteam->name) - 1] = 0;
+*/
+}
+
+void handleGPteamlogo (struct gp_teamlogo_spacket *pkt)
+{
+/*
+    static char buf[13 * 99];	// 99x99
+    static int curr_height = 0;
+    static int lwidth, lheight;
+    static int teamindex;
+    int     pwidth;
+
+    if ((unsigned) pkt->teamindex >= number_of_teams) {
+	fprintf(stderr, "Team #%d is out of range (0..%d)\n", pkt->teamindex,
+		number_of_teams);
+	return;
+    }
+    if (pkt->y != curr_height) {
+	fprintf(stderr, "Bad gp_teamlogo packet sequence y(%d) != curr_height(%d)\n",
+		pkt->y, curr_height);
+	curr_height = 0;
+	return;
+    }
+    if (curr_height) {
+	if (lwidth != pkt->logowidth || lheight != pkt->logoheight ||
+	    teamindex != pkt->teamindex) {
+	    fprintf(stderr, "gp_teamlogo packet sequence error, %d!=%d || %d!=%d || %d!=%d\n",
+		    lwidth, pkt->logowidth, lheight, pkt->logoheight,
+		    teamindex, pkt->teamindex);
+	    curr_height = 0;
+	    return;
+	}
+    } else {
+	teamindex = pkt->teamindex;
+	lwidth = pkt->logowidth;
+	lheight = pkt->logoheight;
+	if (lwidth > 99 || lheight > 99) {
+	    fprintf(stderr, "logo too big (%dx%d), rejecting\n", lwidth, lheight);
+	    curr_height = 0;
+	    return;
+	}
+    }
+    pwidth = (lwidth - 1) / 8 + 1;
+    memcpy(buf + pwidth * curr_height, pkt->data, 
+           (unsigned int)(pwidth * pkt->thisheight));
+    curr_height += pkt->thisheight;
+
+    if (curr_height >= lheight) {
+	W_FreeImage(teaminfo[teamindex].shield_logo);
+	teaminfo[teamindex].shield_logo = 
+	                                W_BitmapToImage(lwidth, lheight, buf);
+	curr_height = 0;
+    }
+*/
+}
+
+void handleGPshipshape (struct gp_shipshape_spacket *pkt)
+{
+/*
+    if (pkt->race < -1 || pkt->race >= number_of_teams) {
+	fprintf(stderr, "race #%d out of range (-1..%d)\n", pkt->race,
+		number_of_teams - 1);
+	return;
+    }
+    if ( (int) pkt->shipno >= nshiptypes) {
+	fprintf(stderr, "ship class #%d out of range (0..%d)\n", pkt->shipno,
+		nshiptypes - 1);
+	return;
+    }
+#ifdef FIXME
+    replace_shipshape(pkt->race, pkt->shipno, pkt->nviews,
+		      pkt->width, pkt->height);
+#endif
+*/
+}
+
+void handleGPshipbitmap (struct gp_shipbitmap_spacket *pkt)
+{
+/*
+    if (pkt->race < -1 || pkt->race >= number_of_teams) {
+	fprintf(stderr, "race #%d out of range (-1..%d)\n", pkt->race,
+		number_of_teams - 1);
+	return;
+    }
+    if ( (int) pkt->shipno >= nshiptypes) {
+	fprintf(stderr, "ship class #%d out of range (0..%d)\n", pkt->shipno,
+		nshiptypes - 1);
+	return;
+    }
+#ifdef FIXME
+    replace_ship_bitmap(pkt->race, pkt->shipno, pkt->thisview, pkt->bitmapdata);
+#endif
+*/
+}
+
+void handleGPrank (struct gp_rank_spacket *pkt)
+{
+/*
+    struct rank2 *curr;
+    if (pkt->rankn >= nranks2) {
+	fprintf(stderr, "rank #%d %s out of range (0..%d)\n", pkt->rankn,
+		pkt->name, nranks2 - 1);
+	return;
+    }
+    curr = &ranks2[pkt->rankn];
+    free(curr->name);
+
+    curr->genocides = htonl(pkt->genocides);
+    curr->di = htonl(pkt->milliDI) / 1000.0;
+    curr->battle = htonl(pkt->millibattle) / 1000.0;
+    curr->strategy = htonl(pkt->millistrat) / 1000.0;
+    curr->specship = htonl(pkt->millispec) / 1000.0;
+    curr->name = strdup(pkt->name);
+*/
+}
+
+void handleGProyal (struct gp_royal_spacket *pkt)
+{
+/*
+    if ((int) pkt->rankn >= nroyals) {
+	fprintf(stderr, "Royalty #%d %s out of range (0..%d)\n", pkt->rankn,
+		pkt->name, nroyals - 1);
+	return;
+    }
+    free(royal[pkt->rankn].name);
+    royal[pkt->rankn].name = strdup(pkt->name);
+*/
+}
+
+#ifdef FIXME
+static unsigned char mplanet_bits[] = {
+    0xe0, 0x03, 0x18, 0x0c, 0x04, 0x10, 0x02, 0x20, 0x02, 0x20, 0x01, 0x40,
+    0x01, 0x40, 0x01, 0x40, 0x01, 0x40, 0x01, 0x40, 0x02, 0x20, 0x02, 0x20,
+0x04, 0x10, 0x18, 0x0c, 0xe0, 0x03, 0x00, 0x00};
+static unsigned char planet_bits[] = {
+    0x00, 0xf8, 0x03, 0x00, 0x00, 0x07, 0x1c, 0x00, 0xc0, 0x00, 0x60, 0x00,
+    0x20, 0x00, 0x80, 0x00, 0x10, 0x00, 0x00, 0x01, 0x08, 0x00, 0x00, 0x02,
+    0x04, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 0x08,
+    0x02, 0x00, 0x00, 0x08, 0x02, 0x00, 0x00, 0x08, 0x01, 0x00, 0x00, 0x10,
+    0x01, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x10,
+    0x01, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x10,
+    0x02, 0x00, 0x00, 0x08, 0x02, 0x00, 0x00, 0x08, 0x02, 0x00, 0x00, 0x08,
+    0x04, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x04, 0x08, 0x00, 0x00, 0x02,
+    0x10, 0x00, 0x00, 0x01, 0x20, 0x00, 0x80, 0x00, 0xc0, 0x00, 0x60, 0x00,
+0x00, 0x07, 0x1c, 0x00, 0x00, 0xf8, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00};
+#endif 
+
+void handleGPteamplanet (struct gp_teamplanet_spacket *pkt)
+{
+/*
+#ifdef FIXME
+    {
+#define	TACTICALSIZE	sizeof(pkt->tactical)
+	unsigned char tactical[TACTICALSIZE];
+	int     i;
+	int     race = pkt->teamn;
+
+	if (race < -1 || race >= number_of_teams) {
+	    fprintf(stderr, "race #%d out of range (-1..%d)\n", race,
+		    number_of_teams - 1);
+	    return;
+	}
+	for (i = 0; i < TACTICALSIZE; i++) {
+	    tactical[i] = (pkt->tactical[i] & pkt->tacticalM[i]) |
+		(planet_bits[i] & ~pkt->tacticalM[i]);
+	}
+
+	W_FreeImage(bplanets[race + 1]);
+	bplanets[race + 1] = W_BitmapToImage(30, 30, tactical);
+
+#undef TACTICALSIZE
+    }
+
+    {
+#define	GALACTICSIZE	sizeof(pkt->galactic)
+	unsigned char galactic[GALACTICSIZE];
+	int     i;
+	int     race = pkt->teamn;
+
+	if (race < -1 || race >= number_of_teams) {
+	    fprintf(stderr, "race #%d out of range (-1..%d)\n", race,
+		    number_of_teams - 1);
+	    return;
+	}
+	for (i = 0; i < GALACTICSIZE; i++) {
+	    galactic[i] = (pkt->galactic[i] & pkt->galacticM[i]) |
+		(mplanet_bits[i] & ~pkt->galacticM[i]);
+	}
+
+	W_FreeImage(mbplanets[race + 1]);
+	mbplanets[race + 1] = W_BitmapToImage(16, 16, galactic);
+
+#undef GALACTICSIZE
+    }
+#endif
+*/
+}
+
 void handleGameparams (struct gameparam_spacket *packet)
 {
-    /*switch (pkt->subtype) {
+    switch (packet->subtype) {
     case 0:
-	handleGPsizes((struct gp_sizes_spacket *) pkt);
+	handleGPsizes ((struct gp_sizes_spacket *) packet);
 	break;
     case 1:
-	handleGPteam((struct gp_team_spacket *) pkt);
+	handleGPteam ((struct gp_team_spacket *) packet);
 	break;
     case 2:
-	handleGPteamlogo((struct gp_teamlogo_spacket *) pkt);
+	handleGPteamlogo ((struct gp_teamlogo_spacket *) packet);
 	break;
     case 3:
-	handleGPshipshape((struct gp_shipshape_spacket *) pkt);
+	handleGPshipshape ((struct gp_shipshape_spacket *) packet);
 	break;
     case 4:
-	handleGPshipbitmap((struct gp_shipbitmap_spacket *) pkt);
+	handleGPshipbitmap ((struct gp_shipbitmap_spacket *) packet);
 	break;
     case 5:
-	handleGPrank((struct gp_rank_spacket *) pkt);
+	handleGPrank ((struct gp_rank_spacket *) packet);
 	break;
     case 6:
-	handleGProyal((struct gp_royal_spacket *) pkt);
+	handleGProyal ((struct gp_royal_spacket *) packet);
 	break;
     case 7:
-	handleGPteamplanet((struct gp_teamplanet_spacket *) pkt);
+	handleGPteamplanet ((struct gp_teamplanet_spacket *) packet);
 	break;
     default:
-	fprintf(stderr, "Gameparams packet subtype %d not yet implemented\n",
-		pkt->subtype);
-    }*/
+	LineToConsole("Gameparams packet subtype %d not yet implemented\n", packet->subtype);
+    }
 }
+
 #endif /* PARADISE*/
 
 /* UDP stuff */

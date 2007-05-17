@@ -323,11 +323,11 @@ struct Icon
 };
 
 #ifndef SCALE_BITMAPS
-#define BIGBITMAP_WIDTH 240
-#define BIGBITMAP_HEIGHT 240
+#define BIGBITMAP_WIDTH 500
+#define BIGBITMAP_HEIGHT 500
 #else
-static int BIGBITMAP_WIDTH = 240;
-static int BIGBITMAP_HEIGHT = 240;
+static int BIGBITMAP_WIDTH = 500;
+static int BIGBITMAP_HEIGHT = 500;
 #endif
 
 struct BitmapList
@@ -3607,6 +3607,50 @@ W_WriteTriangle (W_Window window,
         ReleaseDC (win->hwnd, hdc);
 }
 
+//Draw a rectangle
+void
+W_WriteRectangle (W_Window window,
+                 int x,
+                 int y,
+                 int width,
+                 int height,
+                 int dashed,
+                 W_Color color)
+{
+    POINT points[4];
+    DBHEADER_VOID;
+
+    x += win->border;
+    y += win->border;
+
+    points[0].x = x;
+    points[0].y = y;
+    points[1].x = x + width;
+    points[1].y = y;
+    points[2].x = x + width;
+    points[2].y = y + height;
+    points[3].x = x;
+    points[3].y = y + height;
+    
+    if (NetrekPalette)
+    {
+        SelectPalette (hdc, NetrekPalette, FALSE);
+        RealizePalette (hdc);
+    }
+    if (dashed)
+    {
+        SetBkColor (hdc, colortable[BLACK].rgb);
+        SelectObject (hdc, colortable[color].dashedpen);
+    }
+    else
+        SelectObject (hdc, colortable[color].pen);
+    SelectObject (hdc, GetStockObject (NULL_BRUSH));
+
+    Polygon (hdc, points, 4);
+
+    if (!sdb || !doubleBuffering || !ingame)
+        ReleaseDC (win->hwnd, hdc);
+}
 
 //Put some text in a window. This is a straight ExtTextOut call if it's a
 //graphics window, a ExtTextOut call with mapped coordinates if it's a

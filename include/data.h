@@ -277,6 +277,29 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
+#ifdef PARADISE
+extern int paradise;		/* is the server a paradise server? */
+extern int noParadiseBitmaps;
+extern int gwidth;		/* galaxy width, adjusted for zoom [BDyess] */
+extern int offsetx;
+extern int offsety;		/* offsets when zooming [BDyess] */
+extern int nplayers;
+extern int nshiptypes;
+extern int ntorps;
+extern int npthingies;
+extern int ngthingies;
+extern int nplasmas;
+extern int nphasers;
+extern int nplanets;
+extern struct teaminfo_s *teaminfo;
+extern int number_of_teams;
+/* MOTD data */
+extern struct page *currpage;
+extern struct page *pmotddata;
+extern char blk_refitstring[80];
+extern int blk_friendlycloak;
+#endif
+
 extern W_Icon fedteam, romteam, kliteam, oriteam;
 extern W_Icon stipple, clockpic, clockhandpic, genopic, genopic2;
 
@@ -320,6 +343,15 @@ extern W_Icon hull[BMP_HULL_FRAMES];
 extern int vary_hull;
 
 extern W_Icon tractbits, pressbits;
+
+//Paradise bitmaps
+#ifdef PARADISE
+extern W_Icon base_star_bitmap;
+extern W_Icon star_bitmap[STAR_VIEWS];
+extern W_Icon star_mbitmap;
+extern W_Icon paradise_ship_bitmaps;
+extern W_Icon paradise_ships[NUM_PSHIP_TYPES][NUMTEAMS];
+#endif
 
 //Ships
 extern W_Icon ship_bitmaps[5];

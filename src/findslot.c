@@ -33,6 +33,10 @@
 #define WAITTITLE 15            /* height of title for wait
                                  * window */
 
+#ifdef PARADISE
+extern int newMotdStuff;	/* from newwin.c */
+#endif
+
 /******************************************************************************/
 /***  mapWaitWin()                                                          ***/
 /******************************************************************************/
@@ -157,6 +161,10 @@ findslot (void)
             LineToConsole ("Damn, We've been ghostbusted!\n");
             terminate (0);
         }
+#ifdef PARADISE
+	if (newMotdStuff)
+	    showMotdWin(motdWin, WaitMotdLine);
+#endif
         while (W_EventsPending ())
         {
             W_NextEvent (&event);

@@ -1292,7 +1292,154 @@ struct gameparam_spacket {
     char   type;
     char   subtype;		/* this packet is not real */
     /* generic game parameter packet */
-    int pad;
+    short pad;
 };
 
+struct gp_sizes_spacket {
+    char    type;
+    char    subtype;		/* =0 */
+
+    char   nplayers;
+    char   nteams;		/* max of 8 */
+
+    char   nshiptypes;
+    char   nranks;		/* number of ranks */
+    char   nroyal;		/* number of royalties */
+    char   nphasers;
+
+    char   ntorps;
+    char   nplasmas;
+    char   nthingies;		/* per-player */
+    char   gthingies;		/* auxiliary thingies */
+
+    unsigned int  gwidth;		/* galaxy width */
+    /* 16 bytes */
+    unsigned int  flags;		/* some game parameter flags */
+#define	GP_WRAPVERT	(1<<0)
+#define	GP_WRAPHORIZ	(1<<1)
+#define GP_WRAPALL	(GP_WRAPVERT|GP_WRAPHORIZ)
+
+    /*
+       The following bytes are room for growth. The size of this packet is
+       unimportant because it only gets sent once.  hopefully we've got
+       plenty of room.
+    */
+    int   ext1;		/* maybe more flags? */
+    int   ext2;
+    int   ext3;
+    /* 32 bytes */
+
+    int   ext4;
+    int   ext5;
+    int   ext6;
+    int   ext7;
+
+    int   ext8;
+    int   ext9;
+    int   ext10;
+    int   ext11;		/* 16 ints, 64 bytes */
+};
+
+struct gp_team_spacket {
+    char    type;
+    char    subtype;		/* =1 */
+
+    char   index;		/* team index */
+    char    letter;		/* team letter 'F' */
+
+    char    shortname[3];	/* non-null-terminated 3-letter abbrev 'FED' */
+    char   pad;
+    /* 8 bytes */
+    char    teamname[56];	/* padding to 64 byte packet */
+};
+
+struct gp_teamlogo_spacket {
+    /*
+       This packet contains several adjacent rows of a team's logo bitmap
+       Data is in raw XBM format (scanline-padded to 8 bits). Maximum bitmap
+       size is 99x99, which takes 1287 (99x13) bytes.
+    */
+    char    type;
+    char    subtype;		/* =2 */
+
+    char    logowidth;		/* <= 99 */
+    char    logoheight;		/* <= 99 */
+
+    char    y;			/* y coord of the start of this packets info */
+    char    thisheight;		/* the height of this packet's info */
+    char    teamindex;		/* which team's logo this is */
+
+    char    data[768 - 7];	/* pad packet to 768 bytes. */
+};
+
+struct gp_shipshape_spacket {
+    char    type;
+    char    subtype;		/* =3 */
+
+    char   shipno;
+    char    race;		/* -1 is independent */
+    char   nviews;		/* typically 16 */
+
+    char   width, height;
+    char   pad1;
+};
+
+struct gp_shipbitmap_spacket {
+    char    type;
+    char    subtype;		/* =4 */
+
+    char   shipno;
+    char    race;		/* -1 is independent */
+    char   thisview;		/* 0..nviews-1 */
+
+    char   bitmapdata[999];
+};
+
+struct gp_rank_spacket {
+    char    type;
+    char    subtype;		/* =5 */
+
+    char    rankn;		/* rank number */
+
+    char    name[-3 + 64 - 20];	/* name of the rank */
+
+    int   genocides;
+    int   milliDI;		/* DI*1000 */
+    int   millibattle;	/* battle*1000 */
+    int   millistrat;		/* strategy*1000 */
+    int   millispec;		/* special ships*1000 */
+};
+
+struct gp_royal_spacket {
+    char    type;
+    char    subtype;		/* =6 */
+
+    char   rankn;		/* rank number */
+
+    char    name[-3 + 64];	/* name of the rank */
+};
+
+struct gp_teamplanet_spacket {
+    char    type;
+    char    subtype;		/* =7 */
+
+    char    teamn;		/* 0..7 */
+    char   pad1;
+
+    int   ext1;		/* extensions? */
+
+    /*
+       Bitmaps of the team logo and masks.  The bitmap of the planet will be
+       constructed with (mask ? logo : planet), applied bitwise. This
+       calculation is equivalent to (logo&mask)|(planet&~mask)
+    */
+
+    /* bitmap 30x30, X bitmap format (scanline padded to 8 bits) */
+    char   tactical[120];
+    char   tacticalM[120];
+
+    /* bitmap 16x16, X bitmap format (scanline padded to 8 bits) */
+    char   galactic[32];
+    char   galacticM[32];
+};
 #endif

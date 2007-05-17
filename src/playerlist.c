@@ -106,8 +106,13 @@ char *plist2Layout = "";
 static int plistPos[MAXPLAYER];
 static int plistWidth = 0;
 static int plist2Width = 0;
+#ifdef PARADISE
+static char *my_classes[NUM_TYPES] = {
+    "SC", "DD", "CA", "BB", "AS", "SB", "GA", "JS", "FL", "WB", "CL", "CV", "UT", "PT", "PU" };
+#else
 static char *my_classes[NUM_TYPES] =
     { "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT" };
+#endif
 
 /* Local Functions */
 

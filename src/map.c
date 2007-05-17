@@ -38,6 +38,13 @@
 #define DETAIL 100
 #define SIZE (GWIDTH/DETAIL)
 
+#ifdef PARADISE
+int drawgrid = 1; /* goes to netrekrc eventually */
+int blk_zoom = 0; /* goes to netrekrc eventually */
+int sectorNums = 1; /* goes to netrekrc eventually */
+#define DRAWGRID 4
+#endif
+
 
 /*
  *  Local Variables:
@@ -577,12 +584,24 @@ DrawPlanets ()
                              dy - (BMP_MPLANET_HEIGHT / 2 + 4),
                              BMP_MPLANET_WIDTH + 8,
                              BMP_MPLANET_HEIGHT + 8);
-            l->pl_flags &= ~PLCLEAR;
         }
 
 
         /* Draw the new planet */
-        
+#ifdef PARADISE
+        if (PL_TYPE(*l) == PLSTAR)
+            W_WriteScaleBitmap (dx - (BMP_MSTAR_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_MSTAR_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_MSTAR_WIDTH * SCALE / scaleFactor,
+                                BMP_MSTAR_HEIGHT * SCALE / scaleFactor,
+                                BMP_MSTAR_WIDTH,
+                                BMP_MSTAR_HEIGHT,
+                                0,
+                                star_mbitmap,
+                                planetColor (l),
+                                mapw);
+        else
+#endif 
 #ifdef BEEPLITE
         if (useLite && emph_planet_seq_n[l->pl_no] > 0)
 	{
@@ -625,8 +644,6 @@ DrawPlanets ()
             }
 	    emph_planet_seq_n[l->pl_no] -= 1;
 	    l->pl_flags |= PLREDRAW;		 /* Leave redraw on until * * 
-						  * done highlighting */
-	    l->pl_flags |= PLCLEAR;		 /* Leave redraw on until * * 
 						  * done highlighting */
 	}
         else
@@ -691,7 +708,13 @@ DrawPlanets ()
                         l->pl_name, 3, planetFont (l));
         }
 
-        if (F_show_army_count && (showArmy == 2 || showArmy == 3) && (l->pl_info & me->p_team))
+        if (F_show_army_count
+        && (showArmy == 2 || showArmy == 3)
+        && (l->pl_info & me->p_team)
+#ifdef PARADISE
+        && (PL_TYPE(*l) != PLSTAR)
+#endif
+        )
         {    
             char armbuf[4];
             int armbuflen;
@@ -855,6 +878,11 @@ map (void)
     int viewdist;
     int view = TWINSIDE * scaleFactor / 2;
     int mvx, mvy;
+#ifdef PARADISE
+    static int osx = 0, osy = 0;	/* old square */
+    static int scalex, scaley;
+    static int grid_fuse;
+#endif
 
     if (doubleBuffering)
         W_Win2Mem (mapSDB);
@@ -867,6 +895,10 @@ map (void)
     viewdist = (TWINSIDE / 2 * scaleFactor) / (GWIDTH / GWINSIDE);
     dx = (me->p_x) / (GWIDTH / GWINSIDE);
     dy = (me->p_y) / (GWIDTH / GWINSIDE);
+
+#ifdef PARADISE
+    grid_fuse++;	/* we only draw the grids every DRAWGRID interval */
+#endif
 
     if (redrawall)
     {
@@ -897,8 +929,6 @@ map (void)
 
         for (l = planets + MAXPLANETS - 1; l >= planets; --l)
             l->pl_flags |= PLREDRAW;
-
-        redrawall = 0;
     }
     else
     {
@@ -971,6 +1001,109 @@ map (void)
         }
     }
 
+#ifdef PARADISE
+    /* draw grid on galactic */
+    if ((redrawall || (grid_fuse % DRAWGRID) == 0)  && (drawgrid)) {
+	int     x, y, width, h, grid;
+	char    numbuf[1];
+	int 	blk_gwidth = GWIDTH; /* hack */
+	grid = GRIDSIZE * GWINSIDE / GWIDTH;
+	for (i = 1; i <= 6 / (blk_zoom ? 2 : 1); i++) {
+	    /* looks nasty but we only have to do it 3 times if blk_zoom */
+
+	    /* horizontal line */
+	    x = 0;
+	    y = i * grid;
+	    width = GWINSIDE;
+	    numbuf[0] = '0' + (char) i;
+	    if (blk_zoom) {
+		/* we might have to clip */
+		dy = i * GRIDSIZE + offsety;
+		if (dy >= 0 && dy <= blk_gwidth + 2 * GRIDSIZE) {
+		    if (offsetx < 0) {
+			x = grid;
+			width = 2 * x;
+		    } else if (offsetx + 3 * GRIDSIZE > blk_gwidth) {
+			width = 2 * grid;
+		    }
+		    W_MakeDashedLine(mapw, x, y, x + width, y, W_Grey);
+		}
+		if (sectorNums) {
+		    numbuf[0] = '0' + (char) (i + offsety / GRIDSIZE);
+		    if ((numbuf[0] == '0') || (numbuf[0] == '7'))
+			numbuf[0] = ' ';
+		    if (i == 1)	/* so numbers dont overwrite in 1st box */
+			W_WriteText(mapw, x + 2, y - grid + 11, W_Grey, numbuf, 1,
+				    W_RegularFont);
+		    else
+			W_WriteText(mapw, x + 2, y - grid + 2, W_Grey, numbuf, 1,
+				    W_RegularFont);
+		}
+	    } else {
+		W_MakeDashedLine(mapw, x, y, x + width, y, W_Grey);
+		if (sectorNums) {
+		    W_WriteText(mapw, x + 2, y - grid + 2, W_Grey, numbuf, 1, W_RegularFont);
+		}
+	    }
+	    /* vertical line */
+	    x = i * grid;
+	    y = 0;
+	    h = GWINSIDE;
+
+	    if (blk_zoom) {
+		/* we might have to clip */
+		dx = i * GRIDSIZE + offsetx;
+		if (dx >= 0 && dx <= blk_gwidth + 2 * GRIDSIZE) {
+		    if (offsety < 0) {
+			y = grid;
+			h = 2 * y;
+		    } else if (offsety + 3 * GRIDSIZE > blk_gwidth) {
+			h = 2 * grid;
+		    }
+		    W_MakeDashedLine(mapw, x, y, x, y + h, W_Grey);
+		}
+		if (sectorNums) {
+		    numbuf[0] = '0' + (char) (i + offsetx / GRIDSIZE);
+		    if ((numbuf[0] == '0') || (numbuf[0] == '7'))
+			numbuf[0] = ' ';
+		    if (i == 1)
+			W_WriteText(mapw, x - grid + 11, y + 2, W_Grey, numbuf, 1,
+				    W_RegularFont);
+		    else
+			W_WriteText(mapw, x - grid + 2, y + 2, W_Grey, numbuf, 1,
+				    W_RegularFont);
+		}
+	    } else {
+		W_MakeDashedLine(mapw, x, y, x, y + h, W_Grey);
+		if (sectorNums) {
+		    W_WriteText(mapw, x - grid + 2, y + 2, W_Grey, numbuf, 1,
+				W_RegularFont);
+		}
+	    }
+	}
+
+	scalex = ((me->p_x - offsetx) / GRIDSIZE) * GRIDSIZE;
+	scaley = ((me->p_y - offsety) / GRIDSIZE) * GRIDSIZE;
+	if (!redrawall && ((osx != scalex) || (osy != scaley))) {
+
+	    /* clear old sector */
+	    x = osx * GWINSIDE / GWIDTH;
+	    y = osy * GWINSIDE / GWIDTH;
+	    width = h = grid;
+
+	    W_WriteRectangle (mapw, x + 2, y + 2, width - 4, h - 4, 0, backColor);
+
+	    osx = scalex;
+	    osy = scaley;
+	}
+	/* draw our current sector */
+	x = scalex * GWINSIDE / GWIDTH;
+	width = h = grid;
+	y = scaley * GWINSIDE / GWIDTH;
+
+	W_WriteRectangle (mapw, x + 2, y + 2, width - 4, h - 4, 1, yColor);
+    }
+#endif
 
     /* Draw Planets */
 
@@ -1211,10 +1344,19 @@ map (void)
                         }
                         else
                         {
+#ifdef PARADISE
+                            /* Paradise servers changed the ship cap protocol for
+                               phaser damage :( */
+                            tx = (int) (j->p_x + j->p_ship.s_phaserdamage
+                                * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
+                            ty = (int) (j->p_y + j->p_ship.s_phaserdamage
+                                * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
+#else
                             tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
                             ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
+#endif
                         }
                         break;
                     case PHHIT2:
@@ -1444,6 +1586,8 @@ map (void)
                             me->p_y + i * (l->pl_y - me->p_y)/10);
         }
     }
+
+   redrawall = 0;
 
     if (doubleBuffering)
         W_Mem2Win (mapSDB);
