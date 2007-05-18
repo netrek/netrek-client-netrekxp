@@ -45,10 +45,7 @@ void
 planetlist (void)
 {
 #ifdef PARADISE
-    if (paradise)
-        planet_list_paradise();
-    else
-    {
+    planet_list_paradise();
 #else
     register int i;
     char buf[BUFSIZ];
@@ -62,9 +59,6 @@ planetlist (void)
     for (i = 0; i < MAXPLANETS; i++)
         strcpy(priorplanets[i], "");
     updatePlanetw ();
-#endif
-#ifdef PARADISE
-    }
 #endif
 }
 
@@ -128,11 +122,7 @@ static void planet_list_paradise (void)
 	    for (team_pnum = 0; team_pnum < team_pcount[i]; team_pnum++, k++) {
 
 		j = team_p[i][team_pnum];
-		/* (nplanets+13)/2 is the height of window; from newwin.c */
-		if (k == 0 || k >= ((nplanets + 13) / 2)) {
-		    if (k != 0)
-		        continue;
-			//wind = planetw2;
+		if (k == 0) {
 		    sprintf(buf, "Planet name      sctr own armies RESOURCES  SURFC  ATMOS    VISIT    TIME");
 		    W_WriteText(wind, 2, 1, textColor, buf, strlen(buf),
 		    		W_RegularFont);
@@ -150,14 +140,9 @@ static void planet_list_paradise (void)
     } else {			/* do the original alpa only sort planet list */
 
 	for (i = 0, j = &planets[i]; i < nplanets; i++, j++, k++) {
-	    if (i == 0 || i == nplanets / 2) {
+	    if (i == 0) {
 
 		sprintf(buf, "Planet name      sctr own armies RESOURCES  SURFC  ATMOS    VISIT    TIME");
-
-		if (i != 0) {
-		    continue;
-		    //wind = planetw2;
-		}
 		W_WriteText(wind, 2, 1, textColor, buf, strlen(buf), 
 		  	    W_RegularFont);
 		k = 2;

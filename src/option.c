@@ -784,6 +784,9 @@ optionaction (W_Event * data)
                 for (i = 0; i < PLANET_VIEWS; i++)
                     free (bplanets[i]);
 
+#ifdef PARADISE
+                Planlib = "bitmaps/paradise/paradise_plan.bmp";
+#else
                 switch (planetBitmap)
                 {
                 case 1:
@@ -796,6 +799,7 @@ optionaction (W_Event * data)
                     Planlib = "bitmaps/planlibm/plan.bmp";
                     break;
                 }
+#endif
                 base_planets = W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
                                                 BMP_PLANET000, w, LR_MONOCHROME);
   
@@ -816,7 +820,10 @@ optionaction (W_Event * data)
     
                 for (i = 0; i < MPLANET_VIEWS; i++)
                     free (bmplanets[i]);
-    
+
+#ifdef PARADISE
+                MPlanlib = "bitmaps/paradise/paradise_mplan.bmp";
+#else
                 switch (planetBitmapGalaxy)
                 {
                 case 1:
@@ -829,6 +836,7 @@ optionaction (W_Event * data)
                     MPlanlib = "bitmaps/planlibm/mplan.bmp";
                     break;
                 }
+#endif
                 base_mplanets = W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
                                                 BMP_MPLANET000, mapw, LR_MONOCHROME);
     

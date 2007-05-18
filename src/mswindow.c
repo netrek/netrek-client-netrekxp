@@ -578,6 +578,35 @@ W_Cleanup (void)
     free (genopic);
     free (genopic2);
 
+#ifdef PARADISE
+    free (drone_bitmap);
+    free (dronec_bitmap);
+    free (mdronec_bitmap);
+    free (base_drone_explosion_bitmap);
+    for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
+        free (drone_explosion_bitmap[i]);
+    free (base_dronec_explosion_bitmap);
+    for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
+        free (dronec_explosion_bitmap[i]);
+    free (gear_bitmap);
+    free (mgear_bitmap);
+    free (base_star_bitmap);
+    for (i = 0; i < STAR_VIEWS; i++)
+        free (star_bitmap[i]);
+    free (star_mbitmap);
+    free (paradise_ship_bitmaps);
+    free (paradise_cship_self_bitmaps);
+    free (paradise_cship_bitmaps);
+    for (j = 0; j < NUM_PSHIP_TYPES; j++)
+    {
+        for (i = 0; i < NUMTEAMS; i++)
+        {
+            free (paradise_ships[j][i]);
+            free (paradise_cships_self[j][i]);
+            free (paradise_cships[j][i]);
+        }
+    }
+#endif
     //Remove default objects
     while (defaults)
     {

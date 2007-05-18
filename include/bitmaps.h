@@ -150,8 +150,13 @@
 #define BMP_MPLANET_WIDTH 16
 #define BMP_MPLANET_HEIGHT 16
 
+#ifdef PARADISE
+#define PLANET_VIEWS 13
+#define MPLANET_VIEWS 13
+#else
 #define PLANET_VIEWS 9
 #define MPLANET_VIEWS 9
+#endif
 
 // Color planets
 
@@ -192,8 +197,21 @@
 #define CPLANET_VIEWS 16
 
 #ifdef PARADISE
+#define BMP_DRONE 9
+#define BMP_DRONEC 10
+#define BMP_MDRONEC 11
+#define BMP_DRONE_WIDTH 6
+#define BMP_DRONE_HEIGHT 6
+#define BMP_DRONECLOUD 12
+#define BMP_DRONECLOUDC 13
+#define BMP_DRONEDET_FRAMES 5
+#define BMP_DRONEDET_WIDTH 13
+#define BMP_DRONEDET_HEIGHT 13
 #define BMP_STAR 12
 #define BMP_MSTAR 13
+#define BMP_GEARBMP 14
+#define BMP_GEAR_WIDTH 10
+#define BMP_GEAR_HEIGHT 10
 #define BMP_STAR_WIDTH 30
 #define BMP_STAR_HEIGHT 30
 #define BMP_MSTAR_WIDTH 16

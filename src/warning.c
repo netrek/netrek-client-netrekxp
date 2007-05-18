@@ -145,4 +145,15 @@ warning (char *text)
         if (doPhaser)
             W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext, warncount, 0);
     }
+#ifdef PARADISE
+    if (strncmp(text, "Missile away", 12) == 0) {
+	/* missile total kludge.  No value until one is shot :( */
+	me->p_totmissiles = atoi(text + 13);
+    } else if (strcmp(text, "Prepping for warp jump") == 0) {
+	/* keep track of when in warp prep */
+	me->p_flags |= PFWARPPREP;
+    } else if (strcmp(text, "Warp drive aborted") == 0) {
+	me->p_flags &= ~PFWARPPREP;
+    }
+#endif
 }

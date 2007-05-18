@@ -276,7 +276,7 @@ key_handler_type key_handlers[MAXKEY] = {
     emptyKey,                   /* 31 */
     Key200,                     /* ^h */
     emptyKey,                   /* 31 */
-    emptyKey,                   /* 31 */
+    Key202,                     /* ^j */
     emptyKey,                   /* 31 */
     Key204,                     /* ^l */
     Key205,                     /* ^m */
@@ -2282,7 +2282,11 @@ Key36 (void)
 void
 Key37 (void)
 {
+#ifdef PARADISE
+    set_speed(me->p_ship.s_maxspeed);
+#else
     set_speed (99);             /* Max speed... */
+#endif
 }
 
 /******************************************************************************/
@@ -2391,7 +2395,11 @@ Key45 (void)
 void
 Key46 (void)
 {
+#ifdef PARADISE
+    set_speed(98);  /* afterburners */
+#else
     emptyKey();
+#endif
 }
 
 /******************************************************************************/
@@ -2729,7 +2737,11 @@ Key73 (W_Event * data)
 void
 Key74 (W_Event * data)
 {
+#ifdef PARADISE
+    set_speed(99); /* warp! */
+#else
     emptyKey ();
+#endif
 }
 
 /******************************************************************************/
@@ -3868,4 +3880,21 @@ void
 Key131 (W_Event * data)
 {
     emergency (other2, data);
+}
+
+/******************************************************************************/
+/***  Key202()                                                              ***/
+/******************************************************************************/
+void
+Key202 (W_Event * data)
+{
+#ifdef PARADISE
+    /* suspend warp toggle [BDyess] */
+    if (me->p_flags & PFWPSUSPENDED)
+        set_speed(96); /* unsuspend */
+    else
+        set_speed(97); /* suspend */
+#else
+    emptyKey ();
+#endif
 }

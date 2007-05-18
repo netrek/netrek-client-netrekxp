@@ -458,18 +458,15 @@ void loadbitmapsParadise()
 {
     int j, k;
                         
-    if ( access("bitmaps/shiplib/paradise_ships.bmp", R_OK) == 0 )
-    {
-        paradise_ship_bitmaps =
-            W_StoreBitmap3 ("bitmaps/shiplib/paradise_ships.bmp", BMP_SHIP_WIDTH * NUM_PSHIP_TYPES,
-                            BMP_SHIP_HEIGHT * NUMTEAMS, BMP_PSHIP, w, LR_MONOCHROME);
-    }
-    else  // No paradise ship bitmaps, doh!
-    {
-        LineToConsole("Failed to load paradise bitmaps, defaulting to cruiser for all ships.\n");
-        noParadiseBitmaps = 1;
-        return;
-    }
+    paradise_ship_bitmaps =
+        W_StoreBitmap3 ("bitmaps/paradise/paradise_ships.bmp", BMP_SHIP_WIDTH * NUM_PSHIP_TYPES,
+                        BMP_SHIP_HEIGHT * NUMTEAMS, BMP_PSHIP, w, LR_MONOCHROME);
+    paradise_cship_self_bitmaps =
+        W_StoreBitmap3 ("bitmaps/paradise/paradise_cships_self.bmp", BMP_SHIP_WIDTH * NUM_PSHIP_TYPES,
+                        BMP_SHIP_HEIGHT * NUMTEAMS, BMP_PSHIP, w, LR_DEFAULTCOLOR);
+    paradise_cship_bitmaps =
+        W_StoreBitmap3 ("bitmaps/paradise/paradise_cships.bmp", BMP_SHIP_WIDTH * NUM_PSHIP_TYPES,
+                        BMP_SHIP_HEIGHT * NUMTEAMS, BMP_PSHIP, w, LR_DEFAULTCOLOR);
 
     for (j = 0; j < NUM_PSHIP_TYPES; j++)
     {
@@ -478,8 +475,61 @@ void loadbitmapsParadise()
             paradise_ships[j][k] =
                 W_PointBitmap2 (paradise_ship_bitmaps, j, k, BMP_SHIP_WIDTH,
                                     BMP_SHIP_HEIGHT);
+            paradise_cships_self[j][k] =
+                W_PointBitmap2 (paradise_cship_self_bitmaps, j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
+            paradise_cships[j][k] =
+                W_PointBitmap2 (paradise_cship_bitmaps, j, k, BMP_SHIP_WIDTH,
+                                    BMP_SHIP_HEIGHT);
         }
     }
+}
+
+/******************************************************************************/
+/***  loadparadisethings() - misc paradise art like stars, wormholes, etc
+/******************************************************************************/
+void loadparadisethings (void)
+{
+    int i;
+
+    base_star_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/star.bmp", BMP_STAR_WIDTH,
+                        BMP_STAR_HEIGHT * STAR_VIEWS, BMP_STAR, w,
+                        LR_DEFAULTCOLOR);
+    for (i = 0; i < STAR_VIEWS; i++)
+        star_bitmap[i] =
+            W_PointBitmap2 (base_star_bitmap, 0, i, BMP_STAR_WIDTH, BMP_STAR_HEIGHT);
+
+    star_mbitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/starm.bmp", BMP_MSTAR_WIDTH,
+                        BMP_MSTAR_HEIGHT, BMP_MSTAR, mapw,
+                        LR_DEFAULTCOLOR);
+
+    drone_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/drone.bmp", BMP_DRONE_WIDTH,
+                        BMP_DRONE_HEIGHT, BMP_DRONE, w, LR_MONOCHROME);
+    dronec_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/droneC.bmp", BMP_DRONE_WIDTH,
+                        BMP_DRONE_HEIGHT, BMP_DRONEC, w, LR_DEFAULTCOLOR);
+    mdronec_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/mdroneC.bmp", BMP_DRONE_WIDTH,
+                        BMP_DRONE_HEIGHT, BMP_MDRONEC, w, LR_DEFAULTCOLOR);
+
+    base_drone_explosion_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/dronecloud.bmp", BMP_DRONEDET_WIDTH,
+                        BMP_DRONEDET_HEIGHT * BMP_DRONEDET_FRAMES, BMP_DRONECLOUD, w,
+                        LR_MONOCHROME);
+    for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
+        drone_explosion_bitmap[i] =
+            W_PointBitmap2 (base_drone_explosion_bitmap, 0, i, BMP_DRONEDET_WIDTH, BMP_DRONEDET_HEIGHT);
+
+    base_dronec_explosion_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/dronecloudC.bmp", BMP_DRONEDET_WIDTH,
+                        BMP_DRONEDET_HEIGHT * BMP_DRONEDET_FRAMES, BMP_DRONECLOUD, w,
+                        LR_DEFAULTCOLOR);
+    for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
+        dronec_explosion_bitmap[i] =
+            W_PointBitmap2 (base_dronec_explosion_bitmap, 0, i, BMP_DRONEDET_WIDTH, BMP_DRONEDET_HEIGHT);
 }
 #endif
 
@@ -723,6 +773,12 @@ void loadplanetsC()
         W_StoreBitmap3 ("bitmaps/planlibm/color/wrench.bmp",
                         BMP_WRENCH_WIDTH, BMP_WRENCH_HEIGHT, BMP_WRENCHBMP, w,
                         LR_DEFAULTCOLOR);
+#ifdef PARADISE
+    gear_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/gear.bmp",
+                        BMP_GEAR_WIDTH, BMP_GEAR_HEIGHT, BMP_GEARBMP, w,
+                        LR_DEFAULTCOLOR);
+#endif
     fuel_bitmap =
         W_StoreBitmap3 ("bitmaps/planlibm/color/fuel.bmp",
                         BMP_FUEL_WIDTH, BMP_FUEL_HEIGHT, BMP_FUELBMP, w,
@@ -815,34 +871,17 @@ void loadmplanetsC()
         W_StoreBitmap3 ("bitmaps/planlibm/color/wrench.bmp",
                         BMP_WRENCH_WIDTH, BMP_WRENCH_HEIGHT, BMP_WRENCHBMP, mapw,
                         LR_DEFAULTCOLOR);
+#ifdef PARADISE
+   mgear_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/gear.bmp",
+                        BMP_GEAR_WIDTH, BMP_GEAR_HEIGHT, BMP_GEARBMP, w,
+                        LR_DEFAULTCOLOR);
+#endif
     mfuel_bitmap =
         W_StoreBitmap3 ("bitmaps/planlibm/color/fuel.bmp",
                         BMP_FUEL_WIDTH, BMP_FUEL_HEIGHT, BMP_FUELBMP, mapw,
                         LR_DEFAULTCOLOR);
 }
-
-#ifdef PARADISE
-/******************************************************************************/
-/***  loadparadisethings() - misc paradise art like stars, wormholes, etc
-/******************************************************************************/
-void loadparadisethings (void)
-{
-    int i;
-
-    base_star_bitmap =
-        W_StoreBitmap3 ("bitmaps/misclib/color/star.bmp", BMP_STAR_WIDTH,
-                        BMP_STAR_HEIGHT * STAR_VIEWS, BMP_STAR, w,
-                        LR_DEFAULTCOLOR);
-    for (i = 0; i < STAR_VIEWS; i++)
-        star_bitmap[i] =
-            W_PointBitmap2 (base_star_bitmap, 0, i, BMP_STAR_WIDTH, BMP_STAR_HEIGHT);
-
-    star_mbitmap =
-        W_StoreBitmap3 ("bitmaps/misclib/color/starm.bmp", BMP_MSTAR_WIDTH,
-                        BMP_MSTAR_HEIGHT, BMP_MSTAR, mapw,
-                        LR_DEFAULTCOLOR);
-}
-#endif
 
 /******************************************************************************/
 /***  handleMessageWindowKeyDown()
@@ -955,7 +994,11 @@ newwin (char *hostmon,
 #endif
         helpWin = W_MakeTextWindow ("help", 20,
                           TWINSIDE + 2 * THICKBORDER + STATSIZE + 2 * BORDER - 5,
+#ifdef PARADISE
+                          160, 23, NULL, BORDER);
+#else
                           160, 21, NULL, BORDER);
+#endif
 
 #ifdef RECORDGAME
     if (playback)
@@ -1233,6 +1276,10 @@ savebitmaps (void)
 #ifdef PARADISE
     loadparadisethings();
 #endif
+#ifdef PARADISE
+    Planlib = "bitmaps/paradise/paradise_plan.bmp";
+    MPlanlib = "bitmaps/paradise/paradise_mplan.bmp";
+#else
     switch (planetBitmap) // Case 3 = new color, but we never use Planlib
     {
     case 1:
@@ -1257,7 +1304,8 @@ savebitmaps (void)
         MPlanlib = "bitmaps/planlibm/mplan.bmp";
         break;
     }
-    
+#endif
+ 
     if (!dynamicBitmaps) /* Only load needed bitmaps */
     {
     	switch (colorClient)
@@ -1380,12 +1428,12 @@ savebitmaps (void)
     mplasmatorp =
         W_StoreBitmap3 ("bitmaps/weaplibm/mono/mplasma.bmp", BMP_MPLASMA_WIDTH,
                         BMP_MPLASMA_HEIGHT, BMP_MPLASMA, w, LR_MONOCHROME);
-
+                        
     base_planets =
-        W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
+        W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * PLANET_VIEWS,
                         BMP_PLANET000, w, LR_MONOCHROME);
     base_mplanets =
-        W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
+        W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * PLANET_VIEWS,
                         BMP_MPLANET000, mapw, LR_MONOCHROME);
 
     for (k = 0; k < PLANET_VIEWS; k++)

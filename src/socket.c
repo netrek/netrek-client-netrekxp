@@ -1915,8 +1915,17 @@ handleLogin (struct login_spacket *packet)
 {
     loginAccept = packet->accept;
 #ifdef PARADISE
+    if ((packet->pad2 != 69) && (packet->pad3 != 42))
+    {
+        LineToConsole ("Paradise.exe only works on paradise servers, either select a paradise server or use netrek.exe.\n");
+        exit (0);
+    }
+#else
     if ((packet->pad2 == 69) && (packet->pad3 == 42))
-	paradise = 1;
+    {
+        LineToConsole ("Netrek.exe only works on non-paradise servers, either select a non-paradise server or use paradise.exe.\n");
+        exit (0);
+    }
 #endif
     if (packet->accept)
     {
@@ -3008,34 +3017,46 @@ void handleExtension1 (struct paradiseext1_spacket *packet)
 }
 void handleThingy (struct thingy_spacket *packet)
 {
-/*
+
     struct thingy *thetorp;
 
-    //SANITY_THINGYNUM(ntohs(packet->tnum));
+#ifdef CORRUPTED_PACKETS
+    if (packet->tnum >= npthingies*nplayers + ngthingies)
+    {
+        LineToConsole ("handleThingy: bad index %d\n", packet->tnum);
+        return;
+    }
+#endif
 
     thetorp = &thingies[ntohs(packet->tnum)];
     thetorp->t_x = ntohl(packet->x);
     thetorp->t_y = ntohl(packet->y);
-    // printf("drone at %d, %d\n", thetorp->t_x, thetorp->t_y);
+    // LineToConsole("drone at %d, %d\n", thetorp->t_x, thetorp->t_y);
     thetorp->t_dir = packet->dir;
 
-
-    if (rotate) {
-	rotate_gcenter(&thetorp->t_x, &thetorp->t_y);
-	rotate_dir(&thetorp->t_dir, rotate_deg);
+#ifdef ROTATERACE
+    if (rotate)
+    {
+        rotate_coord (&thetorp->t_x, &thetorp->t_y, rotate_deg, GWIDTH / 2,
+                      GWIDTH / 2);
     }
+#endif
 
     if (thetorp->t_shape == SHP_WARP_BEACON)
 	redrawall = 1;		// shoot, route has changed 
-*/
 }
 
 void handleThingyInfo (struct thingy_info_spacket *packet)
 {
-/*
     struct thingy *thetorp;
 
-   //SANITY_THINGYNUM(ntohs(packet->tnum));
+#ifdef CORRUPTED_PACKETS
+    if (packet->tnum >= npthingies*nplayers + ngthingies)
+    {
+        LineToConsole ("handleThingyInfo: bad index %d\n", packet->tnum);
+        return;
+    }
+#endif
 
     thetorp = &thingies[ntohs(packet->tnum)];
 
@@ -3046,7 +3067,7 @@ void handleThingyInfo (struct thingy_info_spacket *packet)
 
     if (ntohs(packet->shape) == SHP_BOOM && thetorp->t_shape == SHP_BLANK) {
 	// FAT: redundant explosion; don't update p_ntorp
-	// printf("texplode ignored\n");
+	// LineToConsole("texplode ignored\n");
 	return;
     }
 
@@ -3057,21 +3078,24 @@ void handleThingyInfo (struct thingy_info_spacket *packet)
 	players[thetorp->t_owner].p_ndrone--;
     }
     thetorp->t_war = packet->war;
-
     if (ntohs(packet->shape) != thetorp->t_shape) {
 	// FAT: prevent explosion reset
 	int shape = ntohs(packet->shape);
 
         if(shape == SHP_BOOM || shape == SHP_PBOOM) {
 	  if(thetorp->t_shape == SHP_FIGHTER)
+	  {
 	    shape = SHP_FBOOM;
+	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10);
+	  }
 	  if(thetorp->t_shape == SHP_MISSILE)
+	  {
 	    shape = SHP_DBOOM;
-	  thetorp->t_fuse = BIGINT;
+	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10);
+	  }
 	}
 	thetorp->t_shape = shape;
     }
-*/
 }
 
 void handleScan (struct scan_spacket *packet)

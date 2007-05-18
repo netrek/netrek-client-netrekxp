@@ -26,6 +26,7 @@ struct plasmatorp *plasmatorps;
 struct status *status;
 #ifdef PARADISE
 struct status2 *status2;
+struct thingy *thingies;
 #endif
 struct ship *myship;
 struct stats *mystats;
@@ -274,12 +275,10 @@ int macrocnt = 0;
 extern double Sin[], Cos[];
 
 #ifdef PARADISE
-int paradise = 0;			/* is the server a paradise server */
-int noParadiseBitmaps = 0;
 int gwidth = GWIDTH;			/* galaxy width, adjusted for zoom [BDyess] */
 int offsetx = 0;
 int offsety = 0;			/* offsets when zooming [BDyess] */
-int nplayers = 36;
+int nplayers = 256;
 int nshiptypes = 15;
 int ntorps = 8;
 int npthingies = 20;
@@ -342,11 +341,21 @@ int vary_hull = 0;
 
 // Paradise bitmaps
 #ifdef PARADISE
+W_Icon drone_bitmap, dronec_bitmap, mdronec_bitmap;
+W_Icon base_drone_explosion_bitmap;
+W_Icon drone_explosion_bitmap[BMP_DRONEDET_FRAMES];
+W_Icon base_dronec_explosion_bitmap;
+W_Icon dronec_explosion_bitmap[BMP_DRONEDET_FRAMES];
+W_Icon gear_bitmap, mgear_bitmap;
 W_Icon base_star_bitmap;
 W_Icon star_bitmap[STAR_VIEWS];
 W_Icon star_mbitmap;
 W_Icon paradise_ship_bitmaps;
 W_Icon paradise_ships[NUM_PSHIP_TYPES][NUMTEAMS];
+W_Icon paradise_cship_self_bitmaps;
+W_Icon paradise_cships_self[NUM_PSHIP_TYPES][NUMTEAMS];
+W_Icon paradise_cship_bitmaps;
+W_Icon paradise_cships[NUM_PSHIP_TYPES][NUMTEAMS];
 #endif
 // Ships
 W_Icon ship_bitmaps[5];

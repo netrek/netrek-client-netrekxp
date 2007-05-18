@@ -344,6 +344,16 @@ planetmBitmap (register struct planet *p)
             i += 2;
         if (p->pl_flags & PLFUEL)
             i += 1;
+#ifdef PARADISE
+        if (p->pl_flags & PLSHIPYARD)
+        {
+             i = 9; /* Base for shipyards */
+             if (p->pl_flags & PLFUEL)
+                 i += 1;
+             if (p->pl_armies > 4)
+                 i += 2;
+        }
+#endif
         return bmplanets[i];
     }
     else
@@ -469,6 +479,18 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                mwrench_bitmap, planetColor(p),
                                window);
+#ifdef PARADISE
+        if (p->pl_flags & PLSHIPYARD)
+            W_WriteScaleBitmap(dx + destwidth,
+                               dy - destheight/3 - 1,
+                               destwidth/3 + 1,
+                               destheight/3 + 1,
+                               BMP_GEAR_WIDTH,
+                               BMP_GEAR_HEIGHT,
+                               0,
+                               mgear_bitmap, planetColor(p),
+                               window);
+#endif
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
@@ -531,6 +553,11 @@ DrawPlanets ()
                 sendPlanetsPacket(l->pl_no);
         }
 
+#ifdef PARADISE
+        /* Stars need to be refreshed often... */
+        if (PL_TYPE(*l) == PLSTAR)
+            l->pl_flags |= PLREDRAW;
+#endif
         if (!(l->pl_flags & PLREDRAW))
             continue;
 
@@ -550,7 +577,15 @@ DrawPlanets ()
 
             odx = pl_update[l->pl_no].plu_x * GWINSIDE / GWIDTH;
             ody = pl_update[l->pl_no].plu_y * GWINSIDE / GWIDTH;
-
+#ifdef PARADISE
+            if (PL_TYPE(*l) == PLSTAR)
+                W_ClearArea (mapw, dx - ( BMP_MSTAR_WIDTH / 2),
+                             dy - ( BMP_MSTAR_HEIGHT / 2),
+                             BMP_MSTAR_WIDTH,
+                             BMP_MSTAR_HEIGHT);
+            else
+            {
+#endif
             /* XFIX */
             if (planetBitmapGalaxy == 3)
                 W_ClearArea (mapw, odx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
@@ -566,11 +601,22 @@ DrawPlanets ()
                          ody + (BMP_MPLANET_HEIGHT / 2),
                          backColor, l->pl_name, 3, planetFont (l));
             pl_update[l->pl_no].plu_update = 0;
+#ifdef PARADISE
+            }
+#endif
         }
         else
         {
             /* Clear the planet normally */
-
+#ifdef PARADISE
+            if (PL_TYPE(*l) == PLSTAR)
+                W_ClearArea (mapw, dx - ( BMP_MSTAR_WIDTH / 2),
+                             dy - ( BMP_MSTAR_HEIGHT / 2),
+                             BMP_MSTAR_WIDTH,
+                             BMP_MSTAR_HEIGHT);
+            else
+            {
+#endif
             /* XFIX */
             if (planetBitmapGalaxy == 3)
                 W_ClearArea (mapw, dx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
@@ -584,16 +630,19 @@ DrawPlanets ()
                              dy - (BMP_MPLANET_HEIGHT / 2 + 4),
                              BMP_MPLANET_WIDTH + 8,
                              BMP_MPLANET_HEIGHT + 8);
+#ifdef PARADISE
+            }
+#endif
         }
 
 
         /* Draw the new planet */
 #ifdef PARADISE
         if (PL_TYPE(*l) == PLSTAR)
-            W_WriteScaleBitmap (dx - (BMP_MSTAR_WIDTH / 2) * SCALE / scaleFactor,
-                                dy - (BMP_MSTAR_HEIGHT / 2) * SCALE / scaleFactor,
-                                BMP_MSTAR_WIDTH * SCALE / scaleFactor,
-                                BMP_MSTAR_HEIGHT * SCALE / scaleFactor,
+            W_OverlayScaleBitmap (dx - (BMP_MSTAR_WIDTH / 2),
+                                dy - (BMP_MSTAR_HEIGHT / 2),
+                                BMP_MSTAR_WIDTH,
+                                BMP_MSTAR_HEIGHT,
                                 BMP_MSTAR_WIDTH,
                                 BMP_MSTAR_HEIGHT,
                                 0,
@@ -1304,6 +1353,9 @@ map (void)
         register struct phaser *ph;
         register struct torp *k;
         register struct plasmatorp *pt;
+#ifdef PARADISE
+        register struct thingy *th;
+#endif
         int tx, ty;
 
         for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
@@ -1388,7 +1440,11 @@ map (void)
                 checkRedraw(tx * (GWIDTH / GWINSIDE), ty * (GWIDTH / GWINSIDE));
             }
 
-            if (!j->p_ntorp && !j->p_nplasmatorp)
+            if (!j->p_ntorp && !j->p_nplasmatorp
+#ifdef PARADISE
+                && !j->p_ndrone
+#endif
+            )
                 continue;
 
             /* torps */
@@ -1506,6 +1562,29 @@ map (void)
                 /* Check for overwriting planets */
                 checkRedraw(pt->pt_x, pt->pt_y);
             }
+#ifdef PARADISE
+            /* missiles */
+            for (h = i * npthingies, th = &thingies[i * npthingies]; h < npthingies * (i + 1); h++, th++)
+            {
+                if (th->t_x < 0 || th->t_y < 0)
+                    continue;
+
+                dx = th->t_x * GWINSIDE / GWIDTH;
+                dy = th->t_y * GWINSIDE / GWIDTH;
+
+                /* Draw missile as a 2x2 pixel torp */
+                W_MakeLine(mapw, dx, dy, dx + 1, dy, torpColor (th));
+                W_MakeLine(mapw, dx, dy + 1, dx + 1, dy + 1, torpColor (th));
+                mcleararea[0][mclearacount] = dx;
+                mcleararea[1][mclearacount] = dy;
+                mcleararea[2][mclearacount] = 2;
+                mcleararea[3][mclearacount] = 2;
+                mclearacount++;
+
+                /* Check for overwriting planets */
+                checkRedraw(k->t_x, k->t_y);
+            }
+#endif
         }
     }
     /* Reset weapon update marker */

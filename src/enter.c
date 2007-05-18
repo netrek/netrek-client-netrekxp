@@ -51,6 +51,9 @@ openmem (void)
     players = universe.players;
     torps = universe.torps;
     plasmatorps = universe.plasmatorps;
+#ifdef PARADISE
+    thingies = universe.thingies;
+#endif
     status = universe.status;
     planets = universe.planets;
     phasers = universe.phasers;

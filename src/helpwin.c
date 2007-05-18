@@ -79,6 +79,11 @@ char *help_message[] = {
     "@     speed = 12",
     "%     speed = maximum",
     "#     speed = 1/2 maximum",
+#ifdef PARADISE
+    ".     Afterburners",
+    "J     Engage Warp",
+    "^j    Toggle warp prep",
+#endif
     "<     slow speed 1",
     ">     speed up 1",
     "k     Set course",
@@ -302,7 +307,7 @@ pbfillhelp (void)
     char helpmessage[MAXHELP];
 
 
-    /* 4 column help window. THis may be changed depending on font size */
+    /* 2 column help window. THis may be changed depending on font size */
     for (column = 0; column < 2; column++)
     {
         for (row = 1; row < PBHELPMESSAGES / 2 + 1; row++)

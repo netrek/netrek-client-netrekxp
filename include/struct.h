@@ -45,6 +45,18 @@ struct status
 };
 
 #ifdef PARADISE
+struct thingy {
+    int     t_no;
+    int     t_shape;		/* State information */
+    int     t_owner;
+    int     t_x;
+    int     t_y;
+    unsigned char t_dir;	/* direction */
+    int     t_speed;		/* Moving speed */
+    int     t_fuse;		/* Life left in current state */
+    char    t_war;		/* enemies */
+};
+
 struct status2 {		/* paradise status struct */
     int     active;		/* for interfacing with people who */
     unsigned int wait, count;	/* want to get into the game */
@@ -195,9 +207,12 @@ enum dist_type
 #define PFWPSUSPENDED     (1<<29)	/* warp prep suspended [BDyess] */
 #define PFSNAKE	          (1<<30)	/* it's a space snake */
 #define PFBIRD	          (1<<31)	/* it's a space bird */
-#endif
+#define PFOBSERV          (1<<31)       /* set to something unused */
+#define PFTWARP           (1<<31)       /* set to something unused */
+#else
 #define PFOBSERV	0x8000000       /* for observers */
 #define PFTWARP     0x40000000      /* transwarping to base */
+#endif
 
 #define KLOGIN      0x00    /* initial state */
 #define KQUIT		0x01    /* Player quit */
@@ -215,13 +230,14 @@ enum dist_type
 #define KOVER		0x0d    /* game over  */
 #define TOURNSTART	0x0e    /* tournament game starting */
 #define KBADBIN		0x0f    /* bad binary */
-#define KTORP2      0x10    /* killed by detted torps */
-#define KSHIP2      0x11    /* chain-reaction explosions */
-#define KPLASMA2    0x12    /* killed by zapped plasma */
 #ifdef PARADISE
 #define KMISSILE      0x10    /* missile, note the overlap with KTORP2! */
 #define KASTEROID     0x11    /* asteroid, note the overlap with KSHIP2! */
+#else
+#define KTORP2      0x10    /* killed by detted torps */
+#define KSHIP2      0x11    /* chain-reaction explosions */
 #endif
+#define KPLASMA2    0x12    /* killed by zapped plasma */
 
 #ifdef PARADISE
 #define NUM_TYPES 15
@@ -234,9 +250,8 @@ enum dist_type
 #define ASSAULT 4
 #define STARBASE 5
 #define ATT 6
-#define SGALAXY 6		/* galaxy ships now supported - they look
-				   extremely similar to flagships :) [BDyess] */
 #define JUMPSHIP 7
+#define SGALAXY 8	/* Not sure where to put this .. */
 #define FLAGSHIP 8
 #define WARBASE 9
 #define LIGHTCRUISER 10
@@ -400,6 +415,8 @@ struct player
     short p_whodead;            /* Tells you who killed you */
     struct stats p_stats;       /* player statistics */
 #ifdef PARADISE
+    short p_ndrone;		/* Number of drones .. why was this missing? */
+    short p_totmissiles;	/* number of total missiles [Bill Dyess] */
     struct stats2 p_stats2;     /* Paradise stats */
 #endif
     short p_genoplanets;        /* planets taken since last
@@ -742,6 +759,9 @@ struct memory
     struct player players[MAXPLAYER];
     struct torp torps[MAXPLAYER * MAXTORP];
     struct plasmatorp plasmatorps[MAXPLAYER * MAXPLASMA];
+#ifdef PARADISE
+    struct thingy thingies[MAXPLAYER * 20]; // Arbitrary
+#endif
     struct status status[1];
     struct planet planets[MAXPLANETS];
     struct phaser phasers[MAXPLAYER];

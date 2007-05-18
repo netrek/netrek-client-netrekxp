@@ -31,7 +31,7 @@ struct shipdef shipdefaults[NUM_TYPES + 1] = {
     {"bb", NULL, NULL, NULL, NULL},
     {"as", NULL, NULL, NULL, NULL},
     {"sb", NULL, NULL, NULL, NULL},
-    {"ga", NULL, NULL, NULL, NULL},
+    {"att", NULL, NULL, NULL, NULL},
     {"js", NULL, NULL, NULL, NULL},
     {"fl", NULL, NULL, NULL, NULL},
     {"wb", NULL, NULL, NULL, NULL},

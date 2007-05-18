@@ -441,7 +441,6 @@ copy resources\ships\mono\ind\indshipM.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\mono\kli\klishipM.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\mono\ori\orishipM.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\mono\rom\romshipM.bmp %InstCWD%\netrek\bitmaps\shiplib
-copy resources\ships\mono\paradise_ships.bmp %InstCWD%\netrek\bitmaps\shiplib
 
 copy resources\ships\grayscale\fed\fedshipG.bmp %InstCWD%\netrek\bitmaps\shiplib
 copy resources\ships\grayscale\ind\indshipG.bmp %InstCWD%\netrek\bitmaps\shiplib
@@ -503,7 +502,13 @@ copy resources\misclib\color\clockhand.bmp %InstCWD%\netrek\bitmaps\misclib\colo
 copy resources\misclib\color\genocide.bmp %InstCWD%\netrek\bitmaps\misclib\color
 copy resources\misclib\color\genocide2.bmp %InstCWD%\netrek\bitmaps\misclib\color
 copy resources\misclib\color\*team.bmp %InstCWD%\netrek\bitmaps\misclib\color
-copy resources\misclib\color\star*.bmp %InstCWD%\netrek\bitmaps\misclib\color
+
+mkdir %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\paradise_*.bmp %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\star*.bmp %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\mdroneC.bmp %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\drone*.bmp %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\gear.bmp %InstCWD%\netrek\bitmaps\paradise
 
 copy resources\fonts\ntfonts2.fon %InstCWD%\netrek
 

@@ -34,6 +34,15 @@ rect doesn't take these into account.
 4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 
+Paradise issues:
+Motd paging system gutted for sake of simplicity
+A bunch of gridline/zoom options should be made into netrekrc options.
+The galactic zoom doesn't work, gwidth is not malleable
+Most of the paradise packet types, including special weapons and game parameters are still not handled.
+Still missing wormholes, asteroids, fighters, warpbeacons, and warpflash functionality..
+Info windows and rank windows not working right with paradise.
+Need popup box that works, when connecting to wrong server type
+
 Wish list:
 1) Rewrite graphics engine using SDL
 

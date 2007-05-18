@@ -21,15 +21,6 @@
 #define TERRAIN_STARTED 1
 #define TERRAIN_DONE    2
 
-/* defs for timer [BDyess] */
-#define T_NONE		0	/* no timer */
-#define T_DAY		1	/* time of day */
-#define T_SERVER	2	/* time on server */
-#define T_SHIP		3	/* time in ship */
-#define T_USER		4	/* user reset timer */
-#define T_TOTAL 	5	/* number of T_ defs */
-#define TIMESTRLEN	10	/* used in db_timer(), timeString() */
-
 /* defs for mapmode */
 #define GMAP_NEVER	0
 #define GMAP_FREQUENT 	1

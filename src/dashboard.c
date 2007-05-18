@@ -460,18 +460,50 @@ db_special (int fr, int x, int y)
         msgtype = 4;
         color = W_White;
     }
+#ifdef PARADISE
+    /* Transwarp text */
+    else if (me->p_flags & PFWARP)
+    {
+        sprintf (buf, "Warp");
+        msgtype = 5;
+        color = W_White;
+    }
+    /* Afterburners */
+    else if (me->p_flags & PFAFTER)
+    {
+        sprintf (buf, "Aftrbrn");
+        msgtype = 6;
+        color = W_Red;
+    }
+    /* Warp preparation */
+    else if (me->p_flags & PFWARPPREP)
+    {
+        if (me->p_flags & PFWPSUSPENDED)
+        {
+            sprintf (buf, "WrpPaus");
+            msgtype = 7;
+            color = W_Cyan;
+        }
+        else
+        {
+            sprintf (buf, "WrpPrep");
+            msgtype = 8;
+            color = W_Cyan;
+        }
+    }
+#endif
     /* Ship stopped */
     else if (me->p_speed == 0)
     {
         sprintf (buf, "Stopped");
-        msgtype = 5;
+        msgtype = 9;
         color = W_Grey;
     }
     /* Default impulse text */
     else
     {
         sprintf (buf, "Impulse");
-        msgtype = 6;
+        msgtype = 10;
         color = W_Yellow;
     }
 
@@ -524,6 +556,11 @@ db_flags (int fr)
 {
     static float old_kills = -1.0;
     static int old_torp = -1;
+#ifdef PARADISE
+    int i = 0;
+    static int old_drone = -1;
+    static int old_totmissiles = -1;
+#endif
     static unsigned int old_flags = (unsigned int) -1;
     static int old_tourn = 0;
     register int BAR_LENGTH = W_Textwidth/3 + 9 * W_Textwidth;
@@ -637,6 +674,30 @@ db_flags (int fr)
         }
         old_torp = plr->p_ntorp;
     }
+#ifdef PARADISE
+    /* code to show the number of drones out */
+    strcpy(buf, "Miss: ");
+    if (fr || plr->p_totmissiles != old_totmissiles || plr->p_ndrone != old_drone)
+    {
+	if (plr->p_totmissiles > 0)
+	    sprintf(buf + strlen(buf), "L%d ", plr->p_totmissiles);
+	old_totmissiles = me->p_totmissiles;
+	if (plr->p_ndrone > 0)
+	    sprintf(buf + strlen(buf), "O%d", plr->p_ndrone);
+	old_drone = plr->p_ndrone;
+	if (!plr->p_totmissiles && !plr->p_ndrone)	/* clear missile text */
+	    W_ClearArea(tstatw, 199 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING), 13 * W_Textwidth, W_Textheight);
+	else
+	{
+	    for (i = strlen(buf); i < 14; i++)
+	    {
+	        buf[i] = ' ';
+	        buf[14] = 0;
+	    }
+	    W_WriteText(tstatw, 199 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING), textColor, buf, 14, W_RegularFont);
+	}
+    }
+#endif
 }
 
 

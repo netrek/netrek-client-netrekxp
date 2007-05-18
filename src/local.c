@@ -19,6 +19,7 @@
 #include "struct.h"
 #include "data.h"
 #include "local.h"
+#include "packets.h"
 #include "proto.h"
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -53,6 +54,13 @@ static int num_other_torps = 0;
 static int sound_plasma = 0;
 static int sound_other_plasmas = 0;
 static int num_other_plasmas = 0;
+#ifdef PARADISE
+static int sound_missiles = 0;
+static int sound_other_missiles = 0;
+static int num_other_missiles = 0;
+static int other_missile_dist = 0;
+static int other_missile_angle = 0;
+#endif
 static unsigned int sound_flags = 0;
 static int other_torp_dist = 0;
 static int other_torp_angle = 0;
@@ -381,6 +389,16 @@ getPlanetBitmap (register struct planet *p)
             i += 2;
         if (p->pl_flags & PLFUEL)
             i += 1;
+#ifdef PARADISE
+        if (p->pl_flags & PLSHIPYARD)
+        {
+             i = 9; /* Base for shipyards */
+             if (p->pl_flags & PLFUEL)
+                 i += 1;
+             if (p->pl_armies > 4)
+                 i += 2;
+        }
+#endif
         return (bplanets[i]);
     }
     else
@@ -515,6 +533,18 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                wrench_bitmap, planetColor(p),
                                window);
+#ifdef PARADISE
+        if (p->pl_flags & PLSHIPYARD)
+            W_WriteScaleBitmap(dx + destwidth,
+                               dy - destheight/3 - 1,
+                               destwidth/3 + 1,
+                               destheight/3 + 1,
+                               BMP_GEAR_WIDTH,
+                               BMP_GEAR_HEIGHT,
+                               0,
+                               gear_bitmap, planetColor(p),
+                               window);
+#endif
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
@@ -640,7 +670,7 @@ DrawPlanets (void)
            if observer is locked onto a planet, or is show_army_count feature packet is on */
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
 #ifdef PARADISE
-         && (PL_TYPE(*l) != PLSTAR)
+         && (PL_TYPE(*l) == PLPLANET)
 #endif
          && (F_show_army_count || 
            ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
@@ -753,6 +783,9 @@ DrawShips (void)
     int type;
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
+#ifdef PARADISE
+    W_Icon (*ship_bits_paradise)[NUMTEAMS];
+#endif
     W_Icon (*ship_bitsHR);
 
     /* Kludge to try to fix missing ID chars on tactical (short range)
@@ -1055,11 +1088,7 @@ DrawShips (void)
             
             type = j->p_ship.s_type;
 #ifdef PARADISE
-            // We missing paradise bitmaps?
-            if (noParadiseBitmaps)
-                type = CRUISER;
-            // If it's a paradise ship, we only have 1 bitmap set
-            // so let's use it, rotating bitmaps realtime.
+            // If it's a paradise ship, use a paradise bitmap set.
             if (type >= PARADISE_SHIP_OFFSET)
             {
             	int pos;
@@ -1082,6 +1111,16 @@ DrawShips (void)
                     pos = 1;
                     break;
                 }
+                if (colorClient <= 0 || colorClient > 4)
+                    ship_bits_paradise = paradise_ships;
+                else
+                {
+                    if (myPlayer(j))
+                        ship_bits_paradise = paradise_cships_self;
+                    else
+                        ship_bits_paradise = paradise_cships;
+                }
+
                 W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
                                     dy - (j->p_ship.s_height / 2) * SCALE / scaleFactor,
                                     j->p_ship.s_width * SCALE / scaleFactor,
@@ -1089,7 +1128,7 @@ DrawShips (void)
                                     BMP_SHIP_WIDTH,
                                     BMP_SHIP_HEIGHT,
                                     (360 * j->p_dir/255),
-                                    paradise_ships[type - PARADISE_SHIP_OFFSET][pos],
+                                    ship_bits_paradise[type - PARADISE_SHIP_OFFSET][pos],
                                     playerColor (j),
                                     w);
             }
@@ -2105,7 +2144,7 @@ DrawTorps (void)
                 k->t_fuse--;
                 frame = k->t_fuse * 10 / server_ups;
                 
-                if (k->t_fuse <= 0)
+                if (k->t_fuse < 0)
                 {
                     k->t_status = TFREE;
                     j->p_ntorp--;
@@ -2333,7 +2372,7 @@ DrawPlasmaTorps (void)
             pt->pt_fuse--;
             frame = pt->pt_fuse * 10 / server_ups;
 
-            if (pt->pt_fuse <= 0)
+            if (pt->pt_fuse < 0)
             {
                 pt->pt_status = PTFREE;
                 players[pt->pt_owner].p_nplasmatorp--;
@@ -2484,6 +2523,186 @@ DrawPlasmaTorps (void)
     }
 }
 
+#ifdef PARADISE
+void
+draw_one_thingy(struct thingy *k)
+{
+    int dx, dy;
+    int frame;
+    int view = scaleFactor * TWINSIDE / 2;
+
+    if (k->t_shape == SHP_BLANK)
+	return;
+    /* LineToConsole("%d,%d - %d,%d\n", me->p_x, me->p_y, k->t_x, k->t_y); */
+    dx = k->t_x - me->p_x;
+    dy = k->t_y - me->p_y;
+    if (ABS(dx) > view || ABS(dy) > view)
+	return;
+
+    dx = scaleLocal(dx);
+    dy = scaleLocal(dy);
+    switch (k->t_shape) {
+/*    case SHP_BOOM:
+	k->t_fuse--;
+	if (k->t_fuse <= 0) {
+	    k->t_shape = SHP_BLANK;
+	    return;
+	}
+	if (k->t_fuse > image->frames)
+	    k->t_fuse = image->frames;
+
+	frame = image->frames - k->t_fuse;
+	break;*/
+    case SHP_MISSILE:
+#ifdef SOUND
+        if (k->t_owner != me->p_no)
+        {
+            num_other_missiles++;
+            SetDistAngle(dx, dy);
+            if (distance < other_missile_dist)
+            {
+                other_missile_dist = distance;
+                other_missile_angle = angle;
+            }   	
+        }
+#endif
+	W_WriteScaleBitmap (dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor,
+                            dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor,
+                            BMP_DRONE_WIDTH * SCALE / scaleFactor,
+                            BMP_DRONE_HEIGHT * SCALE / scaleFactor,
+                            BMP_DRONE_WIDTH,
+                            BMP_DRONE_HEIGHT,
+                            (360 * k->t_dir/255),
+                            (colorWeapons ? (myPlayer(&players[k->t_owner]) ? mdronec_bitmap : dronec_bitmap) : drone_bitmap),
+                            playerColor (&players[k->t_owner]),
+                            w);
+        clearzone[0][clearcount] = dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor - 1;
+        clearzone[1][clearcount] = dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor - 1;
+        clearzone[2][clearcount] = BMP_DRONE_WIDTH * SCALE / scaleFactor + 2;
+        clearzone[3][clearcount] = BMP_DRONE_HEIGHT * SCALE / scaleFactor + 2;
+        clearcount++;
+	break;
+/*    case SHP_TORP:
+        image = getImage(friendlyThingy(k) ? I_MTORP : I_ETORP);
+	frame = udcounter + k->t_no;
+	break;
+    case SHP_PLASMA:
+    case SHP_MINE:		// use plasma until I get a nifty bitmap
+        image = getImage(friendlyThingy(k) ? I_MPLASMATORP : I_EPLASMATORP);
+	frame = udcounter + k->t_no;
+	break;
+    case SHP_PBOOM:
+	image = getImage(friendlyThingy(k) ? I_MPLASMACLOUD : I_EPLASMACLOUD);
+	k->t_fuse--;
+	if (k->t_fuse < 0) {
+	    k->t_shape = SHP_BLANK;
+	    return;
+	}
+	if (k->t_fuse > image->frames) {
+	    k->t_fuse = image->frames;
+	}
+	frame = image->frames - k->t_fuse;
+	break;
+    case SHP_FBOOM:
+	image = getImage(friendlyThingy(k) ? I_MFIGHTERCLOUD : I_EFIGHTERCLOUD);
+	k->t_fuse--;
+	if (k->t_fuse < 0) {
+	    k->t_shape = SHP_BLANK;
+	    return;
+	}
+	if (k->t_fuse > image->frames) {
+	    k->t_fuse = image->frames;
+	}
+	frame = image->frames - k->t_fuse;
+	break;
+	*/
+    case SHP_DBOOM:
+        k->t_fuse--;
+        frame = k->t_fuse * 10 / server_ups;
+                
+        if (k->t_fuse < 0)
+        {
+            k->t_shape = SHP_BLANK;
+            return;
+        }
+
+        if (frame >= BMP_DRONEDET_FRAMES)
+            frame = BMP_DRONEDET_FRAMES - 1;
+
+#ifdef SOUND
+                if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
+                {
+                    SetDistAngle(dx, dy);
+                    // At short distances, don't use angular sound
+                    if (!soundAngles || distance < SCALE/2)
+                        Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, -1, distance);
+                    else
+                        Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, angle, distance);
+                }
+#endif
+	W_WriteScaleBitmap (dx - (BMP_DRONEDET_WIDTH / 2) * SCALE / scaleFactor,
+                            dy - (BMP_DRONEDET_HEIGHT / 2) * SCALE / scaleFactor,
+                            BMP_DRONEDET_WIDTH * SCALE / scaleFactor,
+                            BMP_DRONEDET_HEIGHT * SCALE / scaleFactor,
+                            BMP_DRONEDET_WIDTH,
+                            BMP_DRONEDET_HEIGHT,
+                            0,
+                            drone_explosion_bitmap[frame],
+                            playerColor (&players[k->t_owner]),
+                            w);
+        clearzone[0][clearcount] = dx - (BMP_DRONEDET_WIDTH / 2) * SCALE / scaleFactor ;
+        clearzone[1][clearcount] = dy - (BMP_DRONEDET_HEIGHT / 2) * SCALE / scaleFactor;
+        clearzone[2][clearcount] = BMP_DRONEDET_WIDTH * SCALE / scaleFactor;
+        clearzone[3][clearcount] = BMP_DRONEDET_HEIGHT * SCALE / scaleFactor;
+        clearcount++;
+	break;
+	/*
+    case SHP_FIGHTER:
+	image = getImage(friendlyThingy(k) ? I_MFIGHTER : I_EFIGHTER);
+	frame = (int) (k->t_dir * image->frames + 128) / 256;
+	break;
+    case SHP_WARP_BEACON:
+	image = getImage(I_WARPBEACON);
+	frame = udcounter;
+	if (k->t_fuse > 4) {
+	    image = getImage(I_WARPFLASH);
+	}
+	if (++(k->t_fuse) > 6) {
+	    k->t_fuse = 0;
+	}
+	break;
+*/
+    default:
+        LineToConsole("Wierd...unknown thingy number (%d).\n", k->t_shape);
+	return;
+    }
+}
+
+void
+DrawThingies (void)
+{
+    int i, h;
+    int count;
+    struct player *j;
+
+    for (j = players; j != players + MAXPLAYER; ++j)
+    {
+        i = j->p_no;
+
+        if (!j->p_ndrone)
+	    return;
+        count = 0;
+
+        for (h = i * npthingies; h < npthingies * (i + 1); h++)
+        {
+	    draw_one_thingy(&thingies[h]);
+	    if (thingies[h].t_shape != SHP_BLANK)
+	        count++;
+        }
+        j->p_ndrone = count;
+    }
+}
+#endif
 
 static void
 DrawMisc (void)
@@ -2851,11 +3070,26 @@ DrawMisc (void)
         else
             Play_Sound_Loc(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_plasma_angle, other_plasma_dist);
     }
+#ifdef PARADISE
+    if (sound_missiles < me->p_ndrone )
+        Play_Sound(FIRE_PLASMA_WAV, SF_WEAPONS);
+    if (sound_other_missiles < num_other_missiles)
+    {
+        if (!soundAngles || other_missile_dist < SCALE/2)
+            Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, other_missile_dist);
+        else
+            Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_missile_angle, other_missile_dist);
+    }
+#endif
     // Reset locations and fuses of other's closest torps and plasmas
     other_torp_dist = SOUND_MAXRANGE;
     other_torp_angle = 0;
     other_plasma_dist = SOUND_MAXRANGE;
     other_plasma_angle = 0;
+#ifdef PARADISE
+    other_missile_dist = SOUND_MAXRANGE;
+    other_missile_angle = 0;
+#endif
 
     sound_flags = me->p_flags;
     sound_torps = me->p_ntorp;
@@ -2864,6 +3098,11 @@ DrawMisc (void)
     sound_plasma = me->p_nplasmatorp;
     sound_other_plasmas = num_other_plasmas;
     num_other_plasmas = 0;
+#ifdef PARADISE
+    sound_missiles = me->p_ndrone;
+    sound_other_missiles = num_other_missiles;
+    num_other_missiles = 0;
+#endif
 #endif
 
     /* show 'lock' icon on local map (Actually an EM hack ) */
@@ -2966,6 +3205,9 @@ local (void)
 
     DrawTorps ();
     DrawPlasmaTorps ();
+#ifdef PARADISE
+    DrawThingies ();
+#endif
 
     if (!weaponsOnMap)
         weaponUpdate = 0;
