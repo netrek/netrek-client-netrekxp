@@ -470,7 +470,7 @@ W_Cleanup (void)
     free (oriteam);
     free (clockpic);
     free (clockhandpic);
-    
+
     for (j = 0; j < NUM_CTORP_TYPES; j++)
     {
         for (i = 0; i < BMP_TORPDET_FRAMES; i++)
@@ -580,8 +580,9 @@ W_Cleanup (void)
 
 #ifdef PARADISE
     free (drone_bitmap);
-    free (dronec_bitmap);
-    free (mdronec_bitmap);
+    free (base_dronec_bitmap);
+    for (i = 0; i < NUM_CTORP_TYPES; i++)
+        free (dronec_bitmap[i]);
     free (base_drone_explosion_bitmap);
     for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
         free (drone_explosion_bitmap[i]);

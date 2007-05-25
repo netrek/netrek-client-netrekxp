@@ -1732,7 +1732,24 @@ buttonaction (W_Event * data)
         bomb_planet ();
 #endif /* AUTOKEY */
     }
-
+    else if (data->key == W_WHEELUP)
+    {
+        scaleFactor -= 2;
+        if (scaleFactor < 10)
+            scaleFactor = 10;
+        W_FastClear = 1;
+        if (viewBox)
+            redrawall = 1;
+    }
+    else if (data->key == W_WHEELDOWN)
+    {
+        scaleFactor += 2;
+        if (scaleFactor > 40)
+            scaleFactor = 40;
+        W_FastClear = 1;
+        if (viewBox)
+            redrawall = 1;
+    }
 #ifdef SHIFTED_MOUSE
     else if (data->key == W_RBUTTON2)
     {

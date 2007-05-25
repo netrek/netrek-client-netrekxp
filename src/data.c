@@ -27,6 +27,7 @@ struct status *status;
 #ifdef PARADISE
 struct status2 *status2;
 struct thingy *thingies;
+struct t_unit *terrainInfo;
 #endif
 struct ship *myship;
 struct stats *mystats;
@@ -275,6 +276,9 @@ int macrocnt = 0;
 extern double Sin[], Cos[];
 
 #ifdef PARADISE
+int received_terrain_info = 0;
+int terrain_x;
+int terrain_y;
 int gwidth = GWIDTH;			/* galaxy width, adjusted for zoom [BDyess] */
 int offsetx = 0;
 int offsety = 0;			/* offsets when zooming [BDyess] */
@@ -341,7 +345,9 @@ int vary_hull = 0;
 
 // Paradise bitmaps
 #ifdef PARADISE
-W_Icon drone_bitmap, dronec_bitmap, mdronec_bitmap;
+W_Icon drone_bitmap;
+W_Icon base_dronec_bitmap;
+W_Icon dronec_bitmap[NUM_CTORP_TYPES];
 W_Icon base_drone_explosion_bitmap;
 W_Icon drone_explosion_bitmap[BMP_DRONEDET_FRAMES];
 W_Icon base_dronec_explosion_bitmap;
@@ -440,6 +446,12 @@ struct rank ranks[NUMRANKS] = {
     {30.0, 7.0, 0.0, "Rear Adm.", "RAdm"},
     {40.0, 8.0, 0.0, "Admiral", "Admr"}
 };
+#ifdef PARADISE
+int nranks2 = 18;
+struct rank2 *ranks2;
+int nroyals = 5;
+struct royalty *royal = 0;
+#endif
 
 W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
     warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi, messwk,

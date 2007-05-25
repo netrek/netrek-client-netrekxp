@@ -93,6 +93,12 @@ struct teaminfo_s {
     char    shortname[4];	/* 3-letter abbreviation */
 };
 
+struct t_unit {
+/*  int	    alt1;*/
+/*  int     alt2;*/		/* Terrain types. */
+    char types;
+};
+
 /* MOTD structures */
 struct piclist {
     int     page;
@@ -754,6 +760,22 @@ struct rank
     char *name, *cname;
 };
 
+#ifdef PARADISE
+struct rank2 {			/* Paradise ranks */
+    int     genocides;		/* minimum number of genocides */
+    float   di;			/* minimum destruction inflicted */
+    float   battle;		/* minimum battle ratings */
+    float   strategy;		/* minimum strategy ratings */
+    float   specship;		/* minimum total ratings in a specialty */
+    /* ship  SB + WB + JS */
+    char   *name;		/* name of this rank */
+};
+
+struct royalty {		/* Paradise royalty ranks */
+    char   *name;		/* name of rank */
+};
+#endif
+
 struct memory
 {
     struct player players[MAXPLAYER];
@@ -761,6 +783,10 @@ struct memory
     struct plasmatorp plasmatorps[MAXPLAYER * MAXPLASMA];
 #ifdef PARADISE
     struct thingy thingies[MAXPLAYER * 20]; // Arbitrary
+    struct rank2 ranks2[30]; // Arbitrary
+    struct teaminfo_s teaminfo[6]; // Arbitrary
+    struct royalty royal[5]; // Arbitrary
+    struct status2 status2[1]; // Arbitrary
 #endif
     struct status status[1];
     struct planet planets[MAXPLANETS];

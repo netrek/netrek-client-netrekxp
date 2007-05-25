@@ -199,7 +199,6 @@
 #ifdef PARADISE
 #define BMP_DRONE 9
 #define BMP_DRONEC 10
-#define BMP_MDRONEC 11
 #define BMP_DRONE_WIDTH 6
 #define BMP_DRONE_HEIGHT 6
 #define BMP_DRONECLOUD 12

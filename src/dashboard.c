@@ -1080,7 +1080,7 @@ repair_time (void)
     int obs = 0;
     int shieldtime = 0;
     int hulltime = 0;
-    int shieldneeded, hullneeded;
+    int shieldneeded = 0, hullneeded = 0;
     float shieldrate = 0.0, hullrate = 0.0;
     short planet;
     struct player *plr;

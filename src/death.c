@@ -90,7 +90,11 @@ death (void)
     if (promoted)
     {
         sprintf (rankmessage, "Congratulations, You have scummed up to %s",
+#ifdef PARADISE
+                 ranks2[mystats->st_rank].name);
+#else
                  ranks[mystats->st_rank].name);
+#endif
         W_WriteText (w, 50, 80, W_Yellow, rankmessage,
                      strlen (rankmessage), W_BoldFont);
     }

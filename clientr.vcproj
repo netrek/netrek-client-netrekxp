@@ -72,8 +72,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/mapinfo:lines /mapinfo:exports&#x0D;&#x0A;"
-				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib msimg32.lib libgmp.lib SDL.lib SDLmain.lib SDL_mixer.lib"
+				AdditionalOptions="/mapinfo:exports&#x0D;&#x0A;"
+				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib msimg32.lib libgmp.lib SDL.lib SDLmain.lib zdll.lib SDL_mixer.lib"
 				OutputFile="\netrek_files\netrek\netrek.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -81,7 +81,7 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="\netrek_files\tmp\src\Debug/netrek.pdb"
-				GenerateMapFile="false"
+				MapFileName=""
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -177,8 +177,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/mapinfo:lines /mapinfo:exports"
-				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib libgmp.lib msimg32.lib SDL.lib SDLmain.lib SDL_mixer.lib"
+				AdditionalOptions="/mapinfo:lines"
+				AdditionalDependencies="libcmt.lib wsock32.lib winmm.lib mpr.lib msvcrt.lib libgmp.lib msimg32.lib SDL.lib SDLmain.lib SDL_mixer.lib zdll.lib"
 				OutputFile="\netrek_files\netrek\netrek.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

@@ -9,8 +9,9 @@ planet-related RCDs through the window as well.
 4) Added ability to update buttonmap through the options menu.
 5) Restored ability for middle and right mouse clicks to raise the current
 window to the top, helps with overlapped windows.
-6) Default buttonmap now uses mouse wheel for accel/decel, scroll up to
-accelerate to max, scroll down to decelerate to warp 0.
+6) Added new function keys, control-z and control-a, for zooming.  Control-z
+zooms in, and control-a zooms out.  As part of the benefit of having all
+graphics scale, ALL ship bitmap sets can now show ships to 256 positions.
 7) Left clicking on message window will either a) start a new message to all
 board or b) continue current pending message.
 8) Message window will now say "Click here to send a message to ALL" until any
@@ -29,9 +30,8 @@ don't expect anyone has a monitor to support even close to that limit.
 11) Most netrekrc window's geometries are now commented out (all except map and
 local), this is because adjusting the size of local or map will now do a pretty
 good job of autoplacing all the other windows for you.
-12) Added new function keys, control-z and control-a, for zooming.  Control-z
-zooms in, and control-a zooms out.  As part of the benefit of having all
-graphics scale, ALL ship bitmap sets can now show ships to 256 positions.
+12) Default mouse wheel action is now zoom in and out, scroll up to zoom in,
+scroll down to zoom out.
 13) Added richtext message windows, which allow stuff like cut and paste from
 within the message windows, and clickable URLs.  Richtext message windows are
 both resizeable and moveable.  Moving them works a little different than moving
@@ -144,6 +144,8 @@ as the client hopes to re-establish a connection and thus doesn't exit.
 and adjusts default playback speed accordingly.
 19) Cambot now uses double buffering during playback, so that everything looks
 smoother.
+20) Fixed bug with mono torps and plasmas that was causing final animation frame
+to not draw on servers running 10 FPS.
 
 New features:
 1) Main window titlebar now shows your loginname and slot number, in addition

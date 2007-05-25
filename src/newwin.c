@@ -508,12 +508,12 @@ void loadparadisethings (void)
     drone_bitmap =
         W_StoreBitmap3 ("bitmaps/paradise/drone.bmp", BMP_DRONE_WIDTH,
                         BMP_DRONE_HEIGHT, BMP_DRONE, w, LR_MONOCHROME);
-    dronec_bitmap =
-        W_StoreBitmap3 ("bitmaps/paradise/droneC.bmp", BMP_DRONE_WIDTH,
+    base_dronec_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/droneC.bmp", BMP_DRONE_WIDTH * NUM_CTORP_TYPES,
                         BMP_DRONE_HEIGHT, BMP_DRONEC, w, LR_DEFAULTCOLOR);
-    mdronec_bitmap =
-        W_StoreBitmap3 ("bitmaps/paradise/mdroneC.bmp", BMP_DRONE_WIDTH,
-                        BMP_DRONE_HEIGHT, BMP_MDRONEC, w, LR_DEFAULTCOLOR);
+    for (i = 0; i < NUM_CTORP_TYPES; i++)
+        dronec_bitmap[i] =
+            W_PointBitmap2 (base_dronec_bitmap, i, 0, BMP_DRONE_WIDTH, BMP_DRONE_HEIGHT);
 
     base_drone_explosion_bitmap =
         W_StoreBitmap3 ("bitmaps/paradise/dronecloud.bmp", BMP_DRONEDET_WIDTH,
@@ -975,7 +975,11 @@ newwin (char *hostmon,
 #endif
     W_SetWindowExposeHandler (planetw, planetlist);
 
+#ifdef PARADISE
+    rankw = W_MakeTextWindow ("rank", 10, 100, 80, nranks2 + 9, baseWin, 2);
+#else
     rankw = W_MakeTextWindow ("rank", 10, 300, 80, NUMRANKS + 9, baseWin, 2);
+#endif
     W_SetWindowExposeHandler (rankw, ranklist);
 
     playerw = W_MakeTextWindow ("player", 0, TWINSIDE + 2 * THICKBORDER + STATSIZE + 2 * BORDER,
@@ -1931,7 +1935,12 @@ entrywindow (int *team,
     {
         char buf[80];
 
+#ifdef PARADISE
+        sprintf (buf, "Welcome aboard %s!",
+        	(me->p_stats2.st_royal == 0 ? ranks2[me->p_stats2.st_rank].name : royal[me->p_stats2.st_royal].name));
+#else
         sprintf (buf, "Welcome aboard %s!", ranks[me->p_stats.st_rank].name);
+#endif
         warning (buf);
     }
 
@@ -2273,7 +2282,7 @@ showValues (struct list *data)
 /***  ClearMotd()
 /***   Free the current motdData
 /******************************************************************************/
-ClearMotd (void)
+void ClearMotd (void)
 {
     struct list *temp, *temp2;
 
@@ -2285,6 +2294,9 @@ ClearMotd (void)
         free (temp2->data);
         free (temp2);
     }
+#ifdef PARADISE
+    // Probably need some stuff here from erase_motd()
+#endif
 
     first = 1;                  /* so that it'll check bold
                                  * next time around */

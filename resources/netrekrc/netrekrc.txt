@@ -27,7 +27,7 @@ keymap: PpW Zva%d_eyftg^jmnrpPrls3tfuwvDwsye d
 # wheel is button 6 and the down wheel is button 7.  There is also support
 # for shifted, controled, and control-shifted mouse actions, see the netrek
 # help file for more details.
-buttonmap: 1P2f3k6%70
+buttonmap: 1P2f3k
 
 # Key to switch to macro mode
 # TAB, ESC could be used too

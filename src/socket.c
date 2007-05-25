@@ -19,6 +19,9 @@
 #include <errno.h>
 #include <time.h>
 #include <process.h>
+#ifdef PARADISE
+#include <zlib.h>
+#endif
 
 #include "Wlib.h"
 #include "defs.h"
@@ -2784,7 +2787,6 @@ void handleStats2 (struct stats_spacket2 *packet)
 
 void handleStatus2 (struct status_spacket2 *packet)
 {
-/*
     updatePlayer[me->p_no] |= LARGE_UPDATE;
     if (infomapped && infotype == PLAYERTYPE &&
 	((struct player *) infothing)->p_no == me->p_no)
@@ -2806,7 +2808,6 @@ void handleStatus2 (struct status_spacket2 *packet)
     status2->jstime = ntohl(packet->jstime);
     status2->time = ntohl(packet->time);
     status2->timeprod = ntohl(packet->timeprod);
-*/
 }
 
 void handlePlanet2 (struct planet_spacket2 *packet)
@@ -2852,7 +2853,7 @@ void handlePlanet2 (struct planet_spacket2 *packet)
 
 void handleTerrainInfo2 (struct terrain_info_packet2 *pkt)
 {
-/*
+
 #ifdef ZDIAG2
     fprintf( stderr, "Receiving terrain info packet\n" );
     fprintf( stderr, "Terrain dims: %d x %d\n", ntohs(pkt->xdim), ntohs(pkt->ydim) );
@@ -2860,12 +2861,11 @@ void handleTerrainInfo2 (struct terrain_info_packet2 *pkt)
     received_terrain_info = TERRAIN_STARTED;
     terrain_x = ntohs(pkt->xdim);
     terrain_y = ntohs(pkt->ydim);
-*/
+
 }; 
 
 void handleTerrain2 (struct terrain_packet2 *pkt)
 {
-/*
     static int curseq = 0, totbytes = 0, done = 0;
     int i;
 #if defined(ZDIAG) || defined(ZDIAG2)
@@ -2879,7 +2879,7 @@ void handleTerrain2 (struct terrain_packet2 *pkt)
     static unsigned char *gzipTerrain = NULL, *orgTerrain = NULL;
     
 #ifdef ZDIAG2
-    fprintf( stderr, "Receiving Terrain packet.  This should be %d.\n", curseq+1 );
+    LineToConsole("Receiving Terrain packet.  This should be %d.\n", curseq+1 );
 #endif
 
     if( (done == TERRAIN_DONE) && (received_terrain_info == TERRAIN_STARTED ) ){
@@ -2896,16 +2896,16 @@ void handleTerrain2 (struct terrain_packet2 *pkt)
     if( (curseq != pkt->sequence) || !(received_terrain_info) ){
       // Should fill in a list of all packets missed
       // or request header packet from server
-      fprintf( stderr, "Blech!  Received terrain packet before terrain_info\n" );
+      LineToConsole("Blech!  Received terrain packet before terrain_info\n" );
       return;
     }
 #ifdef ZDIAG2
-    fprintf( stderr, "Receiving packet %d out of %d\n", curseq, pkt->total_pkts );
+    LineToConsole("Receiving packet %d out of %d\n", curseq, pkt->total_pkts );
 #endif
     if( !gzipTerrain ){
       gzipTerrain = (unsigned char *)malloc( pkt->total_pkts << 7 );
 #if defined(ZDIAG) || defined(ZDIAG2)
-      fprintf( stderr, "Allocating %d bytes for gzipTerrain.\n", pkt->total_pkts << 7 );
+      LineToConsole("Allocating %d bytes for gzipTerrain.\n", pkt->total_pkts << 7 );
 #endif
 		// another yukko constant
     }
@@ -2913,13 +2913,13 @@ void handleTerrain2 (struct terrain_packet2 *pkt)
       orgTerrain = (unsigned char *)malloc( terrain_x*terrain_y );
       dlen = terrain_x * terrain_y;
 #if defined(ZDIAG) || defined(ZDIAG2)
-      fprintf( stderr, "Allocating %d bytes for orgTerrain.\n", dlen );
+      LineToConsole("Allocating %d bytes for orgTerrain.\n", dlen );
 #endif
     }
     for( i = 0; i < pkt->length; i++ ){
 #ifdef ZDIAG2
       if( !(i%10) ){
-        fprintf( stderr, "Params: %d, %d\n", ((curseq-1)<<7)+i, i );
+        LineToConsole("Params: %d, %d\n", ((curseq-1)<<7)+i, i );
       }
 #endif
       gzipTerrain[((curseq-1)<<7)+i] = pkt->terrain_type[i];
@@ -2930,23 +2930,23 @@ void handleTerrain2 (struct terrain_packet2 *pkt)
       status = uncompress( orgTerrain, &dlen, gzipTerrain, totbytes );
       if( status != Z_OK ){
         if( status == Z_BUF_ERROR ){
-          fprintf( stderr, "Unable to uncompress -- Z_BUF_ERROR.\n" );
+          LineToConsole("Unable to uncompress -- Z_BUF_ERROR.\n" );
         }
         if( status == Z_MEM_ERROR ){
-          fprintf( stderr, "Unable to uncompress -- Z_MEM_ERROR.\n" );
+          LineToConsole("Unable to uncompress -- Z_MEM_ERROR.\n" );
         }
         if( status = Z_DATA_ERROR ){
-          fprintf( stderr, "Unable to uncompress -- Z_DATA_ERROR!\n" );
+          LineToConsole("Unable to uncompress -- Z_DATA_ERROR!\n" );
         }
       }
       else{
-        fprintf( stderr, "Total zipped terrain received: %d bytes\n", totbytes );
+        LineToConsole("Total zipped terrain received: %d bytes\n", totbytes );
       }
 #else
       uncompress( orgTerrain, &dlen, gzipTerrain, totbytes );
 #endif
       terrainInfo = (struct t_unit *)malloc( dlen * sizeof( struct t_unit ) );
-      for( i = 0; i < dlen; i++ ){
+      for( i = 0; i < (long) dlen; i++ ){
         terrainInfo[i].types = orgTerrain[i];
 #ifdef ZDIAG2
 	sum |= orgTerrain[i];
@@ -2957,21 +2957,18 @@ void handleTerrain2 (struct terrain_packet2 *pkt)
       }
       done = received_terrain_info = TERRAIN_DONE;
 #ifdef ZDIAG2
-      fprintf( stderr, "Sum = %d, numnz = %d\n", sum, numnz );
+      LineToConsole("Sum = %d, numnz = %d\n", sum, numnz );
 #endif
     }
-*/
 }    
 
 void handleTempPack (struct obvious_packet *packet)
 {
-/*
     struct obvious_packet reply;
-    // printf("New MOTD info available\n");
-    erase_motd();
+    // LineToConsole("New MOTD info available\n");
+    ClearMotd();
     reply.type = CP_ASK_MOTD;
     sendServerPacket((struct player_spacket *) & reply);
-*/
 }
 
 /* handlers for the extension1 packet */
@@ -2993,13 +2990,10 @@ int compute_extension1_size (char *pkt)
 
 void handleExtension1 (struct paradiseext1_spacket *packet)
 {
-/*
     switch (packet->subtype) {
     case SP_PE1_MISSING_BITMAP:
 	{
-	    struct pe1_missing_bitmap_spacket *pkt =
-	    (struct pe1_missing_bitmap_spacket *) packet;
-
+	    struct pe1_missing_bitmap_spacket *pkt = (struct pe1_missing_bitmap_spacket *) packet;
 	    newMotdPic(ntohs(pkt->x), ntohs(pkt->y), ntohs(pkt->width), ntohs(pkt->height), 0, ntohs(pkt->page));
 	}
 	break;
@@ -3007,13 +3001,12 @@ void handleExtension1 (struct paradiseext1_spacket *packet)
 	me->p_totmissiles = ntohs(((struct pe1_num_missiles_spacket *) packet)->num);
 	// printf("updated totmissiles to %d\n",me->p_totmissiles);
 	if (me->p_totmissiles < 0)
-	    me->p_totmissiles = 0;	// SB/WB have
+	    me->p_totmissiles = 0;	// SB/WB have -1
 	break;
     default:
 	printf("unknown paradise extension packet 1 subtype = %d\n",
 	       packet->subtype);
     }
-*/
 }
 void handleThingy (struct thingy_spacket *packet)
 {
@@ -3133,7 +3126,7 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     free_phasers();
     free_plasmas();
     free_thingies();
-
+*/
     nplayers = pkt->nplayers;
     number_of_teams = pkt->nteams;
     // shiptypes
@@ -3144,7 +3137,7 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     nplasmas = pkt->nplasmas;
     npthingies = pkt->nthingies;
     ngthingies = pkt->gthingies;
-
+/*
     // gwidth
     // flags
 
@@ -3163,11 +3156,10 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
 
 void handleGPteam (struct gp_team_spacket *pkt)
 {
-/*
     struct teaminfo_s *currteam;
 
     if ((int) pkt->index >= number_of_teams) {
-	fprintf(stderr, "Team #%d %s is out of range (0..%d)\n", pkt->index,
+	LineToConsole ("Team #%d %s is out of range (0..%d)\n", pkt->index,
 		pkt->teamname, number_of_teams);
 	return;
     }
@@ -3180,25 +3172,23 @@ void handleGPteam (struct gp_team_spacket *pkt)
 
     strncpy(currteam->name, pkt->teamname, sizeof(currteam->name) - 1);
     currteam->name[sizeof(currteam->name) - 1] = 0;
-*/
 }
 
 void handleGPteamlogo (struct gp_teamlogo_spacket *pkt)
 {
-/*
     static char buf[13 * 99];	// 99x99
     static int curr_height = 0;
     static int lwidth, lheight;
     static int teamindex;
     int     pwidth;
 
-    if ((unsigned) pkt->teamindex >= number_of_teams) {
-	fprintf(stderr, "Team #%d is out of range (0..%d)\n", pkt->teamindex,
+    if (pkt->teamindex >= number_of_teams) {
+	LineToConsole ("Team #%d is out of range (0..%d)\n", pkt->teamindex,
 		number_of_teams);
 	return;
     }
     if (pkt->y != curr_height) {
-	fprintf(stderr, "Bad gp_teamlogo packet sequence y(%d) != curr_height(%d)\n",
+	LineToConsole ("Bad gp_teamlogo packet sequence y(%d) != curr_height(%d)\n",
 		pkt->y, curr_height);
 	curr_height = 0;
 	return;
@@ -3206,7 +3196,7 @@ void handleGPteamlogo (struct gp_teamlogo_spacket *pkt)
     if (curr_height) {
 	if (lwidth != pkt->logowidth || lheight != pkt->logoheight ||
 	    teamindex != pkt->teamindex) {
-	    fprintf(stderr, "gp_teamlogo packet sequence error, %d!=%d || %d!=%d || %d!=%d\n",
+	    LineToConsole ("gp_teamlogo packet sequence error, %d!=%d || %d!=%d || %d!=%d\n",
 		    lwidth, pkt->logowidth, lheight, pkt->logoheight,
 		    teamindex, pkt->teamindex);
 	    curr_height = 0;
@@ -3217,7 +3207,7 @@ void handleGPteamlogo (struct gp_teamlogo_spacket *pkt)
 	lwidth = pkt->logowidth;
 	lheight = pkt->logoheight;
 	if (lwidth > 99 || lheight > 99) {
-	    fprintf(stderr, "logo too big (%dx%d), rejecting\n", lwidth, lheight);
+	    LineToConsole ("logo too big (%dx%d), rejecting\n", lwidth, lheight);
 	    curr_height = 0;
 	    return;
 	}
@@ -3228,24 +3218,22 @@ void handleGPteamlogo (struct gp_teamlogo_spacket *pkt)
     curr_height += pkt->thisheight;
 
     if (curr_height >= lheight) {
-	W_FreeImage(teaminfo[teamindex].shield_logo);
+	free (teaminfo[teamindex].shield_logo);
 	teaminfo[teamindex].shield_logo = 
-	                                W_BitmapToImage(lwidth, lheight, buf);
+	                                 W_StoreBitmap(lwidth, lheight, buf, w);
 	curr_height = 0;
     }
-*/
 }
 
 void handleGPshipshape (struct gp_shipshape_spacket *pkt)
 {
-/*
     if (pkt->race < -1 || pkt->race >= number_of_teams) {
-	fprintf(stderr, "race #%d out of range (-1..%d)\n", pkt->race,
+	LineToConsole ("race #%d out of range (-1..%d)\n", pkt->race,
 		number_of_teams - 1);
 	return;
     }
     if ( (int) pkt->shipno >= nshiptypes) {
-	fprintf(stderr, "ship class #%d out of range (0..%d)\n", pkt->shipno,
+	LineToConsole ("ship class #%d out of range (0..%d)\n", pkt->shipno,
 		nshiptypes - 1);
 	return;
     }
@@ -3253,34 +3241,30 @@ void handleGPshipshape (struct gp_shipshape_spacket *pkt)
     replace_shipshape(pkt->race, pkt->shipno, pkt->nviews,
 		      pkt->width, pkt->height);
 #endif
-*/
 }
 
 void handleGPshipbitmap (struct gp_shipbitmap_spacket *pkt)
 {
-/*
     if (pkt->race < -1 || pkt->race >= number_of_teams) {
-	fprintf(stderr, "race #%d out of range (-1..%d)\n", pkt->race,
+	LineToConsole ("race #%d out of range (-1..%d)\n", pkt->race,
 		number_of_teams - 1);
 	return;
     }
     if ( (int) pkt->shipno >= nshiptypes) {
-	fprintf(stderr, "ship class #%d out of range (0..%d)\n", pkt->shipno,
+	LineToConsole ("ship class #%d out of range (0..%d)\n", pkt->shipno,
 		nshiptypes - 1);
 	return;
     }
 #ifdef FIXME
     replace_ship_bitmap(pkt->race, pkt->shipno, pkt->thisview, pkt->bitmapdata);
 #endif
-*/
 }
 
 void handleGPrank (struct gp_rank_spacket *pkt)
 {
-/*
     struct rank2 *curr;
     if (pkt->rankn >= nranks2) {
-	fprintf(stderr, "rank #%d %s out of range (0..%d)\n", pkt->rankn,
+	LineToConsole("rank #%d %s out of range (0..%d)\n", pkt->rankn,
 		pkt->name, nranks2 - 1);
 	return;
     }
@@ -3288,25 +3272,22 @@ void handleGPrank (struct gp_rank_spacket *pkt)
     free(curr->name);
 
     curr->genocides = htonl(pkt->genocides);
-    curr->di = htonl(pkt->milliDI) / 1000.0;
-    curr->battle = htonl(pkt->millibattle) / 1000.0;
-    curr->strategy = htonl(pkt->millistrat) / 1000.0;
-    curr->specship = htonl(pkt->millispec) / 1000.0;
+    curr->di = htonl(pkt->milliDI) / (float) 1000.0;
+    curr->battle = htonl(pkt->millibattle) / (float) 1000.0;
+    curr->strategy = htonl(pkt->millistrat) / (float) 1000.0;
+    curr->specship = htonl(pkt->millispec) / (float) 1000.0;
     curr->name = strdup(pkt->name);
-*/
 }
 
 void handleGProyal (struct gp_royal_spacket *pkt)
 {
-/*
     if ((int) pkt->rankn >= nroyals) {
-	fprintf(stderr, "Royalty #%d %s out of range (0..%d)\n", pkt->rankn,
+	LineToConsole("Royalty #%d %s out of range (0..%d)\n", pkt->rankn,
 		pkt->name, nroyals - 1);
 	return;
     }
     free(royal[pkt->rankn].name);
     royal[pkt->rankn].name = strdup(pkt->name);
-*/
 }
 
 #ifdef FIXME
@@ -3329,7 +3310,6 @@ static unsigned char planet_bits[] = {
 
 void handleGPteamplanet (struct gp_teamplanet_spacket *pkt)
 {
-/*
 #ifdef FIXME
     {
 #define	TACTICALSIZE	sizeof(pkt->tactical)
@@ -3375,7 +3355,6 @@ void handleGPteamplanet (struct gp_teamplanet_spacket *pkt)
 #undef GALACTICSIZE
     }
 #endif
-*/
 }
 
 void handleGameparams (struct gameparam_spacket *packet)

@@ -1129,12 +1129,20 @@ PlistLine (W_Window win,
             break;
 
         case 'C':              /* Curt (short) Rank */
+#ifdef PARADISE
+            format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
+#else
             format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
+#endif
             buffPoint += 4;
             break;
 
         case 'R':              /* Rank */
+#ifdef PARADISE
+            format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
+#else
             format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
+#endif
             buffPoint += 10;
             break;
 

@@ -2527,8 +2527,10 @@ DrawPlasmaTorps (void)
 void
 draw_one_thingy(struct thingy *k)
 {
+    struct player *j;
     int dx, dy;
     int frame;
+    int droneTeam;
     int view = scaleFactor * TWINSIDE / 2;
 
     if (k->t_shape == SHP_BLANK)
@@ -2554,6 +2556,7 @@ draw_one_thingy(struct thingy *k)
 	frame = image->frames - k->t_fuse;
 	break;*/
     case SHP_MISSILE:
+        j = &players[k->t_owner];
 #ifdef SOUND
         if (k->t_owner != me->p_no)
         {
@@ -2566,16 +2569,54 @@ draw_one_thingy(struct thingy *k)
             }   	
         }
 #endif
-	W_WriteScaleBitmap (dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor,
-                            dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor,
-                            BMP_DRONE_WIDTH * SCALE / scaleFactor,
-                            BMP_DRONE_HEIGHT * SCALE / scaleFactor,
-                            BMP_DRONE_WIDTH,
-                            BMP_DRONE_HEIGHT,
-                            (360 * k->t_dir/255),
-                            (colorWeapons ? (myPlayer(&players[k->t_owner]) ? mdronec_bitmap : dronec_bitmap) : drone_bitmap),
-                            playerColor (&players[k->t_owner]),
-                            w);
+        if (colorWeapons)
+        {
+            if (myPlayer(j))
+                droneTeam = 0;
+            else
+            {
+                switch (j->p_team)
+                {
+                case FED:
+                    droneTeam = 1;
+                    break;
+                case KLI:
+                    droneTeam = 3;
+                    break;
+                case ORI:
+                    droneTeam = 4;
+                    break;
+                case ROM:
+                    droneTeam = 5;
+                    break;
+                default: // IND
+                    droneTeam = 2;
+                }
+            }
+	    W_WriteScaleBitmap (dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_DRONE_WIDTH * SCALE / scaleFactor,
+                                BMP_DRONE_HEIGHT * SCALE / scaleFactor,
+                                BMP_DRONE_WIDTH,
+                                BMP_DRONE_HEIGHT,
+                                (360 * k->t_dir/255),
+                                dronec_bitmap[droneTeam],
+                                playerColor (j),
+                                w);
+        }
+        else
+        {
+	    W_WriteScaleBitmap (dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_DRONE_WIDTH * SCALE / scaleFactor,
+                                BMP_DRONE_HEIGHT * SCALE / scaleFactor,
+                                BMP_DRONE_WIDTH,
+                                BMP_DRONE_HEIGHT,
+                                (360 * k->t_dir/255),
+                                drone_bitmap,
+                                playerColor (j),
+                                w);
+        }
         clearzone[0][clearcount] = dx - (BMP_DRONE_WIDTH / 2) * SCALE / scaleFactor - 1;
         clearzone[1][clearcount] = dy - (BMP_DRONE_HEIGHT / 2) * SCALE / scaleFactor - 1;
         clearzone[2][clearcount] = BMP_DRONE_WIDTH * SCALE / scaleFactor + 2;
@@ -2647,7 +2688,7 @@ draw_one_thingy(struct thingy *k)
                             BMP_DRONEDET_WIDTH,
                             BMP_DRONEDET_HEIGHT,
                             0,
-                            drone_explosion_bitmap[frame],
+                            colorWeapons ? dronec_explosion_bitmap[frame] : drone_explosion_bitmap[frame],
                             playerColor (&players[k->t_owner]),
                             w);
         clearzone[0][clearcount] = dx - (BMP_DRONEDET_WIDTH / 2) * SCALE / scaleFactor ;

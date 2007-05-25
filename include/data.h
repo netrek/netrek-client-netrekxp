@@ -40,6 +40,7 @@ extern struct status *status;
 #ifdef PARADISE
 extern struct status2 *status2;
 extern struct thingy *thingies;
+extern struct t_unit *terrainInfo;
 #endif
 extern struct ship *myship;
 extern struct stats *mystats;
@@ -279,6 +280,9 @@ extern int debug;
 extern double Sin[], Cos[];
 
 #ifdef PARADISE
+extern int received_terrain_info;
+extern int terrain_x;
+extern int terrain_y;
 extern int gwidth;		/* galaxy width, adjusted for zoom [BDyess] */
 extern int offsetx;
 extern int offsety;		/* offsets when zooming [BDyess] */
@@ -345,7 +349,9 @@ extern W_Icon tractbits, pressbits;
 
 //Paradise bitmaps
 #ifdef PARADISE
-extern W_Icon drone_bitmap, dronec_bitmap, mdronec_bitmap;
+extern W_Icon drone_bitmap;
+extern W_Icon base_dronec_bitmap;
+extern W_Icon dronec_bitmap[NUM_CTORP_TYPES];
 extern W_Icon base_drone_explosion_bitmap;
 extern W_Icon drone_explosion_bitmap[BMP_DRONEDET_FRAMES];
 extern W_Icon base_dronec_explosion_bitmap;
@@ -427,6 +433,12 @@ extern char defpasswd[PSEUDOSIZE];
 extern char login[PSEUDOSIZE];
 
 extern struct rank ranks[NUMRANKS];
+#ifdef PARADISE
+extern struct rank2 *ranks2;
+extern struct royalty *royal;
+extern int nranks2;
+extern int nroyals;
+#endif
 
 extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
     war, warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi,

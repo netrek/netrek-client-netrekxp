@@ -53,6 +53,10 @@ openmem (void)
     plasmatorps = universe.plasmatorps;
 #ifdef PARADISE
     thingies = universe.thingies;
+    ranks2 = universe.ranks2;
+    teaminfo = universe.teaminfo;
+    royal = universe.royal;
+    status2 = universe.status2;
 #endif
     status = universe.status;
     planets = universe.planets;

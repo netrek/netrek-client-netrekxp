@@ -199,6 +199,10 @@
                                  * verification */
 #endif
 
+#ifdef PARADISE
+/* the CP_ASK_MOTD packet is the same as temp_spacket */
+#define CP_ASK_MOTD	38	/* request MOTD */
+#endif
 #define CP_PLANET       38      /* cross-check planet info */
 
 #define CP_PING_RESPONSE 42     /* client response */
