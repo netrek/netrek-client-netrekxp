@@ -41,6 +41,7 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 static int planet_frame = 0;
 #ifdef PARADISE
 static int star_frame = 0;
+static int wormhole_frame = 0;
 #endif
 static int star_updates = 0;
 static int last_speed = 0;
@@ -599,6 +600,25 @@ DrawPlanets (void)
                                 planetColor (l),
                                 w);
         }
+        else if (PL_TYPE(*l) == PLWHOLE)
+        {
+            int j = wormhole_frame * 10 / server_ups;
+            if ((j >= WORMHOLE_VIEWS - 1) || (j < 0))
+            {
+                j = 0;
+                wormhole_frame = 0;
+            }
+            W_WriteScaleBitmap (dx - (BMP_WORMHOLE_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_WORMHOLE_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_WORMHOLE_WIDTH * SCALE / scaleFactor,
+                                BMP_WORMHOLE_HEIGHT * SCALE / scaleFactor,
+                                BMP_WORMHOLE_WIDTH,
+                                BMP_WORMHOLE_HEIGHT,
+                                0,
+                                wormhole_bitmap[j],
+                                planetColor (l),
+                                w);
+        }
         else
 #endif    
         if (planetBitmap == 3)
@@ -652,7 +672,11 @@ DrawPlanets (void)
                          W_White);
         }
 
-        if (showPlanetNames)
+        if (showPlanetNames
+#ifdef PARADISE
+         && (PL_TYPE(*l) != PLWHOLE)
+#endif
+        )
         {
             /* Center name */
             W_MaskText (w, dx - (W_Textwidth * l->pl_namelen / 2),
@@ -710,6 +734,23 @@ DrawPlanets (void)
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
         }
+#ifdef PARADISE
+        if (PL_TYPE(*l) == PLSTAR)
+        {
+            clearzone[0][clearcount] = dx - (BMP_STAR_WIDTH / 2) * SCALE / scaleFactor;
+            clearzone[1][clearcount] = dy - (BMP_STAR_HEIGHT / 2) * SCALE / scaleFactor;
+            clearzone[2][clearcount] = BMP_STAR_WIDTH * SCALE / scaleFactor;
+            clearzone[3][clearcount] = BMP_STAR_HEIGHT * SCALE / scaleFactor;
+        }
+        else if (PL_TYPE(*l) == PLWHOLE)
+        {
+            clearzone[0][clearcount] = dx - (BMP_WORMHOLE_WIDTH / 2) * SCALE / scaleFactor;
+            clearzone[1][clearcount] = dy - (BMP_WORMHOLE_HEIGHT / 2) * SCALE / scaleFactor;
+            clearzone[2][clearcount] = BMP_WORMHOLE_WIDTH * SCALE / scaleFactor;
+            clearzone[3][clearcount] = BMP_WORMHOLE_HEIGHT * SCALE / scaleFactor;
+        }
+        else
+#endif
         if (planetBitmap == 3)
         {
             clearzone[0][clearcount] = dx - (5 * BMP_PLANET_WIDTH / 6 * SCALE / scaleFactor) - 1;
@@ -729,6 +770,7 @@ DrawPlanets (void)
     planet_frame++;
 #ifdef PARADISE
     star_frame++;
+    wormhole_frame++;
 #endif
 }
 

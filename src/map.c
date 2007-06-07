@@ -583,6 +583,11 @@ DrawPlanets ()
                              dy - ( BMP_MSTAR_HEIGHT / 2),
                              BMP_MSTAR_WIDTH,
                              BMP_MSTAR_HEIGHT);
+            else if (PL_TYPE(*l) == PLWHOLE)
+                W_ClearArea (mapw, dx - ( BMP_MWORMHOLE_WIDTH / 2),
+                             dy - ( BMP_MWORMHOLE_HEIGHT / 2),
+                             BMP_MWORMHOLE_WIDTH,
+                             BMP_MWORMHOLE_HEIGHT);
             else
             {
 #endif
@@ -647,6 +652,17 @@ DrawPlanets ()
                                 BMP_MSTAR_HEIGHT,
                                 0,
                                 star_mbitmap,
+                                planetColor (l),
+                                mapw);
+        else if (PL_TYPE(*l) == PLWHOLE)
+            W_OverlayScaleBitmap (dx - (BMP_MWORMHOLE_WIDTH / 2),
+                                dy - (BMP_MWORMHOLE_HEIGHT / 2),
+                                BMP_MWORMHOLE_WIDTH,
+                                BMP_MWORMHOLE_HEIGHT,
+                                BMP_MWORMHOLE_WIDTH,
+                                BMP_MWORMHOLE_HEIGHT,
+                                0,
+                                wormhole_mbitmap,
                                 planetColor (l),
                                 mapw);
         else

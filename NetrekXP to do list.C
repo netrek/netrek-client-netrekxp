@@ -43,7 +43,7 @@ Many many places in code where things are based on MAXSOMETHING whether it be pl
 torps planets plasmas.  Whereas paradise wants to use dynamic variables.  It's a
 mess.  And paradise has nphasers, the entire concept of multiple phasers
 per ship is not compliant with current code.
-Still missing wormholes, asteroids, fighters, and (flashing) warpbeacons.
+Still missing asteroids, fighters, and (flashing) warpbeacons.
 Info window not working right with paradise.
 Need popup box that works, when connecting to wrong server type
 

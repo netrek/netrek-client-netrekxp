@@ -504,6 +504,18 @@ void loadparadisethings (void)
         W_StoreBitmap3 ("bitmaps/paradise/starm.bmp", BMP_MSTAR_WIDTH,
                         BMP_MSTAR_HEIGHT, BMP_MSTAR, mapw,
                         LR_DEFAULTCOLOR);
+    base_wormhole_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/wormhole.bmp", BMP_WORMHOLE_WIDTH,
+                        BMP_WORMHOLE_HEIGHT * WORMHOLE_VIEWS, BMP_WORMHOLE, w,
+                        LR_DEFAULTCOLOR);
+    for (i = 0; i < WORMHOLE_VIEWS; i++)
+        wormhole_bitmap[i] =
+            W_PointBitmap2 (base_wormhole_bitmap, 0, i, BMP_WORMHOLE_WIDTH, BMP_WORMHOLE_HEIGHT);
+
+    wormhole_mbitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/wormholem.bmp", BMP_MWORMHOLE_WIDTH,
+                        BMP_MWORMHOLE_HEIGHT, BMP_MWORMHOLE, mapw,
+                        LR_DEFAULTCOLOR);
 
     drone_bitmap =
         W_StoreBitmap3 ("bitmaps/paradise/drone.bmp", BMP_DRONE_WIDTH,

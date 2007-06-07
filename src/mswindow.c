@@ -595,6 +595,10 @@ W_Cleanup (void)
     for (i = 0; i < STAR_VIEWS; i++)
         free (star_bitmap[i]);
     free (star_mbitmap);
+    free (base_wormhole_bitmap);
+    for (i = 0; i < WORMHOLE_VIEWS; i++)
+        free (wormhole_bitmap[i]);
+    free (wormhole_mbitmap);
     free (paradise_ship_bitmaps);
     free (paradise_cship_self_bitmaps);
     free (paradise_cship_bitmaps);
