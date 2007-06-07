@@ -48,27 +48,37 @@ openmem (void)
 {
     int i;
 
-    players = universe.players;
-    torps = universe.torps;
-    plasmatorps = universe.plasmatorps;
+    /* Used to be struct memory universe, but leaving room for flexible struct
+       sizes is better, and necessary for paradise - BB */
+    players = (struct player *) malloc(sizeof(*players) * MAXPLAYER);
+    torps = (struct torp *) malloc(sizeof(*torps) * MAXPLAYER * MAXTORP);
+    plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * MAXPLAYER * MAXPLASMA);
 #ifdef PARADISE
-    thingies = universe.thingies;
-    ranks2 = universe.ranks2;
-    teaminfo = universe.teaminfo;
-    royal = universe.royal;
-    status2 = universe.status2;
+    thingies = (struct thingy *) malloc(sizeof(*thingies) * (MAXPLAYER * npthingies + ngthingies));
+    ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
+    for (i = 0; i < nranks2; i++)
+	ranks2[i].name = strdup("blank");
+    /* independent is teaminfo[-1] */
+    teaminfo = 1 + (struct teaminfo_s *) malloc(sizeof(*teaminfo) * (number_of_teams + 2));
+    royal = (struct royalty *) malloc(sizeof(*royal) * nroyals);
+    for (i = 0; i < nroyals; i++) 
+	royal[i].name = strdup("blank");
+    status2 = (struct status2 *) malloc(sizeof(*status2));
 #endif
-    status = universe.status;
-    planets = universe.planets;
-    phasers = universe.phasers;
-    mctl = universe.mctl;
-    messages = universe.messages;
+    status = (struct status *) malloc(sizeof(*status));
+    planets = (struct planet *) malloc(sizeof(*planets) * MAXPLANETS);
+    phasers = (struct phaser *) malloc(sizeof(*phasers) * MAXPLAYER);
+    mctl = (struct mctl *) malloc(sizeof(*mctl));
+    messages = (struct message *) malloc(sizeof(*messages) * MAXMESSAGE);
     for (i = 0; i < MAXPLAYER; i++)
     {
         players[i].p_status = PFREE;
         players[i].p_cloakphase = 0;
         players[i].p_no = i;
         players[i].p_ntorp = 0;
+#ifdef PARADISE
+        players[i].p_ndrone = 0;
+#endif
         players[i].p_explode = 1;
         players[i].p_stats.st_tticks = 1;
     }

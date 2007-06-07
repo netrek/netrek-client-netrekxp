@@ -118,14 +118,14 @@ ranklist (void)
     char buf[100];
 
     /* W_ClearWindow(rankw); */
-    (void) strcpy (buf, "  Rank       Hours  Defense  Ratings      DI");
+    (void) strcpy (buf, "  Rank       Hours  Offense  Ratings      DI");
     W_WriteText (rankw, 1, 1, textColor, buf, strlen (buf), W_BoldFont);
     for (i = 0; i < NUMRANKS; i++)
     {
         sprintf (buf, "%-11.11s %5.0f %8.2f %8.2f   %7.2f",
                  ranks[i].name,
                  ranks[i].hours,
-                 ranks[i].defense,
+                 ranks[i].offense,
                  ranks[i].ratings, ranks[i].ratings * ranks[i].hours);
         if (mystats->st_rank == i)
         {

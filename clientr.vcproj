@@ -81,7 +81,6 @@
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="\netrek_files\tmp\src\Debug/netrek.pdb"
-				MapFileName=""
 				SubSystem="1"
 				TargetMachine="1"
 			/>

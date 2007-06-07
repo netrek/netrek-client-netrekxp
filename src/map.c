@@ -40,7 +40,7 @@
 
 #ifdef PARADISE
 int drawgrid = 1; /* goes to netrekrc eventually */
-int blk_zoom = 0; /* goes to netrekrc eventually */
+int blk_zoom = 0; /* goes to netrekrc eventually, doesn't work */
 int sectorNums = 1; /* goes to netrekrc eventually */
 #define DRAWGRID 4
 #endif
@@ -925,7 +925,8 @@ map (void)
     static char clearviewbox = 0;
     static char viewboxcleared = 0;
     int viewdist;
-    int view = TWINSIDE * scaleFactor / 2;
+    int view = TWINSIDE * mapscaleFactor / 2; /* view range for scaled galactic */
+    int viewboxview = (TWINSIDE * scaleFactor / 2); /* view range for view box */
     int mvx, mvy;
 #ifdef PARADISE
     static int osx = 0, osy = 0;	/* old square */
@@ -941,7 +942,7 @@ map (void)
     if (GWINSIDE == 0)
        return;
  
-    viewdist = (TWINSIDE / 2 * scaleFactor) / (GWIDTH / GWINSIDE);
+    viewdist = (viewboxview) / (GWIDTH / GWINSIDE);
     dx = (me->p_x) / (GWIDTH / GWINSIDE);
     dy = (me->p_y) / (GWIDTH / GWINSIDE);
 
@@ -1010,10 +1011,10 @@ map (void)
             /* redraw any planets they overwrote */
             mvx = viewx * (GWIDTH / GWINSIDE); /* correct from view scale */
             mvy = viewy * (GWIDTH / GWINSIDE);
-            checkRedraw(mvx + view, mvy + view);
-            checkRedraw(mvx + view, mvy - view);
-            checkRedraw(mvx - view, mvy + view);
-            checkRedraw(mvx - view, mvy - view);
+            checkRedraw(mvx + viewboxview, mvy + viewboxview);
+            checkRedraw(mvx + viewboxview, mvy - viewboxview);
+            checkRedraw(mvx - viewboxview, mvy + viewboxview);
+            checkRedraw(mvx - viewboxview, mvy - viewboxview);
             viewboxcleared = 1;
         }
 
@@ -1609,7 +1610,7 @@ map (void)
             clearlmark[3] = 1;
             clearlock = 1;
         }
-        if (lockLine && (dx <= view && dx >= 0 && dy <= view && dy >= 0))
+        if (lockLine)
         {
             int mydx, mydy;
             

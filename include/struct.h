@@ -756,7 +756,7 @@ struct obtype
 
 struct rank
 {
-    float hours, ratings, defense;
+    float hours, ratings, offense;
     char *name, *cname;
 };
 
@@ -775,26 +775,6 @@ struct royalty {		/* Paradise royalty ranks */
     char   *name;		/* name of rank */
 };
 #endif
-
-struct memory
-{
-    struct player players[MAXPLAYER];
-    struct torp torps[MAXPLAYER * MAXTORP];
-    struct plasmatorp plasmatorps[MAXPLAYER * MAXPLASMA];
-#ifdef PARADISE
-    struct thingy thingies[MAXPLAYER * 20]; // Arbitrary
-    struct rank2 ranks2[30]; // Arbitrary
-    struct teaminfo_s teaminfo[6]; // Arbitrary
-    struct royalty royal[5]; // Arbitrary
-    struct status2 status2[1]; // Arbitrary
-#endif
-    struct status status[1];
-    struct planet planets[MAXPLANETS];
-    struct phaser phasers[MAXPLAYER];
-    struct mctl mctl[1];
-    struct message messages[MAXMESSAGE];
-    struct ship shipvals[NUM_TYPES];
-};
 
 struct plupdate
 {

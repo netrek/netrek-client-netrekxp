@@ -2547,6 +2547,12 @@ handlePlanetLoc (struct planet_loc_spacket *packet)
     pl->pl_flags |= PLREDRAW;
     reinitPlanets = 1;
 
+#ifdef PARADISE
+    /* What a terrible hack, just copying paradise client code - BB */
+    if (pl->pl_x > gwidth)
+	gwidth = 200000;
+#endif
+
 #ifdef ROTATERACE
     if (rotate)
     {
@@ -3014,7 +3020,7 @@ void handleThingy (struct thingy_spacket *packet)
     struct thingy *thetorp;
 
 #ifdef CORRUPTED_PACKETS
-    if (packet->tnum >= npthingies*nplayers + ngthingies)
+    if (ntohs(packet->tnum) >= npthingies*nplayers + ngthingies)
     {
         LineToConsole ("handleThingy: bad index %d\n", packet->tnum);
         return;
@@ -3044,7 +3050,7 @@ void handleThingyInfo (struct thingy_info_spacket *packet)
     struct thingy *thetorp;
 
 #ifdef CORRUPTED_PACKETS
-    if (packet->tnum >= npthingies*nplayers + ngthingies)
+    if (ntohs(packet->tnum) >= npthingies*nplayers + ngthingies)
     {
         LineToConsole ("handleThingyInfo: bad index %d\n", packet->tnum);
         return;
@@ -3115,9 +3121,217 @@ void handleScan (struct scan_spacket *packet)
     }
 }
 
+void
+initialize_thingies(void)
+{
+    int     i;
+    int     n = (npthingies * MAXPLAYER + ngthingies);
+    thingies = (struct thingy *) malloc(sizeof(*thingies) * n);
+    for (i = 0; i < n; i++) {
+	thingies[i].t_shape = SHP_BLANK;
+	thingies[i].t_no = i;
+	thingies[i].t_owner = (i >= npthingies * MAXPLAYER) ? -1 : (i / npthingies);
+    }
+}
+
+void
+initialize_torps(void)
+{
+    int     i;
+
+    torps = (struct torp *) malloc(sizeof(*torps) * MAXPLAYER * ntorps);
+
+    for (i = 0; i < nplayers * ntorps; i++) {
+	torps[i].t_status = TFREE;
+	torps[i].t_owner = (i / ntorps);
+    }
+}
+
+void
+initialize_plasmas(void)
+{
+    int     i;
+
+    plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * MAXPLAYER * nplasmas);
+    for (i = 0; i < MAXPLAYER * nplasmas; i++) {
+	plasmatorps[i].pt_status = PTFREE;
+	plasmatorps[i].pt_owner = (i / nplasmas);
+    }
+}
+
+static void
+initialize_phasers(void)
+{
+    int     i;
+
+    phasers = (struct phaser *) malloc(sizeof(*phasers) * MAXPLAYER * nphasers);
+
+    for (i = 0; i < MAXPLAYER * nphasers; i++) {
+	phasers[i].ph_status = PHFREE;
+	phasers[i].ph_fuse = 0;
+    }
+}
+
+void
+initialize_planets(void)
+{
+    int     i;
+
+    planets = (struct planet *)malloc(sizeof(*planets) * MAXPLANETS);
+
+    for(i = 0; i < MAXPLANETS; i++) {
+	struct planet *curr = &planets[i];
+	curr->pl_no = i;
+	curr->pl_flags = 0;
+	curr->pl_owner = 0;
+	curr->pl_x = curr->pl_y = -10000;
+	sprintf(curr->pl_name, "planet%d", i);
+	curr->pl_namelen = strlen(curr->pl_name);
+	curr->pl_armies = 0;
+	curr->pl_info = 0;
+	curr->pl_deadtime = 0;
+	curr->pl_couptime = 0;
+	curr->pl_timestamp = 0;
+
+	/* initialize planet redraw for moving planets */
+	pl_update[i].plu_update = -1;
+    }
+}
+
+void
+initialize_ranks(void)
+{
+    int     i;
+    ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
+
+    for (i = 0; i < nranks2; i++) {
+	ranks2[i].name = strdup("blank");
+    }
+}
+
+void
+initialize_royal(void)
+{
+    int     i;
+    royal = (struct royalty *) malloc(sizeof(*royal) * nroyals);
+
+    for (i = 0; i < nroyals; i++) {
+	royal[i].name = strdup("blank");
+    }
+}
+
+
+void
+resize_players(void)
+{
+/*  For sake of simplicity, I'm leaving size of player struct constant at MAXPLAYER,
+    resizing just leads to too many problems. - BB */
+/*
+    int     me_no = 0;
+
+    if (me)
+	me_no = me->p_no;
+    players = (struct player *) realloc(players, sizeof(*players) * nplayers);
+    if (me) {
+	me = &players[me_no];
+	myship = &(me->p_ship);
+    }
+*/
+}
+
+load_generic_teams(void)
+{
+/* needs to be converted to xpm */
+    /*
+       reserved letters: A G T
+    */
+    int     i;
+
+    /* independent is teaminfo[-1] */
+    teaminfo = 1 + (struct teaminfo_s *) malloc(sizeof(*teaminfo) * (number_of_teams + 2));
+
+    strcpy(teaminfo[-1].name, "Independant");
+    teaminfo[-1].letter = 'I';
+    strcpy(teaminfo[-1].shortname, "IND");
+
+//    load_default_teamlogos();	/* loads the first 4 team logos */
+
+    for (i = 0; i < number_of_teams; i++) {
+	sprintf(teaminfo[i].name, "Team #%d", i);
+	teaminfo[i].letter = 'J' + i;	/* I, J through P */
+	sprintf(teaminfo[i].shortname, "T%02d", i);
+
+	/* we should draw something nifty here */
+	if (i >= 4)		/* the first 4 have been loaded already. */
+	    teaminfo[i].shield_logo = W_StoreBitmap(1, 1, (char*)&i, w);
+	/* XXX uh-oh if more than 4 teams */
+    }
+}
+
+void
+free_teams(void)
+{
+    int     i;
+    for (i = 0; i < number_of_teams; i++) {
+    	free (teaminfo[i].shield_logo);
+    }
+    /* we offsetted by 1 to make room for IND */
+    free(teaminfo - 1);
+    teaminfo = 0;
+}
+
+void
+free_torps(void)
+{
+    free(torps);
+    torps = 0;
+}
+
+void
+free_phasers(void)
+{
+    free(phasers);
+    phasers = 0;
+}
+
+void
+free_plasmas(void)
+{
+    free(plasmatorps);
+    plasmatorps = 0;
+}
+
+void
+free_thingies(void)
+{
+    free(thingies);
+    thingies = 0;
+}
+
+void
+free_ranks(void)
+{
+    int     i;
+    for (i = 0; i < nranks2; i++)
+	if (ranks2[i].name)
+	    free(ranks2[i].name);
+    free(ranks2);
+    ranks2 = 0;
+}
+
+void
+free_royal(void)
+{
+    int     i;
+    for (i = 0; i < nroyals; i++)
+	if (royal[i].name)
+	    free(royal[i].name);
+
+    free(royal);
+    royal = 0;
+}
 void handleGPsizes (struct gp_sizes_spacket *pkt)
 {
-/*
     free_ranks();
     free_royal();
 
@@ -3126,32 +3340,33 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     free_phasers();
     free_plasmas();
     free_thingies();
-*/
+
     nplayers = pkt->nplayers;
     number_of_teams = pkt->nteams;
     // shiptypes
     nranks2 = pkt->nranks;
     nroyals = pkt->nroyal;
+    // Code doesn't support nphasers ntorps or plasmas changing - BB
     nphasers = pkt->nphasers;
     ntorps = pkt->ntorps;
     nplasmas = pkt->nplasmas;
     npthingies = pkt->nthingies;
     ngthingies = pkt->gthingies;
-/*
+
     // gwidth
     // flags
 
     load_generic_teams();
 
-    reinit_ranks();
-    reinit_royal();
+    initialize_ranks();
+    initialize_royal();
 
     resize_players();
     initialize_torps();
     initialize_phasers();
     initialize_plasmas();
     initialize_thingies();
-*/
+
 }
 
 void handleGPteam (struct gp_team_spacket *pkt)

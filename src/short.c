@@ -225,7 +225,11 @@ char *shiptype[NUM_TYPES] = { "SC", "DD", "CA", "BB", "AS", "SB", "AT" };
 int spwinside = 500;            /* WINSIDE from Server */
 
 #define SPWINSIDE 500           /* To make it safe */
+#ifdef PARADISE
+LONG spgwidth = 100000;
+#else
 LONG spgwidth = GWIDTH;
+#endif
 
 void
 sendThreshold (short unsigned int v)

@@ -50,7 +50,6 @@ extern struct message *messages;
 extern struct mctl *mctl;
 extern struct team *teams;
 extern struct ship shipvals[];
-extern struct memory universe;
 extern struct planet pdata[];
 extern struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
@@ -283,7 +282,8 @@ extern double Sin[], Cos[];
 extern int received_terrain_info;
 extern int terrain_x;
 extern int terrain_y;
-extern int gwidth;		/* galaxy width, adjusted for zoom [BDyess] */
+extern int gwidth;		/* Paradise version of GWIDTH */
+extern int gwidth_zoom; 	/* galaxy width, adjusted for zoom, unused */
 extern int offsetx;
 extern int offsety;		/* offsets when zooming [BDyess] */
 extern int nplayers;
@@ -810,6 +810,7 @@ extern int weaponsOnMap;	/* draw weapons fire on map */
 extern int sortPlanets; 	/* sort planet list by team and army count */
 extern int packetLights;        /* show packet send/receive via dashboard */
 extern int infoRange;           /* show limit on info with large tactical windows */
-extern int scaleFactor;         /* allows for scaling of graphics */
+extern int scaleFactor;         /* allows for scaling of tactical window */
+extern int mapscaleFactor;      /* allows for scaling of galactic window, unused */
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 #endif /* _h_data */

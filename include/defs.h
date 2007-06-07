@@ -70,7 +70,8 @@
 
 /* These are configuration definitions */
 #ifdef PARADISE
-#define GWIDTH 200000
+#define GWIDTH gwidth           /* Paradise has variable galaxy
+                                   width, up to 200000 */
 #else
 #define GWIDTH 100000           /* galaxy is 100000 spaces
                                  * on a side */

@@ -969,7 +969,7 @@ newwin (char *hostmon,
     W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
 
 #ifdef PARADISE
-    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 70, MAXPLANETS + 8, baseWin, 2);
+    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, MAXPLANETS + 8, baseWin, 2);
 #else
     planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, MAXPLANETS + 3, baseWin, 2);
 #endif

@@ -35,7 +35,6 @@ struct planet *planets;
 struct phaser *phasers;
 struct message *messages;
 struct mctl *mctl;
-struct memory universe;
 struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
 int TWINSIDE = 500;             /* Size of tactical window */
@@ -279,7 +278,8 @@ extern double Sin[], Cos[];
 int received_terrain_info = 0;
 int terrain_x;
 int terrain_y;
-int gwidth = GWIDTH;			/* galaxy width, adjusted for zoom [BDyess] */
+int gwidth = 100000;		/* Paradise version of GWIDTH */
+int gwidth_zoom = 100000;	/* galaxy width, adjusted for zoom, unused */
 int offsetx = 0;
 int offsety = 0;			/* offsets when zooming [BDyess] */
 int nplayers = 256;
@@ -899,5 +899,6 @@ int weaponsOnMap = 1;		/* draw weapons fire on map */
 int sortPlanets = 1;		/* sort planet list by team and army count */
 int packetLights = 1;           /* show packet send/receive via dashboard */
 int infoRange = 1;              /* show limit on info with large tactical windows */
-int scaleFactor = 40;           /* allows for scaling of graphics */
+int scaleFactor = 40;           /* allows for scaling of tactical window */
+int mapscaleFactor = 40;        /* allows for scaling of galactic window, unused */
 int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */

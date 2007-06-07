@@ -1084,7 +1084,8 @@ struct kills_s_spacket
     char pnum;                  /* How many kills in packet */
     unsigned short kills;       /* 6 bit player numer   */
     /* 10 bit kills*100     */
-    unsigned short mkills[MAXPLAYER];
+    unsigned short mkills[32];
+    /* NOTE: this must be identical to MAXPLAYER in Vanilla server */
 };
 
 struct phaser_s_spacket
