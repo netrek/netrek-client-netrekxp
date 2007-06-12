@@ -507,8 +507,8 @@ mkdir %InstCWD%\netrek\bitmaps\paradise
 copy resources\paradise\paradise_*.bmp %InstCWD%\netrek\bitmaps\paradise
 copy resources\paradise\star*.bmp %InstCWD%\netrek\bitmaps\paradise
 copy resources\paradise\wormhole*.bmp %InstCWD%\netrek\bitmaps\paradise
-copy resources\paradise\mdroneC.bmp %InstCWD%\netrek\bitmaps\paradise
 copy resources\paradise\drone*.bmp %InstCWD%\netrek\bitmaps\paradise
+copy resources\paradise\fighter*.bmp %InstCWD%\netrek\bitmaps\paradise
 copy resources\paradise\gear.bmp %InstCWD%\netrek\bitmaps\paradise
 
 copy resources\fonts\ntfonts2.fon %InstCWD%\netrek

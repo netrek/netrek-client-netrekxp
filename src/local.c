@@ -2572,7 +2572,7 @@ draw_one_thingy(struct thingy *k)
     struct player *j;
     int dx, dy;
     int frame;
-    int droneTeam;
+    int droneTeam, fighterTeam;
     int view = scaleFactor * TWINSIDE / 2;
 
     if (k->t_shape == SHP_BLANK)
@@ -2586,17 +2586,6 @@ draw_one_thingy(struct thingy *k)
     dx = scaleLocal(dx);
     dy = scaleLocal(dy);
     switch (k->t_shape) {
-/*    case SHP_BOOM:
-	k->t_fuse--;
-	if (k->t_fuse <= 0) {
-	    k->t_shape = SHP_BLANK;
-	    return;
-	}
-	if (k->t_fuse > image->frames)
-	    k->t_fuse = image->frames;
-
-	frame = image->frames - k->t_fuse;
-	break;*/
     case SHP_MISSILE:
         j = &players[k->t_owner];
 #ifdef SOUND
@@ -2665,40 +2654,48 @@ draw_one_thingy(struct thingy *k)
         clearzone[3][clearcount] = BMP_DRONE_HEIGHT * SCALE / scaleFactor + 2;
         clearcount++;
 	break;
-/*    case SHP_TORP:
-        image = getImage(friendlyThingy(k) ? I_MTORP : I_ETORP);
-	frame = udcounter + k->t_no;
-	break;
-    case SHP_PLASMA:
-    case SHP_MINE:		// use plasma until I get a nifty bitmap
-        image = getImage(friendlyThingy(k) ? I_MPLASMATORP : I_EPLASMATORP);
-	frame = udcounter + k->t_no;
-	break;
-    case SHP_PBOOM:
-	image = getImage(friendlyThingy(k) ? I_MPLASMACLOUD : I_EPLASMACLOUD);
-	k->t_fuse--;
-	if (k->t_fuse < 0) {
-	    k->t_shape = SHP_BLANK;
-	    return;
-	}
-	if (k->t_fuse > image->frames) {
-	    k->t_fuse = image->frames;
-	}
-	frame = image->frames - k->t_fuse;
-	break;
     case SHP_FBOOM:
-	image = getImage(friendlyThingy(k) ? I_MFIGHTERCLOUD : I_EFIGHTERCLOUD);
-	k->t_fuse--;
-	if (k->t_fuse < 0) {
-	    k->t_shape = SHP_BLANK;
-	    return;
-	}
-	if (k->t_fuse > image->frames) {
-	    k->t_fuse = image->frames;
-	}
-	frame = image->frames - k->t_fuse;
+        k->t_fuse--;
+        frame = k->t_fuse * 10 / server_ups;
+                
+        if (k->t_fuse < 0)
+        {
+            k->t_shape = SHP_BLANK;
+            return;
+        }
+
+        if (frame >= BMP_FIGHTERDET_FRAMES)
+            frame = BMP_FIGHTERDET_FRAMES - 1;
+
+#ifdef SOUND
+                if (k->t_fuse == (MAX(2, BMP_FIGHTERDET_FRAMES * server_ups / 10) - 1))
+                {
+                    SetDistAngle(dx, dy);
+                    // At short distances, don't use angular sound
+                    if (!soundAngles || distance < SCALE/2)
+                        Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, -1, distance);
+                    else
+                        Play_Sound_Loc(PLASMA_HIT_WAV, SF_WEAPONS, angle, distance);
+                }
+#endif
+	W_WriteScaleBitmap (dx - (BMP_FIGHTERDET_WIDTH / 2) * SCALE / scaleFactor,
+                            dy - (BMP_FIGHTERDET_HEIGHT / 2) * SCALE / scaleFactor,
+                            BMP_FIGHTERDET_WIDTH * SCALE / scaleFactor,
+                            BMP_FIGHTERDET_HEIGHT * SCALE / scaleFactor,
+                            BMP_FIGHTERDET_WIDTH,
+                            BMP_FIGHTERDET_HEIGHT,
+                            0,
+                            colorWeapons ? fighterc_explosion_bitmap[frame] : fighter_explosion_bitmap[frame],
+                            playerColor (&players[k->t_owner]),
+                            w);
+        clearzone[0][clearcount] = dx - (BMP_FIGHTERDET_WIDTH / 2) * SCALE / scaleFactor ;
+        clearzone[1][clearcount] = dy - (BMP_FIGHTERDET_HEIGHT / 2) * SCALE / scaleFactor;
+        clearzone[2][clearcount] = BMP_FIGHTERDET_WIDTH * SCALE / scaleFactor;
+        clearzone[3][clearcount] = BMP_FIGHTERDET_HEIGHT * SCALE / scaleFactor;
+        clearcount++;
 	break;
-	*/
+    /* It appears all missile/fighter explosions are sent as SHP_PBOOM, oh well */
+    case SHP_PBOOM:
     case SHP_DBOOM:
         k->t_fuse--;
         frame = k->t_fuse * 10 / server_ups;
@@ -2713,7 +2710,7 @@ draw_one_thingy(struct thingy *k)
             frame = BMP_DRONEDET_FRAMES - 1;
 
 #ifdef SOUND
-                if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
+                if (k->t_fuse == (MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10) - 1))
                 {
                     SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
@@ -2739,11 +2736,83 @@ draw_one_thingy(struct thingy *k)
         clearzone[3][clearcount] = BMP_DRONEDET_HEIGHT * SCALE / scaleFactor;
         clearcount++;
 	break;
-	/*
     case SHP_FIGHTER:
-	image = getImage(friendlyThingy(k) ? I_MFIGHTER : I_EFIGHTER);
-	frame = (int) (k->t_dir * image->frames + 128) / 256;
-	break;
+        j = &players[k->t_owner];
+#ifdef SOUND
+        if (k->t_owner != me->p_no)
+        {
+            num_other_missiles++;
+            SetDistAngle(dx, dy);
+            if (distance < other_missile_dist)
+            {
+                other_missile_dist = distance;
+                other_missile_angle = angle;
+            }   	
+        }
+#endif
+        if (colorWeapons)
+        {
+            if (myPlayer(j))
+                fighterTeam = 0;
+            else
+            {
+                switch (j->p_team)
+                {
+                case FED:
+                    fighterTeam = 1;
+                    break;
+                case KLI:
+                    fighterTeam = 3;
+                    break;
+                case ORI:
+                    fighterTeam = 4;
+                    break;
+                case ROM:
+                    fighterTeam = 5;
+                    break;
+                default: // IND
+                    fighterTeam = 2;
+                }
+            }
+	    W_WriteScaleBitmap (dx - (BMP_FIGHTER_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_FIGHTER_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_FIGHTER_WIDTH * SCALE / scaleFactor,
+                                BMP_FIGHTER_HEIGHT * SCALE / scaleFactor,
+                                BMP_FIGHTER_WIDTH,
+                                BMP_FIGHTER_HEIGHT,
+                                (360 * k->t_dir/255),
+                                fighterc_bitmap[fighterTeam],
+                                playerColor (j),
+                                w);
+        }
+        else
+        {
+	    W_WriteScaleBitmap (dx - (BMP_FIGHTER_WIDTH / 2) * SCALE / scaleFactor,
+                                dy - (BMP_FIGHTER_HEIGHT / 2) * SCALE / scaleFactor,
+                                BMP_FIGHTER_WIDTH * SCALE / scaleFactor,
+                                BMP_FIGHTER_HEIGHT * SCALE / scaleFactor,
+                                BMP_FIGHTER_WIDTH,
+                                BMP_FIGHTER_HEIGHT,
+                                (360 * k->t_dir/255),
+                                fighter_bitmap,
+                                playerColor (j),
+                                w);
+        }
+        clearzone[0][clearcount] = dx - (BMP_FIGHTER_WIDTH / 2) * SCALE / scaleFactor - 1;
+        clearzone[1][clearcount] = dy - (BMP_FIGHTER_HEIGHT / 2) * SCALE / scaleFactor - 1;
+        clearzone[2][clearcount] = BMP_FIGHTER_WIDTH * SCALE / scaleFactor + 2;
+        clearzone[3][clearcount] = BMP_FIGHTER_HEIGHT * SCALE / scaleFactor + 2;
+        clearcount++;
+        break;
+/*  
+    These 4 appear unused....
+
+    case SHP_TORP:
+    case SHP_PLASMA:
+    case SHP_MINE:
+    case SHP_BOOM:
+*/
+/*
     case SHP_WARP_BEACON:
 	image = getImage(I_WARPBEACON);
 	frame = udcounter;

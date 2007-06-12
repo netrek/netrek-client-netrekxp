@@ -744,7 +744,11 @@ DrawPlanets ()
 #ifdef BEEPLITE
 	}
 #endif
-        if (planetHighlighting && (l->pl_info & me->p_team)) /* Draw halo */
+        if (planetHighlighting && (l->pl_info & me->p_team)
+#ifdef PARADISE
+         && PL_TYPE(*l) != PLSTAR && PL_TYPE(*l) != PLWHOLE
+#endif
+        ) /* Draw halo */
             W_WriteCircle(mapw, dx, dy, BMP_MPLANET_WIDTH / 2,
                           l->pl_armies > 4 ? 1 : 0, 0, planetColor(l));
 
@@ -1580,7 +1584,7 @@ map (void)
                 checkRedraw(pt->pt_x, pt->pt_y);
             }
 #ifdef PARADISE
-            /* missiles */
+            /* missiles/fighters */
             for (h = i * npthingies, th = &thingies[i * npthingies]; h < npthingies * (i + 1); h++, th++)
             {
                 if (th->t_x < 0 || th->t_y < 0)

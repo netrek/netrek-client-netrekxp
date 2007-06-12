@@ -542,6 +542,32 @@ void loadparadisethings (void)
     for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
         dronec_explosion_bitmap[i] =
             W_PointBitmap2 (base_dronec_explosion_bitmap, 0, i, BMP_DRONEDET_WIDTH, BMP_DRONEDET_HEIGHT);
+
+    fighter_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/fighter.bmp", BMP_FIGHTER_WIDTH,
+                        BMP_FIGHTER_HEIGHT, BMP_FIGHTER, w, LR_MONOCHROME);
+    base_fighterc_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/fighterC.bmp", BMP_FIGHTER_WIDTH * NUM_CTORP_TYPES,
+                        BMP_FIGHTER_HEIGHT, BMP_FIGHTERC, w, LR_DEFAULTCOLOR);
+    for (i = 0; i < NUM_CTORP_TYPES; i++)
+        fighterc_bitmap[i] =
+            W_PointBitmap2 (base_fighterc_bitmap, i, 0, BMP_FIGHTER_WIDTH, BMP_FIGHTER_HEIGHT);
+
+    base_fighter_explosion_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/fightercloud.bmp", BMP_FIGHTERDET_WIDTH,
+                        BMP_FIGHTERDET_HEIGHT * BMP_FIGHTERDET_FRAMES, BMP_FIGHTERCLOUD, w,
+                        LR_MONOCHROME);
+    for (i = 0; i < BMP_FIGHTERDET_FRAMES; i++)
+        fighter_explosion_bitmap[i] =
+            W_PointBitmap2 (base_fighter_explosion_bitmap, 0, i, BMP_FIGHTERDET_WIDTH, BMP_FIGHTERDET_HEIGHT);
+
+    base_fighterc_explosion_bitmap =
+        W_StoreBitmap3 ("bitmaps/paradise/fightercloudC.bmp", BMP_FIGHTERDET_WIDTH,
+                        BMP_FIGHTERDET_HEIGHT * BMP_FIGHTERDET_FRAMES, BMP_FIGHTERCLOUD, w,
+                        LR_DEFAULTCOLOR);
+    for (i = 0; i < BMP_FIGHTERDET_FRAMES; i++)
+        fighterc_explosion_bitmap[i] =
+            W_PointBitmap2 (base_fighterc_explosion_bitmap, 0, i, BMP_FIGHTERDET_WIDTH, BMP_FIGHTERDET_HEIGHT);
 }
 #endif
 

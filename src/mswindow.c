@@ -589,6 +589,16 @@ W_Cleanup (void)
     free (base_dronec_explosion_bitmap);
     for (i = 0; i < BMP_DRONEDET_FRAMES; i++)
         free (dronec_explosion_bitmap[i]);
+    free (fighter_bitmap);
+    free (base_fighterc_bitmap);
+    for (i = 0; i < NUM_CTORP_TYPES; i++)
+        free (fighterc_bitmap[i]);
+    free (base_fighter_explosion_bitmap);
+    for (i = 0; i < BMP_FIGHTERDET_FRAMES; i++)
+        free (fighter_explosion_bitmap[i]);
+    free (base_fighterc_explosion_bitmap);
+    for (i = 0; i < BMP_FIGHTERDET_FRAMES; i++)
+        free (fighterc_explosion_bitmap[i]);
     free (gear_bitmap);
     free (mgear_bitmap);
     free (base_star_bitmap);
