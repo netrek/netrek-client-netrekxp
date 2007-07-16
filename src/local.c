@@ -2841,8 +2841,7 @@ DrawThingies (void)
     {
         i = j->p_no;
 
-        if (!j->p_ndrone)
-	    return;
+        if (!j->p_ndrone) continue;
         count = 0;
 
         for (h = i * npthingies; h < npthingies * (i + 1); h++)

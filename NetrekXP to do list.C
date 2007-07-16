@@ -1,7 +1,6 @@
 List for the installer:
 1) there should be some sort of chance to give default resolution in GUI,
 which then maps windows accordingly.
-2) fix netrekrc append so that it doesn't keep adding new lines to the netrekrc
 
 Things not gonna happen, or server problems:
 2) torp_other and plasma_other not working right due to lack of torp fuse info
@@ -33,6 +32,7 @@ player's candock, cantranswarp, ban, ignore, etc.
 rect doesn't take these into account.
 4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
+5) hideconsole: on/off
 
 Paradise issues:
 Motd paging system gutted for sake of simplicity
@@ -46,6 +46,7 @@ per ship is not compliant with current code.
 Still missing asteroids and (flashing) warpbeacons.
 Info window not working right with paradise.
 Need popup box that works, when connecting to wrong server type
+CV army capacity is wrong
 
 Wish list:
 1) Rewrite graphics engine using SDL

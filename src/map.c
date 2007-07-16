@@ -277,6 +277,8 @@ checkRedraw (int x,
     int i;
     struct player *j;
 
+    if (x < 0 || y < 0) return;
+
     x /= SIZE;
     y /= SIZE;
 
@@ -782,6 +784,7 @@ DrawPlanets ()
         && (l->pl_info & me->p_team)
 #ifdef PARADISE
         && (PL_TYPE(*l) != PLSTAR)
+        && (PL_TYPE(*l) != PLWHOLE)
 #endif
         )
         {    
@@ -1603,7 +1606,7 @@ map (void)
                 mclearacount++;
 
                 /* Check for overwriting planets */
-                checkRedraw(k->t_x, k->t_y);
+                checkRedraw(th->t_x, th->t_y);
             }
 #endif
         }

@@ -1,4 +1,4 @@
-Netrek XP 2006, Version 1.3:
+Netrek XP 2006, Version 1.3: (Released July-2007)
 
 User interface:
 1) War window now says "Re-program" instead of "Save" for changing war settings.

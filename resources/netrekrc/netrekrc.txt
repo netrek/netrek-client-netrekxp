@@ -874,13 +874,8 @@ singleMacro: EF
 macro.0.A:%    __    __   ______        __   Zoom in/out!  Anti-packet loss,
 macro.0.A:%   /  \  / /__/_  __/______ / /__ observers see all weapons, etc.
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ Plus 50 updates/sec support! 
-macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.3, released May 2007
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2006, v1.3, released July 2007
 macro.0.A:%          Get it today at http://www.netrek.org
-
-macro.a.A:.          o                        Just         |    Squeal boy...
-macro.a.A:.         //\     %p:  ABUSED!       Plain        |    just like a
-macro.a.A:.       o  )/                       Wrong (tm)   |    hog!
-macro.a.A:.      //<<\\
 
 macro.P.A:%    \~~\    _ _             ,----------------------------------,
 macro.P.A:%     \**\___\/ \............| %u: Sucks to be you!
@@ -901,7 +896,7 @@ macro.l.A:%     `\#/'              `\#/'             `\#/'
 
 macro.f.A:%          (~)-=_      %p:           _/~~~\~~~~~~) *******
 macro.f.A:%         <~~~]/`)      MAJOR         _-  )~)~~~  /+ + /*  ... moi??
-macro.f.A:%         (~~~]L/\     FUCKING         (_/~)     / < /@*
+macro.f.A:%         (~~~]L/\     #$%^ING         (_/~)     / < /@*
 macro.f.A:%          (~~] .       TWINK       -\___L~)     |~~~ |*
 macro.f.A:%           ~~\                           ~       \__/\
 
@@ -915,9 +910,9 @@ macro.c.A:% ._   _  KILL   _    _   ^__^You loser, you couldn't fight your way
 macro.c.A:% | |_| |___ _ _| | _| |  (oo)\_______        out of a wet paper bag.
 macro.c.A:% |  _  / _ \ '_| |/ /_| (__)\       )\/\ %u: KILL HORKER
 macro.c.A:% |_| |_\___/_| |_|\_(_)     ||----W |<---------- Me  = cow of prey
-macro.c.A:% .MOooooooooooooooooo!      ||     ||.,#@,.  <-- You = piece of shit
+macro.c.A:% .MOooooooooooooooooo!      ||     ||.,#@,.  <-- You = piece of crap
 
-macro.C.A:% Nothing fucks        _____---=======---_____       . Yo: >>%p<<
+macro.C.A:% Nothing screws       _____---=======---_____       . Yo: >>%p<<
 macro.C.A:% you up          _====____\   /.. ..\   /____====_    In Space no one
 macro.C.A:% like a      +  / /        ---\__O__/---        \ \   can hear you
 macro.C.A:% CA             \_\  .                          /_/ . Suck!
@@ -1013,12 +1008,6 @@ macro.4.A:%   /VVVV \                           ('.')     I sense
 macro.4.A:%  @ ^^^^@~                          ()   ()    hostility.
 macro.4.A:%   _|  _|                           (_)-(_)
 
-macro.5.A:%    /~~/    Oh, My Pussy Hurts!  I Better Call: (952) 943-8700
-macro.5.A:%    ~//
-macro.5.A:%  __//      /~)  /~~/ /~)  /~/~/ /|  /|  / /|  / /~~~ /~~)
-macro.5.A:% /__/      /-<  /  / /~<    /   /~| / | / / | / /~~  /~~|
-macro.5.A:%    }_    /__/ /__/ /__/   /   /  |/  |/ /  |/ /___ /   \
-
 macro.6.A:.    @ (. .) @    .  '  . ___      %u (%p): 
 macro.6.A:.     \ VVVV/   .        (: .)     You are the weakest twink,
 macro.6.A:.     / ^^^^__|           ~~~             GOODBYE!!
@@ -1029,11 +1018,6 @@ macro.7.A:%          o/   /|          vv`\     What's it feel like to be
 macro.7.A:%         /|     |              |     _
 macro.7.A:%          |    / \_            |    | \  _  ._  o  _   _|  | |
 macro.7.A:%         / \   |               |    |_/ (/_ | | | (/_ (_|  | |
-
-macro.8.A:%                         ___
-macro.8.A:%                  ::====(   )__   -  Lean over for that Sodomy,
-macro.8.A:%      o/__  <---     /~~~~~~~~~\             %u.
-macro.8.A:%      |  (\          \O.O.O.O.O/
 
 macro.9.A:%                            .     .   /\_.----.
 macro.9.A:%      All your base           .  :    \_/ /  / \
@@ -1048,7 +1032,7 @@ macro.^y.A:%   |_|  |_____||_____| (_)
 
 macro.^n.A:%  _   _  _____  _____   _
 macro.^n.A:% | \ | ||  _  ||  _  | | |     It's %u (%p)
-macro.^n.A:% | |\| || |_| || |_| | |_|     Great, now we're fucked!
+macro.^n.A:% | |\| || |_| || |_| | |_|     Great, now we're screwed!
 macro.^n.A:% |_| \_||_____||_____| (_)
 
 macro.).A:/*   Join the netrek clue game mailing list today! At         */
@@ -1057,7 +1041,7 @@ macro.).A:/*   INL-style timed bronco games are every Wednesday         */
 macro.).A:/*   10pm EST/7pm PST                                         */
 
 macro.(.A:/*   Get the latest version of Netrek XP 2006 today!            */
-macro.(.A:/*   Current version is 1.3, released May 2007                  */
+macro.(.A:/*   Current version is 1.3, released July 2007                 */
 macro.(.A:/*   Download it at http://www.netrek.org/files/NetrekXP_2006/  */
 
 mac.e.T: Escorting %g (%d%%D %s%%S %f%%F)
