@@ -132,6 +132,9 @@ fullBitmapRotation: on
 # Draw a tic mark indicating your ship's direction
 headingTic: off
 
+# Hide the DOS console window
+hideConsole: off
+
 # Highlight friendly phasers
 highlightFriendlyPhasers: off
 

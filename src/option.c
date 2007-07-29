@@ -359,6 +359,7 @@ struct option Control_Menu[] = {
     {1, "", &playerListMessaging, 0, 0, 0, plistmessagingmess, NULL},
     {1, "have only msg key start msg", &messageKeyOnly, 0, 0, 0, NULL, NULL},
     {1, "beep on private message", &beepOnPrivateMessage, 0, 0, 0, NULL, NULL},
+    {1, "hide console window", &hideConsole, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };

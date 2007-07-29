@@ -32,7 +32,6 @@ player's candock, cantranswarp, ban, ignore, etc.
 rect doesn't take these into account.
 4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
-5) hideconsole: on/off
 6) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
 

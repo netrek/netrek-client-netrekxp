@@ -73,7 +73,6 @@ printUsage (char *prog)
 #endif
 
     LineToConsole (" [-D]   output debug info\n");
-    LineToConsole (" [-n]   hide console window\n");
     LineToConsole (" [-u]   show usage\n");
     LineToConsole (" [-v]   display client version info\n");
 
@@ -88,7 +87,6 @@ main2 (int argc,
 {
     int usage = 0;
     int err = 0;
-    int hideConsole = 0;
     char *name, *ptr;
     int i;
     time_t tm;
@@ -360,10 +358,6 @@ main2 (int argc,
             case 'D':           /* add debug info */
                 debug++;
                 break;
-            
-            case 'n':           /* hide console window */
-                hideConsole = 1;
-                break;
 
             case 'v':           /* output version info */
                 LineToConsole ("%s %s\n", version, mvers);
@@ -395,12 +389,10 @@ main2 (int argc,
     if (usage || err)
     {
         printUsage (name);
-        if (hideConsole)
-            FreeConsole ();
+//        if (hideConsole)
+//            FreeConsole ();
         exit (err);
     }
-    if (hideConsole)
-        FreeConsole ();
 
 #ifdef GATEWAY
     if (!hset) use_trekhopd = 0;        /* allow use via normal connections */

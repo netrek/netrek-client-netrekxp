@@ -245,6 +245,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"hideConsole", &hideConsole, RC_BOOL,
+        {
+            "Hide the DOS console window",
+            NULL
+        }
+    },
     {"highlightFriendlyPhasers", &highlightFriendlyPhasers, RC_BOOL,
         {
             "Highlight friendly phasers",
@@ -1897,6 +1903,7 @@ resetdefaults (void)
     showPlanetNames = booleanDefault ("showPlanetNames", 1);
     reportKills = booleanDefault ("reportKills", reportKills);
     fullBitmapRotation = booleanDefault ("fullBitmapRotation", fullBitmapRotation);
+    hideConsole = booleanDefault ("hideConsole", hideConsole);
 
     udpDebug = intDefault ("udpDebug", udpDebug);
     udpClientSend = intDefault ("udpClientSend", udpClientSend);

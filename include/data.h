@@ -823,4 +823,5 @@ extern int infoRange;           /* show limit on info with large tactical window
 extern int scaleFactor;         /* allows for scaling of tactical window */
 extern int mapscaleFactor;      /* allows for scaling of galactic window, unused */
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
+extern int hideConsole;         /* show console window or not */
 #endif /* _h_data */

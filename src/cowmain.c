@@ -781,6 +781,9 @@ cowmain (char *server,
     resetdefaults ();
     newwin (display_host, name);
 
+    if (hideConsole)
+        FreeConsole ();
+
 #ifdef META
     if (usemeta)
     {

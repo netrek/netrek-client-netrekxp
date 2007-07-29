@@ -286,6 +286,10 @@ packets.
 4 new(ish) feature packets which actually increase bandwidth use.
 35) INL servers will no longer save in the UDP metacache file, so they won't
 show up on the metaserver listing unless people are actually on the server.
+36) New netrekrc option "hideConsole: on/(off)" to control whether to have a
+DOS-style console window that shows connect messages, feature packet negotiation,
+error messages, etc.  Default is on.  Provides easy way to close the client in
+case it hangs (the X button in upper right corner of console window).
 
 Netrek XP 2006, Version 1.2: (Released Mar-2007)
 - added "messageKeyOnly: (on)/off" so that you will only start messages with the actual

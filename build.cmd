@@ -524,6 +524,7 @@ mkdir %InstCWD%\netrek\sounds
 copy resources\sounds\*.wav %InstCWD%\netrek\sounds
 copy resources\sounds\*.ogg %InstCWD%\netrek\sounds
 copy win32\SDL\*.dll %InstCWD%\netrek
+copy win32\zlib\*.dll %InstCWD%\netrek
 
 if /I "%Compiler%" == "BCC" copy src\cursors\curslib.dll %InstCWD%\netrek\bitmaps
 if /I "%Compiler%" == "BCC" copy src\winkey\winkey.dll %InstCWD%\netrek\bitmaps
