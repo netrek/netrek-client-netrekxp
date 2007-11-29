@@ -254,7 +254,7 @@ int server_fps = 10;		/* server configured frames per second */
 
 #ifdef META
 /* Metaservers list - comma delimited  */
-char *metaServer = "metaserver.us.netrek.org, metaserver2.us.netrek.org";
+char *metaServer = "metaserver.us.netrek.org, metaserver2.us.netrek.org, metaserver3.us.netrek.org";
 int metaPort = 3521;
 int metaVerbose = 0;
 char *metaCache = NULL;

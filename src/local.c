@@ -885,28 +885,24 @@ DrawShips (void)
             if (!(j->p_flags & PFCLOAK))
                 continue;
         }
-        
-        dx = j->p_x - me->p_x;
-        dy = j->p_y - me->p_y;
-        if (dx > view || dx < -view || dy > view || dy < -view)
-            continue;
-
-        dx = dx / scaleFactor + TWINSIDE / 2;
-        dy = dy / scaleFactor + TWINSIDE / 2;
 
         cloak_phases = CLOAK_PHASES * server_ups / 10;
+        dx = j->p_x - me->p_x;
+        dy = j->p_y - me->p_y;
+
         if (j->p_flags & PFCLOAK)
         {
             if (j->p_cloakphase < (cloak_phases - 1))
             {
 
 #ifdef SOUND
-                if (j->p_cloakphase == 0)
+                /* Only play sounds for ships on tactical */
+                if (j->p_cloakphase == 0 && dx <= view && dx >= -view && dy <= view && dy >= -view)
                 {
                     // To avoid hearing twarp cloak sounds as the twarper/observer
                     if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
                     {
-                    	SetDistAngle(dx, dy);   
+                    	SetDistAngle(dx / scaleFactor + TWINSIDE / 2, dy / scaleFactor + TWINSIDE / 2);   
                         // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
                             Play_Sound_Loc(CLOAKED_WAV, SF_CLOAKING, -1, distance);
@@ -928,9 +924,10 @@ DrawShips (void)
                 // To avoid twarp cloak sounds as the twarper/observer
                 if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
                 {
-                    if (j->p_cloakphase == cloak_phases - 1)
+                    /* Only play sounds for ships on tactical */
+                    if (j->p_cloakphase == (cloak_phases - 1) && dx <= view && dx >= -view && dy <= view && dy >= -view)
                     {
-                        SetDistAngle(dx, dy);
+                        SetDistAngle(dx / scaleFactor + TWINSIDE / 2, dy / scaleFactor + TWINSIDE / 2);
                         // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
                             Play_Sound_Loc(UNCLOAK_WAV, SF_CLOAKING, -1, distance);
@@ -945,6 +942,12 @@ DrawShips (void)
                 j->p_cloakphase--;
             }
         }
+
+        if (dx > view || dx < -view || dy > view || dy < -view)
+            continue;
+
+        dx = dx / scaleFactor + TWINSIDE / 2;
+        dy = dy / scaleFactor + TWINSIDE / 2;
 
         /* If cloaking cycle is complete, just draw the cloak icon, and skip over
            the ship drawing code with the goto statement */

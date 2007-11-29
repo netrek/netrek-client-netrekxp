@@ -37,6 +37,7 @@ Maybe with enforced state?
 
 Paradise issues:
 Motd paging system gutted for sake of simplicity
+Autologin with name and password seems to break any motd pics
 A bunch of gridline/zoom options should be made into netrekrc options.
 The galactic zoom doesn't work
 Some of the paradise packet types may need some work
@@ -48,6 +49,10 @@ Still missing asteroids and (flashing) warpbeacons.
 Info window not working right with paradise.
 Need popup box that works, when connecting to wrong server type
 CV army capacity is wrong
+Login messages are being sent to review window (mapped for kills and phasers), not all!
+Seems a commodore char doesn't have the proper rank info..player info is all blank.
+Kill messages are being sent to all, not review, why?
+Cambot playback is broken.  Packet handler needs updating.
 
 Wish list:
 1) Rewrite graphics engine using SDL
