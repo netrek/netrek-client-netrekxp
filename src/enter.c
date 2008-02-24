@@ -55,14 +55,8 @@ openmem (void)
     plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * MAXPLAYER * MAXPLASMA);
 #ifdef PARADISE
     thingies = (struct thingy *) malloc(sizeof(*thingies) * (MAXPLAYER * npthingies + ngthingies));
-    ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
-    for (i = 0; i < nranks2; i++)
-	ranks2[i].name = strdup("blank");
     /* independent is teaminfo[-1] */
     teaminfo = 1 + (struct teaminfo_s *) malloc(sizeof(*teaminfo) * (number_of_teams + 2));
-    royal = (struct royalty *) malloc(sizeof(*royal) * nroyals);
-    for (i = 0; i < nroyals; i++) 
-	royal[i].name = strdup("blank");
     status2 = (struct status2 *) malloc(sizeof(*status2));
 #endif
     status = (struct status *) malloc(sizeof(*status));
@@ -77,6 +71,8 @@ openmem (void)
         players[i].p_no = i;
         players[i].p_ntorp = 0;
 #ifdef PARADISE
+        players[i].p_stats2.st_rank = 0;
+        players[i].p_stats2.st_royal = 0;
         players[i].p_ndrone = 0;
 #endif
         players[i].p_explode = 1;

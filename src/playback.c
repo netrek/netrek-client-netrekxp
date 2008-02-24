@@ -199,6 +199,9 @@ pbmain (char *name)
 
 
     resetdefaults ();
+#ifdef PARADISE
+    build_default_configuration();
+#endif
     newwin (display_host, name);
 
     savebitmaps ();
@@ -518,6 +521,18 @@ ckRecordPacket (char packet)
     case SP_S_KILLS:
     case SP_S_STATS:
     case SP_FEATURE:
+#ifdef PARADISE
+    case SP_SCAN:
+    case SP_STATS2:
+    case SP_STATUS2:
+    case SP_PLANET2:
+    case SP_THINGY:
+    case SP_THINGY_INFO:
+    case SP_GPARAM:
+    case SP_PARADISE_EXT1:
+    case SP_TERRAIN2:
+    case SP_TERRAIN_INFO2:
+#endif
 
         return 1;
     }

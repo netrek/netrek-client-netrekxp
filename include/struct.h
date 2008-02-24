@@ -761,6 +761,36 @@ struct rank
 };
 
 #ifdef PARADISE
+/* ratings struct */
+struct ratings {
+    float   r_offrat;		/* offense rating */
+    float   r_planetrat;	/* planets rating */
+    float   r_bombrat;		/* bombing rating */
+    float   r_defrat;		/* defense rating */
+    float   r_resrat;		/* resource rating */
+    float   r_dooshrat;		/* doosh rating */
+    float   r_stratrat;		/* strategy rating */
+    float   r_batrat;		/* battle rating */
+    float   r_sbrat;		/* sb rating */
+    float   r_wbrat;		/* wb rating */
+    float   r_jsrat;		/* js rating */
+    int     r_jsplanets;	/* js planets */
+    int     r_resources;	/* total resources bombed */
+    int     r_armies;		/* total armies bombed */
+    int     r_planets;		/* total planets taken */
+    int     r_dooshes;		/* total armies dooshed */
+    float   r_specrat;		/* special ship rating */
+    float   r_di;		/* damage inflicted */
+    float   r_ratio;		/* ratio, kills/losses */
+    int     r_kills;		/* kills */
+    int     r_losses;		/* losses */
+    float   r_ratings;		/* total ratings */
+    float   r_killsPerHour;	/* kills/hour */
+    float   r_lossesPerHour;	/* losses/hour */
+    float   r_maxkills;		/* max kills */
+    int     r_genocides;	/* number of genocides */
+};
+
 struct rank2 {			/* Paradise ranks */
     int     genocides;		/* minimum number of genocides */
     float   di;			/* minimum destruction inflicted */

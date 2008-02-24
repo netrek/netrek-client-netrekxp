@@ -1155,6 +1155,7 @@ void handleFlagsAll (struct flags_all_spacket *packet);
 struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
 #ifdef PARADISE
+void build_default_configuration (void);
 void handleScan (struct scan_spacket *packet);
 void handleMotdPic (struct motd_pic_spacket * packet);
 void handleStats2 (struct stats_spacket2 * packet);

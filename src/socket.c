@@ -2368,11 +2368,13 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
         LineToConsole ("handlePlyrLogin: bad index %d\n", packet->pnum);
         return;
     }
+#ifndef PARADISE
     if (packet->rank >= NUMRANKS)
     {
         LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
     }
+#endif
     packet->name[sizeof (packet->name) - 1] = '\0';
     packet->monitor[sizeof (packet->monitor) - 1] = '\0';
     packet->login[sizeof (packet->login) - 1] = '\0';
@@ -3201,6 +3203,149 @@ initialize_planets(void)
 void
 initialize_ranks(void)
 {
+    ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
+    ranks2[0].genocides = 0;
+    ranks2[0].di = 0;
+    ranks2[0].battle = 0.0;
+    ranks2[0].strategy = 0.0;
+    ranks2[0].specship = 0.0;
+    ranks2[0].name = strdup("Recruit");
+
+    ranks2[1].genocides = 1;
+    ranks2[1].di = 10;
+    ranks2[1].battle = (float) 0.30;
+    ranks2[1].strategy = (float) 0.3;
+    ranks2[1].specship = 0.0;
+    ranks2[1].name = strdup("Specialist");
+
+    ranks2[2].genocides = 2;
+    ranks2[2].di = 25;
+    ranks2[2].battle = (float) 0.40;
+    ranks2[2].strategy = (float) 0.6;
+    ranks2[2].specship = 0.0;
+    ranks2[2].name = strdup("Cadet");
+
+    ranks2[3].genocides = 3;
+    ranks2[3].di = 45;
+    ranks2[3].battle = (float) 0.50;
+    ranks2[3].strategy = (float) 0.9;
+    ranks2[3].specship = 0.0;
+    ranks2[3].name = strdup("Midshipman");
+
+    ranks2[4].genocides = 4;
+    ranks2[4].di = 70;
+    ranks2[4].battle = (float) 0.70;
+    ranks2[4].strategy = (float) 1.2;
+    ranks2[4].specship = 0.0;
+    ranks2[4].name = strdup("Ensn. J.G.");
+
+    ranks2[5].genocides = 5;
+    ranks2[5].di = 100;
+    ranks2[5].battle = (float) 0.90;
+    ranks2[5].strategy = (float) 1.5;
+    ranks2[5].specship = 0.0;
+    ranks2[5].name = strdup("Ensign");
+
+    ranks2[6].genocides = 6;
+    ranks2[6].di = 140;
+    ranks2[6].battle = (float) 1.10;
+    ranks2[6].strategy = (float) 2.0;
+    ranks2[6].specship = 0.0;
+    ranks2[6].name = strdup("Lt. J.G.");
+
+    ranks2[7].genocides = 8;
+    ranks2[7].di = 190;
+    ranks2[7].battle = (float) 1.30;
+    ranks2[7].strategy = (float) 2.5;
+    ranks2[7].specship = 0.0;
+    ranks2[7].name = strdup("Lieutenant");
+
+    ranks2[8].genocides = 10;
+    ranks2[8].di = 250;
+    ranks2[8].battle = (float) 1.50;
+    ranks2[8].strategy = (float) 3.0;
+    ranks2[8].specship = (float) 0.5;
+    ranks2[8].name = strdup("Lt. Cmdr.");
+
+    ranks2[9].genocides = 15;
+    ranks2[9].di = 300;
+    ranks2[9].battle = (float) 1.80;
+    ranks2[9].strategy = (float) 3.5;
+    ranks2[9].specship = (float) 0.7;
+    ranks2[9].name = strdup("Commander");
+
+    ranks2[10].genocides = 18;
+    ranks2[10].di = 350;
+    ranks2[10].battle = (float) 2.00;
+    ranks2[10].strategy = (float) 4.0;
+    ranks2[10].specship = (float) 1.0;
+    ranks2[10].name = strdup("Captain");
+
+    ranks2[11].genocides = 25;
+    ranks2[11].di = 400;
+    ranks2[11].battle = (float) 2.10;
+    ranks2[11].strategy = (float) 4.3;
+    ranks2[11].specship = (float) 2.5;
+    ranks2[11].name = strdup("Fleet Capt.");
+
+    ranks2[12].genocides = 50;
+    ranks2[12].di = 500;
+    ranks2[12].battle = (float) 2.15;
+    ranks2[12].strategy = (float) 4.8;
+    ranks2[12].specship = (float) 3.0;
+    ranks2[12].name = strdup("Commodore");
+
+    ranks2[13].genocides = 75;
+    ranks2[13].di = 700;
+    ranks2[13].battle = (float) 2.20;
+    ranks2[13].strategy = (float) 5.3;
+    ranks2[13].specship = (float) 3.3;
+    ranks2[13].name = strdup("Moff");
+
+    ranks2[14].genocides = 100;
+    ranks2[14].di = 900;
+    ranks2[14].battle = (float) 2.25;
+    ranks2[14].strategy = (float) 5.7;
+    ranks2[14].specship = (float) 3.6;
+    ranks2[14].name = strdup("Grand Moff");
+
+    ranks2[15].genocides = 300;
+    ranks2[15].di = 1200;
+    ranks2[15].battle = (float) 2.30;
+    ranks2[15].strategy = (float) 6.0;
+    ranks2[15].specship = (float) 3.8;
+    ranks2[15].name = strdup("Rear Adml.");
+
+    ranks2[16].genocides = 700;
+    ranks2[16].di = 1700;
+    ranks2[16].battle = (float) 2.35;
+    ranks2[16].strategy = (float) 6.1;
+    ranks2[16].specship = (float) 4.0;
+    ranks2[16].name = strdup("Admiral");
+
+    ranks2[17].genocides = 1000;
+    ranks2[17].di = 2500;
+    ranks2[17].battle = (float) 2.40;
+    ranks2[17].strategy = (float) 6.2;
+    ranks2[17].specship = (float) 4.2;
+    ranks2[17].name = strdup("Grand Adml.");
+}
+
+void
+initialize_royal(void)
+{
+    royal = (struct royalty *) malloc(sizeof(*royal) * nroyals);
+
+    royal[0].name = strdup("none");
+    royal[1].name = strdup("Wesley");
+    royal[2].name = strdup("Centurion");
+    royal[3].name = strdup("Praetor");
+    royal[4].name = strdup("Emperor");
+}
+
+void
+reinitialize_ranks(void)
+{
     int     i;
     ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
 
@@ -3210,7 +3355,7 @@ initialize_ranks(void)
 }
 
 void
-initialize_royal(void)
+reinitialize_royal(void)
 {
     int     i;
     royal = (struct royalty *) malloc(sizeof(*royal) * nroyals);
@@ -3220,6 +3365,12 @@ initialize_royal(void)
     }
 }
 
+void
+build_default_configuration(void)
+{
+    initialize_ranks();
+    initialize_royal();
+}
 
 void
 resize_players(void)
@@ -3358,8 +3509,8 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
 
     load_generic_teams();
 
-    initialize_ranks();
-    initialize_royal();
+    reinitialize_ranks();
+    reinitialize_royal();
 
     resize_players();
     initialize_torps();

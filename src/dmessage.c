@@ -165,7 +165,12 @@ dmessage (char *message,
     }
 
 
+
+#ifdef PARADISE
+    if (0) /* Paradise doesn't support the message flags */
+#else
     if (niftyNewMessages)
+#endif
     {
         if (logging)
         {

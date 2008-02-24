@@ -12,6 +12,7 @@ Things not gonna happen, or server problems:
 9) on daemon exit in newbie/pret, kill any hosed bot slots
 10) end game bots are stupid, and on timericide don't act right
 11) feature packet for rank names and requirements
+12) feature packet for KSHIP2 and KTORP2 p_whydead messages
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -36,23 +37,23 @@ if you fly into the NW corner of the galaxy.  this was never anticipated!
 Maybe with enforced state?
 
 Paradise issues:
-Motd paging system gutted for sake of simplicity
-Autologin with name and password seems to break any motd pics
-A bunch of gridline/zoom options should be made into netrekrc options.
-The galactic zoom doesn't work
-Some of the paradise packet types may need some work
-Many many places in code where things are based on MAXSOMETHING whether it be players
+1) Motd paging system gutted for sake of simplicity
+2) Autologin with name and password seems to break any motd pics - race condition
+during login sequence.
+3) A bunch of gridline/zoom options should be made into netrekrc options.
+4) The galactic zoom doesn't work
+5) Some of the paradise packet types may need some work
+6) Many many places in code where things are based on MAXSOMETHING whether it be players
 torps planets plasmas.  Whereas paradise wants to use dynamic variables.  It's a
 mess.  And paradise has nphasers, the entire concept of multiple phasers
 per ship is not compliant with current code.
-Still missing asteroids and (flashing) warpbeacons.
-Info window not working right with paradise.
-Need popup box that works, when connecting to wrong server type
-CV army capacity is wrong
-Login messages are being sent to review window (mapped for kills and phasers), not all!
-Seems a commodore char doesn't have the proper rank info..player info is all blank.
-Kill messages are being sent to all, not review, why?
-Cambot playback is broken.  Packet handler needs updating.
+7) Still missing asteroids and (flashing) warpbeacons.
+8) Show ratings on full/wide playerlist.
+9) CV army capacity is wrong - waiting on word from server experts to the right value
+10) Seems a commodore char doesn't have the proper rank info..player info is all blank.
+    this may be fixed....needs testing
+11) Playing back recordings made by linux pclient is probably impossible.
+12) Mysterious crash bug, not reproducible by me.
 
 Wish list:
 1) Rewrite graphics engine using SDL
