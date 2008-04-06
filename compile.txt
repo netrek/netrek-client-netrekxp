@@ -1,7 +1,7 @@
 This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2005
 Express Edition.  The client can also be compiled with MS Visual C++ 6.0, and the instructions
 below explain how to do so.  However, this compiler is no longer supported by the Netrek
-XP 2006 author as it is not free software (everything else needed for compiling is free).
+XP 2009 author as it is not free software (everything else needed for compiling is free).
 
 I'd like however to discourage you from using Borland's compiler unless you know how
 to debug its binaries. The output is also slower even though speed optimizations

@@ -441,7 +441,7 @@ static int ReadMetasSend()
     token = strtok(NULL,",");
   } /* while (token != NULL) */
 
-  metaWindowName = "Netrek XP 2006 Server List";
+  metaWindowName = "Netrek XP 2009 Server List";
   return sent;
 }
 
@@ -1165,7 +1165,7 @@ ReadFromMeta ()
     }
 
     free (sockbuf);
-    metaWindowName = "Netrek XP 2006 Server List";
+    metaWindowName = "Netrek XP 2009 Server List";
 
     return 1;
 }

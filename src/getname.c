@@ -75,7 +75,7 @@ showreadme (void)
 
     static char *README[] = {
         "",
-        "Netrek XP 2006 - the better netrek eXPerience!",
+        "Netrek XP 2009 - the better netrek eXPerience!",
         "",
         "",
         "",
@@ -83,11 +83,11 @@ showreadme (void)
         "      No one takes responsibility for lost INL games etc.",
         "      Use at your own risk! If you don't like it, don't use it.",
         "",
-        "Comments, suggestions, bugreports to: billbalcerski@hotmail.com",
+        "Comments, suggestions, bugreports to: billbalcerski@gmail.com",
         "",
         "Include version and architecture info in bug reports",
         "",
-        "Patches to: billbalcerski@hotmail.com",
+        "Patches to: billbalcerski@gmail.com",
         "",
     };
     int i, length;

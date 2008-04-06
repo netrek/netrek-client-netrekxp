@@ -12,7 +12,6 @@ Things not gonna happen, or server problems:
 9) on daemon exit in newbie/pret, kill any hosed bot slots
 10) end game bots are stupid, and on timericide don't act right
 11) feature packet for rank names and requirements
-12) feature packet for KSHIP2 and KTORP2 p_whydead messages
 
 Things that are sorta fixed, but could use improvement:
 1) Border issue - quite complex problem, how to know the borders to obey after the bitmap
@@ -63,4 +62,3 @@ Stas's list:
 - fix accelerated scroll for microsoft mice
 - add msg.phaser to enable formatting of phaser messages
 - parse Announcer messages in hockey games
-

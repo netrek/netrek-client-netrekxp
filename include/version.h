@@ -2,5 +2,5 @@
 
 /* store the version info here */
 
-static char mvers[] = "1.3";
-static char version[] = "Netrek XP 2006";
+static char mvers[] = "1.0";
+static char version[] = "Netrek XP 2009";
