@@ -900,6 +900,7 @@ void updatePStats (void);
 /******************************************************************************/
 /***  planetlist.c
 /******************************************************************************/
+void initialize_planets (void);
 void planetlist (void);
 void updatePlanetw (void);
 int GetPlanetFromPlist (int x, int y);

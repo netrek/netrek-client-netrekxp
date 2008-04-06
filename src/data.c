@@ -251,6 +251,8 @@ int updatesPerSec = 10;		/* client requested updates per second */
 int lastUpdateSpeed = 10;	/* last update speed client requested */
 int server_ups = 10;		/* server responded updates per second */
 int server_fps = 10;		/* server configured frames per second */
+int lame_refit = 1;
+int lame_base_refit = 1;
 
 #ifdef META
 /* Metaservers list - comma delimited  */
@@ -760,6 +762,7 @@ int F_show_cloakers = 0;
 int F_turn_keys = 0;
 int F_show_visibility_range = 0;
 int F_sp_flags_all = 0;
+int F_why_dead_2 = 0;
 
 #ifdef RECORDGAME
 int F_many_self = 0;

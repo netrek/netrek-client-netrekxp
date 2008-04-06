@@ -50,8 +50,6 @@ per ship is not compliant with current code.
 7) Still missing asteroids and (flashing) warpbeacons.
 8) Show ratings on full/wide playerlist.
 9) CV army capacity is wrong - waiting on word from server experts to the right value
-10) Seems a commodore char doesn't have the proper rank info..player info is all blank.
-    this may be fixed....needs testing
 11) Playing back recordings made by linux pclient is probably impossible.
 12) Mysterious crash bug, not reproducible by me.
 

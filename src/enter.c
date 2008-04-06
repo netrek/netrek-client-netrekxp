@@ -60,7 +60,7 @@ openmem (void)
     status2 = (struct status2 *) malloc(sizeof(*status2));
 #endif
     status = (struct status *) malloc(sizeof(*status));
-    planets = (struct planet *) malloc(sizeof(*planets) * MAXPLANETS);
+    initialize_planets();
     phasers = (struct phaser *) malloc(sizeof(*phasers) * MAXPLAYER);
     mctl = (struct mctl *) malloc(sizeof(*mctl));
     messages = (struct message *) malloc(sizeof(*messages) * MAXMESSAGE);
@@ -104,13 +104,6 @@ openmem (void)
         plasmatorps[i].pt_status = PTFREE;
         plasmatorps[i].pt_owner = (short) (i / MAXPLASMA);
     }
-
-    for (i = 0; i < MAXPLANETS; i++)
-        planets[i].pl_no = i;
-
-    /* initialize planet redraw for moving planets */
-    for (i = 0; i < MAXPLANETS; i++)
-        pl_update[i].plu_update = -1;
 
     /* initialize pointers if ghost start */
     if (ghoststart)

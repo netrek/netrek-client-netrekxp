@@ -3175,32 +3175,6 @@ initialize_phasers(void)
 }
 
 void
-initialize_planets(void)
-{
-    int     i;
-
-    planets = (struct planet *)malloc(sizeof(*planets) * MAXPLANETS);
-
-    for(i = 0; i < MAXPLANETS; i++) {
-	struct planet *curr = &planets[i];
-	curr->pl_no = i;
-	curr->pl_flags = 0;
-	curr->pl_owner = 0;
-	curr->pl_x = curr->pl_y = -10000;
-	sprintf(curr->pl_name, "planet%d", i);
-	curr->pl_namelen = strlen(curr->pl_name);
-	curr->pl_armies = 0;
-	curr->pl_info = 0;
-	curr->pl_deadtime = 0;
-	curr->pl_couptime = 0;
-	curr->pl_timestamp = 0;
-
-	/* initialize planet redraw for moving planets */
-	pl_update[i].plu_update = -1;
-    }
-}
-
-void
 initialize_ranks(void)
 {
     ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);

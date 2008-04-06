@@ -104,6 +104,7 @@ struct feature features[] = {
 #else
     {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 1, 0, 0},
 #endif
+    {"WHY_DEAD_2", &F_why_dead_2, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 
@@ -202,7 +203,17 @@ checkFeature (struct feature_cpacket *packet)
         LineToConsole("Server actually sending %d updates per second.\n", value);
         return;
     }
-
+    if (strcmpi (packet->name, "LAME_REFIT") == 0)
+    {
+        lame_refit = value;
+        return;
+    }
+    if (strcmpi (packet->name, "LAME_BASE_REFIT") == 0)
+    {
+        lame_base_refit = value;
+        return;
+    }
+   
     if (features[i].name == 0)
     {
         LineToConsole ("Feature %s from server unknown to client!\n", packet->name);

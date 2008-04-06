@@ -160,6 +160,8 @@ extern int updatesPerSec;	/* client requested updates per second */
 extern int lastUpdateSpeed;	/* last update speed client requested */
 extern int server_ups;		/* server responded updates per second */
 extern int server_fps;		/* server configured frames per second */
+extern int lame_refit;
+extern int lame_base_refit;
 
 extern int SBhours;
 
@@ -661,6 +663,7 @@ extern int F_show_cloakers;
 extern int F_turn_keys;
 extern int F_show_visibility_range;
 extern int F_sp_flags_all;
+extern int F_why_dead_2;
 
 #ifdef RECORDGAME
 extern int F_many_self;
