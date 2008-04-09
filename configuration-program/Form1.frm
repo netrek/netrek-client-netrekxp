@@ -521,7 +521,7 @@ Begin VB.Form Form1
    End
    Begin VB.OptionButton Option1 
       BackColor       =   &H00000000&
-      Caption         =   "Netrek XP 2006 Keymap"
+      Caption         =   "Netrek XP 2009 Keymap"
       BeginProperty Font 
          Name            =   "MS Sans Serif"
          Size            =   8.25
@@ -651,19 +651,19 @@ Begin VB.Form Form1
    End
    Begin VB.Label Label42 
       BackColor       =   &H00000000&
-      Caption         =   "www.PlayNetrek.org"
+      Caption         =   "play.netrek.org"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   6
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   135
-      Left            =   4800
+      Left            =   5160
       TabIndex        =   74
       Top             =   10560
       Width           =   1455
@@ -1452,7 +1452,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Copyright (C) 2007  Joe Evango - Netrek XP 2006 Configuration Program v1.4
+'Copyright (C) 2007  Joe Evango - Netrek XP 2009 Configuration Program v1.5
 '
 'This program is free software; you can redistribute it and/or
 'modify it under the terms of the GNU General Public License
@@ -1470,7 +1470,7 @@ Attribute VB_Exposed = False
 '
 'To contact the author email joe@playnetrek.org
 '
-' Program notes from Joe - 4/15/07
+' Program notes from Joe 4/15/07-
 ' Code contains some comments, pretty easy to follow the logic.
 '
 ' This utility writes to the netrekrc file and assumes it is in located the same folder as the utility so if the
@@ -1492,11 +1492,7 @@ Attribute VB_Exposed = False
 ' If a netrekrc file already exists it is save in the netrek root install folder as netrek.sav
 ' In order for the program to function there will need to be a file named netrekrc in the root of where it is executed
 ' and a file named netrekrc.cfg in the docs folder.  Fixed several bugs that have been reported.
-'
-' Program notes from Joe - 7/16/07
-' Finally able to add find/replace functionality and get rid of the old method of appending data to the end of the rc file.
-' Fixed a bug in the detown keymapping in form1.
-' Fixed bug with showMySpeed option
+
 
 
 
@@ -1512,11 +1508,16 @@ Private Sub Check1_Click()
   End If
 End Sub
 
+
+
+
+
 Private Sub Command1_Click()
 
-'Saves your current netrekrc.txt to netrekrc.sav
+'Saves your current netrekrc.txt to netrekrc.sav and copies a static netrek config file from the docs directory
     FileCopy ".\netrekrc.txt", ".\netrekrc.sav"
-     
+    FileCopy ".\docs\netrekrc.cfg", ".\netrekrc.txt"
+    
     Dim warp As Integer
     Dim det As Integer
     Dim speed As Integer
@@ -1562,6 +1563,7 @@ Private Sub Command1_Click()
     Dim docking As String
     Dim messaging As String
         
+        
     Dim tips As Integer
     Dim tiptxt As String
     
@@ -1606,6 +1608,7 @@ Private Sub Command1_Click()
     Dim keymap29 As String
     Dim keymap30 As String
     Dim keymap31 As String
+       
     
     Dim keytag1 As String
     Dim keytag2 As String
@@ -1636,9 +1639,12 @@ Private Sub Command1_Click()
     Dim currentdate As String
     
     currentdate = Date
+    fnum3 = FreeFile
+    fnum2 = FreeFile
     
     
-    'default keymappings
+'default keymappings
+
     torpedo = "t"
     phaser = "p"
     shield = "s"
@@ -1685,7 +1691,7 @@ Private Sub Command1_Click()
         tiptxt = "showHints: on"
     End If
     
-    If tips <> 0 Then
+    If tips = 0 Then
         tiptxt = "showHints: off"
     End If
                
@@ -1714,7 +1720,9 @@ Private Sub Command1_Click()
     If det <> 1 Then
         dettxt = "detCircle: off"
     End If
-                   
+    
+               
+               
    If (Check9.Value = vbChecked) Then
         speed = 1
    End If
@@ -1723,9 +1731,11 @@ Private Sub Command1_Click()
         speedtxt = "showMySpeed: on"
    End If
     
-   If speed <> 1 Then
+   If tips <> 1 Then
         speedtxt = "showMySpeed: off"
    End If
+               
+               
                
    If (Check5.Value = vbChecked) Then
         sound = 1
@@ -1739,9 +1749,12 @@ Private Sub Command1_Click()
         soundtxt = "sound: off"
    End If
                
+               
+               
    If (Check3.Value = vbChecked) Then
         stars = 1
    End If
+   
    
     If stars = 1 Then
         starstxt = "showStars: on"
@@ -1849,18 +1862,17 @@ Private Sub Command1_Click()
     Else
        keymap16 = Text1(15) + quit
     End If
-    
     If detown = Text1(16) Then
-       keymap17 = ""
+       keymap = ""
     Else
        keymap17 = Text1(16) + detown
     End If
+'no if statement used for detting enemy torps.  If no changes are made to the default keymap it creates a blanks "keymap:"
+'entry in the netrekrc which does not override any previous keymap changes listed in netrek.  By doing this it will create
+'a "keymap:dd" entry, simply reassigning the det enemy torps key back to itself and overriding any previous keymap entries
 
-    If detenemy = Text1(17) Then
-       keymap18 = ""
-    Else
-       keymap18 = Text1(17) + detenemy
-    End If
+
+    keymap18 = Text1(17) + detenemy
 
     If plasma = Text1(18) Then
        keymap19 = ""
@@ -1916,7 +1928,7 @@ Private Sub Command1_Click()
        keymap28 = Text1(27) + docking
     End If
     If volumeup = Text1(28) Then
-      keymap29 = ""
+       keymap29 = ""
     Else
        keymap29 = Text1(28) + volumeup
     End If
@@ -1983,7 +1995,9 @@ Private Sub Command1_Click()
     
     
        If duplicate = 0 And speckey = 0 And blank = 0 Then
-      
+       ' Open the file for append.
+       Open ".\netrekrc" For Append As fnum2
+       
        ' Add the command.
        If Combo1 = "Torpedoes" And Combo2 = "Phasers" Then
            buttonmap = "buttonmap:" + "1" + Text1(0) + "2" + Text1(1)
@@ -2020,77 +2034,85 @@ Private Sub Command1_Click()
        keymap = "keymap:" + keymap1 + keymap2 + keymap3 + keymap4 + keymap5 + keymap6 + keymap7 + keymap8 + keymap9 + keymap10 + keymap11 + keymap12 + keymap13 + keymap14 + keymap15 + keymap16 + keymap17 + keymap18 + keymap19 + keymap20 + keymap21 + keymap22 + keymap23 + keymap24 + keymap25 + keymap26 + keymap27 + keymap28 + keymap29 + keymap30 + keymap31
        keytag1 = "###Configuration below was added on - " + currentdate
        
-       ' Open files for find/replace.
-       fnum2 = FreeFile
-       Open ".\netrekrc.sav" For Input As fnum2
+       Print #fnum2, Chr(13)
+       Print #fnum2, Chr(13)
+       Print #fnum2, keytag1
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Key mapping"
+       Print #fnum2, "# Define you keymap here.  The format is newkey defaultkey.  For example, the"
+       Print #fnum2, "# default key for shield toggle is 's', if you want to remap shield toggle to"
+       Print #fnum2, "# 'q', you would put 'qs' in your keymap.  Shields would still be mapped to"
+       Print #fnum2, "# 's' as well as now being on 'q'.  Adding a mapping doesn't delete the old"
+       Print #fnum2, "# one.  If you want shields on 'w' as well, put 'ws' in your keymap.  If you"
+       Print #fnum2, "# had instead put 'wq', it would have mapped quit, the default action of 'q',"
+       Print #fnum2, "# onto 'w'."
+       Print #fnum2, keymap
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Mouse button mapping"
+       Print #fnum2, "# Button map lets you map the mouse buttons.  Unfortunately, it works in a"
+       Print #fnum2, "# different way than keymap.  The format is <mousebutton> <key>.  To map"
+       Print #fnum2, "# shields onto button 1 (the left one), you would put '1s' in your keymap."
+       Print #fnum2, "# The buttonmap works through the keymap, so if you have shields mapped to"
+       Print #fnum2, "# 'q', putting '1q' would make button 1 shields and not quit.  Buttons 4 and"
+       Print #fnum2, "# 5 are support for Microsoft Xbuttons.  If you have a wheel mouse, the up"
+       Print #fnum2, "# wheel is button 6 and the down wheel is button 7.  There is also support"
+       Print #fnum2, "# for shifted, controled, and control-shifted mouse actions, see the netrek"
+       Print #fnum2, "# help file for more details."
+       Print #fnum2, buttonmap
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Show hints window"
+       Print #fnum2, tiptxt
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# What type of ship bitmaps to use"
+       Print #fnum2, "# 0 - mono"
+       Print #fnum2, "# 1 - new color bitmaps (default)"
+       Print #fnum2, "# 2 - old color bitmaps"
+       Print #fnum2, "# 3 - shaded old color bitmaps"
+       Print #fnum2, "# 4 - experimental high res bitmaps"
+       Print #fnum2, mode1
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Use colored bitmaps for torps and plasmas"
+       Print #fnum2, mode2
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Type of planet bitmaps on local map"
+       Print #fnum2, "# 0 - Bronco (default)"
+       Print #fnum2, "# 1 - Moo"
+       Print #fnum2, "# 2 - Rabbitear"
+       Print #fnum2, "# 3 - New color"
+       Print #fnum2, mode4
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Type of planet bitmaps on galactic map"
+       Print #fnum2, "# 0 - Bronco (default)"
+       Print #fnum2, "# 1 - Moo"
+       Print #fnum2, "# 2 - Rabbitear"
+       Print #fnum2, "# 3 - New color"
+       Print #fnum2, mode5
+       Print #fnum2, Chr(13)
+       
+       Print #fnum2, "# Highlight galactic planets by race and army status"
+       Print #fnum2, mode6
+       Print #fnum2, "# Use beeplite"
+       Print #fnum2, mode10
 
-       fnum4 = FreeFile
-       Open ".\netrekrc.txt" For Output As fnum4
-
-       While Not EOF(fnum2)
-       Line Input #fnum2, text_line
-             If text_line Like "keymap:*" Then
-                 text_line = keymap
-             End If
-            If text_line Like "buttonmap:*" Then
-                 text_line = buttonmap
-            End If
-            If text_line Like "sound:*" Then
-                 text_line = soundtxt
-            End If
-
-            If text_line Like "warpStreaks:*" Then
-                text_line = warptxt
-            End If
-
-            If text_line Like "showMySpeed:*" Then
-                text_line = speedtxt
-            End If
-
-            If text_line Like "showStars:*" Then
-                text_line = starstxt
-            End If
-
-            If text_line Like "showHints:*" Then
-                text_line = tiptxt
-            End If
-
-           If text_line Like "detCircle:*" Then
-               text_line = dettxt
-           End If
-
-           If text_line Like "colorClient:*" Then
-               text_line = mode1
-           End If
-
-           If text_line Like "colorWeapons:*" Then
-               text_line = mode2
-           End If
-
-           If text_line Like "planetBitmap:*" Then
-               text_line = mode4
-           End If
-
-           If text_line Like "planetBitmapGalaxy:*" Then
-               text_line = mode5
-           End If
-
-           If text_line Like "planetHighlighting:*" Then
-               text_line = mode6
-           End If
-
-           If text_line Like "useLite:*" Then
-                text_line = mode10
-           End If
-
-           Print #fnum4, text_line
-       Wend
+       
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Enable layered, stereo sound"
+       Print #fnum2, soundtxt
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Draw background stars"
+       Print #fnum2, starstxt
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Draw warp streaks while transwarping to starbase"
+       Print #fnum2, warptxt
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Show det circle around your ship"
+       Print #fnum2, dettxt
+       Print #fnum2, Chr(13)
+       Print #fnum2, "# Show my speed on local"
+       Print #fnum2, speedtxt
        Close fnum2
-       Close fnum4
-                                                                               
-              
+       
        ' Opens the controls you chose in notepad for reference
-       fnum3 = FreeFile
        Open ".\controls.txt" For Output As #fnum3
        Print #fnum3, "These are the controls you have chosen:"
        Print #fnum3, Chr(13)
@@ -2169,6 +2191,10 @@ Private Sub Command2_Click()
 End Sub
 
 
+Private Sub Form_Load()
+
+End Sub
+
 Private Sub Option1_Click()
  Form3.Show
  Unload Form1
@@ -2182,4 +2208,3 @@ Private Sub Text1_Change(Index As Integer)
       Text1(30) = Text1(30)
    End If
 End Sub
-
