@@ -34,6 +34,7 @@ rect doesn't take these into account.
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 6) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
+7) Verbosity setting for logfile..phaser and torp warn messages can be very spammy.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
@@ -51,6 +52,7 @@ per ship is not compliant with current code.
 9) CV army capacity is wrong - waiting on word from server experts to the right value
 11) Playing back recordings made by linux pclient is probably impossible.
 12) Mysterious crash bug, not reproducible by me.
+13) Issue with phaser misses on latest paradise server? on whitestar at least
 
 Wish list:
 1) Rewrite graphics engine using SDL

@@ -347,7 +347,7 @@ planetmBitmap (register struct planet *p)
         if (p->pl_flags & PLFUEL)
             i += 1;
 #ifdef PARADISE
-        if (p->pl_flags & PLSHIPYARD)
+        if (paradise && (p->pl_flags & PLSHIPYARD))
         {
              i = 9; /* Base for shipyards */
              if (p->pl_flags & PLFUEL)
@@ -356,11 +356,21 @@ planetmBitmap (register struct planet *p)
                  i += 2;
         }
 #endif
-        return bmplanets[i];
+#ifdef PARADISE
+        if (paradise)
+            return (paradise_bmplanets[i]);
+        else
+#endif
+            return bmplanets[i];
     }
     else
     {
-        return (bmplanets[8]);
+#ifdef PARADISE
+        if (paradise)
+            return (paradise_bmplanets[8]);
+        else
+#endif
+            return (bmplanets[8]);
     }
 }
 

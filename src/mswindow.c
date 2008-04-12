@@ -557,6 +557,12 @@ W_Cleanup (void)
         free (bplanets[i]);
     for (i = 0; i < MPLANET_VIEWS; i++)
         free (bmplanets[i]);
+#ifdef PARADISE
+    for (i = 0; i < PARADISE_PLANET_VIEWS; i++)
+        free (paradise_bplanets[i]);
+    for (i = 0; i < PARADISE_MPLANET_VIEWS; i++)
+        free (paradise_bmplanets[i]);
+#endif
 
     for (i = 0; i < BMP_SHIPEXPL_FRAMES; i++)
         free (expview[i]);

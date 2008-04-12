@@ -1918,16 +1918,12 @@ handleLogin (struct login_spacket *packet)
 {
     loginAccept = packet->accept;
 #ifdef PARADISE
-    if ((packet->pad2 != 69) && (packet->pad3 != 42))
-    {
-        LineToConsole ("Paradise.exe only works on paradise servers, either select a paradise server or use netrek.exe.\n");
-        exit (0);
-    }
-#else
     if ((packet->pad2 == 69) && (packet->pad3 == 42))
-    {
-        LineToConsole ("Netrek.exe only works on non-paradise servers, either select a non-paradise server or use paradise.exe.\n");
-        exit (0);
+	paradise = 1;
+    else {
+	/*nshiptypes = 8;*/
+	/*nplayers=20;*/
+	/*nplanets=40;*/
     }
 #endif
     if (packet->accept)

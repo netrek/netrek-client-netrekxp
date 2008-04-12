@@ -281,6 +281,7 @@ extern int debug;
 extern double Sin[], Cos[];
 
 #ifdef PARADISE
+extern int paradise;
 extern int received_terrain_info;
 extern int terrain_x;
 extern int terrain_y;
@@ -430,6 +431,12 @@ extern W_Icon base_planets;
 extern W_Icon base_mplanets;
 extern W_Icon bplanets[PLANET_VIEWS];
 extern W_Icon bmplanets[MPLANET_VIEWS];
+#ifdef PARADISE
+extern W_Icon paradise_base_planets;
+extern W_Icon paradise_base_mplanets;
+extern W_Icon paradise_bplanets[PARADISE_PLANET_VIEWS];
+extern W_Icon paradise_bmplanets[PARADISE_PLANET_VIEWS];
+#endif
 extern W_Color borderColor, backColor, textColor, myColor, warningColor,
     shipCol[5], rColor, yColor, gColor, unColor, foreColor;
 extern char *colornames[COLORS];

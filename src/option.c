@@ -776,7 +776,11 @@ optionaction (W_Event * data)
                 RedrawPlayerList ();
         }
         /* Let's see if this is our option changed */
-        else if (op->op_option == &planetBitmap)
+        else if (op->op_option == &planetBitmap
+#ifdef PARADISE
+                 && !paradise // Paradise bitmaps stay loaded at all times
+#endif
+        )
         {
             if (planetBitmap != 3) // Color planet bitmaps stay loaded at all times
             {
@@ -785,9 +789,6 @@ optionaction (W_Event * data)
                 for (i = 0; i < PLANET_VIEWS; i++)
                     free (bplanets[i]);
 
-#ifdef PARADISE
-                Planlib = "bitmaps/paradise/paradise_plan.bmp";
-#else
                 switch (planetBitmap)
                 {
                 case 1:
@@ -800,7 +801,7 @@ optionaction (W_Event * data)
                     Planlib = "bitmaps/planlibm/plan.bmp";
                     break;
                 }
-#endif
+
                 base_planets = W_StoreBitmap3 (Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * 9,
                                                 BMP_PLANET000, w, LR_MONOCHROME);
   
@@ -813,7 +814,11 @@ optionaction (W_Event * data)
 
             redrawall = 1;
         }
-        else if (op->op_option == &planetBitmapGalaxy)
+        else if (op->op_option == &planetBitmapGalaxy
+#ifdef PARADISE
+                 && !paradise // Paradise bitmaps stay loaded at all times
+#endif
+                 )
         {
             if (planetBitmapGalaxy != 3) // Color planet bitmaps stay loaded at all times
             {
@@ -822,9 +827,6 @@ optionaction (W_Event * data)
                 for (i = 0; i < MPLANET_VIEWS; i++)
                     free (bmplanets[i]);
 
-#ifdef PARADISE
-                MPlanlib = "bitmaps/paradise/paradise_mplan.bmp";
-#else
                 switch (planetBitmapGalaxy)
                 {
                 case 1:
@@ -837,7 +839,7 @@ optionaction (W_Event * data)
                     MPlanlib = "bitmaps/planlibm/mplan.bmp";
                     break;
                 }
-#endif
+
                 base_mplanets = W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * 9,
                                                 BMP_MPLANET000, mapw, LR_MONOCHROME);
     

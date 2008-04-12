@@ -1,7 +1,8 @@
 Netrek XP 2009, Version 1.0: (Released April-2008)
 
 General bug fixes:
-1) Fix to cloak bug where ships would briefly be seen to flash when entering.
+1) Fix to cloak bug where ships would briefly be seen to flash when entering
+tactical.
 2) Various bug fixes for play on a paradise server.
 
 New features:

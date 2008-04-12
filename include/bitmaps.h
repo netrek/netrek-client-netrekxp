@@ -151,12 +151,11 @@
 #define BMP_MPLANET_HEIGHT 16
 
 #ifdef PARADISE
-#define PLANET_VIEWS 13
-#define MPLANET_VIEWS 13
-#else
+#define PARADISE_PLANET_VIEWS 13
+#define PARADISE_MPLANET_VIEWS 13
+#endif
 #define PLANET_VIEWS 9
 #define MPLANET_VIEWS 9
-#endif
 
 // Color planets
 

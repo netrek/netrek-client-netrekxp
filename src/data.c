@@ -277,6 +277,7 @@ int macrocnt = 0;
 extern double Sin[], Cos[];
 
 #ifdef PARADISE
+int paradise = 0;		/* is the server a paradise server */
 int received_terrain_info = 0;
 int terrain_x;
 int terrain_y;
@@ -425,6 +426,12 @@ W_Icon base_planets;
 W_Icon base_mplanets;
 W_Icon bplanets[PLANET_VIEWS];
 W_Icon bmplanets[MPLANET_VIEWS];
+#ifdef PARADISE
+W_Icon paradise_base_planets;
+W_Icon paradise_base_mplanets;
+W_Icon paradise_bplanets[PARADISE_PLANET_VIEWS];
+W_Icon paradise_bmplanets[PARADISE_PLANET_VIEWS];
+#endif
 
 /* jn - SMARTMACRO */
 

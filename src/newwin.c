@@ -1309,6 +1309,10 @@ savebitmaps (void)
     int i, k;
     char *Planlib;
     char *MPlanlib;
+#ifdef PARADISE
+    char *Paradise_Planlib;
+    char *Paradise_MPlanlib;
+#endif
 
     planetBitmap = intDefault ("planetBitmap", planetBitmap);
     planetBitmapGalaxy = intDefault ("planetBitmapGalaxy", planetBitmapGalaxy);
@@ -1319,9 +1323,9 @@ savebitmaps (void)
     loadparadisethings();
 #endif
 #ifdef PARADISE
-    Planlib = "bitmaps/paradise/paradise_plan.bmp";
-    MPlanlib = "bitmaps/paradise/paradise_mplan.bmp";
-#else
+    Paradise_Planlib = "bitmaps/paradise/paradise_plan.bmp";
+    Paradise_MPlanlib = "bitmaps/paradise/paradise_mplan.bmp";
+#endif
     switch (planetBitmap) // Case 3 = new color, but we never use Planlib
     {
     case 1:
@@ -1346,7 +1350,6 @@ savebitmaps (void)
         MPlanlib = "bitmaps/planlibm/mplan.bmp";
         break;
     }
-#endif
  
     if (!dynamicBitmaps) /* Only load needed bitmaps */
     {
@@ -1477,6 +1480,14 @@ savebitmaps (void)
     base_mplanets =
         W_StoreBitmap3 (MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * PLANET_VIEWS,
                         BMP_MPLANET000, mapw, LR_MONOCHROME);
+#ifdef PARADISE
+    paradise_base_planets =
+        W_StoreBitmap3 (Paradise_Planlib, BMP_PLANET_WIDTH, BMP_PLANET_HEIGHT * PARADISE_PLANET_VIEWS,
+                        BMP_PLANET000, w, LR_MONOCHROME);
+    paradise_base_mplanets =
+        W_StoreBitmap3 (Paradise_MPlanlib, BMP_MPLANET_WIDTH, BMP_MPLANET_HEIGHT * PARADISE_PLANET_VIEWS,
+                        BMP_MPLANET000, mapw, LR_MONOCHROME);
+#endif
 
     for (k = 0; k < PLANET_VIEWS; k++)
     {
@@ -1487,6 +1498,17 @@ savebitmaps (void)
             W_PointBitmap2 (base_mplanets, 0, k, BMP_MPLANET_WIDTH,
                             BMP_MPLANET_HEIGHT);
     }
+#ifdef PARADISE
+    for (k = 0; k < PARADISE_PLANET_VIEWS; k++)
+    {
+        paradise_bplanets[k] =
+            W_PointBitmap2 (paradise_base_planets, 0, k, BMP_PLANET_WIDTH,
+                            BMP_PLANET_HEIGHT);
+        paradise_bmplanets[k] =
+            W_PointBitmap2 (paradise_base_mplanets, 0, k, BMP_MPLANET_WIDTH,
+                            BMP_MPLANET_HEIGHT);
+    }
+#endif
 
     if (colorClient > 0)
     {
