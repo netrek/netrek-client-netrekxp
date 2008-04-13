@@ -184,8 +184,7 @@ static void planet_list_paradise (void)
 	W_Color cur_color;
 
 	cur_color = shipCol[i];
-	//sprintf(buf, "%s: ", teaminfo[i-1].shortname);
-	sprintf(buf, "%s : ", teamname[i]);
+	sprintf(buf, "%s: ", teaminfo[i-1].shortname);
 	W_WriteText(wind, i * 7 + 2, k, cur_color, buf, strlen(buf), 
 		    W_RegularFont);
 	sprintf(buf, " %-2d", team_pcount[i]);

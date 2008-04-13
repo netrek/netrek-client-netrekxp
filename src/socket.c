@@ -1921,11 +1921,18 @@ handleLogin (struct login_spacket *packet)
     loginAccept = packet->accept;
 #ifdef PARADISE
     if ((packet->pad2 == 69) && (packet->pad3 == 42))
-	paradise = 1;
+    {
+        paradise = 1;
+        // Now we have to resize certain windows that are set too small by default
+        // First resize planet window
+        W_DestroyWindow (planetw);
+        planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 9, baseWin, 2);
+        W_SetWindowExposeHandler (planetw, planetlist);
+    }
     else {
-	/*nshiptypes = 8;*/
-	/*nplayers=20;*/
-	/*nplanets=40;*/
+        /*nshiptypes = 8;*/
+        /*nplayers=36;*/
+        /*nplanets=40;*/
     }
 #endif
     if (packet->accept)
@@ -2836,7 +2843,7 @@ void handlePlanet2 (struct planet_spacket2 *packet)
       if (nplanets > 40)
       {
         W_DestroyWindow (planetw);
-        planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 8, baseWin, 2);
+        planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 9, baseWin, 2);
         W_SetWindowExposeHandler (planetw, planetlist);
       }
     }
@@ -2849,7 +2856,7 @@ void handlePlanet2 (struct planet_spacket2 *packet)
         if (nplanets > 40)
         {
           W_DestroyWindow (planetw);
-          planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 8, baseWin, 2);
+          planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 9, baseWin, 2);
           W_SetWindowExposeHandler (planetw, planetlist);
         }
       }

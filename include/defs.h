@@ -98,11 +98,8 @@
                                 /* At this range a player can be
                                    seen while visible (uncloaked) */
 
-#ifdef PARADISE
-#define MAXSECTORS 20
-#else
-#define MAXSECTORS 10           /* Max # of star sectors */
-#endif
+#define MAXSECTORS 20           /* Max # of star sectors.  Sector size
+                                   is always same size as tactical window */
 #define MAXSTARS 100            /* Max # of stars in a sector */
 
 /* 6 minutes is maximum for autoquit -- anything more causes problems in the
