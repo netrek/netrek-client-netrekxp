@@ -45,11 +45,9 @@
 
 #define TESTERS 4               /* Priveledged slots for
                                  * robots and game 'testers' */
-#ifdef PARADISE
-#define MAXPLANETS 60
-#else
-#define MAXPLANETS 40
-#endif
+
+#define MAXPLANETS 60           /* Maximum planets any server will send us.
+                                   Bronco has 40, paradise can go up to 60 */
 #define MAXTORP 8
 #define MAXPLASMA 1
 #define PKEY 128

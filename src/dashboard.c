@@ -1155,7 +1155,7 @@ int get_closest_planet(int x, int y)
     int target;
 
     closedist = GWIDTH;
-    for (i = 0, k = &planets[i]; i < MAXPLANETS; i++, k++)
+    for (i = 0, k = &planets[i]; i < nplanets; i++, k++)
     {
         dist = hypot ((double) (x - k->pl_x), (double) (y - k->pl_y));
         if (dist < closedist)

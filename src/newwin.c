@@ -1006,11 +1006,9 @@ newwin (char *hostmon,
 
     W_SetWindowKeyDownHandler (warnw, handleMessageWindowKeyDown);
 
-#ifdef PARADISE
-    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, MAXPLANETS + 8, baseWin, 2);
-#else
-    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, MAXPLANETS + 3, baseWin, 2);
-#endif
+    // Planet window sized assuming only 40 (nplanets) planets, can be resized if more planets received
+    // see void handlePlanet2 in socket.c
+    planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, nplanets + 3, baseWin, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
 #ifdef PARADISE
@@ -2106,7 +2104,7 @@ deadTeam (int owner)
 
     if (planets[remap[owner] * 10 - 10].pl_couptime == 0)
         return (0);
-    for (i = 0, p = planets; i < MAXPLANETS; i++, p++)
+    for (i = 0, p = planets; i < nplanets; i++, p++)
     {
         if (p->pl_owner & owner)
         {

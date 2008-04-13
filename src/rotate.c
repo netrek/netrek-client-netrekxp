@@ -96,7 +96,7 @@ rotateGalaxy (void)
     redrawall = 1;
     reinitPlanets = 1;
 
-    for (i = 0, l = planets; i < MAXPLANETS; i++, l++)
+    for (i = 0, l = planets; i < nplanets; i++, l++)
     {
         if (rotate)
         {

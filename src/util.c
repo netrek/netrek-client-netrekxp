@@ -111,7 +111,7 @@ gettarget2 (int x,
     closedist = GWIDTH;
     if (targtype & TARG_PLANET)
     {
-        for (i = 0, k = &planets[i]; i < MAXPLANETS; i++, k++)
+        for (i = 0, k = &planets[i]; i < nplanets; i++, k++)
         {
             dist = hypot ((double) (x - k->pl_x), (double) (y - k->pl_y));
             if (dist < closedist)

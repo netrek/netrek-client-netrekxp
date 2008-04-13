@@ -1131,12 +1131,12 @@ handleVPlanet (unsigned char *sbuf)
 
     numofplanets = (unsigned char) sbuf[1];
 
-    if (numofplanets > MAXPLANETS + 1)
+    if (numofplanets > nplanets + 1)
         return;
 
     for (i = 0; i < numofplanets; i++, packet++)
     {
-        if (packet->pnum >= MAXPLANETS)
+        if (packet->pnum < 0 || packet->pnum >= nplanets)
             continue;
 
         plan = &planets[packet->pnum];

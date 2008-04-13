@@ -328,7 +328,7 @@ updatePlanetw (void)
 
         /* Store # of visible planets from each team.  And let's sort them
            by army count (low to high) while we are at it. */
-        for (i = 0, j = &planets[i]; i < MAXPLANETS; i++, j++)
+        for (i = 0, j = &planets[i]; i < nplanets; i++, j++)
         {
             if (j->pl_info & me->p_team)
             {
@@ -429,7 +429,7 @@ updatePlanetw (void)
     planetOffset[1],planetOffset[2],planetOffset[3],planetOffset[4],planetOffset[5]);
 #endif
 
-    for (i = 0, j = &planets[i]; i < MAXPLANETS; i++, j++)
+    for (i = 0, j = &planets[i]; i < nplanets; i++, j++)
     {
         if (sortPlanets)
         {
@@ -572,7 +572,7 @@ updatePlanetw (void)
 int
 GetPlanetFromPlist (int x, int y)
 {
-    if (y < MAXPLANETS && y >= 0)
+    if (y < nplanets && y >= 0)
         return planet_row[y];
     else
         return (-1);

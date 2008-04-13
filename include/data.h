@@ -57,6 +57,7 @@ extern struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 extern int TWINSIDE;
 extern int GWINSIDE;
 
+extern int nplanets;
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
 extern unsigned int oldengflag;
@@ -296,7 +297,6 @@ extern int npthingies;
 extern int ngthingies;
 extern int nplasmas;
 extern int nphasers;
-extern int nplanets;
 extern struct teaminfo_s *teaminfo;
 extern int number_of_teams;
 /* MOTD data */

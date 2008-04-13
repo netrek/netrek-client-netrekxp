@@ -124,7 +124,7 @@ initPlanets (void)
 #else
     pRadius = BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 2;
 #endif
-    for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
+    for (k = 0, pl = planets; k < nplanets; k++, pl++)
     {
         /*
            Size of planet is pRadius but a ship will touch the planet if
@@ -164,7 +164,7 @@ initPlanets (void)
     }
     /* Now loop for the new planet bitmaps, which are roughly 50% wider */
     pRadius = 3 * BMP_MPLANET_WIDTH * GWIDTH / GWINSIDE / 4;
-    for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
+    for (k = 0, pl = planets; k < nplanets; k++, pl++)
     {
         /*
            Size of planet is pRadius but a ship will touch the planet if
@@ -225,7 +225,7 @@ showRegions(void)
     const int tHeight = W_Textheight * GWIDTH / GWINSIDE;
     const int tWidth = W_Textwidth * GWIDTH / GWINSIDE;
 
-    for (k = 0, pl = planets; k < MAXPLANETS; k++, pl++)
+    for (k = 0, pl = planets; k < nplanets; k++, pl++)
     {
         startX = (pl->pl_x - pRadius - tWidth) / SIZE;
         endX = (pl->pl_x + pRadius + tWidth + (tWidth / 2)) / SIZE;
@@ -543,11 +543,11 @@ DrawPlanets ()
     register int dx, dy;
     char ch, agri_name[3];
 
-    for (l = planets + MAXPLANETS - 1; l >= planets; --l)
+    for (l = planets + nplanets - 1; l >= planets; --l)
     {
         /* Synchronize planet info (up to 10 times/second) for current orbitted
-           planet.  For all other planets, send info on planet 0 through planet
-           MAXPLANETS every MAXPLANETS/10 seconds, one planet at a time,
+           planet.  For all other planets, send info on planet 0 through last
+           planet (nplanets) every nplanets/10 seconds, one planet at a time,
            10 times/second. */
         if (F_check_planets)
         {
@@ -1010,7 +1010,7 @@ map (void)
             redrawPlayer[i] = 1;
         }
 
-        for (l = planets + MAXPLANETS - 1; l >= planets; --l)
+        for (l = planets + nplanets - 1; l >= planets; --l)
             l->pl_flags |= PLREDRAW;
     }
     else
@@ -1195,7 +1195,7 @@ map (void)
     /* Increment counter for requesting planet sync (F_check_planets) */
     if (F_check_planets)
     {
-        if ((planet_refresh * 10 / server_ups) >= MAXPLANETS)
+        if ((planet_refresh * 10 / server_ups) >= nplanets)
             planet_refresh = 0;
         else
             planet_refresh++;
@@ -1364,7 +1364,7 @@ map (void)
             mcleary = dy;
             mclearr = rad;
             mclearccount++;
-            for (pl = planets + MAXPLANETS - 1; pl >= planets; --pl)
+            for (pl = planets + nplanets - 1; pl >= planets; --pl)
             {
                 /* Redraw check - redraw all planets in range.  Have to
                    adjust distance to account for planet radius and text

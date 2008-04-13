@@ -39,6 +39,9 @@ struct _star stars[MAXSECTORS][MAXSECTORS][MAXSTARS];
 
 int TWINSIDE = 500;             /* Size of tactical window */
 int GWINSIDE = 500;             /* Size of galactic window */
+
+int nplanets = 40;              /* can be larger for paradise servers, dynamically
+                                   sent via SP_PLANET2 */
 int globalerr = 0;              /* For sending error # between threads */
 int ingame = 0;                 /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
@@ -292,7 +295,6 @@ int npthingies = 20;
 int ngthingies = 0;
 int nplasmas = 1;
 int nphasers = 1;
-int nplanets = MAXPLANETS;	/* get this info dyn. from Pserver */
 struct teaminfo_s *teaminfo = NULL;
 int number_of_teams = 4;
 /* MOTD data */

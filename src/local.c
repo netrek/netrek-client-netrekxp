@@ -580,7 +580,7 @@ DrawPlanets (void)
     register struct planet *l;
     int view = scaleFactor * TWINSIDE / 2 + BMP_PLANET_WIDTH * SCALE / 2;
 
-    for (l = planets + MAXPLANETS - 1; l >= planets; --l)
+    for (l = planets + nplanets - 1; l >= planets; --l)
     {
         dx = l->pl_x - me->p_x;
         dy = l->pl_y - me->p_y;

@@ -1759,6 +1759,8 @@ handlePlanet (struct planet_spacket *packet)
         return;
     }
 #endif
+    if (packet->pnum > nplanets) // This shouldn't happen...
+        LineToConsole( "handlePlanet: received planet num larger than nplanets\n");
 
     plan = &planets[packet->pnum];
 
@@ -2830,11 +2832,27 @@ void handlePlanet2 (struct planet_spacket2 *packet)
     {
       first_planet_packet = 0;
       nplanets = packet->pnum+1;
+      //Resize planet window if more than the default # of planets (40)
+      if (nplanets > 40)
+      {
+        W_DestroyWindow (planetw);
+        planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 8, baseWin, 2);
+        W_SetWindowExposeHandler (planetw, planetlist);
+      }
     }
     else
     {
       if((packet->pnum+1) > nplanets)
+      {
         nplanets = packet->pnum+1;
+        //Resize planet window if more than the default # of planets (40)
+        if (nplanets > 40)
+        {
+          W_DestroyWindow (planetw);
+          planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 75, nplanets + 8, baseWin, 2);
+          W_SetWindowExposeHandler (planetw, planetlist);
+        }
+      }
     }
 
     planets[packet->pnum].pl_owner = packet->owner;
@@ -4503,7 +4521,7 @@ void print_packet(char *packet, int size)
    int i;                        /* lcv */
    unsigned int j;
    unsigned char *data;
-   int kills, pnum, nplanets;
+   int kills, pnum, packet_planets;
    struct planet_s_spacket *plpacket;
    if(log_packets == 0) return;
    switch ( packet[0] )
@@ -4920,9 +4938,9 @@ void print_packet(char *packet, int size)
 	 if (log_packets > 1)
 	   {
 	     plpacket = (struct planet_s_spacket *) &packet[2];
-	     nplanets = packet[1];
-             LineToConsole("nplanets = %d, ", nplanets);
-             for(i = 0; i < nplanets; i++, plpacket++ )
+	     packet_planets = packet[1];
+	     LineToConsole("packet_planets = %d, ", packet_planets);
+	     for(i = 0; i < packet_planets; i++, plpacket++ )
 	       LineToConsole(
 		       "pnum = %d, pl_owner = %d, info = %d, flags = %d, armies = %d ", 
 		       plpacket->pnum, 

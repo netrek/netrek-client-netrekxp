@@ -53,6 +53,8 @@ per ship is not compliant with current code.
 11) Playing back recordings made by linux pclient is probably impossible.
 12) Mysterious crash bug, not reproducible by me.
 13) Issue with phaser misses on latest paradise server? on whitestar at least
+14) Don't think there is gettarget support for astral bodies like nebulae and stars
+and black holes.  Might be an issue with macros.
 
 Wish list:
 1) Rewrite graphics engine using SDL
