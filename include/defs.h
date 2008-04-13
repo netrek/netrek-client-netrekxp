@@ -67,13 +67,9 @@
 #define DESIRED_TIC_LEN 10      /* for desired heading */
 
 /* These are configuration definitions */
-#ifdef PARADISE
-#define GWIDTH gwidth           /* Paradise has variable galaxy
-                                   width, up to 200000 */
-#else
-#define GWIDTH 100000           /* galaxy is 100000 spaces
-                                 * on a side */
-#endif
+#define GWIDTH gwidth           /* Normally 100000, but paradise
+                                   has variable galaxy width, up
+                                   to 200000 */
 #define SCALE 40                /* Window will be one pixel for
                                    these # spaces */
 #define WARP1 20                /* warp one will move 20

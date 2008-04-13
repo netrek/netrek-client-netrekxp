@@ -58,6 +58,7 @@ extern int TWINSIDE;
 extern int GWINSIDE;
 
 extern int nplanets;
+extern int gwidth;
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
 extern unsigned int oldengflag;
@@ -286,7 +287,6 @@ extern int paradise;
 extern int received_terrain_info;
 extern int terrain_x;
 extern int terrain_y;
-extern int gwidth;		/* Paradise version of GWIDTH */
 extern int gwidth_zoom; 	/* galaxy width, adjusted for zoom, unused */
 extern int offsetx;
 extern int offsety;		/* offsets when zooming [BDyess] */

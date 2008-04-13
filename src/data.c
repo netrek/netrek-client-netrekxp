@@ -42,6 +42,7 @@ int GWINSIDE = 500;             /* Size of galactic window */
 
 int nplanets = 40;              /* can be larger for paradise servers, dynamically
                                    sent via SP_PLANET2 */
+int gwidth = 100000;		/* can be changed by paradise server */
 int globalerr = 0;              /* For sending error # between threads */
 int ingame = 0;                 /* If player is in game - to distinguish between whether
                                    to use double buffering on the local and map window */
@@ -284,7 +285,6 @@ int paradise = 0;		/* is the server a paradise server */
 int received_terrain_info = 0;
 int terrain_x;
 int terrain_y;
-int gwidth = 100000;		/* Paradise version of GWIDTH */
 int gwidth_zoom = 100000;	/* galaxy width, adjusted for zoom, unused */
 int offsetx = 0;
 int offsety = 0;			/* offsets when zooming [BDyess] */
