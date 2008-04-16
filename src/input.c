@@ -311,7 +311,7 @@ lockBase (void)
     register struct player *j;
     register int targnum = -1;
 
-    for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+    for (i = 0, j = &players[i]; i < nplayers; i++, j++)
     {
         if (j->p_status != PALIVE)
             continue;
@@ -1292,43 +1292,48 @@ keyaction (W_Event * data)
             localflags &= ~(PFREFIT);
             return;
             break;
-#ifdef PARADISE
         case 'j':
-            sendRefitReq (JUMPSHIP);
+            if (paradise)
+                sendRefitReq (JUMPSHIP);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'f':
-            sendRefitReq (FLAGSHIP);
+            if (paradise)
+                sendRefitReq (FLAGSHIP);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'w':
-            sendRefitReq (WARBASE);
+            if (paradise)
+                sendRefitReq (WARBASE);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'l':
-            sendRefitReq (LIGHTCRUISER);
+            if (paradise)
+                sendRefitReq (LIGHTCRUISER);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'v':
-            sendRefitReq (CARRIER);
+            if (paradise)
+                sendRefitReq (CARRIER);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'u':
-            sendRefitReq (UTILITY);
+            if (paradise)
+                sendRefitReq (UTILITY);
             localflags &= ~(PFREFIT);
             return;
             break;
         case 'p':
-            sendRefitReq (PATROL);
+            if (paradise)
+                sendRefitReq (PATROL);
             localflags &= ~(PFREFIT);
             return;
             break;
-#endif
         default:
             localflags &= ~(PFREFIT);
             return;
@@ -1948,15 +1953,16 @@ detmine (void)
 {
     register int i = 0;
 
-#ifdef PARADISE
-    sendDetMineReq(-1);
-#else
-    for (i = 0; i < MAXTORP; i++)
+    if (paradise)
+        sendDetMineReq(-1);
+    else
     {
-        if (torps[i + (me->p_no * MAXTORP)].t_status == TMOVE ||
-            torps[i + (me->p_no * MAXTORP)].t_status == TSTRAIGHT)
+    for (i = 0; i < ntorps; i++)
+    {
+        if (torps[i + (me->p_no * ntorps)].t_status == TMOVE ||
+            torps[i + (me->p_no * ntorps)].t_status == TSTRAIGHT)
         {
-            sendDetMineReq ((short) (i + (me->p_no * MAXTORP)));
+            sendDetMineReq ((short) (i + (me->p_no * ntorps)));
 
 #ifdef SHORT_PACKETS
             if (recv_short)
@@ -1964,7 +1970,7 @@ detmine (void)
 #endif
         }
     }
-#endif
+    }
     return (0);
 }
 
@@ -2299,11 +2305,10 @@ Key36 (void)
 void
 Key37 (void)
 {
-#ifdef PARADISE
-    set_speed(me->p_ship.s_maxspeed);
-#else
-    set_speed (99);             /* Max speed... */
-#endif
+    if (paradise)
+        set_speed(me->p_ship.s_maxspeed);
+    else
+        set_speed (99);             /* Max speed... */
 }
 
 /******************************************************************************/
@@ -2412,11 +2417,10 @@ Key45 (void)
 void
 Key46 (void)
 {
-#ifdef PARADISE
-    set_speed(98);  /* afterburners */
-#else
-    emptyKey();
-#endif
+    if (paradise)
+        set_speed(98);  /* afterburners */
+    else
+        emptyKey();
 }
 
 /******************************************************************************/
@@ -2754,11 +2758,10 @@ Key73 (W_Event * data)
 void
 Key74 (W_Event * data)
 {
-#ifdef PARADISE
-    set_speed(99); /* warp! */
-#else
-    emptyKey ();
-#endif
+    if (paradise)
+        set_speed(99); /* warp! */
+    else
+        emptyKey ();
 }
 
 /******************************************************************************/
@@ -3242,7 +3245,8 @@ Key107 (W_Event * data)
 
     /* Observers can't move.  Also incorrectly removes the lock flag even though
        you are still locked */
-    if (me->p_flags & PFOBSERV) return;
+    if (me->p_flags & PFOBSERV && !paradise)
+       return;
 
     course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     set_course (course);
@@ -3619,7 +3623,8 @@ Key187 (void)
     if (!F_turn_keys) return;
 
     /* Observers can't turn */
-    if (me->p_flags & PFOBSERV) return;
+    if (me->p_flags & PFOBSERV && !paradise)
+       return;
 
     course = (unsigned char) (me->p_dir - 16);
     set_course (course);
@@ -3638,7 +3643,8 @@ Key189 (void)
     if (!F_turn_keys) return;
 
     /* Observers can't turn */
-    if (me->p_flags & PFOBSERV) return;
+    if (me->p_flags & PFOBSERV && !paradise)
+       return;
 
     course = (unsigned char) (me->p_dir + 16);
     set_course (course);
@@ -3905,13 +3911,14 @@ Key131 (W_Event * data)
 void
 Key202 (W_Event * data)
 {
-#ifdef PARADISE
-    /* suspend warp toggle [BDyess] */
-    if (me->p_flags & PFWPSUSPENDED)
-        set_speed(96); /* unsuspend */
+    if (paradise)
+    {
+        /* suspend warp toggle [BDyess] */
+        if (me->p_flags & PFWPSUSPENDED)
+            set_speed(96); /* unsuspend */
+        else
+            set_speed(97); /* suspend */
+    }
     else
-        set_speed(97); /* suspend */
-#else
-    emptyKey ();
-#endif
+      emptyKey ();
 }

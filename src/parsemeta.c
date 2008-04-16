@@ -565,13 +565,9 @@ static void version_r(struct sockaddr_in *address) {
     if (tempstatus > statusLevel)
       throwaway++;
 
-#ifdef PARADISE
-    /* only show paradise servers */
-    if (type != 'P') throwaway++;
-#else
+
     /* ignore paradise servers */
-    if (type == 'P') throwaway++;
-#endif
+    // if (type == 'P') throwaway++;
 
     /* if it's to be thrown away, do not add this server, skip to next */
     if (throwaway) continue;
@@ -646,7 +642,7 @@ static void version_s(struct sockaddr_in *address)
   type = p[0];
   
   /* ignore paradise servers */
-  if (type == 'P') return;
+  // if (type == 'P') return;
   
   p = strtok(NULL,",");		/* comment */
   if (p == NULL) return;

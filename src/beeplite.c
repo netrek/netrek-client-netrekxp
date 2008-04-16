@@ -66,7 +66,7 @@ void liteplanet(struct planet *l)
 
 void liteplayer(struct player *j)
 {
-    if (!j || (j->p_flags & PFCLOAK) || (j->p_flags & PFOBSERV))
+    if (!j || (j->p_flags & PFCLOAK) || (!paradise && (j->p_flags & PFOBSERV)))
       return;
 
     redrawPlayer[j->p_no] = 1;

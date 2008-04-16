@@ -201,10 +201,10 @@ InitPlayerList ()
     /* Do we show observers in playerlist?  0 = all, 1 = only players, 2 = only observers 3 = players then observers */
     playerListObserver = intDefault ("playerListObserver", 0);
 
-    /* plistUpdate[MAXPLAYER] must always be TRUE because thats how we no when
+    /* plistUpdate[nplayers] must always be TRUE because thats how we know when
      * to stop looking for a changed player. */
 
-    updatePlayer[MAXPLAYER] = TRUE;
+    updatePlayer[nplayers] = TRUE;
     RedrawPlayerList ();
 }
 
@@ -259,7 +259,6 @@ RedrawPlayerList ()
     if (IsEmpty (me))
         return;
 
-
     /* Translate this style number into a player list layout string. */
 
     switch (playerListStyle)
@@ -313,7 +312,7 @@ RedrawPlayerList ()
     plistReorder = TRUE;
     plistUpdated = TRUE;
 
-    for (i = 0; i < MAXPLAYER; i++)
+    for (i = 0; i < nplayers; i++)
         updatePlayer[i] = TRUE;
 
     UpdatePlistFn ();
@@ -354,11 +353,11 @@ UpdatePlistFn ()
             while (!(*update));
 
 
-            /* Is this a valid player?  Remember updatePlayer[MAXPLAYER] is
+            /* Is this a valid player?  Remember updatePlayer[nplayers] is
              * always TRUE to make the above loop more efficient.  */
 
             count = update - updatePlayer;
-            if (count == MAXPLAYER)
+            if (count == nplayers)
                 break;
 
             *update = FALSE;
@@ -394,10 +393,10 @@ UpdatePlistFn ()
             {
                 if ((players[count].p_status != PFREE) &&
                     ((playerListObserver == 0 || playerListObserver == 3) ||
-                    ((playerListObserver == 1) &&
-                    !(players[count].p_flags & PFOBSERV)) ||
-                    ((playerListObserver == 2) &&
-                    (players[count].p_flags & PFOBSERV))))
+                    ((playerListObserver == 1) && (!paradise &&
+                    !(players[count].p_flags & PFOBSERV))) ||
+                    ((playerListObserver == 2) && (!paradise &&
+                    (players[count].p_flags & PFOBSERV)))))
                 {
                     PlistLine (playerw, players + count, plistPos[count]);
                     PlistLine (playerw2, players + count, plistPos[count]);
@@ -442,7 +441,7 @@ WriteSortedPlist ()
     {
         myTeam = remap[me->p_team];
 
-        for (pos = plistPos + MAXPLAYER - 1; pos >= plistPos; --pos)
+        for (pos = plistPos + nplayers - 1; pos >= plistPos; --pos)
             *pos = -1;
     }
 
@@ -461,7 +460,7 @@ WriteSortedPlist ()
     for (i = NUMTEAM; i >= 0; --i)
         teamPos[i] = 0;
 
-    for (current = players + MAXPLAYER - 1; current >= players; --current)
+    for (current = players + nplayers - 1; current >= players; --current)
     {
         if (playerListHack)
         {
@@ -486,12 +485,12 @@ WriteSortedPlist ()
             {
             	if ( (playerListObserver == 0)
                  || ((playerListObserver == 1 || playerListObserver == 3)
-            	   && !(current->p_flags & PFOBSERV))
+            	   && !(!paradise && current->p_flags & PFOBSERV))
                  || ((playerListObserver == 2)
-                   && (current->p_flags & PFOBSERV)) )
+                   && (!paradise && current->p_flags & PFOBSERV)) )
                    ++teamPos[remap[current->p_team]];
                    
-                if (current->p_flags & PFOBSERV)
+                if (!paradise && current->p_flags & PFOBSERV)
                     ++obsPos;
             }
         }
@@ -586,7 +585,7 @@ WriteSortedPlist ()
     /* Write out each player that has either changed position or has
      * new stats. */
 
-    for (i = MAXPLAYER - 1, current = players + MAXPLAYER - 1;
+    for (i = nplayers - 1, current = players + nplayers - 1;
          i >= 0; --i, --current)
     {
         if (current->p_status == PFREE)
@@ -641,11 +640,14 @@ WriteSortedPlist ()
         else
         {
             if ((playerListObserver == 0) || 
-                ((playerListObserver == 1) && !(current->p_flags & PFOBSERV)) ||
-                ((playerListObserver == 2) && (current->p_flags & PFOBSERV)) ||
+                ((playerListObserver == 1) && !(!paradise && 
+                current->p_flags & PFOBSERV)) ||
+                ((playerListObserver == 2) && (!paradise && 
+                current->p_flags & PFOBSERV)) ||
                 (playerListObserver == 3))
             {
-            	if (playerListObserver == 3 && (current->p_flags & PFOBSERV))
+            	if (playerListObserver == 3 && (!paradise && 
+            	current->p_flags & PFOBSERV))
             	    row = --obsPos;
             	else
                     row = --(teamPos[remap[current->p_team]]);
@@ -686,7 +688,7 @@ WriteUnsortedPlist (void)
     {
         myTeam = remap[me->p_team];
 
-        for (update = updatePlayer + MAXPLAYER; update >= updatePlayer;
+        for (update = updatePlayer + nplayers; update >= updatePlayer;
              --update)
         {
             *update = TRUE;
@@ -705,11 +707,11 @@ WriteUnsortedPlist (void)
         while (!(*update));
 
 
-        /* Is this a valid player?  Remember updatePlayer[MAXPLAYER]
+        /* Is this a valid player?  Remember updatePlayer[nplayers]
          * is always TRUE to make the above loop more efficient.       */
 
         count = update - updatePlayer;
-        if (count == MAXPLAYER)
+        if (count == nplayers)
             break;
 
 
@@ -721,8 +723,10 @@ WriteUnsortedPlist (void)
 
         if ( players[count].p_status != PFREE &&
            (((playerListObserver == 0) || (playerListObserver == 3)) ||
-           ((playerListObserver == 1) && !(players[count].p_flags & PFOBSERV)) ||
-           ((playerListObserver == 2) && (players[count].p_flags & PFOBSERV))) )
+           ((playerListObserver == 1) && !(!paradise && 
+           players[count].p_flags & PFOBSERV)) ||
+           ((playerListObserver == 2) && (!paradise && 
+           players[count].p_flags & PFOBSERV))) )
         {
             PlistLine (playerw, players + count, pos);
             PlistLine (playerw2, players + count, pos);
@@ -1129,20 +1133,19 @@ PlistLine (W_Window win,
             break;
 
         case 'C':              /* Curt (short) Rank */
-#ifdef PARADISE
-            format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
-#else
-            format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
-#endif
+            if (paradise)
+                //format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
+                format (buffPoint, "UNKN", 4, 0);
+            else
+                format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
             buffPoint += 4;
             break;
 
         case 'R':              /* Rank */
-#ifdef PARADISE
-            format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
-#else
-            format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
-#endif
+            if (paradise)
+                format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
+            else
+                format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
             buffPoint += 10;
             break;
 
@@ -1411,14 +1414,14 @@ int
 GetPlayerFromPlist (int x, int y)
 {
     int i;
-    int player_no = MAXPLAYER; /* just to be sure the player does not exist */
+    int player_no = nplayers; /* just to be sure the player does not exist */
     int flag = 0;
 
-    if (y > MAXPLAYER - 1) y = MAXPLAYER - 1;
+    if (y > nplayers - 1) y = nplayers - 1;
     else if (y < 0) y = 0;
 
     /* Let's find what player sits in poition y in the list */
-    for (i=0; i < MAXPLAYER; i++)
+    for (i=0; i < nplayers; i++)
         if (pl_row[i] == y)
         {
             if (playerListHack)
@@ -1449,13 +1452,13 @@ GetPlayerFromPlist (int x, int y)
                     break;
                 }
                 else if (playerListObserver == 1 &&
-                       !(players[i].p_flags & PFOBSERV))
+                       !(!paradise && players[i].p_flags & PFOBSERV))
                 {
                     player_no = i;
                     break;
                 }
                 else if (playerListObserver == 2 &&
-                        (players[i].p_flags & PFOBSERV))
+                        (!paradise && players[i].p_flags & PFOBSERV))
                 {
                     player_no = i;
                     break;
@@ -1463,7 +1466,7 @@ GetPlayerFromPlist (int x, int y)
             }
         }
 
-    if (player_no != MAXPLAYER)
+    if (player_no != nplayers)
     {
         if (playerListHack)
         {
@@ -1481,10 +1484,10 @@ GetPlayerFromPlist (int x, int y)
             if (playerListObserver == 0 || playerListObserver == 3)
                 flag = 1;
             else if (playerListObserver == 1 &&
-                   !(players[player_no].p_flags & PFOBSERV))
+                   !(!paradise && players[player_no].p_flags & PFOBSERV))
                 flag = 1;
             else if (playerListObserver == 2 &&
-                    (players[player_no].p_flags & PFOBSERV))
+                    (!paradise && players[player_no].p_flags & PFOBSERV))
                 flag = 1;
         }
     }
@@ -1506,7 +1509,7 @@ GetPlayerFromPlist (int x, int y)
         }
         else
         {
-            if (!(players[player_no].p_flags & PFOBSERV))
+            if (!(!paradise && players[player_no].p_flags & PFOBSERV))
             {
                 if (!((players[player_no].p_flags & PFCLOAK) && 
                       (players[player_no].p_team != me->p_team)) &&

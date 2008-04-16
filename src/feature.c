@@ -99,11 +99,7 @@ struct feature features[] = {
     {"SHOW_CLOAKERS", &F_show_cloakers, 'S', 1, 0, 0},
     {"TURN_KEYS", &F_turn_keys, 'S', 1, 0, 0},
     {"SHOW_VISIBILITY_RANGE", &F_show_visibility_range, 'S', 1, 0, 0},
-#ifdef PARADISE
-    {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 0, 0, 0},
-#else
     {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 1, 0, 0},
-#endif
     {"WHY_DEAD_2", &F_why_dead_2, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };

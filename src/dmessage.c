@@ -150,13 +150,10 @@ dmessage (char *message,
     }
 
     /* aha! A new type distress/macro call came in. parse it appropriately */
-    if (
-#ifdef PARADISE // Not quite sure why this check is here..but apparently it's needed.
-                // This check needs to be further investigated on the current paradise
-                // server code, for bombing messages and RCDs.  BB 03/11/08
-         gen_distress &&
-#endif
-         flags == (MTEAM | MDISTR | MVALID))
+    // Not quite sure why this paradise check is here..but apparently it's needed.
+    // This check needs to be further investigated on the current paradise
+    // server code, for bombing messages and RCDs.  BB 03/11/08
+    if ((paradise ? gen_distress : 1) && flags == (MTEAM | MDISTR | MVALID))
     {
         HandleGenDistr (message, from, to, &dist);
         len = makedistress (&dist, message, distmacro[dist.distype].macro);
@@ -171,12 +168,7 @@ dmessage (char *message,
     }
 
 
-
-#ifdef PARADISE
-    if (0) /* Paradise doesn't support the message flags */
-#else
-    if (niftyNewMessages)
-#endif
+    if (!paradise && niftyNewMessages)
     {
         if (logging)
         {
@@ -275,10 +267,8 @@ dmessage (char *message,
              (instr (message, "was kill") ||
               instr (message, "killed by")) ||
               instr (message, "Credit for")) ||
-#ifdef PARADISE
 	      instr (message, "burned to a crisp by") ||
 	      instr (message, "shot down by") ||
-#endif
             (*message != ' ' && instr (message, "We are being attacked")))
         {
             if (!reportKills)

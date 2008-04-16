@@ -79,11 +79,9 @@ char *help_message[] = {
     "@     speed = 12",
     "%     speed = maximum",
     "#     speed = 1/2 maximum",
-#ifdef PARADISE
     ".     Afterburners",
     "J     Engage Warp",
     "^j    Toggle warp prep",
-#endif
     "<     slow speed 1",
     ">     speed up 1",
     "k     Set course",

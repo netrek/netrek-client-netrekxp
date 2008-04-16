@@ -433,6 +433,7 @@ void run_clock (time_t curtime);
 /******************************************************************************/
 /***  local.c
 /******************************************************************************/
+int isMe (struct player *j);
 void initStars (void);
 static inline W_Icon planetBitmapC(register struct planet * p);
 static inline void planetResourcesC (register struct planet *p, int destwidth,
@@ -825,9 +826,7 @@ void showMotdWin (W_Window motdwin, int atline);
 struct list;
 void showValues (struct list *data);
 void newMotdLine (char *line);
-#ifdef PARADISE
 void newMotdPic (int x, int y, int width, int height, char *bits, int page);
-#endif
 void getResources (char *prog);
 void redrawTeam (W_Window win,
                  int teamNo,
@@ -1155,8 +1154,16 @@ struct flags_all_spacket;
 void handleFlagsAll (struct flags_all_spacket *packet);
 struct rsa_key_spacket;
 void handleRSAKey (struct rsa_key_spacket *packet);
-#ifdef PARADISE
+void initialize_players (void);
+void initialize_plasmas (void);
+void initialize_torps (void);
+void initialize_phasers (void);
+// Paradise handlers
 void build_default_configuration (void);
+void load_default_teams (void);
+void initialize_thingies(void);
+void handlePacket32 (unsigned char *sbuf);
+void handlePacket33 (unsigned char *sbuf);
 void handleScan (struct scan_spacket *packet);
 void handleMotdPic (struct motd_pic_spacket * packet);
 void handleStats2 (struct stats_spacket2 * packet);
@@ -1169,7 +1176,7 @@ void handleThingy (struct thingy_spacket * packet);
 void handleThingyInfo (struct thingy_info_spacket * packet);
 void handleExtension1 (struct paradiseext1_spacket * packet);
 void handleGameparams (struct gameparam_spacket * packet);
-#endif
+// end paradise handlers
 void sendUdpReq (int req);
 struct udp_reply_spacket;
 void handleUdpReply (struct udp_reply_spacket *packet);

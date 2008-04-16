@@ -19,10 +19,8 @@
 #include "proto.h"
 
 /* Prototypes */
-#ifdef PARADISE
 static void planet_list_paradise (void);
 static void print_planet (W_Window wind, int line, struct planet * );
-#endif
 static char priorplanets[MAXPLANETS][BUFSIZ];
 int planet_row[MAXPLANETS];  /* planets location in current plist */
 
@@ -56,9 +54,7 @@ void initialize_planets(void)
 	curr->pl_info = 0;
 	curr->pl_deadtime = 0;
 	curr->pl_couptime = 0;
-#ifdef PARADISE
 	curr->pl_timestamp = 0;
-#endif
 
 	/* initialize planet redraw for moving planets */
 	pl_update[i].plu_update = -1;
@@ -71,9 +67,10 @@ void initialize_planets(void)
 void
 planetlist (void)
 {
-#ifdef PARADISE
-    planet_list_paradise();
-#else
+    if (paradise)
+        planet_list_paradise();
+    else
+    {
     register int i;
     char buf[BUFSIZ];
 
@@ -86,10 +83,9 @@ planetlist (void)
     for (i = 0; i < MAXPLANETS; i++)
         strcpy(priorplanets[i], "");
     updatePlanetw ();
-#endif
+    }
 }
 
-#ifdef PARADISE
 int mask_to_idx(int m)
 {
     switch(m) {
@@ -262,7 +258,6 @@ static void print_planet (W_Window wind, int line, struct planet *j)
 		    W_RegularFont);
     }
 }				/* end of print_planet */
-#endif
 
 /* Update only lines that have changed */
 void

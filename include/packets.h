@@ -68,10 +68,8 @@
 #define SP_RESERVED	25      /* for future use */
 #define SP_PLANET_LOC	26      /* planet name, x, y */
 
-#ifdef PARADISE
-#define SP_SCAN         27      /* ATM: results of player
+#define SP_SCAN         27      /* paradise: results of player
                                  * scan */
-#endif
 
 #define SP_UDP_REPLY    28      /* notify client of UDP
                                  * status */
@@ -84,19 +82,16 @@
                                  * verification */
 #endif
 
-#ifdef PARADISE
-#define SP_MOTD_PIC     32	/* motd bitmap pictures */
-#define SP_STATS2	33	/* new stats packet */
-#define SP_STATUS2	34	/* new status packet */
-#define SP_PLANET2	35	/* new planet packet */
-#define SP_NEW_MOTD     36	/* New MOTD info notification uses */
-#define SP_THINGY	37	/* thingy location */
-#define SP_THINGY_INFO	38	/* thingy status */
-#else
-#define SP_GENERIC_32	32	/* 32 byte generic, see struct */
-#define SP_FLAGS_ALL	33	/* abbreviated flags for all players */
-#endif
-
+// Note the conflicting defines for types 32 and 33
+#define SP_MOTD_PIC	32	/* paradise - motd bitmap pictures */
+#define SP_GENERIC_32	32	/* bronco - 32 byte generic, see struct */
+#define SP_STATS2	33	/* paradise - new stats packet */
+#define SP_FLAGS_ALL	33	/* bronco - abbreviated flags for all players */
+#define SP_STATUS2	34	/* paradise - new status packet */
+#define SP_PLANET2	35	/* paradise - new planet packet */
+#define SP_NEW_MOTD     36	/* paradise - New MOTD info notification uses */
+#define SP_THINGY	37	/* paradise - thingy location */
+#define SP_THINGY_INFO	38	/* paradise - thingy status */
 #define SP_SHIP_CAP	39	/* Handles server ship mods */
 
 #ifdef SHORT_PACKETS
@@ -122,17 +117,15 @@
 #define SP_S_8_TORP     49      /* optimized SP_S_TORP */
 #define SP_S_PLANET     50      /* see SP_PLANET */
 
-#ifdef PARADISE
-#define SP_GPARAM	51	/* game params packet */
+#define SP_GPARAM	51	/* paradise game params packet */
 /* the following is a family of packets with the same type, but a
    discriminating subtype */
 #define SP_PARADISE_EXT1	52
 #define SP_PE1_MISSING_BITMAP	0
 #define SP_PE1_NUM_MISSILES	1
 /* end of packet 52 subtypes */
-#define SP_TERRAIN2	53	/* Terrain packets */
-#define SP_TERRAIN_INFO2 54	/* Terrain info */
-#endif
+#define SP_TERRAIN2	53	/* paradise terrain packets */
+#define SP_TERRAIN_INFO2 54	/* paradise terrain info */
 
 /* S_P2 */
 #define SP_S_SEQUENCE   56      /* SP_SEQUENCE for
@@ -199,11 +192,9 @@
                                  * verification */
 #endif
 
-#ifdef PARADISE
-/* the CP_ASK_MOTD packet is the same as temp_spacket */
-#define CP_ASK_MOTD	38	/* request MOTD */
-#endif
-#define CP_PLANET       38      /* cross-check planet info */
+/* Note the conflicting defines for packet type 38*/
+#define CP_ASK_MOTD	38	/* paradise - request MOTD */
+#define CP_PLANET       38      /* bronco - cross-check planet info */
 
 #define CP_PING_RESPONSE 42     /* client response */
 
@@ -905,7 +896,7 @@ struct ship_cap_spacket
     unsigned short s_height;
     unsigned short s_maxarmies;
     char s_letter;
-    char pad2;
+    char s_armies;		/* Paradise only */
     char s_name[16];
     char s_desig1;
     char s_desig2;
@@ -1125,7 +1116,6 @@ struct stats_s_spacket
 
 #endif
 
-#ifdef PARADISE
 /* Shapes of thingys.  It would be best to add to the end of this list and
    try to coordinate your additions with other hackers. */
 enum thingy_types {
@@ -1447,4 +1437,4 @@ struct gp_teamplanet_spacket {
     char   galactic[32];
     char   galacticM[32];
 };
-#endif
+

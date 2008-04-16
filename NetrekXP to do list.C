@@ -35,6 +35,7 @@ if you fly into the NW corner of the galaxy.  this was never anticipated!
 6) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
 7) Verbosity setting for logfile..phaser and torp warn messages can be very spammy.
+8) Make server packet for variable rank requirements like min offense.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
@@ -43,10 +44,6 @@ during login sequence.
 3) A bunch of gridline/zoom options should be made into netrekrc options.
 4) The galactic zoom doesn't work
 5) Some of the paradise packet types may need some work
-6) Many many places in code where things are based on MAXSOMETHING whether it be players
-torps planets plasmas.  Whereas paradise wants to use dynamic variables.  It's a
-mess.  And paradise has nphasers, the entire concept of multiple phasers
-per ship is not compliant with current code.
 7) Still missing asteroids and (flashing) warpbeacons.
 8) Show ratings on full/wide playerlist.
 9) CV army capacity is wrong - waiting on word from server experts to the right value
@@ -55,6 +52,7 @@ per ship is not compliant with current code.
 13) Issue with phaser misses on latest paradise server? on whitestar at least
 14) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
+15) support variable # of ship types
 
 Wish list:
 1) Rewrite graphics engine using SDL

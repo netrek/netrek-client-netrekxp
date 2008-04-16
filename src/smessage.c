@@ -550,7 +550,7 @@ getaddr (char who)
     case 'x':
     case 'y':
     case 'z':
-        if (who - 'a' + 10 > MAXPLAYER)
+        if (who - 'a' + 10 > nplayers)
         {
             warning ("Player is not in game");
             return (0);

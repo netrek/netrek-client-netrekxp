@@ -8,7 +8,7 @@
 
 #include "copyright.h"
 
-#ifdef PARADISE
+/* Paradise stuff */
 #define GRIDSIZE 33333
 
 /* defs for updatePlayer [BDyess] */
@@ -25,7 +25,7 @@
 #define GMAP_NEVER	0
 #define GMAP_FREQUENT 	1
 #define GMAP_INFREQUENT	2
-#endif /* PARADISE */
+/* End paradise stuff */
 
 /* Error handling */
 #define RETURNBASE 10
@@ -37,11 +37,12 @@
 #define MAX_MACRO       500
 #endif
 
-#ifdef PARADISE
-#define MAXPLAYER 257
-#else
-#define MAXPLAYER 36
-#endif
+#define MAXPLAYER 257           /* Paradise can apparently go over 36 ... for
+                                   most purposes, the nplayers variable will be
+                                   used to track maximum players allowed by server.
+                                   This variable serves as a maximum possible value
+                                   for sizing arrays and structs. */
+//#define MAXPLAYER 36
 
 #define TESTERS 4               /* Priveledged slots for
                                  * robots and game 'testers' */
@@ -49,6 +50,7 @@
 #define MAXPLANETS 60           /* Maximum planets any server will send us.
                                    Bronco has 40, paradise can go up to 60 */
 #define MAXTORP 8
+#define MAXPHASER 1
 #define MAXPLASMA 1
 #define PKEY 128
 

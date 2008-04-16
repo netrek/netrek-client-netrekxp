@@ -465,7 +465,7 @@ handleVPlayer (unsigned char *sbuf)
         for (i = 0; i < numofplayers; i++)
         {
             pl_no = ((unsigned char) *sbuf & 0x1f) + 32;
-            if (pl_no >= MAXPLAYER)
+            if (pl_no >= nplayers)
                 continue;       /* a little error check */
             save = (unsigned char) *sbuf;
             sbuf++;
@@ -589,7 +589,7 @@ handleVPlayer (unsigned char *sbuf)
         for (i = 0; i < numofplayers; i++)
         {
             pl_no = ((unsigned char) *sbuf & 0x1f);
-            if (pl_no >= MAXPLAYER)
+            if (pl_no >= nplayers)
                 continue;
             save = (unsigned char) *sbuf;
             sbuf++;
@@ -757,7 +757,7 @@ handleVPlayer (unsigned char *sbuf)
         for (i = 0; i < numofplayers; i++)
         {
             pl_no = ((unsigned char) *sbuf & 0x1f);
-            if (pl_no >= MAXPLAYER)
+            if (pl_no >= nplayers)
                 continue;
             save = (unsigned char) *sbuf;
             sbuf++;
@@ -866,7 +866,7 @@ handleSMessage (struct mesg_s_spacket *packet)
         LineToConsole ("Length of Message is: %d  total Size %d \n",
                         strlen (&packet->mesg), (int) packet->length);
     }
-    if (packet->m_from >= MAXPLAYER)
+    if (packet->m_from >= nplayers)
         packet->m_from = 255;
 
     if (packet->m_from == 255)
@@ -1216,13 +1216,13 @@ resetWeaponInfo (void)
 {
     register int i;
 
-    for (i = 0; i < MAXPLAYER * MAXTORP; i++)
+    for (i = 0; i < nplayers * ntorps; i++)
         torps[i].t_status = TFREE;
 
-    for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
+    for (i = 0; i < nplayers * nplasmas; i++)
         plasmatorps[i].pt_status = PTFREE;
 
-    for (i = 0; i < MAXPLAYER; i++)
+    for (i = 0; i < nplayers; i++)
     {
         players[i].p_ntorp = 0;
         players[i].p_nplasmatorp = 0;
@@ -1974,6 +1974,12 @@ handleVKills (unsigned char *sbuf)
             LineToConsole ("handleKills: bad index %d\n", pnum);
             return;
         }
+        if (pnum < 0 || pnum >= nplayers)
+        // This shouldn't happen...
+        {
+            LineToConsole ("handleKills: received player num larger than nplayers\n");
+            return;
+        }
 #endif
 
         if (players[pnum].p_kills != ((float) pkills / 100.0))
@@ -2069,6 +2075,12 @@ handle_s_Stats (struct stats_s_spacket *packet)
         LineToConsole ("handleStats: bad index %d\n", packet->pnum);
         return;
     }
+    if (packet->pnum < 0 || packet->pnum >= nplayers)
+    // This shouldn't happen...
+    {
+        LineToConsole ("handleStats: received player num larger than nplayers\n");
+        return;
+    }
 #endif
 
     pl = &players[packet->pnum];
@@ -2107,7 +2119,7 @@ new_flags (unsigned int data,
     struct player *j;
 
     tmp = data;
-    for (pnum = which * 16; pnum < (which + 1) * 16 && pnum < MAXPLAYER;
+    for (pnum = which * 16; pnum < (which + 1) * 16 && pnum < nplayers;
          pnum++)
     {
         new = tmp & 0x03;

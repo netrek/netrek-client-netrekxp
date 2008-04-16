@@ -116,7 +116,7 @@ rotateGalaxy (void)
 
     /* we could wait for the server to do this but looks better if we
      * do it now. */
-    for (i = 0, j = players; i < MAXPLAYER; i++, j++)
+    for (i = 0, j = players; i < nplayers; i++, j++)
     {
         if (j->p_status != PALIVE)
             continue;

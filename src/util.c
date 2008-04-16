@@ -126,7 +126,7 @@ gettarget2 (int x,
 
     if (targtype & (TARG_PLAYER | TARG_FRIEND | TARG_ENEMY))
     {
-        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+        for (i = 0, j = &players[i]; i < nplayers; i++, j++)
         {
             if (j->p_status != PALIVE)
                 continue;

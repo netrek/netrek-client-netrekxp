@@ -779,9 +779,7 @@ cowmain (char *server,
         ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
 
     resetdefaults ();
-#ifdef PARADISE
-    build_default_configuration();
-#endif
+    build_default_configuration(); // for paradise
     newwin (display_host, name);
 
     if (hideConsole)

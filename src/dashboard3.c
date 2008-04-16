@@ -381,14 +381,12 @@ db_redraw_lab2 (int fr)
     static int old_ful = -1;
     static float old_kills = -1;
     static int old_torp = -1;
-#ifdef PARADISE
     char buf[16];
     int i = 0;
     static int old_drone = -1;
     static int old_totmissiles = -1;
     int drone;
     int totmissiles;
-#endif
     int cur_max, cur_arm, label_len;
     /* Was 75, too bad it wasn't defined as an even multiple of text width. */
     register int BAR_LENGTH = W_Textwidth/2 + 12 * W_Textwidth;
@@ -396,23 +394,19 @@ db_redraw_lab2 (int fr)
     float kills; 
     int torp;
         
-    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+    if ((me->p_flags & PFPLOCK) && (!paradise && (me->p_flags & PFOBSERV)))
     {
         kills = players[me->p_playerl].p_kills;
         torp = players[me->p_playerl].p_ntorp;
-#ifdef PARADISE
         drone = players[me->p_playerl].p_ndrone;
         totmissiles = players[me->p_playerl].p_totmissiles;
-#endif
     }
     else
     {
         kills = me->p_kills;
         torp = me->p_ntorp;
-#ifdef PARADISE
         drone = me->p_ndrone;
         totmissiles = me->p_totmissiles;
-#endif
     }
 
     if (fr)
@@ -649,30 +643,31 @@ db_redraw_lab2 (int fr)
         old_torp = torp;
     }
 
-#ifdef PARADISE
-    /* code to show the number of drones out */
-    strcpy(buf, "M: ");
-    if (fr || totmissiles != old_totmissiles || drone != old_drone)
+    if (paradise)
     {
-	if (totmissiles > 0)
-	    sprintf(buf + strlen(buf), "L%d ", totmissiles);
-	old_totmissiles = totmissiles;
-	if (drone > 0)
-	    sprintf(buf + strlen(buf), "O%d", drone);
-	old_drone = drone;
-	if (!totmissiles && !drone)	/* clear missile text */
-	    W_ClearArea(tstatw, 7 + BAR_LENGTH, 12 + 2 * W_Textheight, 10 * W_Textwidth, W_Textheight);
-	else
-	{
-	    for (i = strlen(buf); i < 11; i++)
-	    {
-	        buf[i] = ' ';
-	        buf[11] = 0;
-	    }
-	    W_WriteText(tstatw, 7 + BAR_LENGTH, 12 + 2 * W_Textheight, textColor, buf, 11, W_RegularFont);
-	}
+      /* code to show the number of drones out */
+      strcpy(buf, "M: ");
+      if (fr || totmissiles != old_totmissiles || drone != old_drone)
+      {
+	  if (totmissiles > 0)
+	      sprintf(buf + strlen(buf), "L%d ", totmissiles);
+          old_totmissiles = totmissiles;
+          if (drone > 0)
+	      sprintf(buf + strlen(buf), "O%d", drone);
+	  old_drone = drone;
+	  if (!totmissiles && !drone)	/* clear missile text */
+	      W_ClearArea(tstatw, 7 + BAR_LENGTH, 12 + 2 * W_Textheight, 10 * W_Textwidth, W_Textheight);
+	  else
+	  {
+	      for (i = strlen(buf); i < 11; i++)
+	      {
+	          buf[i] = ' ';
+	          buf[11] = 0;
+	      }
+	      W_WriteText(tstatw, 7 + BAR_LENGTH, 12 + 2 * W_Textheight, textColor, buf, 11, W_RegularFont);
+	  }
+      }
     }
-#endif
 
     old_spd = me->p_speed;
     old_cur_max = cur_max;

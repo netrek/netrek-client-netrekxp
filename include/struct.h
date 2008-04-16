@@ -44,7 +44,6 @@ struct status
     unsigned LONG timeprod;
 };
 
-#ifdef PARADISE
 struct thingy {
     int     t_no;
     int     t_shape;		/* State information */
@@ -115,7 +114,6 @@ struct page {
     int     page;
 };
 
-#endif
 
 enum dist_type
 {
@@ -205,20 +203,15 @@ enum dist_type
 #define PFPRESS  	0x800000        /* pressor beam activated */
 #define PFDOCKOK	0x1000000       /* docking permission */
 #define PFSEEN      0x2000000       /* seen by enemy on galactic map? */
-#ifdef PARADISE
 /* Note overlap with PFWARP/PFOBSERV and PFSNAKE/PFTWARP */
-#define PFWARPPREP	  (1<<26)	/* in warp prep [BDyess] */
-#define PFWARP		  (1<<27)	/* ship warping */
-#define PFAFTER		  (1<<28)	/* after burners on */
-#define PFWPSUSPENDED     (1<<29)	/* warp prep suspended [BDyess] */
-#define PFSNAKE	          (1<<30)	/* it's a space snake */
-#define PFBIRD	          (1<<31)	/* it's a space bird */
-#define PFOBSERV          (1<<31)       /* set to something unused */
-#define PFTWARP           (1<<31)       /* set to something unused */
-#else
+#define PFWARPPREP	 0x4000000 	/* in warp prep [BDyess] */
+#define PFWARP		0x8000000 	/* ship warping */
 #define PFOBSERV	0x8000000       /* for observers */
-#define PFTWARP     0x40000000      /* transwarping to base */
-#endif
+#define PFAFTER		0x10000000	/* after burners on */
+#define PFWPSUSPENDED   0x20000000	/* warp prep suspended [BDyess] */
+#define PFSNAKE	        0x40000000	/* it's a space snake */
+#define PFTWARP    	0x40000000      /* transwarping to base */
+#define PFBIRD	        0x80000000	/* it's a space bird */
 
 #define KLOGIN      0x00    /* initial state */
 #define KQUIT		0x01    /* Player quit */
@@ -236,28 +229,29 @@ enum dist_type
 #define KOVER		0x0d    /* game over  */
 #define TOURNSTART	0x0e    /* tournament game starting */
 #define KBADBIN		0x0f    /* bad binary */
-#ifdef PARADISE
-#define KMISSILE      0x10    /* missile, note the overlap with KTORP2! */
-#define KASTEROID     0x11    /* asteroid, note the overlap with KSHIP2! */
-#else
-#define KTORP2      0x10    /* killed by detted torps */
-#define KSHIP2      0x11    /* chain-reaction explosions */
-#endif
+#define KTORP2      0x10    /* killed by detted torps, overloaded to paradise KMISSILE */
+#define KSHIP2      0x11    /* chain-reaction explosions, overloaded to paradise KASTEROID */
 #define KPLASMA2    0x12    /* killed by zapped plasma */
 
-#ifdef PARADISE
-#define NUM_TYPES 15
 #define NUM_PSHIP_TYPES 7
 #define PARADISE_SHIP_OFFSET 7	/* To make jumpship first entry in the paradise ship bitmap array */
+#ifdef PARADISE
+#define NUM_TYPES 15
+#define ATT 6
+#define JUMPSHIP 7
+#define SGALAXY 8	/* Not sure where to put this .. */
+#else
+#define NUM_TYPES 8
+#define SGALAXY	6
+#define ATT	7
+#define JUMPSHIP 8
+#endif
 #define SCOUT 0
 #define DESTROYER 1
 #define CRUISER 2
 #define BATTLESHIP 3
 #define ASSAULT 4
 #define STARBASE 5
-#define ATT 6
-#define JUMPSHIP 7
-#define SGALAXY 8	/* Not sure where to put this .. */
 #define FLAGSHIP 8
 #define WARBASE 9
 #define LIGHTCRUISER 10
@@ -265,17 +259,6 @@ enum dist_type
 #define UTILITY 12
 #define PATROL 13
 #define PUCK 14
-#else
-#define NUM_TYPES 8
-#define SCOUT 0
-#define DESTROYER 1
-#define CRUISER 2
-#define BATTLESHIP 3
-#define ASSAULT 4
-#define STARBASE 5
-#define SGALAXY	6
-#define ATT	7
-#endif
 
 struct ship
 {
@@ -293,6 +276,11 @@ struct ship
     int s_torpspeed;
     int s_phaserfuse;
     int s_repair;
+    char s_letter;
+    char s_armies;	/* paradise - gets army carrying cap. from server */
+    /* char s_name[16]; */
+    char s_desig[2];
+    short s_bitmap;
 };
 
 struct stats
@@ -326,7 +314,6 @@ struct stats
     int st_rank;                /* Ranking of the player */
 };
 
-#ifdef PARADISE
 struct stats2 {			/* paradise stats */
     int     st_genocides;	/* number of genocides participated in */
     float   st_tmaxkills;	/* max kills ever */
@@ -355,7 +342,6 @@ struct stats2 {			/* paradise stats */
     int     st_rank;		/* Ranking of the player */
     int     st_royal;		/* royaly, specialty, rank */
 };
-#endif
 
 #define ST_MAPMODE      1
 #define ST_NAMEMODE     2
@@ -420,11 +406,10 @@ struct player
     short p_whydead;            /* Tells you why you died */
     short p_whodead;            /* Tells you who killed you */
     struct stats p_stats;       /* player statistics */
-#ifdef PARADISE
     short p_ndrone;		/* Number of drones .. why was this missing? */
     short p_totmissiles;	/* number of total missiles [Bill Dyess] */
     struct stats2 p_stats2;     /* Paradise stats */
-#endif
+
     short p_genoplanets;        /* planets taken since last
                                  * genocide */
     short p_genoarmsbomb;       /* armies bombed since last
@@ -531,7 +516,6 @@ struct rsa_key
  * are in a 'known' order.  Ten planets per team, the first being the home
  * planet. */
 
-#ifdef PARADISE
 /*
    pl_flags is an int of 32 bits:
 
@@ -575,10 +559,12 @@ struct rsa_key
 
 #define PLREDRAW   (1<<7)	/* Player close for redraw */
 
-#define PLHOME 	   (1<< 8)	/* These 4 flags no longer are */
-#define PLCOUP     (1<< 9)	/* used in the server */
-#define PLCHEAP    (1<<10)
-#define PLCORE     (1<<11)
+#define PLHOME 	   (1<< 8)	/* home planet for a given
+                                 * team */
+#define PLCOUP     (1<< 9)	/* Coup has occured */
+#define PLCHEAP    (1<<10)      /* Planet was taken from
+                                 * undefended team */
+#define PLCORE     (1<<11)      /* A core world planet */
 
 /* cosmic object types, bits 16 and 23, and 24 */
 #define PLPLANET	0	/* object is a planet */
@@ -618,20 +604,6 @@ struct rsa_key
 
 
 #define PLPARADISE (1<<22)	/* Paradise server flag set to 1 for P server */
-#else
-/* the lower bits represent the original owning team */
-#define PLREPAIR 0x010
-#define PLFUEL 0x020
-#define PLAGRI 0x040
-#define PLREDRAW 0x080          /* Player close for redraw */
-#define PLHOME 0x100            /* home planet for a given
-                                 * team */
-#define PLCOUP 0x200            /* Coup has occured */
-#define PLCHEAP 0x400           /* Planet was taken from
-                                 * undefended team */
-#define PLCORE 0x800		/* A core world planet */
-
-#endif /* PARADISE */
 
 struct planet
 {
@@ -649,9 +621,7 @@ struct planet
                                  * support life */
     int pl_couptime;            /* Time before coup may take
                                  * place */
-#ifdef PARADISE
     int pl_timestamp;           /* time the info was taken */
-#endif
 };
 
 #define MVALID 0x01
@@ -760,7 +730,6 @@ struct rank
     char *name, *cname;
 };
 
-#ifdef PARADISE
 /* ratings struct */
 struct ratings {
     float   r_offrat;		/* offense rating */
@@ -804,7 +773,6 @@ struct rank2 {			/* Paradise ranks */
 struct royalty {		/* Paradise royalty ranks */
     char   *name;		/* name of rank */
 };
-#endif
 
 struct plupdate
 {

@@ -26,9 +26,7 @@
 #define BMP_KLI_SHIP 3
 #define BMP_ROM_SHIP 5
 #define BMP_IND_SHIP 2
-#ifdef PARADISE
 #define BMP_PSHIP 6
-#endif
 
 // Weapons
 // -------
@@ -150,10 +148,8 @@
 #define BMP_MPLANET_WIDTH 16
 #define BMP_MPLANET_HEIGHT 16
 
-#ifdef PARADISE
 #define PARADISE_PLANET_VIEWS 13
 #define PARADISE_MPLANET_VIEWS 13
-#endif
 #define PLANET_VIEWS 9
 #define MPLANET_VIEWS 9
 
@@ -195,7 +191,6 @@
 
 #define CPLANET_VIEWS 16
 
-#ifdef PARADISE
 #define BMP_DRONE 9
 #define BMP_DRONEC 10
 #define BMP_DRONE_WIDTH 6
@@ -231,4 +226,3 @@
 #define BMP_MWORMHOLE_WIDTH 16
 #define BMP_MWORMHOLE_HEIGHT 16
 #define WORMHOLE_VIEWS 8
-#endif

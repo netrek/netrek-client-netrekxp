@@ -38,12 +38,10 @@
 #define DETAIL 100
 #define SIZE (GWIDTH/DETAIL)
 
-#ifdef PARADISE
 int drawgrid = 1; /* goes to netrekrc eventually */
 int blk_zoom = 0; /* goes to netrekrc eventually, doesn't work */
 int sectorNums = 1; /* goes to netrekrc eventually */
 #define DRAWGRID 4
-#endif
 
 
 /*
@@ -289,10 +287,11 @@ checkRedraw (int x,
         if (i == -1) return;
         planets[i].pl_flags |= PLREDRAW;
 
-        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+        for (i = 0, j = &players[i]; i < nplayers; i++, j++)
         {
             if (j->p_status != PALIVE) continue;
-            if (j->p_flags & PFOBSERV) continue;
+            if (j->p_flags & PFOBSERV && !paradise)
+                continue;
             if (roughMap[j->p_x / SIZE][j->p_y / SIZE] != -1)
                 redrawPlayer[i] = 1;
         }
@@ -308,10 +307,11 @@ checkRedraw (int x,
         if (i == -1) return;
         planets[i].pl_flags |= PLREDRAW;
 
-        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+        for (i = 0, j = &players[i]; i < nplayers; i++, j++)
         {
             if (j->p_status != PALIVE) continue;
-            if (j->p_flags & PFOBSERV) continue;
+            if (j->p_flags & PFOBSERV && !paradise)
+                continue;
             if (roughMap3[j->p_x / SIZE][j->p_y / SIZE] != -1)
                 redrawPlayer[i] = 1;
         }
@@ -346,7 +346,6 @@ planetmBitmap (register struct planet *p)
             i += 2;
         if (p->pl_flags & PLFUEL)
             i += 1;
-#ifdef PARADISE
         if (paradise && (p->pl_flags & PLSHIPYARD))
         {
              i = 9; /* Base for shipyards */
@@ -355,21 +354,16 @@ planetmBitmap (register struct planet *p)
              if (p->pl_armies > 4)
                  i += 2;
         }
-#endif
-#ifdef PARADISE
         if (paradise)
             return (paradise_bmplanets[i]);
         else
-#endif
             return bmplanets[i];
     }
     else
     {
-#ifdef PARADISE
         if (paradise)
             return (paradise_bmplanets[8]);
         else
-#endif
             return (bmplanets[8]);
     }
 }
@@ -491,8 +485,7 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                mwrench_bitmap, planetColor(p),
                                window);
-#ifdef PARADISE
-        if (p->pl_flags & PLSHIPYARD)
+        if (paradise && p->pl_flags & PLSHIPYARD)
             W_WriteScaleBitmap(dx + destwidth,
                                dy - destheight/3 - 1,
                                destwidth/3 + 1,
@@ -502,7 +495,6 @@ mplanetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                mgear_bitmap, planetColor(p),
                                window);
-#endif
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
@@ -565,11 +557,9 @@ DrawPlanets ()
                 sendPlanetsPacket(l->pl_no);
         }
 
-#ifdef PARADISE
         /* Stars need to be refreshed often... */
-        if (PL_TYPE(*l) == PLSTAR)
+        if (paradise && PL_TYPE(*l) == PLSTAR)
             l->pl_flags |= PLREDRAW;
-#endif
         if (!(l->pl_flags & PLREDRAW))
             continue;
 
@@ -589,20 +579,19 @@ DrawPlanets ()
 
             odx = pl_update[l->pl_no].plu_x * GWINSIDE / GWIDTH;
             ody = pl_update[l->pl_no].plu_y * GWINSIDE / GWIDTH;
-#ifdef PARADISE
-            if (PL_TYPE(*l) == PLSTAR)
+
+            if (paradise && PL_TYPE(*l) == PLSTAR)
                 W_ClearArea (mapw, dx - ( BMP_MSTAR_WIDTH / 2),
                              dy - ( BMP_MSTAR_HEIGHT / 2),
                              BMP_MSTAR_WIDTH,
                              BMP_MSTAR_HEIGHT);
-            else if (PL_TYPE(*l) == PLWHOLE)
+            else if (paradise && PL_TYPE(*l) == PLWHOLE)
                 W_ClearArea (mapw, dx - ( BMP_MWORMHOLE_WIDTH / 2),
                              dy - ( BMP_MWORMHOLE_HEIGHT / 2),
                              BMP_MWORMHOLE_WIDTH,
                              BMP_MWORMHOLE_HEIGHT);
             else
             {
-#endif
             /* XFIX */
             if (planetBitmapGalaxy == 3)
                 W_ClearArea (mapw, odx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
@@ -618,22 +607,18 @@ DrawPlanets ()
                          ody + (BMP_MPLANET_HEIGHT / 2),
                          backColor, l->pl_name, 3, planetFont (l));
             pl_update[l->pl_no].plu_update = 0;
-#ifdef PARADISE
             }
-#endif
         }
         else
         {
             /* Clear the planet normally */
-#ifdef PARADISE
-            if (PL_TYPE(*l) == PLSTAR)
+            if (paradise && PL_TYPE(*l) == PLSTAR)
                 W_ClearArea (mapw, dx - ( BMP_MSTAR_WIDTH / 2),
                              dy - ( BMP_MSTAR_HEIGHT / 2),
                              BMP_MSTAR_WIDTH,
                              BMP_MSTAR_HEIGHT);
             else
             {
-#endif
             /* XFIX */
             if (planetBitmapGalaxy == 3)
                 W_ClearArea (mapw, dx - (5 * BMP_MPLANET_WIDTH / 6) - 1,
@@ -647,15 +632,12 @@ DrawPlanets ()
                              dy - (BMP_MPLANET_HEIGHT / 2 + 4),
                              BMP_MPLANET_WIDTH + 8,
                              BMP_MPLANET_HEIGHT + 8);
-#ifdef PARADISE
             }
-#endif
         }
 
 
         /* Draw the new planet */
-#ifdef PARADISE
-        if (PL_TYPE(*l) == PLSTAR)
+        if (paradise && PL_TYPE(*l) == PLSTAR)
             W_OverlayScaleBitmap (dx - (BMP_MSTAR_WIDTH / 2),
                                 dy - (BMP_MSTAR_HEIGHT / 2),
                                 BMP_MSTAR_WIDTH,
@@ -666,7 +648,7 @@ DrawPlanets ()
                                 star_mbitmap,
                                 planetColor (l),
                                 mapw);
-        else if (PL_TYPE(*l) == PLWHOLE)
+        else if (paradise && PL_TYPE(*l) == PLWHOLE)
             W_OverlayScaleBitmap (dx - (BMP_MWORMHOLE_WIDTH / 2),
                                 dy - (BMP_MWORMHOLE_HEIGHT / 2),
                                 BMP_MWORMHOLE_WIDTH,
@@ -678,7 +660,6 @@ DrawPlanets ()
                                 planetColor (l),
                                 mapw);
         else
-#endif 
 #ifdef BEEPLITE
         if (useLite && emph_planet_seq_n[l->pl_no] > 0)
 	{
@@ -757,10 +738,9 @@ DrawPlanets ()
 	}
 #endif
         if (planetHighlighting && (l->pl_info & me->p_team)
-#ifdef PARADISE
-         && PL_TYPE(*l) != PLSTAR && PL_TYPE(*l) != PLWHOLE
-#endif
-        ) /* Draw halo */
+         && (paradise ? PL_TYPE(*l) != PLSTAR : 1)
+         && (paradise? PL_TYPE(*l) != PLWHOLE : 1))
+        /* Draw halo */
             W_WriteCircle(mapw, dx, dy, BMP_MPLANET_WIDTH / 2,
                           l->pl_armies > 4 ? 1 : 0, 0, planetColor(l));
 
@@ -792,11 +772,8 @@ DrawPlanets ()
         if (F_show_army_count
         && (showArmy == 2 || showArmy == 3)
         && (l->pl_info & me->p_team)
-#ifdef PARADISE
-        && (PL_TYPE(*l) != PLSTAR)
-        && (PL_TYPE(*l) != PLWHOLE)
-#endif
-        )
+        && (paradise ? PL_TYPE(*l) != PLSTAR : 1)
+        && (paradise ? PL_TYPE(*l) != PLWHOLE : 1))
         {    
             char armbuf[4];
             int armbuflen;
@@ -961,11 +938,9 @@ map (void)
     int view = TWINSIDE * mapscaleFactor / 2; /* view range for scaled galactic */
     int viewboxview = (TWINSIDE * scaleFactor / 2); /* view range for view box */
     int mvx, mvy;
-#ifdef PARADISE
     static int osx = 0, osy = 0;	/* old square */
     static int scalex, scaley;
     static int grid_fuse;
-#endif
 
     if (doubleBuffering)
         W_Win2Mem (mapSDB);
@@ -979,9 +954,7 @@ map (void)
     dx = (me->p_x) / (GWIDTH / GWINSIDE);
     dy = (me->p_y) / (GWIDTH / GWINSIDE);
 
-#ifdef PARADISE
     grid_fuse++;	/* we only draw the grids every DRAWGRID interval */
-#endif
 
     if (redrawall)
     {
@@ -1003,7 +976,7 @@ map (void)
         clearviewbox = 0;
         viewboxcleared = 1;
 
-        for (i = 0; i < MAXPLAYER; i++)
+        for (i = 0; i < nplayers; i++)
         {
             lastRedraw[i] = 0;
             mclearzone[2][i] = 0;
@@ -1052,7 +1025,7 @@ map (void)
         }
 
         /* Erase the ships */
-        for (i = 0; i < MAXPLAYER; i++)
+        for (i = 0; i < nplayers; i++)
         {
             /* Erase the player if redrawPlayer[i] is set and there
                is an active clearzone */
@@ -1084,7 +1057,8 @@ map (void)
         }
     }
 
-#ifdef PARADISE
+    if (paradise)
+    {
     /* draw grid on galactic */
     if ((redrawall || (grid_fuse % DRAWGRID) == 0)  && (drawgrid)) {
 	int     x, y, width, h, grid;
@@ -1186,7 +1160,7 @@ map (void)
 
 	W_WriteRectangle (mapw, x + 2, y + 2, width - 4, h - 4, 1, yColor);
     }
-#endif
+    } // end paradise grid
 
     /* Draw Planets */
 
@@ -1241,7 +1215,7 @@ map (void)
 
     /* Draw ships */
 
-    for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+    for (i = 0, j = &players[i]; i < nplayers; i++, j++)
     {
         /* redrawPlayer[i] has been set to 1 if redrawall or the ship has
          * been erased or a redraw has not taken place for a while.  These
@@ -1251,7 +1225,7 @@ map (void)
             continue;
         if (j->p_status != PALIVE)
             continue;
-        if (j->p_flags & PFOBSERV)
+        if (j->p_flags & PFOBSERV && !paradise)
             continue;           /* jmn - observer support */
         if (j->p_x < 0 || j->p_x >= GWIDTH || j->p_y < 0 || j->p_y >= GWIDTH)
             continue;
@@ -1324,7 +1298,7 @@ map (void)
 
 	/* Draw range circle */
 	if (viewRange && F_show_visibility_range
-	    && (myPlayer(j) || isObsLockPlayer(j))
+	    && (isMe(j))
 	    && j->p_ship.s_type != STARBASE)
         {
           /* Orbitting any non-owned planet gets you seen,
@@ -1387,12 +1361,10 @@ map (void)
         register struct phaser *ph;
         register struct torp *k;
         register struct plasmatorp *pt;
-#ifdef PARADISE
         register struct thingy *th;
-#endif
         int tx, ty;
 
-        for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+        for (i = 0, j = &players[i]; i < nplayers; i++, j++)
         {
             if (j->p_status == PFREE)
                 continue;
@@ -1423,26 +1395,29 @@ map (void)
                         /* Here I will have to compute end coordinate */
                         /* Server will sometimes send us this information though,
                            so check if we have it first */
-                        if (ph->ph_x > 0 && ph->ph_y > 0 && ph->ph_x < GWIDTH && ph->ph_y < GWIDTH)
+                        if (!paradise && ph->ph_x > 0 && ph->ph_y > 0 && ph->ph_x < GWIDTH && ph->ph_y < GWIDTH)
                         {
                             tx = ph->ph_x * GWINSIDE / GWIDTH;
                             ty = ph->ph_y * GWINSIDE / GWIDTH;
                         }
                         else
                         {
-#ifdef PARADISE
+                            if (paradise)
+                            {
                             /* Paradise servers changed the ship cap protocol for
                                phaser damage :( */
                             tx = (int) (j->p_x + j->p_ship.s_phaserdamage
                                 * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
                             ty = (int) (j->p_y + j->p_ship.s_phaserdamage
                                 * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
-#else
+                            }
+                            else
+                            {
                             tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
                             ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
-#endif
+                            }
                         }
                         break;
                     case PHHIT2:
@@ -1474,15 +1449,11 @@ map (void)
                 checkRedraw(tx * (GWIDTH / GWINSIDE), ty * (GWIDTH / GWINSIDE));
             }
 
-            if (!j->p_ntorp && !j->p_nplasmatorp
-#ifdef PARADISE
-                && !j->p_ndrone
-#endif
-            )
+            if (!j->p_ntorp && !j->p_nplasmatorp && (paradise ? !j->p_ndrone : 1))
                 continue;
 
             /* torps */
-            for (h = 0, k = &torps[MAXTORP * i + h]; h < MAXTORP; h++, k++)
+            for (h = 0, k = &torps[ntorps * i + h]; h < ntorps; h++, k++)
             {
                 if (!k->t_status)
                     continue;
@@ -1539,7 +1510,7 @@ map (void)
             }
 
             /* plasmas */
-            for (h = 0, pt = &plasmatorps[MAXPLASMA * i + h]; h < MAXPLASMA; h++, pt++)
+            for (h = 0, pt = &plasmatorps[nplasmas * i + h]; h < nplasmas; h++, pt++)
             {
                 if (!pt->pt_status)
                     continue;
@@ -1596,7 +1567,8 @@ map (void)
                 /* Check for overwriting planets */
                 checkRedraw(pt->pt_x, pt->pt_y);
             }
-#ifdef PARADISE
+            if (paradise)
+            {
             /* missiles/fighters */
             for (h = i * npthingies, th = &thingies[i * npthingies]; h < npthingies * (i + 1); h++, th++)
             {
@@ -1618,7 +1590,7 @@ map (void)
                 /* Check for overwriting planets */
                 checkRedraw(th->t_x, th->t_y);
             }
-#endif
+            }
         }
     }
     /* Reset weapon update marker */

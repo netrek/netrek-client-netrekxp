@@ -72,7 +72,6 @@ float toNextRank(int rank)
         return (-1);
 }
 
-#ifdef PARADISE
 void
 print_ranks_paradise(void)
 {
@@ -106,14 +105,14 @@ print_ranks_paradise(void)
     strcpy(buf, "enough special ship rating");
     W_WriteText(rankw, 1, i + 6, textColor, buf, strlen(buf), W_RegularFont);
 }
-#endif
 
 void
 ranklist (void)
 {
-#ifdef PARADISE
-    print_ranks_paradise();
-#else
+    if (paradise)
+        print_ranks_paradise();
+    else
+    {
     register int i;
     char buf[100];
 
@@ -165,5 +164,5 @@ ranklist (void)
     strcpy (buf, "4xDI with Ratings - 2, and 8xDI with Ratings - 3");
     W_WriteText (rankw, 1, i + 7, textColor, buf, strlen (buf),
                  W_RegularFont);
-#endif
+    }
 }

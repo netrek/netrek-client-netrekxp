@@ -37,11 +37,9 @@ extern struct player *me;
 extern struct torp *torps;
 extern struct plasmatorp *plasmatorps;
 extern struct status *status;
-#ifdef PARADISE
 extern struct status2 *status2;
 extern struct thingy *thingies;
 extern struct t_unit *terrainInfo;
-#endif
 extern struct ship *myship;
 extern struct stats *mystats;
 extern struct planet *planets;
@@ -58,6 +56,10 @@ extern int TWINSIDE;
 extern int GWINSIDE;
 
 extern int nplanets;
+extern int nplayers;
+extern int ntorps;
+extern int nplasmas;
+extern int nphasers;
 extern int gwidth;
 extern unsigned int oldalert;
 extern unsigned char oldtourn;
@@ -282,7 +284,6 @@ extern int debug;
 
 extern double Sin[], Cos[];
 
-#ifdef PARADISE
 extern int paradise;
 extern int received_terrain_info;
 extern int terrain_x;
@@ -290,13 +291,9 @@ extern int terrain_y;
 extern int gwidth_zoom; 	/* galaxy width, adjusted for zoom, unused */
 extern int offsetx;
 extern int offsety;		/* offsets when zooming [BDyess] */
-extern int nplayers;
 extern int nshiptypes;
-extern int ntorps;
 extern int npthingies;
 extern int ngthingies;
-extern int nplasmas;
-extern int nphasers;
 extern struct teaminfo_s *teaminfo;
 extern int number_of_teams;
 /* MOTD data */
@@ -304,7 +301,6 @@ extern struct page *currpage;
 extern struct page *pmotddata;
 extern char blk_refitstring[80];
 extern int blk_friendlycloak;
-#endif
 
 extern W_Icon fedteam, romteam, kliteam, oriteam;
 extern W_Icon stipple, clockpic, clockhandpic, genopic, genopic2;
@@ -351,7 +347,6 @@ extern int vary_hull;
 extern W_Icon tractbits, pressbits;
 
 //Paradise bitmaps
-#ifdef PARADISE
 extern W_Icon drone_bitmap;
 extern W_Icon base_dronec_bitmap;
 extern W_Icon dronec_bitmap[NUM_CTORP_TYPES];
@@ -379,7 +374,6 @@ extern W_Icon paradise_cship_self_bitmaps;
 extern W_Icon paradise_cships_self[NUM_PSHIP_TYPES][NUMTEAMS];
 extern W_Icon paradise_cship_bitmaps;
 extern W_Icon paradise_cships[NUM_PSHIP_TYPES][NUMTEAMS];
-#endif
 
 //Ships
 extern W_Icon ship_bitmaps[5];
@@ -431,12 +425,10 @@ extern W_Icon base_planets;
 extern W_Icon base_mplanets;
 extern W_Icon bplanets[PLANET_VIEWS];
 extern W_Icon bmplanets[MPLANET_VIEWS];
-#ifdef PARADISE
 extern W_Icon paradise_base_planets;
 extern W_Icon paradise_base_mplanets;
 extern W_Icon paradise_bplanets[PARADISE_PLANET_VIEWS];
 extern W_Icon paradise_bmplanets[PARADISE_PLANET_VIEWS];
-#endif
 extern W_Color borderColor, backColor, textColor, myColor, warningColor,
     shipCol[5], rColor, yColor, gColor, unColor, foreColor;
 extern char *colornames[COLORS];
@@ -452,12 +444,10 @@ extern char defpasswd[PSEUDOSIZE];
 extern char login[PSEUDOSIZE];
 
 extern struct rank ranks[NUMRANKS];
-#ifdef PARADISE
 extern struct rank2 *ranks2;
 extern struct royalty *royal;
 extern int nranks2;
 extern int nroyals;
-#endif
 
 extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
     war, warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi,

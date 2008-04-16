@@ -42,9 +42,7 @@ static char *my_classes[NUM_TYPES] = {
 };
 #endif
 
-#ifdef PARADISE
 static void Info_list_paradise (struct player * j);
-#endif
 
 /******************************************************************************/
 /***  inform()                                                              ***/
@@ -96,7 +94,8 @@ inform (W_Window ww,
     {
         if (key == 'i')
         {
-#ifdef PARADISE
+          if (paradise)
+          {
             double dist;
             /* Too close to the edge? */
             if (mx + 23 * W_Textwidth + 2 > windowWidth)
@@ -142,7 +141,9 @@ inform (W_Window ww,
             (void) sprintf (buf, "%s@%s", j->p_login, j->p_monitor);
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
-#else
+          }
+          else
+          {
             /* Too close to the edge? */
             if (mx + 23 * W_Textwidth + 2 > windowWidth)
                 mx = windowWidth - 23 * W_Textwidth - 2;
@@ -182,11 +183,12 @@ inform (W_Window ww,
             (void) sprintf (buf, "%s@%s", j->p_login, j->p_monitor);
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
-#endif
+          }
         }
         else
         {                       /* New information window! */
-#ifdef PARADISE
+          if (paradise)
+          {
             if (mx + 50 * W_Textwidth + 2 > windowWidth)
                 mx = windowWidth - 50 * W_Textwidth - 2;
             if (my + 25 * W_Textheight + 2 > windowHeight)
@@ -202,7 +204,9 @@ inform (W_Window ww,
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), shipFont (j));
             Info_list_paradise(j);
-#else
+          }
+          else
+          {
             float KillsPerHour, LossesPerHour;  /* SB info window changed to
                                                  * use these instead of
                                                  * Offense and Defense. */
@@ -293,12 +297,13 @@ inform (W_Window ww,
             }
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
-#endif
+          }
         }
     }
     else
     {                           /* Planet */
-#ifdef PARADISE
+      if (paradise)
+      {
         /* Too close to the edge? */
         if (mx + 23 * W_Textwidth + 2 > windowWidth)
             mx = windowWidth - 28 * W_Textwidth - 2;
@@ -391,7 +396,9 @@ inform (W_Window ww,
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          planetColor (k), buf, strlen (buf), W_RegularFont);
         }
-#else
+      }
+      else
+      {
         /* Too close to the edge? */
         if (mx + 23 * W_Textwidth + 2 > windowWidth)
             mx = windowWidth - 28 * W_Textwidth - 2;
@@ -436,11 +443,10 @@ inform (W_Window ww,
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          planetColor (k), buf, strlen (buf), W_RegularFont);
         }
-#endif
+      }
     }
 }
 
-#ifdef PARADISE
 /*
    fills the ratings struct pointed to by r with the stats for the player
    pointed to by j [BDyess]
@@ -686,7 +692,6 @@ Info_list_paradise(struct player *j)
     W_WriteText(infow, W_Textwidth * 28, W_Textheight * line++, playerColor(j),
 		buf, strlen(buf), W_RegularFont);
 }
-#endif
 
 /******************************************************************************/
 /***  destroyInfo()                                                         ***/

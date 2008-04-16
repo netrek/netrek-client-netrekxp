@@ -215,7 +215,10 @@ stline (int flag)
     if (buf[14] == '0')
         buf[14] = ' ';
     buf[15] = (char) ('0' + (me->p_speed % 10)); /* speed */
-    buf[16] = ' ';
+    if (paradise)
+        buf[16] = (me->p_flags & PFWARP ? 'w' : me->p_flags & PFAFTER ? 'a' : 'i');
+    else
+        buf[16] = ' ';
     buf[17] = ' ';
     if (me->p_ship.s_type != ATT)
     {
@@ -403,7 +406,7 @@ updateMaxStats (int redraw)
     if (newDashboard)
         return;
 
-    if ((me->p_flags & (PFPLOCK | PFOBSERV)) == (PFPLOCK | PFOBSERV))
+    if ((me->p_flags & PFPLOCK) && (!paradise && (me->p_flags & PFOBSERV)))
         kills = players[me->p_playerl].p_kills;
     else
         kills = me->p_kills;

@@ -776,11 +776,8 @@ optionaction (W_Event * data)
                 RedrawPlayerList ();
         }
         /* Let's see if this is our option changed */
-        else if (op->op_option == &planetBitmap
-#ifdef PARADISE
-                 && !paradise // Paradise bitmaps stay loaded at all times
-#endif
-        )
+        // Paradise bitmaps stay loaded at all times
+        else if (op->op_option == &planetBitmap && !paradise)
         {
             if (planetBitmap != 3) // Color planet bitmaps stay loaded at all times
             {
@@ -814,11 +811,8 @@ optionaction (W_Event * data)
 
             redrawall = 1;
         }
-        else if (op->op_option == &planetBitmapGalaxy
-#ifdef PARADISE
-                 && !paradise // Paradise bitmaps stay loaded at all times
-#endif
-                 )
+        // Paradise bitmaps stay loaded at all times
+        else if (op->op_option == &planetBitmapGalaxy && !paradise)
         {
             if (planetBitmapGalaxy != 3) // Color planet bitmaps stay loaded at all times
             {

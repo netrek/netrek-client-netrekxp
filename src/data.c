@@ -24,11 +24,9 @@ struct player *me = NULL;
 struct torp *torps;
 struct plasmatorp *plasmatorps;
 struct status *status;
-#ifdef PARADISE
 struct status2 *status2;
 struct thingy *thingies;
 struct t_unit *terrainInfo;
-#endif
 struct ship *myship;
 struct stats *mystats;
 struct planet *planets;
@@ -42,6 +40,11 @@ int GWINSIDE = 500;             /* Size of galactic window */
 
 int nplanets = 40;              /* can be larger for paradise servers, dynamically
                                    sent via SP_PLANET2 */
+int nplayers = 36;              /* can be larger for paradise servers, dynamically
+                                   sent via SP_GPARAM */
+int ntorps = 8;
+int nplasmas = 1;
+int nphasers = 1;
 int gwidth = 100000;		/* can be changed by paradise server */
 int globalerr = 0;              /* For sending error # between threads */
 int ingame = 0;                 /* If player is in game - to distinguish between whether
@@ -280,7 +283,6 @@ int macrocnt = 0;
 
 extern double Sin[], Cos[];
 
-#ifdef PARADISE
 int paradise = 0;		/* is the server a paradise server */
 int received_terrain_info = 0;
 int terrain_x;
@@ -288,13 +290,9 @@ int terrain_y;
 int gwidth_zoom = 100000;	/* galaxy width, adjusted for zoom, unused */
 int offsetx = 0;
 int offsety = 0;			/* offsets when zooming [BDyess] */
-int nplayers = 256;
 int nshiptypes = 15;
-int ntorps = 8;
 int npthingies = 20;
 int ngthingies = 0;
-int nplasmas = 1;
-int nphasers = 1;
 struct teaminfo_s *teaminfo = NULL;
 int number_of_teams = 4;
 /* MOTD data */
@@ -302,7 +300,7 @@ struct page *currpage = NULL;
 struct page *pmotddata = NULL;
 char blk_refitstring[80] = "s=scout, d=destroyer, c=cruiser, b=battleship, a=assault, o=starbase";
 int blk_friendlycloak = 0;	/* Show color of cloakers who are friendly. */
-#endif
+
 
 W_Icon fedteam, romteam, kliteam, oriteam;
 W_Icon stipple, clockpic, clockhandpic, genopic, genopic2, icon;
@@ -349,7 +347,6 @@ W_Icon hull[BMP_HULL_FRAMES];
 int vary_hull = 0;
 
 // Paradise bitmaps
-#ifdef PARADISE
 W_Icon drone_bitmap;
 W_Icon base_dronec_bitmap;
 W_Icon dronec_bitmap[NUM_CTORP_TYPES];
@@ -377,7 +374,7 @@ W_Icon paradise_cship_self_bitmaps;
 W_Icon paradise_cships_self[NUM_PSHIP_TYPES][NUMTEAMS];
 W_Icon paradise_cship_bitmaps;
 W_Icon paradise_cships[NUM_PSHIP_TYPES][NUMTEAMS];
-#endif
+
 // Ships
 W_Icon ship_bitmaps[5];
 W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS], kli_bitmaps[NUM_TYPES][SHIP_VIEWS],
@@ -428,12 +425,10 @@ W_Icon base_planets;
 W_Icon base_mplanets;
 W_Icon bplanets[PLANET_VIEWS];
 W_Icon bmplanets[MPLANET_VIEWS];
-#ifdef PARADISE
 W_Icon paradise_base_planets;
 W_Icon paradise_base_mplanets;
 W_Icon paradise_bplanets[PARADISE_PLANET_VIEWS];
 W_Icon paradise_bmplanets[PARADISE_PLANET_VIEWS];
-#endif
 
 /* jn - SMARTMACRO */
 
@@ -467,12 +462,10 @@ struct rank ranks[NUMRANKS] = {
     {30.0, 7.0, 0.0, "Rear Adm.", "RAdm"},
     {40.0, 8.0, 0.0, "Admiral", "Admr"}
 };
-#ifdef PARADISE
 int nranks2 = 18;
 struct rank2 *ranks2;
 int nroyals = 5;
 struct royalty *royal = 0;
-#endif
 
 W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
     warnw, helpWin, teamWin[4], qwin, messwa, messwt, messwi, messwk,

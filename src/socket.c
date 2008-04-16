@@ -19,9 +19,7 @@
 #include <errno.h>
 #include <time.h>
 #include <process.h>
-#ifdef PARADISE
 #include <zlib.h>
-#endif
 
 #include "Wlib.h"
 #include "defs.h"
@@ -90,6 +88,7 @@ char numofbits[256] = { 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1,
 static int vtsize[9] = { 4, 8, 8, 12, 12, 16, 20, 20, 24 };     /* How big is the torppacket */
 static int vtdata[9] = { 0, 3, 5, 7, 9, 12, 14, 16, 18 };       /* How big is Torpdata */
 int vtisize[9] = { 4, 7, 9, 11, 13, 16, 18, 20, 22 };   /* 4 byte Header + torpdata */
+static int login_received = 0;
 
 /* S_P2 */
 int shortversion = SHORTVERSION;        /* Which version do we use? */
@@ -131,13 +130,7 @@ struct packet_handler handlers[] = {
     {sizeof (struct plyr_login_spacket), handlePlyrLogin},      /* SP_PL_LOGIN */
     {sizeof (struct reserved_spacket), handleReserved}, /* SP_RESERVED */
     {sizeof (struct planet_loc_spacket), handlePlanetLoc},      /* SP_PLANET_LOC */
-
-#ifdef PARADISE
     {sizeof (struct scan_spacket), handleScan},  /* SP_SCAN (ATM) */
-#else
-    {0, dummy},                 /* won't be called */
-#endif
-
     {sizeof (struct udp_reply_spacket), handleUdpReply},        /* SP_UDP_STAT */
     {sizeof (struct sequence_spacket), handleSequence}, /* SP_SEQUENCE */
     {sizeof (struct sc_sequence_spacket), handleSequence},      /* SP_SC_SEQUENCE */
@@ -148,23 +141,14 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* #31, and dummy won't */
 #endif
 
-#ifdef PARADISE
-    {sizeof (struct motd_pic_spacket), handleMotdPic}, /* SP_MOTD_PIC */
-    {sizeof (struct stats_spacket2), handleStats2}, /* SP_STATS2 */
+    {-1, handlePacket32}, /* SP_MOTD_PIC and SP_GENERIC_32 */
+    {-1, handlePacket33}, /* SP_STATS2 and SP_FLAGS_ALL */
     {sizeof (struct status_spacket2), handleStatus2}, /* SP_STATUS2 */
     {sizeof (struct planet_spacket2), handlePlanet2}, /* SP_PLANET2 */
     {sizeof (struct obvious_packet), handleTempPack}, /* SP_TEMP_5 */
     {sizeof (struct thingy_spacket), handleThingy}, /* SP_THINGY */
     {sizeof (struct thingy_info_spacket), handleThingyInfo}, /* SP_THINGY_INFO */
-#else
-    {sizeof (struct generic_32_spacket), handleGeneric32},  /* SP_GENERIC_32 */
-    {sizeof (struct flags_all_spacket), handleFlagsAll}, /* SP_FLAGS_ALL */
-    {0, dummy},                 /* 34 */
-    {0, dummy},                 /* 35 */
-    {0, dummy},                 /* 36 */
-    {0, dummy},                 /* 37 */
-    {0, dummy},                 /* 38 */
-#endif
+
     {sizeof (struct ship_cap_spacket), handleShipCap},  /* SP_SHIP_CAP */
 
 #ifdef SHORT_PACKETS
@@ -198,17 +182,10 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* 50 */
 #endif
 
-#ifdef PARADISE
     {-1, /* variable */ handleGameparams},
     {-1, /* variable */ handleExtension1},
     {sizeof (struct terrain_packet2), handleTerrain2}, /* 53 */
     {sizeof (struct terrain_info_packet2), handleTerrainInfo2},	/* 54 */
-#else
-    {0, dummy},                 /* 51 */
-    {0, dummy},                 /* 52 */
-    {0, dummy},                 /* 53 */
-    {0, dummy},                 /* 54 */
-#endif
     {0, dummy},                 /* 55 */
 
 #ifdef SHORT_PACKETS            /* S_P2 */
@@ -265,12 +242,7 @@ int sizes[] = {
     sizeof (struct updates_cpacket),    /* CP_UPDATES */
     sizeof (struct resetstats_cpacket), /* CP_RESETSTATS */
     sizeof (struct reserved_cpacket),   /* CP_RESERVED */
-
-#ifdef PARADISE
     sizeof (struct scan_cpacket),       /* CP_SCAN (ATM) */
-#else
-    0,
-#endif
     sizeof (struct udp_req_cpacket),    /* CP_UDP_REQ */
     sizeof (struct sequence_cpacket),   /* CP_SEQUENCE */
 
@@ -945,7 +917,21 @@ getvpsize (char *bufptr)
 
     switch (*bufptr)
     {
-#ifdef PARADISE
+    case SP_MOTD_PIC:
+    //case SP_GENERIC_32:
+        if (paradise)
+	    size = sizeof(struct motd_pic_spacket);
+        else
+	    size = sizeof(struct generic_32_spacket);
+	break;
+    case SP_STATS2:
+    //case SP_FLAGS_ALL:
+        /* see packet33 handler for explanation of login_received */
+        if (paradise || !login_received)
+	    size = sizeof(struct stats_spacket2);
+        else
+	    size = sizeof(struct flags_all_spacket);
+	break;
     case SP_GPARAM:
 	switch ((unsigned char) bufptr[1]) {
 	case 0:
@@ -990,7 +976,6 @@ getvpsize (char *bufptr)
 	    break;
 	}
 	break;
-#endif
     case SP_S_MESSAGE:
         size = ((unsigned char) bufptr[4]);     /* IMPORTANT  Changed */
         break;
@@ -1302,6 +1287,12 @@ handleTorp (struct torp_spacket *packet)
         LineToConsole ("handleTorp: bad index %d\n", ntohs (packet->tnum));
         return;
     }
+    if (ntohs (packet->tnum) >= nplayers * ntorps)
+    // This shouldn't happen...
+    {
+        LineToConsole ("handleTorp: received packet num larger than nplayers*ntorps\n");
+        return;
+    }
 #endif
 
     weaponUpdate = 1;
@@ -1335,6 +1326,12 @@ handleTorpInfo (struct torp_info_spacket *packet)
     if (ntohs (packet->tnum) >= MAXPLAYER * MAXTORP)
     {
         LineToConsole ("handleTorpInfo: bad index %d\n", ntohs (packet->tnum));
+        return;
+    }
+    if (ntohs (packet->tnum) >= nplayers * ntorps)
+    // This shouldn't happen...
+    {
+        LineToConsole ("handleTorpInfo: received packet num larger than nplayers*ntorps\n");
         return;
     }
 #endif
@@ -1433,6 +1430,11 @@ handleSelf (struct you_spacket *packet)
         LineToConsole ("handleSelf: bad index %d\n", packet->pnum);
         return;
     }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleSelf: received player num larger than nplayers\n");
+        return;
+    }
 #endif
 
     if (!F_many_self)
@@ -1487,6 +1489,11 @@ handlePlayer (struct player_spacket *packet)
     if (packet->pnum >= MAXPLAYER)
     {
         LineToConsole ("handlePlayer: bad index %d\n", packet->pnum);
+        return;
+    }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handlePlayer: received player num larger than nplayers\n");
         return;
     }
 #endif
@@ -1704,11 +1711,7 @@ sendServerPacket (struct player_spacket *packet)
         case CP_REPRESS:
         case CP_COUP:
         case CP_DOCKPERM:
-
-#ifdef PARADISE
         case CP_SCAN:
-#endif
-
         case CP_PING_RESPONSE:
             /* non-critical stuff, use UDP */
           send_udp:
@@ -1758,9 +1761,13 @@ handlePlanet (struct planet_spacket *packet)
         LineToConsole ("handlePlanet: bad index %d\n", packet->pnum);
         return;
     }
-#endif
-    if (packet->pnum > nplanets) // This shouldn't happen...
+    if (packet->pnum > nplanets)
+    // This shouldn't happen...
+    {
         LineToConsole( "handlePlanet: received planet num larger than nplanets\n");
+        return;
+    }
+#endif
 
     plan = &planets[packet->pnum];
 
@@ -1821,8 +1828,19 @@ handlePhaser (struct phaser_spacket *packet)
         LineToConsole ("handlePhaser: bad target %d\n", ntohl (packet->target));
         return;
     }
+    if (packet->pnum > nplayers*nphasers)
+    // This shouldn't happen...
+    {
+        LineToConsole( "handlePhaser: received player num larger than nplayers*nphasers\n");
+        return;
+    }
+    if (packet->status == PHHIT &&
+        (ntohl (packet->target) < 0 || ntohl (packet->target) >= (u_int) (nplayers*nplasmas) ))
+    {
+        LineToConsole ("handlePhaser: received target num larger than nplayers*nphasers\n");
+        return;
+    }
 #endif
-
     weaponUpdate = 1;
     phas = &phasers[packet->pnum];
     phas->ph_status = packet->status;
@@ -1853,7 +1871,7 @@ handlePhaser (struct phaser_spacket *packet)
 void
 handleMessage (struct mesg_spacket *packet)
 {
-    if (packet->m_from >= MAXPLAYER)
+    if (packet->m_from >= nplayers)
         packet->m_from = 255;
 
 #ifdef CORRUPTED_PACKETS
@@ -1908,18 +1926,16 @@ sendLoginReq (char *name,
     strcpy (packet.login, login);
     packet.type = CP_LOGIN;
     packet.query = query;
-#ifdef PARADISE
     packet.pad2 = 0x69; /* Paradise support */
     packet.pad3 = 0x43; /* Paradise support */
-#endif
     sendServerPacket ((struct player_spacket *) &packet);
 }
 
 void
 handleLogin (struct login_spacket *packet)
 {
+    login_received = 1;
     loginAccept = packet->accept;
-#ifdef PARADISE
     if ((packet->pad2 == 69) && (packet->pad3 == 42))
     {
         paradise = 1;
@@ -1934,7 +1950,7 @@ handleLogin (struct login_spacket *packet)
         /*nplayers=36;*/
         /*nplanets=40;*/
     }
-#endif
+
     if (packet->accept)
     {
         /* no longer needed .. we have it in xtrekrc bcopy(packet->keymap,
@@ -1999,6 +2015,12 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
         LineToConsole ("handlePlasmaInfo: bad index %d\n", packet->pnum);
         return;
     }
+    if (ntohs (packet->pnum) >= nplayers * nplasmas)
+    // This shouldn't happen...
+    {
+        LineToConsole ("handlePlasmaInfo: received packet num larger than nplayers*nplasmas\n");
+        return;
+    }
 #endif
 
     weaponUpdate = 1;
@@ -2045,6 +2067,12 @@ handlePlasma (struct plasma_spacket *packet)
         LineToConsole ("handlePlasma: bad index %d\n", packet->pnum);
         return;
     }
+    if (ntohs (packet->pnum) >= nplayers * nplasmas)
+    // This shouldn't happen...
+    {
+        LineToConsole ("handlePlasma: received packet num larger than nplayers*nplasmas\n");
+        return;
+    }
 #endif
 
     weaponUpdate = 1;
@@ -2073,6 +2101,11 @@ handleFlags (struct flags_spacket *packet)
     if (packet->pnum >= MAXPLAYER)
     {
         LineToConsole ("handleFlags: bad index %d\n", packet->pnum);
+        return;
+    }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleFlags: received player num larger than nplayers\n");
         return;
     }
 #endif
@@ -2112,6 +2145,11 @@ handleKills (struct kills_spacket *packet)
         LineToConsole ("handleKills: bad index %d\n", packet->pnum);
         return;
     }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleKills: received player num larger than nplayers\n");
+        return;
+    }
 #endif
 
     if (players[packet->pnum].p_kills != ntohl (packet->kills) / 100.0)
@@ -2139,6 +2177,11 @@ handlePStatus (struct pstatus_spacket *packet)
     if (packet->pnum >= MAXPLAYER)
     {
         LineToConsole ("handlePStatus: bad index %d\n", packet->pnum);
+        return;
+    }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handlePStatus: received player num larger than nplayers\n");
         return;
     }
 #endif
@@ -2340,6 +2383,11 @@ handleHostile (struct hostile_spacket *packet)
         LineToConsole ("handleHostile: bad index %d\n", packet->pnum);
         return;
     }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleHostile: received player num larger than nplayers\n");
+        return;
+    }
 #endif
 
     pl = &players[packet->pnum];
@@ -2373,13 +2421,16 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
         LineToConsole ("handlePlyrLogin: bad index %d\n", packet->pnum);
         return;
     }
-#ifndef PARADISE
-    if (packet->rank >= NUMRANKS)
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handlePlyrLogin: received player num larger than nplayers\n");
+        return;
+    }
+    if (!paradise && packet->rank >= NUMRANKS)
     {
         LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
     }
-#endif
     packet->name[sizeof (packet->name) - 1] = '\0';
     packet->monitor[sizeof (packet->monitor) - 1] = '\0';
     packet->login[sizeof (packet->login) - 1] = '\0';
@@ -2428,6 +2479,11 @@ handleStats (struct stats_spacket *packet)
     if (packet->pnum >= MAXPLAYER)
     {
         LineToConsole ("handleStats: bad index %d\n", packet->pnum);
+        return;
+    }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleStats: received player num larger than nplayers\n");
         return;
     }
 #endif
@@ -2554,11 +2610,9 @@ handlePlanetLoc (struct planet_loc_spacket *packet)
     pl->pl_flags |= PLREDRAW;
     reinitPlanets = 1;
 
-#ifdef PARADISE
     /* What a terrible hack, just copying paradise client code - BB */
     if (pl->pl_x > gwidth)
 	gwidth = 200000;
-#endif
 
 #ifdef ROTATERACE
     if (rotate)
@@ -2622,28 +2676,40 @@ handleReserved (struct reserved_spacket *packet,
 #endif /* defined(BORG) */
 }
 
+/* SP_SHIP_CAP is sent frequenly by bronco servers but only once
+   by a paradise server.  The paradise server packet contains ship
+   data for all ships.  The bronco server packet contains data on
+   only one ship. */
 void
 handleShipCap (struct ship_cap_spacket *packet)
 {
     unsigned short stype;
 
     stype = ntohs (packet->s_type);
-    shipvals[stype].s_torpspeed = ntohs (packet->s_torpspeed);
-    shipvals[stype].s_maxshield = ntohl (packet->s_maxshield);
-    shipvals[stype].s_maxdamage = ntohl (packet->s_maxdamage);
-    shipvals[stype].s_maxegntemp = ntohl (packet->s_maxegntemp);
-    shipvals[stype].s_maxwpntemp = ntohl (packet->s_maxwpntemp);
-    shipvals[stype].s_maxarmies = ntohs (packet->s_maxarmies);
-    shipvals[stype].s_maxfuel = ntohl (packet->s_maxfuel);
-    shipvals[stype].s_maxspeed = ntohl (packet->s_maxspeed);
-    shipvals[stype].s_width = ntohs (packet->s_width);
-    shipvals[stype].s_height = ntohs (packet->s_height);
-    shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
-    getship (myship, myship->s_type);
+    if (!paradise)
+    {
+        shipvals[stype].s_torpspeed = ntohs (packet->s_torpspeed);
+        shipvals[stype].s_maxshield = ntohl (packet->s_maxshield);
+        shipvals[stype].s_maxdamage = ntohl (packet->s_maxdamage);
+        shipvals[stype].s_maxegntemp = ntohl (packet->s_maxegntemp);
+        shipvals[stype].s_maxwpntemp = ntohl (packet->s_maxwpntemp);
+        shipvals[stype].s_maxarmies = ntohs (packet->s_maxarmies);
+        shipvals[stype].s_maxfuel = ntohl (packet->s_maxfuel);
+        shipvals[stype].s_maxspeed = ntohl (packet->s_maxspeed);
+        shipvals[stype].s_width = ntohs (packet->s_width);
+        shipvals[stype].s_height = ntohs (packet->s_height);
+        shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
+        shipvals[stype].s_letter = packet->s_letter;
+        shipvals[stype].s_desig[1] = packet->s_desig1;
+        shipvals[stype].s_desig[2] = packet->s_desig2;
+        shipvals[stype].s_bitmap = ntohs (packet->s_bitmap);
+        /* strncpy(shipvals[stype].s_name, packet->s_name, 16); */
+        getship (myship, myship->s_type);
 
-    redrawTstats ();
-    calibrate_stats ();
-    redrawStats ();
+        redrawTstats (); /* Redraw dashboard */
+        calibrate_stats (); /* Redefine colored statwin sliders */
+        redrawStats ();  /* Redraw statwin */
+    }
 }
 
 void
@@ -2739,7 +2805,90 @@ handleRSAKey (struct rsa_key_spacket *packet)
 
 #endif
 
-#ifdef PARADISE
+void
+initialize_players(void)
+{
+    int i;
+
+    players = (struct player *) malloc(sizeof(*players) * nplayers);
+
+    for (i = 0; i < nplayers; i++)
+    {
+        players[i].p_status = PFREE;
+        players[i].p_cloakphase = 0;
+        players[i].p_no = i;
+        players[i].p_ntorp = 0;
+        players[i].p_stats2.st_rank = 0;
+        players[i].p_stats2.st_royal = 0;
+        players[i].p_ndrone = 0;
+        players[i].p_explode = 1;
+        players[i].p_stats.st_tticks = 1;
+    }
+}
+void
+initialize_torps(void)
+{
+    int i;
+
+    torps = (struct torp *) malloc(sizeof(*torps) * nplayers * ntorps);
+
+    for (i = 0; i < nplayers * ntorps; i++) {
+	torps[i].t_status = TFREE;
+	torps[i].t_owner = (i / ntorps);
+    }
+}
+
+void
+initialize_plasmas(void)
+{
+    int i;
+
+    plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * nplayers * nplasmas);
+    for (i = 0; i < nplayers * nplasmas; i++) {
+	plasmatorps[i].pt_status = PTFREE;
+	plasmatorps[i].pt_owner = (i / nplasmas);
+    }
+}
+
+void
+initialize_phasers(void)
+{
+    int i;
+
+    phasers = (struct phaser *) malloc(sizeof(*phasers) * nplayers * nphasers);
+
+    for (i = 0; i < nplayers * nphasers; i++) {
+	phasers[i].ph_status = PHFREE;
+	phasers[i].ph_fuse = 0;
+#ifdef SOUND
+        phasers[i].sound_phaser = 0;
+#endif
+    }
+}
+
+/* Functions to handle the overloaded packet types 32 and 33 */
+void handlePacket32 (unsigned char *sbuf)
+{
+    if (paradise)
+        handleMotdPic ((struct motd_pic_spacket *) sbuf);
+    else
+        handleGeneric32 ((struct generic_32_spacket *) sbuf);
+    return;
+}
+void handlePacket33 (unsigned char *sbuf)
+{
+    /* Ok so paradise is evil and will send a stats_spacket2 to the client
+       before the client is told it is a paradise server, i.e. receiving the
+       login packet :(.  Bronco will not send a flags_all_spacket before such time.
+       So we have to assume if we receive this packet before login is received,
+       it's a paradise server */
+    if (paradise || !login_received)
+        handleStats2 ((struct stats_spacket2 *) sbuf);
+    else
+        handleFlagsAll ((struct flags_all_spacket *) sbuf);
+    return;
+}
+
 void handleMotdPic (struct motd_pic_spacket *packet)
 {
     int x, y, page, width, height;
@@ -2761,6 +2910,11 @@ void handleStats2 (struct stats_spacket2 *packet)
     if (packet->pnum >= MAXPLAYER)
     {
         LineToConsole ("handleStats2: bad index\n");
+        return;
+    }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleStats2: received player num larger than nplayers\n");
         return;
     }
 #endif
@@ -3002,21 +3156,6 @@ void handleTempPack (struct obvious_packet *packet)
 
 /* handlers for the extension1 packet */
 
-int compute_extension1_size (char *pkt)
-{
-    if (pkt[0] != SP_PARADISE_EXT1)
-	return -1;
-
-    switch (pkt[1]) {
-    case SP_PE1_MISSING_BITMAP:
-	return sizeof(struct pe1_missing_bitmap_spacket);
-    case SP_PE1_NUM_MISSILES:
-	return sizeof(struct pe1_num_missiles_spacket);
-    default:
-	return -1;
-    }
-}
-
 void handleExtension1 (struct paradiseext1_spacket *packet)
 {
     switch (packet->subtype) {
@@ -3130,6 +3269,11 @@ void handleScan (struct scan_spacket *packet)
         LineToConsole ("handleScan: bad index\n");
         return;
     }
+    if (packet->pnum >= nplayers)
+    {
+        LineToConsole ("handleScan: received player num larger than nplayers\n");
+        return;
+    }
 #endif
 
     if (packet->success)
@@ -3147,51 +3291,13 @@ void handleScan (struct scan_spacket *packet)
 void
 initialize_thingies(void)
 {
-    int     i;
-    int     n = (npthingies * MAXPLAYER + ngthingies);
+    int i;
+    int n = (npthingies * nplayers + ngthingies);
     thingies = (struct thingy *) malloc(sizeof(*thingies) * n);
     for (i = 0; i < n; i++) {
 	thingies[i].t_shape = SHP_BLANK;
 	thingies[i].t_no = i;
-	thingies[i].t_owner = (i >= npthingies * MAXPLAYER) ? -1 : (i / npthingies);
-    }
-}
-
-void
-initialize_torps(void)
-{
-    int     i;
-
-    torps = (struct torp *) malloc(sizeof(*torps) * MAXPLAYER * ntorps);
-
-    for (i = 0; i < nplayers * ntorps; i++) {
-	torps[i].t_status = TFREE;
-	torps[i].t_owner = (i / ntorps);
-    }
-}
-
-void
-initialize_plasmas(void)
-{
-    int     i;
-
-    plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * MAXPLAYER * nplasmas);
-    for (i = 0; i < MAXPLAYER * nplasmas; i++) {
-	plasmatorps[i].pt_status = PTFREE;
-	plasmatorps[i].pt_owner = (i / nplasmas);
-    }
-}
-
-static void
-initialize_phasers(void)
-{
-    int     i;
-
-    phasers = (struct phaser *) malloc(sizeof(*phasers) * MAXPLAYER * nphasers);
-
-    for (i = 0; i < MAXPLAYER * nphasers; i++) {
-	phasers[i].ph_status = PHFREE;
-	phasers[i].ph_fuse = 0;
+	thingies[i].t_owner = (i >= npthingies * nplayers) ? -1 : (i / npthingies);
     }
 }
 
@@ -3363,6 +3469,7 @@ reinitialize_royal(void)
 void
 build_default_configuration(void)
 {
+    // Most other initializations handled elsewhere (openmem)
     initialize_ranks();
     initialize_royal();
 }
@@ -3370,10 +3477,7 @@ build_default_configuration(void)
 void
 resize_players(void)
 {
-/*  For sake of simplicity, I'm leaving size of player struct constant at MAXPLAYER,
-    resizing just leads to too many problems. - BB */
-/*
-    int     me_no = 0;
+    int me_no = 0;
 
     if (me)
 	me_no = me->p_no;
@@ -3382,7 +3486,42 @@ resize_players(void)
 	me = &players[me_no];
 	myship = &(me->p_ship);
     }
-*/
+}
+
+void
+load_default_teams(void)
+{
+    number_of_teams = 4;
+
+    /* independent is teaminfo[-1], allteam is teaminfo[4] */
+    teaminfo = 1 + (struct teaminfo_s *) malloc(sizeof(*teaminfo) * (number_of_teams + 2));
+
+    strcpy(teaminfo[-1].name, "Independant");
+    teaminfo[-1].letter = 'I';
+    strcpy(teaminfo[-1].shortname, "IND");
+
+    strcpy(teaminfo[0].name, "Federation");
+    teaminfo[0].letter = 'F';
+    strcpy(teaminfo[0].shortname, "FED");
+
+
+    strcpy(teaminfo[1].name, "Romulan");
+    teaminfo[1].letter = 'R';
+    strcpy(teaminfo[1].shortname, "ROM");
+
+
+    strcpy(teaminfo[2].name, "Klingon");
+    teaminfo[2].letter = 'K';
+    strcpy(teaminfo[2].shortname, "KLI");
+
+
+    strcpy(teaminfo[3].name, "Orion");
+    teaminfo[3].letter = 'O';
+    strcpy(teaminfo[3].shortname, "ORI");
+
+    strcpy(teaminfo[4].name, "All");
+    teaminfo[4].letter = '-';
+    strcpy(teaminfo[4].shortname, "ALL");
 }
 
 load_generic_teams(void)
@@ -3476,6 +3615,7 @@ free_royal(void)
     free(royal);
     royal = 0;
 }
+
 void handleGPsizes (struct gp_sizes_spacket *pkt)
 {
     free_ranks();
@@ -3492,7 +3632,6 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     // shiptypes
     nranks2 = pkt->nranks;
     nroyals = pkt->nroyal;
-    // Code doesn't support nphasers ntorps or plasmas changing - BB
     nphasers = pkt->nphasers;
     ntorps = pkt->ntorps;
     nplasmas = pkt->nplasmas;
@@ -3508,6 +3647,8 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     reinitialize_royal();
 
     resize_players();
+    // Reinit playerlist - absolutely necessary or it will break horribly
+    InitPlayerList();
     initialize_torps();
     initialize_phasers();
     initialize_plasmas();
@@ -3718,6 +3859,10 @@ void handleGPteamplanet (struct gp_teamplanet_spacket *pkt)
 #endif
 }
 
+/* Interesting design.  Uses a "dummy" packet gameparam_spacket to
+represent the packet data passed to the function (in sbuf).  The function
+then looks at a common field between all the subpacket types to determine
+which handler to use. */
 void handleGameparams (struct gameparam_spacket *packet)
 {
     switch (packet->subtype) {
@@ -3750,7 +3895,6 @@ void handleGameparams (struct gameparam_spacket *packet)
     }
 }
 
-#endif /* PARADISE*/
 
 /* UDP stuff */
 void
@@ -4769,14 +4913,12 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct planet_loc_spacket *) packet)->y),
 		   ((struct planet_loc_spacket *) packet)->name );
 	 break;
-#ifdef PARADISE
        case SP_SCAN         :                  /* ATM: results of player *
 						* * scan */
 	 LineToConsole("\nS->C SP_SCAN\t");
 	 if(log_packets > 1)
 	   LineToConsole("not implemented,");
 	 break;
-#endif
        case SP_UDP_REPLY    :                  /* notify client of UDP * *
 						* status */
 	 LineToConsole("\nS->C SP_UDP_REPLY\t");
@@ -4812,6 +4954,122 @@ void print_packet(char *packet, int size)
 	   }
 	 break;
 #endif
+       case SP_GENERIC_32   :
+       //case SP_MOTD_PIC   :
+	if (paradise)
+	{
+	  LineToConsole("\nS->C SP_MOTD_PIC\t");
+	  if (log_packets > 1)
+	    LineToConsole("  x=%u, y=%u, page=%u, width=%u, height=%u,",
+	    ntohs(((struct motd_pic_spacket *) packet)->x),
+	    ntohs(((struct motd_pic_spacket *) packet)->y),
+	    ntohs(((struct motd_pic_spacket *) packet)->page),
+	    ntohs(((struct motd_pic_spacket *) packet)->width),
+	    ntohs(((struct motd_pic_spacket *) packet)->height) );
+	  break;
+	}
+	else
+	{
+	  LineToConsole("\nS->C SP_GENERIC_32\t");
+	  if (log_packets > 1)
+	    LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d,",
+		   ((struct generic_32_spacket *) packet)->version,
+		   ntohs(((struct generic_32_spacket *) packet)->repair_time),
+		   ntohs(((struct generic_32_spacket *) packet)->pl_orbit) );
+	  break;
+	}
+       case SP_FLAGS_ALL    :
+       //case SP_STATS2     :
+	if (paradise)
+	{
+	  LineToConsole("\nS->C SP_STATS2\t");
+	  if (log_packets > 1)
+	    LineToConsole("  pnum=%d, genocides=%ld, maxkills==%ld, di=%ld, kills=%ld, losses=%ld, armsbomb=%ld, resbomb=%ld, dooshes=%ld, planets=%ld, tticks=%ld, sbkills=%ld, sblosses=%ld, sbticks=%ld, sbmaxkills=%ld, wbkills=%ld, wblosses=%ld, wbticks=%ld, wbmaxkills=%ld, jsplanets=%ld, jsticks=%ld, rank=%ld, royal=%ld,",
+		   ((struct stats_spacket *) packet)->pnum,
+		   ntohl(((struct stats_spacket2 *) packet)->genocides),
+		   ntohl(((struct stats_spacket2 *) packet)->maxkills),
+		   ntohl(((struct stats_spacket2 *) packet)->di),
+		   ntohl(((struct stats_spacket2 *) packet)->kills),
+		   ntohl(((struct stats_spacket2 *) packet)->losses),
+		   ntohl(((struct stats_spacket2 *) packet)->armsbomb),
+		   ntohl(((struct stats_spacket2 *) packet)->resbomb),
+		   ntohl(((struct stats_spacket2 *) packet)->dooshes),
+		   ntohl(((struct stats_spacket2 *) packet)->planets),
+		   ntohl(((struct stats_spacket2 *) packet)->tticks),
+		   ntohl(((struct stats_spacket2 *) packet)->sbkills),
+		   ntohl(((struct stats_spacket2 *) packet)->sblosses),
+		   ntohl(((struct stats_spacket2 *) packet)->sbticks),
+		   ntohl(((struct stats_spacket2 *) packet)->sbmaxkills),
+		   ntohl(((struct stats_spacket2 *) packet)->wbkills),
+		   ntohl(((struct stats_spacket2 *) packet)->wblosses),
+		   ntohl(((struct stats_spacket2 *) packet)->wbticks),
+		   ntohl(((struct stats_spacket2 *) packet)->wbmaxkills),
+		   ntohl(((struct stats_spacket2 *) packet)->jsplanets),
+		   ntohl(((struct stats_spacket2 *) packet)->jsticks),
+		   ntohl(((struct stats_spacket2 *) packet)->rank),
+		   ntohl(((struct stats_spacket2 *) packet)->royal) );
+	  break;
+	}
+	else
+	{
+	  LineToConsole("\nS->C SP_FLAGS_ALL\t");
+	  if (log_packets > 1)
+	    LineToConsole("  offset=%d, flags=%ld",
+	           ((struct flags_all_spacket *) packet)->offset,
+		   ((struct flags_all_spacket *) packet)->flags );
+	  break;
+	}
+       case SP_STATUS2      :
+	LineToConsole("\nS->C SP_STATUS2\t");
+	  if (log_packets > 1)
+	    LineToConsole("  tourn=%d, dooshes=%ld, armsbomb=%ld, resbomb=%ld, planets=%ld, kills=%ld, losses=%ld, sbkills=%ld, sblosses=%ld, sbtime=%ld, wbkills=%ld, wblosses=%ld, wbtime=%ld, jsplanets=%ld, jstime=%ld, time=%ld, timeprod=%ld,",
+		   ((struct status_spacket *) packet)->tourn,
+		   ntohl(((struct status_spacket2 *) packet)->dooshes),
+		   ntohl(((struct status_spacket2 *) packet)->armsbomb),
+		   ntohl(((struct status_spacket2 *) packet)->resbomb),
+		   ntohl(((struct status_spacket2 *) packet)->planets),
+		   ntohl(((struct status_spacket2 *) packet)->kills),
+		   ntohl(((struct status_spacket2 *) packet)->losses),
+		   ntohl(((struct status_spacket2 *) packet)->sbkills),
+		   ntohl(((struct status_spacket2 *) packet)->sblosses),
+		   ntohl(((struct status_spacket2 *) packet)->sbtime),
+		   ntohl(((struct status_spacket2 *) packet)->wbkills),
+		   ntohl(((struct status_spacket2 *) packet)->wblosses),
+		   ntohl(((struct status_spacket2 *) packet)->wbtime),
+		   ntohl(((struct status_spacket2 *) packet)->jsplanets),
+		   ntohl(((struct status_spacket2 *) packet)->jstime),
+		   ntohl(((struct status_spacket2 *) packet)->time),
+		   ntohl(((struct status_spacket2 *) packet)->timeprod) );
+	  break;
+       case SP_PLANET2      :
+	LineToConsole("\nS->C SP_PLANET2\t");
+	  if (log_packets > 1)
+	    LineToConsole("  pnum=%d, owner=%d, info=%d, resbomb=%ld, planets=%ld, kills=%ld, losses=%ld, sbkills=%ld, sblosses=%ld, sbtime=%ld, wbkills=%ld, wblosses=%ld, wbtime=%ld, jsplanets=%ld, jstime=%ld, time=%ld, timeprod=%ld,",
+		   ((struct planet_spacket2 *) packet)->pnum,
+		   ((struct planet_spacket2 *) packet)->owner,
+		   ((struct planet_spacket2 *) packet)->info,
+		   ntohl(((struct planet_spacket2 *) packet)->flags),
+		   ntohl(((struct planet_spacket2 *) packet)->timestamp),
+		   ntohl(((struct planet_spacket2 *) packet)->armies) );
+	  break;
+       case SP_THINGY       :
+	LineToConsole("\nS->C SP_THINGY\t");
+	  if (log_packets > 1)
+	    LineToConsole("  dir=%d, tnum=%u, x=%u, y=%u,",
+		   ((struct thingy_spacket *) packet)->dir,
+		   ntohs(((struct thingy_spacket *) packet)->tnum),
+		   ntohl(((struct thingy_spacket *) packet)->x),
+		   ntohl(((struct thingy_spacket *) packet)->y) );
+	  break;
+       case SP_THINGY_INFO  :
+	LineToConsole("\nS->C SP_THINGY_INFO\t");
+	  if (log_packets > 1)
+	    LineToConsole("  war=%d, shape=%u, tnum=%u, owner=%u,",
+		   ((struct thingy_info_spacket *) packet)->war,
+		   ntohs(((struct thingy_info_spacket *) packet)->shape),
+		   ntohs(((struct thingy_info_spacket *) packet)->tnum),
+		   ntohs(((struct thingy_info_spacket *) packet)->owner) );
+	  break;
        case SP_SHIP_CAP     :                   /* Handles server ship mods */
 	 LineToConsole("\nS->C SP_SHIP_CAP\t");
 	 if (log_packets > 1)
@@ -4957,6 +5215,11 @@ void print_packet(char *packet, int size)
 		       ntohs(plpacket->flags) );
 	   }
 	 fprintf(stderr,"\n");
+	 break;
+       case SP_GPARAM       :
+	 LineToConsole("\nS->C SP_GPARAM\t");
+	 if (log_packets > 1)
+	   LineToConsole("  Fill in info later,");
 	 break;
        /* S_P2 */
        case SP_S_SEQUENCE   :                  /* SP_SEQUENCE for * *
@@ -5270,7 +5533,6 @@ void print_opacket(char *packet, int size)
 	  LineToConsole(",");
 	}
       break;
-#ifdef PARADISE
     case CP_SCAN         :                    /* ATM: request for player * 
 					       * 
 					       * * scan */
@@ -5278,7 +5540,6 @@ void print_opacket(char *packet, int size)
       if (log_packets > 1)
 	LineToConsole("  not implemented," );
       break;
-#endif
     case CP_UDP_REQ      :                    /* request UDP on/off */
       LineToConsole("\nC->S CP_UDP_REQ\t");
       if (log_packets > 1)

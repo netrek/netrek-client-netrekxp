@@ -46,38 +46,20 @@ enter (void)
 void
 openmem (void)
 {
-    int i;
-
     /* Used to be struct memory universe, but leaving room for flexible struct
        sizes is better, and necessary for paradise - BB */
-    players = (struct player *) malloc(sizeof(*players) * MAXPLAYER);
-    torps = (struct torp *) malloc(sizeof(*torps) * MAXPLAYER * MAXTORP);
-    plasmatorps = (struct plasmatorp *) malloc(sizeof(*plasmatorps) * MAXPLAYER * MAXPLASMA);
-#ifdef PARADISE
-    thingies = (struct thingy *) malloc(sizeof(*thingies) * (MAXPLAYER * npthingies + ngthingies));
-    /* independent is teaminfo[-1] */
-    teaminfo = 1 + (struct teaminfo_s *) malloc(sizeof(*teaminfo) * (number_of_teams + 2));
+    initialize_players();
+    initialize_torps();
+    initialize_plasmas();
+    initialize_phasers();
+    load_default_teams();
+    initialize_thingies();
     status2 = (struct status2 *) malloc(sizeof(*status2));
-#endif
     status = (struct status *) malloc(sizeof(*status));
     initialize_planets();
-    phasers = (struct phaser *) malloc(sizeof(*phasers) * MAXPLAYER);
     mctl = (struct mctl *) malloc(sizeof(*mctl));
     messages = (struct message *) malloc(sizeof(*messages) * MAXMESSAGE);
-    for (i = 0; i < MAXPLAYER; i++)
-    {
-        players[i].p_status = PFREE;
-        players[i].p_cloakphase = 0;
-        players[i].p_no = i;
-        players[i].p_ntorp = 0;
-#ifdef PARADISE
-        players[i].p_stats2.st_rank = 0;
-        players[i].p_stats2.st_royal = 0;
-        players[i].p_ndrone = 0;
-#endif
-        players[i].p_explode = 1;
-        players[i].p_stats.st_tticks = 1;
-    }
+
     mctl->mc_current = 0;
     status->time = 1;
     status->timeprod = 1;
@@ -86,24 +68,6 @@ openmem (void)
     status->time = 1;
     status->planets = 1;
     status->armsbomb = 1;
-    for (i = 0; i < MAXPLAYER * MAXTORP; i++)
-    {
-        torps[i].t_status = TFREE;
-        torps[i].t_owner = (short) (i / MAXTORP);
-    }
-    for (i = 0; i < MAXPLAYER; i++)
-    {
-        phasers[i].ph_status = PHFREE;
-#ifdef SOUND
-        phasers[i].sound_phaser = 0;
-#endif
-    }
-
-    for (i = 0; i < MAXPLAYER * MAXPLASMA; i++)
-    {
-        plasmatorps[i].pt_status = PTFREE;
-        plasmatorps[i].pt_owner = (short) (i / MAXPLASMA);
-    }
 
     /* initialize pointers if ghost start */
     if (ghoststart)
@@ -283,7 +247,7 @@ void check_hockey_mode (void)
 {
     int i;
 
-    for (i = 0; i < MAXPLAYER; i++)
+    for (i = 0; i < nplayers; i++)
     {
         if (strcmp(players[i].p_name, "Puck") == 0 &&
             strcmp(players[i].p_login, "Robot") == 0 &&

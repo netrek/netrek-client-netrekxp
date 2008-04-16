@@ -39,10 +39,8 @@ static int clearline[4][MAXPLAYER + 2 * MAXPLAYER + NUM_HOCKEY_LINES];
 static int clearline[4][MAXPLAYER + 2 * MAXPLAYER];
 #endif
 static int planet_frame = 0;
-#ifdef PARADISE
 static int star_frame = 0;
 static int wormhole_frame = 0;
-#endif
 static int star_updates = 0;
 static int last_speed = 0;
 static int streaks_on = 0;
@@ -55,13 +53,11 @@ static int num_other_torps = 0;
 static int sound_plasma = 0;
 static int sound_other_plasmas = 0;
 static int num_other_plasmas = 0;
-#ifdef PARADISE
 static int sound_missiles = 0;
 static int sound_other_missiles = 0;
 static int num_other_missiles = 0;
 static int other_missile_dist = 0;
 static int other_missile_angle = 0;
-#endif
 static unsigned int sound_flags = 0;
 static int other_torp_dist = 0;
 static int other_torp_angle = 0;
@@ -130,6 +126,14 @@ randcolor()
     default:
         return W_White;
     }
+}
+
+int isMe(struct player *j)
+{
+    if (myPlayer(j) || (!paradise && isObsLockPlayer(j)))
+        return 1;
+    else
+        return 0;
 }
 
 void
@@ -275,7 +279,12 @@ redrawStarSector (int sectorx, int sectory)
 
     if (warpStreaks)
     {
-        if (warpflag != (me->p_flags & PFTWARP))
+        if (paradise && warpflag != (me->p_flags & PFWARP))
+        {
+            streaks_on = 1;
+            warpflag = (me->p_flags & PFWARP);
+        } 
+        if (!paradise && warpflag != (me->p_flags & PFTWARP))
         {   /* change in warp state */
             streaks_on = 1;
             warpflag = (me->p_flags & PFTWARP);
@@ -390,7 +399,6 @@ getPlanetBitmap (register struct planet *p)
             i += 2;
         if (p->pl_flags & PLFUEL)
             i += 1;
-#ifdef PARADISE
         if (paradise && (p->pl_flags & PLSHIPYARD))
         {
              i = 9; /* Base for shipyards */
@@ -399,21 +407,16 @@ getPlanetBitmap (register struct planet *p)
              if (p->pl_armies > 4)
                  i += 2;
         }
-#endif
-#ifdef PARADISE
         if (paradise)
             return (paradise_bplanets[i]);
         else
-#endif
             return (bplanets[i]);
     }
     else
     {
-#ifdef PARADISE
         if (paradise)
             return (paradise_bplanets[8]);
         else
-#endif
             return (bplanets[8]);
     }
 }
@@ -544,8 +547,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                wrench_bitmap, planetColor(p),
                                window);
-#ifdef PARADISE
-        if (p->pl_flags & PLSHIPYARD)
+        if (paradise && p->pl_flags & PLSHIPYARD)
             W_WriteScaleBitmap(dx + destwidth,
                                dy - destheight/3 - 1,
                                destwidth/3 + 1,
@@ -555,7 +557,6 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                0,
                                gear_bitmap, planetColor(p),
                                window);
-#endif
         if (p->pl_flags & PLFUEL)
             W_WriteScaleBitmap(dx + destwidth,
                                dy,
@@ -590,8 +591,7 @@ DrawPlanets (void)
         dx = dx / scaleFactor + TWINSIDE / 2;
         dy = dy / scaleFactor + TWINSIDE / 2;
 
-#ifdef PARADISE
-        if (PL_TYPE(*l) == PLSTAR)
+        if (paradise && PL_TYPE(*l) == PLSTAR)
         {
             int j = star_frame * 10 / server_ups;
             if ((j >= STAR_VIEWS - 1) || (j < 0))
@@ -610,7 +610,7 @@ DrawPlanets (void)
                                 planetColor (l),
                                 w);
         }
-        else if (PL_TYPE(*l) == PLWHOLE)
+        else if (paradise && PL_TYPE(*l) == PLWHOLE)
         {
             int j = wormhole_frame * 10 / server_ups;
             if ((j >= WORMHOLE_VIEWS - 1) || (j < 0))
@@ -629,9 +629,7 @@ DrawPlanets (void)
                                 planetColor (l),
                                 w);
         }
-        else
-#endif    
-        if (planetBitmap == 3)
+        else if (planetBitmap == 3)
         {
             W_WriteScaleBitmap (dx - (BMP_PLANET_WIDTH / 2) * SCALE / scaleFactor,
                                 dy - (BMP_PLANET_HEIGHT / 2) * SCALE / scaleFactor,
@@ -682,11 +680,7 @@ DrawPlanets (void)
                          W_White);
         }
 
-        if (showPlanetNames
-#ifdef PARADISE
-         && (PL_TYPE(*l) != PLWHOLE)
-#endif
-        )
+        if (showPlanetNames && (paradise ? (PL_TYPE(*l) != PLWHOLE) : 1))
         {
             /* Center name */
             W_MaskText (w, dx - (W_Textwidth * l->pl_namelen / 2),
@@ -703,12 +697,10 @@ DrawPlanets (void)
         /* Allow army display if player/observer is orbitting a planet, or alternatively
            if observer is locked onto a planet, or is show_army_count feature packet is on */
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
-#ifdef PARADISE
-         && (PL_TYPE(*l) == PLPLANET)
-#endif
+         && (paradise ? (PL_TYPE(*l) == PLPLANET) : 1)
          && (F_show_army_count || 
            ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
-          || ((me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
+          || (!paradise && (me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
         {
             char armbuf[4];
             int armbuflen;
@@ -744,24 +736,21 @@ DrawPlanets (void)
             clearzone[3][clearcount] = W_Textheight;
             clearcount++;
         }
-#ifdef PARADISE
-        if (PL_TYPE(*l) == PLSTAR)
+        if (paradise && PL_TYPE(*l) == PLSTAR)
         {
             clearzone[0][clearcount] = dx - (BMP_STAR_WIDTH / 2) * SCALE / scaleFactor;
             clearzone[1][clearcount] = dy - (BMP_STAR_HEIGHT / 2) * SCALE / scaleFactor;
             clearzone[2][clearcount] = BMP_STAR_WIDTH * SCALE / scaleFactor;
             clearzone[3][clearcount] = BMP_STAR_HEIGHT * SCALE / scaleFactor;
         }
-        else if (PL_TYPE(*l) == PLWHOLE)
+        else if (paradise && PL_TYPE(*l) == PLWHOLE)
         {
             clearzone[0][clearcount] = dx - (BMP_WORMHOLE_WIDTH / 2) * SCALE / scaleFactor;
             clearzone[1][clearcount] = dy - (BMP_WORMHOLE_HEIGHT / 2) * SCALE / scaleFactor;
             clearzone[2][clearcount] = BMP_WORMHOLE_WIDTH * SCALE / scaleFactor;
             clearzone[3][clearcount] = BMP_WORMHOLE_HEIGHT * SCALE / scaleFactor;
         }
-        else
-#endif
-        if (planetBitmap == 3)
+        else if (planetBitmap == 3)
         {
             clearzone[0][clearcount] = dx - (5 * BMP_PLANET_WIDTH / 6 * SCALE / scaleFactor) - 1;
             clearzone[1][clearcount] = dy - (5 * BMP_PLANET_HEIGHT / 6 * SCALE / scaleFactor) - 1;
@@ -778,10 +767,8 @@ DrawPlanets (void)
         clearcount++;
     }
     planet_frame++;
-#ifdef PARADISE
     star_frame++;
     wormhole_frame++;
-#endif
 }
 
 
@@ -835,9 +822,7 @@ DrawShips (void)
     int type;
 
     W_Icon (*ship_bits)[SHIP_VIEWS];
-#ifdef PARADISE
     W_Icon (*ship_bits_paradise)[NUMTEAMS];
-#endif
     W_Icon (*ship_bitsHR);
 
     /* Kludge to try to fix missing ID chars on tactical (short range)
@@ -846,42 +831,69 @@ DrawShips (void)
     idbuf[0] = '0';
     idbuf[1] = '\0';
 
-    for (j = players + MAXPLAYER - 1; j >= players; --j)
+    for (j = players + nplayers - 1; j >= players; --j)
     {
         if ((j->p_status != PALIVE) && (j->p_status != PEXPLODE))
             continue;
 
 /* Twarp sounds put up here so observers can hear them */            
 #ifdef SOUND
-       /* Have to use me->p_flags because server doesn't send us twarp flag info
-        on other players. */
-        if (twarpflag != (me->p_flags & PFTWARP))
+        if (paradise && myPlayer(j))
         {
-            /* change in warp state */
-            warpchange = 1;
-            twarpflag = (me->p_flags & PFTWARP);
-        }
-        
-        if (myPlayer(j) || isObsLockPlayer(j))
+          if (twarpflag != (me->p_flags & PFWARP))
+          {
+              /* change in warp state */
+              warpchange = 1;
+              twarpflag = (me->p_flags & PFWARP);
+          }
+
+          if (warpchange && (j->p_flags & PFWARP))
+          {
+              // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	      Mix_HaltGroup(3);
+	      Play_Sound(ENTER_WARP_WAV, SF_INFO);                
+	      warpchange = 0;
+	  }
+	  if (warpchange && !(j->p_flags & PFWARP))
+	  {
+	      // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	      Mix_HaltGroup(3);
+	      Play_Sound(EXIT_WARP_WAV, SF_INFO);
+	      warpchange = 0;
+	  }
+	}
+        if (!paradise)
         {
-            if (warpchange && (j->p_flags & PFTWARP))
-            {
-            	// Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
-	    	Mix_HaltGroup(3);
-	        Play_Sound(ENTER_WARP_WAV, SF_INFO);                
-	        warpchange = 0;
-	    }
-	    if (warpchange && !(j->p_flags & PFTWARP))
-	    {
-	    	// Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
-	    	Mix_HaltGroup(3);
-	    	Play_Sound(EXIT_WARP_WAV, SF_INFO);
-	        warpchange = 0;
-	    }
+          /* Have to use me->p_flags because server doesn't send us twarp flag info
+             on other players. */
+          if (twarpflag != (me->p_flags & PFTWARP))
+          {
+              /* change in warp state */
+              warpchange = 1;
+              twarpflag = (me->p_flags & PFTWARP);
+          }
+
+          if (isMe(j))
+          {
+              if (warpchange && (j->p_flags & PFTWARP))
+              {
+                  // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	    	  Mix_HaltGroup(3);
+	          Play_Sound(ENTER_WARP_WAV, SF_INFO);                
+	          warpchange = 0;
+	      }
+	      if (warpchange && !(j->p_flags & PFTWARP))
+	      {
+	    	  // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
+	    	  Mix_HaltGroup(3);
+	    	  Play_Sound(EXIT_WARP_WAV, SF_INFO);
+	          warpchange = 0;
+	      }
+	  }
 	}
 #endif
 
-        if (j->p_flags & PFOBSERV)
+        if (j->p_flags & PFOBSERV && !paradise)
         {
             /* observer and NOT locked onto a player (ie. locked onto planet or
              * vacuum) */
@@ -910,7 +922,7 @@ DrawShips (void)
                 if (j->p_cloakphase == 0 && dx <= view && dx >= -view && dy <= view && dy >= -view)
                 {
                     // To avoid hearing twarp cloak sounds as the twarper/observer
-                    if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
+                    if ( isMe(j) ? ((!paradise && (me->p_flags & PFTWARP)) ? 0 : 1) : 1 )
                     {
                     	SetDistAngle(dx / scaleFactor + TWINSIDE / 2, dy / scaleFactor + TWINSIDE / 2);   
                         // At short distances, don't use angular sound
@@ -932,7 +944,7 @@ DrawShips (void)
 
 #ifdef SOUND
                 // To avoid twarp cloak sounds as the twarper/observer
-                if ( (myPlayer(j) || isObsLockPlayer(j)) ? ((me->p_flags & PFTWARP) ? 0 : 1) : 1 )
+                if ( isMe(j) ? ((!paradise && (me->p_flags & PFTWARP)) ? 0 : 1) : 1 )
                 {
                     /* Only play sounds for ships on tactical */
                     if (j->p_cloakphase == (cloak_phases - 1) && dx <= view && dx >= -view && dy <= view && dy >= -view)
@@ -963,7 +975,7 @@ DrawShips (void)
            the ship drawing code with the goto statement */
         if (j->p_flags & PFCLOAK && (j->p_cloakphase == (cloak_phases - 1)))
         {
-            if (myPlayer (j) || (showCloakers && F_show_cloakers && !isObsLockPlayer(j))
+            if (myPlayer (j) || (showCloakers && F_show_cloakers && (!paradise && !isObsLockPlayer(j)))
 #ifdef RECORDGAME
                 || playback
 #endif
@@ -1142,9 +1154,8 @@ DrawShips (void)
             }
             
             type = j->p_ship.s_type;
-#ifdef PARADISE
             // If it's a paradise ship, use a paradise bitmap set.
-            if (type >= PARADISE_SHIP_OFFSET)
+            if (paradise && type >= PARADISE_SHIP_OFFSET)
             {
             	int pos;
 
@@ -1189,7 +1200,6 @@ DrawShips (void)
             }
             else
             {
-#endif
             if (colorClient != 4)
             {
                 W_WriteScaleBitmap (dx - (j->p_ship.s_width / 2) * SCALE / scaleFactor,
@@ -1220,9 +1230,7 @@ DrawShips (void)
                                       playerColor (j),
                                       w);
             }
-#ifdef PARADISE
             }
-#endif
 
             /* If the ship is not yet fully cloaked, draw the cloak icon on top
                of the ship icon */
@@ -1235,7 +1243,7 @@ DrawShips (void)
                                     BMP_CLOAK_WIDTH,
                                     BMP_CLOAK_HEIGHT,
                                     0, cloakicon, playerColor (j), w);
-                if (!myPlayer (j) && !isObsLockPlayer(j))
+                if (!isMe(j))
                 /* If not my player, or not observing that player, we exit the draw
                    function here */
                     continue;
@@ -1261,7 +1269,7 @@ DrawShips (void)
 #endif
 
 #ifdef SOUND
-            if (myPlayer(j) || isObsLockPlayer(j))
+            if (isMe(j))
             {
                 if ((sound_flags & PFSHIELD) && !(j->p_flags & PFSHIELD))
                 {
@@ -1290,7 +1298,7 @@ DrawShips (void)
 #ifdef VSHIELD_BITMAPS
                 int shieldnum;
 
-                if ((myPlayer(j) || isObsLockPlayer(j)) && varyShields)
+                if (isMe(j) && varyShields)
                 {
                     shieldnum =
                         SHIELD_FRAMES * me->p_shield / me->p_ship.s_maxshield;
@@ -1300,7 +1308,7 @@ DrawShips (void)
                 else
                     shieldnum = 2;
 
-                if ((myPlayer(j) || isObsLockPlayer(j)) && varyShieldsColor)
+                if (isMe(j) && varyShieldsColor)
                 {
                     int value;
                     value = (100 * me->p_shield) / me->p_ship.s_maxshield;
@@ -1315,7 +1323,7 @@ DrawShips (void)
                     color = playerColor (j);
 #endif
 
-                if (warnShields && (myPlayer(j) || isObsLockPlayer(j)))
+                if (warnShields && isMe(j))
                 {
                     switch (me->p_flags & (PFGREEN | PFYELLOW | PFRED))
                     {
@@ -1352,7 +1360,7 @@ DrawShips (void)
             /* Warning hull */
             if (vary_hull)
             {
-            	if (myPlayer(j) || isObsLockPlayer(j))
+            	if (isMe(j))
             	{	
             	    int hull_left = (100 * (me->p_ship.s_maxdamage -
 		                     me->p_damage)) / me->p_ship.s_maxdamage;
@@ -1429,7 +1437,7 @@ DrawShips (void)
             /* Self tic heading */
             if (headingTic)
             {
-            	if (myPlayer(j) || isObsLockPlayer(j))
+            	if (isMe(j))
             	{
                     startx = dx + (int) (TIC_DIST/scaleFactor * Cos[j->p_dir]);
                     starty = dy + (int) (TIC_DIST/scaleFactor * Sin[j->p_dir]);
@@ -1477,7 +1485,7 @@ DrawShips (void)
             /* Puck circle */
             if (puckCircle && playing_hockey)
             {
-            	if (myPlayer(j) || isObsLockPlayer(j))
+            	if (isMe(j))
             	{
                     W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/scaleFactor, 0, 0, W_Grey);         
                     clearzone[0][clearcount] = TWINSIDE/2 - (SHOTRANGE/scaleFactor);
@@ -1556,7 +1564,7 @@ DrawShips (void)
                     buflen = 1;
                 }
 
-                if (myPlayer(j) || isObsLockPlayer(j))
+                if (isMe(j))
                 {
                     switch (me->p_flags & (PFGREEN | PFYELLOW | PFRED))
                     {
@@ -1619,7 +1627,7 @@ DrawShips (void)
                 clearcount++;
                 
                 /* Tractor target ID */
-                if (tractorID && (myPlayer(j) || isObsLockPlayer(j)))
+                if (tractorID && isMe(j))
                 {
                     if (j->p_flags & (PFTRACT | PFPRESS))
                     {
@@ -1648,7 +1656,7 @@ DrawShips (void)
 #ifdef SOUND
             if (j->p_explode == 1)
             {
-                if (myPlayer(j) || isObsLockPlayer(j))
+                if (isMe(j))
                 {
                  if (j->p_ship.s_type == STARBASE)
                      Play_Sound(BASE_EXPLOSION_WAV, SF_EXPLOSIONS);
@@ -1732,7 +1740,7 @@ DrawShips (void)
 #ifdef SOUND
             if (php->sound_phaser)
             {           
-                if (myPlayer(j) || isObsLockPlayer(j))
+                if (isMe(j))
                     Play_Sound(PHASER_WAV, SF_WEAPONS);
                 else
                 {
@@ -1766,26 +1774,30 @@ DrawShips (void)
                     /* Here I will have to compute end coordinate */
                     /* Server will sometimes send us this information though,
                        so check if we have it first */
-                    if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
+                    if (!paradise && php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
                     {
                         tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
                     }
                     else
                     {
-#ifdef PARADISE
                         /* Paradise servers changed the ship cap protocol for
                            phaser damage :( */
-                        tx = (int) (j->p_ship.s_phaserdamage * Cos[php->ph_dir]);
+                        if (paradise)
+                        {
+                            tx = (int) (j->p_ship.s_phaserdamage * Cos[php->ph_dir]);
 
-                        ty = (int) (j->p_ship.s_phaserdamage * Sin[php->ph_dir]);
-#else
-                        tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                    Cos[php->ph_dir]);
+                            ty = (int) (j->p_ship.s_phaserdamage * Sin[php->ph_dir]);
+                        }
+                        else
+                        {
+                            tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                        Cos[php->ph_dir]);
 
-                        ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                    Sin[php->ph_dir]);
-#endif
+                            ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                        Sin[php->ph_dir]);
+                        }
+
                         tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
                     }
@@ -1828,7 +1840,7 @@ DrawShips (void)
                 if (shrinkPhaserOnMiss || php->ph_status != PHMISS)
                 {
                 	
-                    if (myPlayer(j) || isObsLockPlayer(j))
+                    if (isMe(j))
                     {
                         if (phaserShrinkStyle == 1)
                         {
@@ -1884,7 +1896,7 @@ DrawShips (void)
                 if (friendlyPlayer (j))
                 {
 #ifdef JUBILEE_PHASERS
-                    if ((myPlayer(j) || isObsLockPlayer(j)) && php->ph_status == PHHIT && colorfulPhasers)
+                    if (isMe(j) && php->ph_status == PHHIT && colorfulPhasers)
                     {
                         int col;
 
@@ -2023,7 +2035,7 @@ DrawShips (void)
 
                 struct player *tractee;
 
-                if (j->p_tractor < 0 || j->p_tractor >= MAXPLAYER)
+                if (j->p_tractor < 0 || j->p_tractor >= nplayers)
                     continue;
                 tractee = &players[j->p_tractor];
 
@@ -2106,7 +2118,7 @@ DrawShips (void)
                     }
                 }
             }
-            else if ((myPlayer(j) || isObsLockPlayer(j))&& !(j->p_flags & PFPRESS || j->p_flags & PFTRACT))
+            else if (isMe(j) && !(j->p_flags & PFPRESS || j->p_flags & PFTRACT))
                 tcounter = 2;
         }
     }
@@ -2124,7 +2136,7 @@ DrawTorps (void)
     int frame;
     int view = scaleFactor * TWINSIDE / 2;
 
-    for (t = torps, j = players; j != players + MAXPLAYER; t += MAXTORP, ++j)
+    for (t = torps, j = players; j != players + nplayers; t += ntorps, ++j)
     {
 #ifdef SOUND
         if (j != me)
@@ -2364,9 +2376,9 @@ DrawPlasmaTorps (void)
     int ptorpTeam;
     int frame;
 
-    /* MAXPLASMA is small so work through all the plasmas rather than
+    /* nplasmas is small so work through all the plasmas rather than
        look at the number of outstanding plasma torps for each player. */
-    for (pt = plasmatorps + (MAXPLASMA * MAXPLAYER) - 1; pt >= plasmatorps;
+    for (pt = plasmatorps + (nplasmas * nplayers) - 1; pt >= plasmatorps;
          --pt)
     {
         if (!pt->pt_status)
@@ -2578,7 +2590,6 @@ DrawPlasmaTorps (void)
     }
 }
 
-#ifdef PARADISE
 void
 draw_one_thingy(struct thingy *k)
 {
@@ -2850,7 +2861,7 @@ DrawThingies (void)
     int count;
     struct player *j;
 
-    for (j = players; j != players + MAXPLAYER; ++j)
+    for (j = players; j != players + nplayers; ++j)
     {
         i = j->p_no;
 
@@ -2866,7 +2877,6 @@ DrawThingies (void)
         j->p_ndrone = count;
     }
 }
-#endif
 
 static void
 DrawMisc (void)
@@ -3234,26 +3244,25 @@ DrawMisc (void)
         else
             Play_Sound_Loc(FIRE_PLASMA_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_plasma_angle, other_plasma_dist);
     }
-#ifdef PARADISE
-    if (sound_missiles < me->p_ndrone )
-        Play_Sound(FIRE_PLASMA_WAV, SF_WEAPONS);
-    if (sound_other_missiles < num_other_missiles)
+    if (paradise)
     {
-        if (!soundAngles || other_missile_dist < SCALE/2)
-            Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, other_missile_dist);
-        else
-            Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_missile_angle, other_missile_dist);
+        if (sound_missiles < me->p_ndrone )
+            Play_Sound(FIRE_PLASMA_WAV, SF_WEAPONS);
+        if (sound_other_missiles < num_other_missiles)
+        {
+            if (!soundAngles || other_missile_dist < SCALE/2)
+                Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, -1, other_missile_dist);
+            else
+                Play_Sound_Loc(FIRE_TORP_OTHER_WAV, SF_OTHER|SF_WEAPONS, other_missile_angle, other_missile_dist);
+        }
     }
-#endif
     // Reset locations and fuses of other's closest torps and plasmas
     other_torp_dist = SOUND_MAXRANGE;
     other_torp_angle = 0;
     other_plasma_dist = SOUND_MAXRANGE;
     other_plasma_angle = 0;
-#ifdef PARADISE
     other_missile_dist = SOUND_MAXRANGE;
     other_missile_angle = 0;
-#endif
 
     sound_flags = me->p_flags;
     sound_torps = me->p_ntorp;
@@ -3262,11 +3271,9 @@ DrawMisc (void)
     sound_plasma = me->p_nplasmatorp;
     sound_other_plasmas = num_other_plasmas;
     num_other_plasmas = 0;
-#ifdef PARADISE
     sound_missiles = me->p_ndrone;
     sound_other_missiles = num_other_missiles;
     num_other_missiles = 0;
-#endif
 #endif
 
     /* show 'lock' icon on local map (Actually an EM hack ) */
@@ -3348,7 +3355,8 @@ local (void)
 
     /* Keep redrawing for double buffered observers who get set out of normal gameplay bounds,
        whether due to locking onto an ineligible planet, or observing a player who dies -
-       otherwise screen doesn't refresh */
+       otherwise screen doesn't refresh.  In paradise this check will also trigger for people
+       in PFWARP but I don't think it matters. */
     if ((me->p_x < 0 || me->p_x >= GWIDTH) && !(doubleBuffering && (me->p_flags & PFOBSERV)))
     {
         /* If alive but out of bounds, we probably missed a packet giving our location,
@@ -3369,9 +3377,8 @@ local (void)
 
     DrawTorps ();
     DrawPlasmaTorps ();
-#ifdef PARADISE
-    DrawThingies ();
-#endif
+    if (paradise)
+        DrawThingies ();
 
     if (!weaponsOnMap)
         weaponUpdate = 0;
