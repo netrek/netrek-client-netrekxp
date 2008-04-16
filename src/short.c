@@ -221,7 +221,7 @@ char *s_texte[256];             /* Better with a malloc
 char no_memory[] = { "Not enough memory for warning string!" };
 
 /* For INL Server */
-char *shiptype[NUM_TYPES] = { "SC", "DD", "CA", "BB", "AS", "SB", "AT" };
+char *shiptype[NUM_TYPES_BRONCO] = { "SC", "DD", "CA", "BB", "AS", "SB", "AT" };
 int spwinside = 500;            /* WINSIDE from Server */
 
 #define SPWINSIDE 500           /* To make it safe */

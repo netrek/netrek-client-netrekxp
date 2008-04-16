@@ -377,34 +377,34 @@ W_Icon paradise_cships[NUM_PSHIP_TYPES][NUMTEAMS];
 
 // Ships
 W_Icon ship_bitmaps[5];
-W_Icon fed_bitmaps[NUM_TYPES][SHIP_VIEWS], kli_bitmaps[NUM_TYPES][SHIP_VIEWS],
-    rom_bitmaps[NUM_TYPES][SHIP_VIEWS], ori_bitmaps[NUM_TYPES][SHIP_VIEWS],
-    ind_bitmaps[NUM_TYPES][SHIP_VIEWS];
+W_Icon fed_bitmaps[NUM_TYPES_BRONCO][SHIP_VIEWS], kli_bitmaps[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    rom_bitmaps[NUM_TYPES_BRONCO][SHIP_VIEWS], ori_bitmaps[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    ind_bitmaps[NUM_TYPES_BRONCO][SHIP_VIEWS];
 
 W_Icon ship_bitmaps1[5];
-W_Icon fed_bitmaps1[NUM_TYPES][SHIP_VIEWS], kli_bitmaps1[NUM_TYPES][SHIP_VIEWS],
-    rom_bitmaps1[NUM_TYPES][SHIP_VIEWS], ori_bitmaps1[NUM_TYPES][SHIP_VIEWS],
-    ind_bitmaps1[NUM_TYPES][SHIP_VIEWS];
+W_Icon fed_bitmaps1[NUM_TYPES_BRONCO][SHIP_VIEWS], kli_bitmaps1[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    rom_bitmaps1[NUM_TYPES_BRONCO][SHIP_VIEWS], ori_bitmaps1[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    ind_bitmaps1[NUM_TYPES_BRONCO][SHIP_VIEWS];
 
 W_Icon ship_bitmapsG[5];
-W_Icon fed_bitmapsG[NUM_TYPES][SHIP_VIEWS],
-    kli_bitmapsG[NUM_TYPES][SHIP_VIEWS], rom_bitmapsG[NUM_TYPES][SHIP_VIEWS],
-    ori_bitmapsG[NUM_TYPES][SHIP_VIEWS], ind_bitmapsG[NUM_TYPES][SHIP_VIEWS];
+W_Icon fed_bitmapsG[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    kli_bitmapsG[NUM_TYPES_BRONCO][SHIP_VIEWS], rom_bitmapsG[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    ori_bitmapsG[NUM_TYPES_BRONCO][SHIP_VIEWS], ind_bitmapsG[NUM_TYPES_BRONCO][SHIP_VIEWS];
 
 W_Icon ship_bitmapsM[5];
-W_Icon fed_bitmapsM[NUM_TYPES][SHIP_VIEWS],
-    kli_bitmapsM[NUM_TYPES][SHIP_VIEWS], rom_bitmapsM[NUM_TYPES][SHIP_VIEWS],
-    ori_bitmapsM[NUM_TYPES][SHIP_VIEWS], ind_bitmapsM[NUM_TYPES][SHIP_VIEWS];
+W_Icon fed_bitmapsM[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    kli_bitmapsM[NUM_TYPES_BRONCO][SHIP_VIEWS], rom_bitmapsM[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    ori_bitmapsM[NUM_TYPES_BRONCO][SHIP_VIEWS], ind_bitmapsM[NUM_TYPES_BRONCO][SHIP_VIEWS];
     
 W_Icon ship_bitmapsT[5];
-W_Icon fed_bitmapsT[NUM_TYPES][SHIP_VIEWS],
-    kli_bitmapsT[NUM_TYPES][SHIP_VIEWS], rom_bitmapsT[NUM_TYPES][SHIP_VIEWS],
-    ori_bitmapsT[NUM_TYPES][SHIP_VIEWS], ind_bitmapsT[NUM_TYPES][SHIP_VIEWS];
+W_Icon fed_bitmapsT[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    kli_bitmapsT[NUM_TYPES_BRONCO][SHIP_VIEWS], rom_bitmapsT[NUM_TYPES_BRONCO][SHIP_VIEWS],
+    ori_bitmapsT[NUM_TYPES_BRONCO][SHIP_VIEWS], ind_bitmapsT[NUM_TYPES_BRONCO][SHIP_VIEWS];
 
 W_Icon ship_bitmapsHR[5];
-W_Icon fed_bitmapsHR[NUM_TYPES],
-    kli_bitmapsHR[NUM_TYPES], rom_bitmapsHR[NUM_TYPES],
-    ori_bitmapsHR[NUM_TYPES], ind_bitmapsHR[NUM_TYPES];
+W_Icon fed_bitmapsHR[NUM_TYPES_BRONCO],
+    kli_bitmapsHR[NUM_TYPES_BRONCO], rom_bitmapsHR[NUM_TYPES_BRONCO],
+    ori_bitmapsHR[NUM_TYPES_BRONCO], ind_bitmapsHR[NUM_TYPES_BRONCO];
 
 // Planets
 W_Icon planet_unknown_bitmap;
@@ -448,7 +448,7 @@ char pseudo[PSEUDOSIZE];
 char defpasswd[PSEUDOSIZE];
 char login[PSEUDOSIZE];
 
-struct ship shipvals[NUM_TYPES];
+struct ship shipvals[NUM_TYPES_BRONCO];
 
 /* 10 Aug 96 - Added curt (short) names -SAC */
 struct rank ranks[NUMRANKS] = {

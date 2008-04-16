@@ -98,7 +98,6 @@ int plistHasSpeed = FALSE;
    plistLayout       : The fields in the current playerlist.
    plistPos[plr]     : The player list row assigned to each player.
    plistWidth        : The width of the playerlist.
-   my_classes        : The letters to go with each ship type.
 */
 
 char *plistLayout = "";
@@ -106,13 +105,6 @@ char *plist2Layout = "";
 static int plistPos[MAXPLAYER];
 static int plistWidth = 0;
 static int plist2Width = 0;
-#ifdef PARADISE
-static char *my_classes[NUM_TYPES] = {
-    "SC", "DD", "CA", "BB", "AS", "SB", "AT", "JS", "FL", "WB", "CL", "CV", "UT", "PT", "PU" };
-#else
-static char *my_classes[NUM_TYPES] =
-    { "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT" };
-#endif
 
 /* Local Functions */
 
@@ -1126,8 +1118,8 @@ PlistLine (W_Window win,
             }
             else
             {
-                *(buffPoint++) = my_classes[j->p_ship.s_type][0];
-                *(buffPoint++) = my_classes[j->p_ship.s_type][1];
+                *(buffPoint++) = j->p_ship.s_desig[0];
+                *(buffPoint++) = j->p_ship.s_desig[1];
             }
 
             break;

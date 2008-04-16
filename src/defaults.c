@@ -21,10 +21,9 @@
 #include "proto.h"
 #include "version.h"
 
-#define DEFAULTSHIP NUM_TYPES
-
 #ifdef PARADISE
-struct shipdef shipdefaults[NUM_TYPES + 1] = {
+#define DEFAULTSHIP NUM_TYPES_PARADISE
+struct shipdef shipdefaults[NUM_TYPES_PARADISE + 1] = {
     {"sc", NULL, NULL, NULL, NULL},
     {"dd", NULL, NULL, NULL, NULL},
     {"ca", NULL, NULL, NULL, NULL},
@@ -43,7 +42,8 @@ struct shipdef shipdefaults[NUM_TYPES + 1] = {
     {"default", NULL, NULL, NULL, NULL}
 };
 #else
-struct shipdef shipdefaults[NUM_TYPES + 1] = {
+#define DEFAULTSHIP NUM_TYPES_BRONCO
+struct shipdef shipdefaults[NUM_TYPES_BRONCO + 1] = {
     {"sc", NULL, NULL, NULL, NULL},
     {"dd", NULL, NULL, NULL, NULL},
     {"ca", NULL, NULL, NULL, NULL},
@@ -3435,7 +3435,7 @@ saveOptions ()
         fputs ("# button keymaps (b1keymap through b5keymap)\n", fp);
     }
     // Individual ship type settings
-    for (j = NUM_TYPES; j >= 0; j--)
+    for (j = (paradise ? NUM_TYPES_PARADISE : NUM_TYPES_BRONCO); j >= 0; j--)
     {
         STRNCPY (str1, "rcfile-", 8);
         strcat (str1, shipdefaults[j].name);

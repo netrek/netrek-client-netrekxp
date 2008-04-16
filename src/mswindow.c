@@ -421,7 +421,7 @@ W_Cleanup (void)
         DeleteObject (NetrekPalette);
 
     // Remove the ship bitmap structures we've created
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {

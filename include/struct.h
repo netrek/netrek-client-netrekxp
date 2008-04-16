@@ -233,15 +233,15 @@ enum dist_type
 #define KSHIP2      0x11    /* chain-reaction explosions, overloaded to paradise KASTEROID */
 #define KPLASMA2    0x12    /* killed by zapped plasma */
 
-#define NUM_PSHIP_TYPES 7
+#define NUM_PSHIP_TYPES 7	/* Number of unique paradise ships in the bitmap file */
 #define PARADISE_SHIP_OFFSET 7	/* To make jumpship first entry in the paradise ship bitmap array */
+#define NUM_TYPES_PARADISE 15	/* Typical total number of ships on a paradise server */
+#define NUM_TYPES_BRONCO 8	/* Concrete total number of ships on a bronco server */
 #ifdef PARADISE
-#define NUM_TYPES 15
 #define ATT 6
 #define JUMPSHIP 7
 #define SGALAXY 8	/* Not sure where to put this .. */
 #else
-#define NUM_TYPES 8
 #define SGALAXY	6
 #define ATT	7
 #define JUMPSHIP 8
@@ -252,7 +252,7 @@ enum dist_type
 #define BATTLESHIP 3
 #define ASSAULT 4
 #define STARBASE 5
-#define FLAGSHIP 8
+#define FLAGSHIP 8	/* shares bitmap with galaxy class */
 #define WARBASE 9
 #define LIGHTCRUISER 10
 #define CARRIER 11

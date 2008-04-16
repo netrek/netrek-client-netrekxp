@@ -141,7 +141,7 @@ void loadbitmaps()
 	                        LR_MONOCHROME);
     }
     
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
@@ -218,7 +218,7 @@ void loadbitmaps1()
 	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
 	                        LR_MONOCHROME);
     }
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
@@ -295,7 +295,7 @@ void loadbitmapsT()
 	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
 	                        LR_MONOCHROME);
     }
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
@@ -372,7 +372,7 @@ void loadbitmapsG()
 	                        BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
 	                        LR_MONOCHROME);
     }
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
@@ -420,7 +420,7 @@ void loadbitmapsM()
                         BMP_SHIP_HEIGHT * 32, BMP_ROM_SHIP, w,
                         LR_MONOCHROME);
                         
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         for (k = 0; k < SHIP_VIEWS; k++)
         {
@@ -604,7 +604,7 @@ void loadbitmapsHR()
         return;
     }
     
-    for (j = 0; j < NUM_TYPES; j++)
+    for (j = 0; j < NUM_TYPES_BRONCO; j++)
     {
         fed_bitmapsHR[j] =
             W_PointBitmap2 (ship_bitmapsHR[0], j, 0, BMP_SHIP_WIDTH_HR,

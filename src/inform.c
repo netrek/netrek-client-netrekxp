@@ -32,16 +32,6 @@
  * There is a different sized window for each type player/planet * and we take
  * care to keep it from extending beyond the main * window boundaries. */
 
-#ifdef PARADISE
-static char *my_classes[NUM_TYPES] = {
-    "SC", "DD", "CA", "BB", "AS", "SB", "AT", "JS", "FL", "WB", "CL", "CV", "UT", "PT", "PU",
-};
-#else
-static char *my_classes[NUM_TYPES] = {
-    "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT"
-};
-#endif
-
 static void Info_list_paradise (struct player * j);
 
 /******************************************************************************/
@@ -124,8 +114,8 @@ inform (W_Window ww,
             (void) sprintf(buf, "dist:    %-1.2f sectors", dist);
              W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
-            (void) sprintf (buf, "Ship Type: %-s",
-                            my_classes[j->p_ship.s_type]);
+            (void) sprintf (buf, "Ship Type: %c%c",j->p_ship.s_desig[0],
+                         j->p_ship.s_desig[1]);
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
 
@@ -166,8 +156,8 @@ inform (W_Window ww,
             (void) sprintf (buf, "kills:   %-4.2f", j->p_kills);
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
-            (void) sprintf (buf, "Ship Type: %-s",
-                            my_classes[j->p_ship.s_type]);
+            (void) sprintf (buf, "Ship Type: %c%c", j->p_ship.s_desig[0],
+                            j->p_ship.s_desig[1]);
             W_WriteText (infow, W_Textwidth, W_Textheight * line++,
                          playerColor (j), buf, strlen (buf), W_RegularFont);
 
