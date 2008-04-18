@@ -28,6 +28,7 @@ struct status2 *status2;
 struct thingy *thingies;
 struct t_unit *terrainInfo;
 struct ship *myship;
+struct shiplist *shiptypes = NULL;
 struct stats *mystats;
 struct planet *planets;
 struct phaser *phasers;
@@ -104,7 +105,13 @@ int extraAlertBorder = 1;
 int tryUdp = 1;
 int tryUdp1 = 1;
 struct plupdate pl_update[MAXPLANETS];
-char buttonmap[23] = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+#ifdef MOUSE_AS_SHIFT
+unsigned char default_keymap[672] = "";
+#else
+unsigned char default_keymap[96] = "";
+#endif
+unsigned char default_buttonmap[23] = "";
+int currentship;
 int lastm = 0;
 time_t delay = 0;                  /* time stamp for decaring war */
 time_t rdelay = 0;                 /* time stamp for refitting */

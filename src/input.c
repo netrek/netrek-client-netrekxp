@@ -440,32 +440,18 @@ getkeyfromctrl (unsigned char c)
         return (unsigned char) (c - 96);
 }
 
-
-/* Defined in defaults.c */
-extern struct shipdef *myshipdef;
-
 /******************************************************************************/
-/***  initkeymap()                                                          ***/
+/***  initkeymap() - sets up default keymaps and buttonmaps, then builds the
+      ship specific versions                                                ***/
 /******************************************************************************/
 void
 initkeymap (void)
 {
+    int j;
     unsigned char *str;
 
-    /* in the future let me strongly recommed we move keymap * completely
-     * outside of the stats structure. - jn */
-
-    if ((str = myshipdef->keymap) != NULL)
-    {
-        while (*str != '\0' && *(str + 1) != '\0')
-        {
-            if (*str >= 32 && *str < 128)
-            {
-                mystats->st_keymap[*str - 32] = *(str + 1);
-            }
-            str += 2;
-        }
-    }
+    if ((str = (unsigned char *) stringDefault ("keymap")) != NULL)
+    	keymapAdd(str, default_keymap);
 
     /* See if we can get macroKey to work. What a hack -SAC */
     if ((str = (unsigned char *) stringDefault ("macroKey")) != NULL)
@@ -476,36 +462,22 @@ initkeymap (void)
         {
             /* This is a little pointless, but it'll preform as per
              * the documentation */
-            mystats->st_keymap[*str - 32] = 'X';
+            default_keymap[*str - 32] = 'X';
         }
         else if (!strcmpi (str, "TAB"))
         {
             p = "^i";
-            mystats->st_keymap[getctrlkey (&p) - 32] = 'X';
+            default_keymap[getctrlkey (&p) - 32] = 'X';
         }
         else if (!strcmpi (str, "ESC"))
         {
             p = "^[";
-            mystats->st_keymap[getctrlkey (&p) - 32] = 'X';
+            default_keymap[getctrlkey (&p) - 32] = 'X';
         }
     }
 
-    if ((str = myshipdef->ckeymap) != NULL)
-    {
-        unsigned char c1, c2;
-
-        while (*str != '\0')
-        {
-
-            if (*str >= 32 && *str < MAXASCII)
-            {
-                c1 = (unsigned char) (getctrlkey (&str) - 32);
-                c2 = getctrlkey (&str);
-                mystats->st_keymap[c1] = c2;
-            }
-
-        }
-    }
+    if ((str = (unsigned char *) stringDefault ("ckeymap")) != NULL)
+        ckeymapAdd(str, default_keymap);
 
 #ifdef MOUSE_AS_SHIFT
     if ((str = (unsigned char *) stringDefault ("b1keymap")) != NULL)
@@ -515,7 +487,7 @@ initkeymap (void)
         {
             if (*str >= 32 && *str < 176)
             {
-                mystats->st_keymap[*str - 32 + 192] = *(str + 1);
+                default_keymap[*str - 32 + 192] = *(str + 1);
             }
             str += 2;
         }
@@ -528,7 +500,7 @@ initkeymap (void)
         {
             if (*str >= 32 && *str < 176)
             {
-                mystats->st_keymap[*str - 32 + 288] = *(str + 1);
+                default_keymap[*str - 32 + 288] = *(str + 1);
             }
             str += 2;
         }
@@ -541,7 +513,7 @@ initkeymap (void)
         {
             if (*str >= 32 && *str < 176)
             {
-                mystats->st_keymap[*str - 32 + 384] = *(str + 1);
+                default_keymap[*str - 32 + 384] = *(str + 1);
             }
             str += 2;
         }
@@ -554,7 +526,7 @@ initkeymap (void)
         {
             if (*str >= 32 && *str < 176)
             {
-                mystats->st_keymap[*str - 32 + 480] = *(str + 1);
+                default_keymap[*str - 32 + 480] = *(str + 1);
             }
             str += 2;
         }
@@ -567,7 +539,7 @@ initkeymap (void)
         {
             if (*str >= 32 && *str < 176)
             {
-                mystats->st_keymap[*str - 32 + 576] = *(str + 1);
+                default_keymap[*str - 32 + 576] = *(str + 1);
             }
             str += 2;
         }
@@ -576,93 +548,160 @@ initkeymap (void)
 #endif
 
     /* note: not stored on server */
-    if ((str = myshipdef->buttonmap) != NULL)
+    if ((str = (unsigned char *) stringDefault ("buttonmap")) != NULL)
+    	buttonmapAdd(str, default_buttonmap);
+    
+    /* Build ship specific keymaps */
+    for (j = 0; j < nshiptypes; j++)
+        buildShipKeymap(getship(j));
+}
+
+void
+keymapAdd(char *str, char *kmap)
+{
+    while (*str != '\0' && *(str + 1) != '\0')
     {
-        while (*str != '\0' && *(str + 1) != '\0')
+        if (*str >= 32 && *str < 128)
         {
-            switch (*str++)
-            {
+            kmap[*str - 32] = *(str + 1);
+        }
+        str += 2;
+    }
+}
+
+void
+ckeymapAdd(char *cstr, char *kmap)
+{
+    unsigned char c1, c2;
+
+    while (*cstr != '\0')
+    {
+        if (*cstr >= 32 && *cstr < MAXASCII)
+        {
+            c1 = (unsigned char) (getctrlkey (&cstr) - 32);
+            c2 = getctrlkey (&cstr);
+            kmap[c1] = c2;
+        }
+    }
+}
+
+void
+buttonmapAdd(char *str, char *bmap)
+{
+    while (*str != '\0' && *(str + 1) != '\0')
+    {
+        switch (*str++)
+        {
             case '1':
-                buttonmap[1] = getctrlkey (&str);
+                bmap[1] = getctrlkey (&str);
                 break;
             case '2':
-                buttonmap[2] = getctrlkey (&str);
+                bmap[2] = getctrlkey (&str);
                 break;
             case '3':
-                buttonmap[3] = getctrlkey (&str);
+                bmap[3] = getctrlkey (&str);
                 break;
             /* XButton 1 */
             case '4':
-                buttonmap[4] = getctrlkey (&str);
+                bmap[4] = getctrlkey (&str);
                 break;
             /* XButton 2 */
             case '5':
-                buttonmap[5] = getctrlkey (&str);
+                bmap[5] = getctrlkey (&str);
                 break;
             /* Wheel Up */
             case '6':
-                buttonmap[6] = getctrlkey (&str);
+                bmap[6] = getctrlkey (&str);
                 break;
             /* Wheel Down */
             case '7':
-                buttonmap[7] = getctrlkey (&str);
+                bmap[7] = getctrlkey (&str);
                 break;
 
 #ifdef SHIFTED_MOUSE
             case '8':
-                buttonmap[8] = getctrlkey (&str);
+                bmap[8] = getctrlkey (&str);
                 break;
             case '9':
-                buttonmap[9] = getctrlkey (&str);
+                bmap[9] = getctrlkey (&str);
                 break;
             case 'a':
-                buttonmap[10] = getctrlkey (&str);
+                bmap[10] = getctrlkey (&str);
                 break;
             case 'b':
-                buttonmap[11] = getctrlkey (&str);
+                bmap[11] = getctrlkey (&str);
                 break;
             case 'c':
-                buttonmap[12] = getctrlkey (&str);
+                bmap[12] = getctrlkey (&str);
                 break;
             case 'd':
-                buttonmap[13] = getctrlkey (&str);
+                bmap[13] = getctrlkey (&str);
                 break;
             case 'e':
-                buttonmap[14] = getctrlkey (&str);
+                bmap[14] = getctrlkey (&str);
                 break;
             case 'f':
-                buttonmap[15] = getctrlkey (&str);
+                bmap[15] = getctrlkey (&str);
                 break;
             case 'g':
-                buttonmap[16] = getctrlkey (&str);
+                bmap[16] = getctrlkey (&str);
                 break;
             case 'h':
-                buttonmap[17] = getctrlkey (&str);
+                bmap[17] = getctrlkey (&str);
                 break;
             case 'i':
-                buttonmap[18] = getctrlkey (&str);
+                bmap[18] = getctrlkey (&str);
                 break;
             case 'j':
-                buttonmap[19] = getctrlkey (&str);
+                bmap[19] = getctrlkey (&str);
                 break;
             case 'k':
-                buttonmap[20] = getctrlkey (&str);
+                bmap[20] = getctrlkey (&str);
                 break;
             case 'l':
-                buttonmap[21] = getctrlkey (&str);
+                bmap[21] = getctrlkey (&str);
                 break;
             case 'm':
-                buttonmap[22] = getctrlkey (&str);
+                bmap[22] = getctrlkey (&str);
                 break;
 #endif /* SHIFTED_MOUSE */
                 
             default:
                 LineToConsole ("%c ignored in buttonmap\n", *(str - 1));
                 break;
-            }
         }
     }
+}
 
+/******************************************************************************/
+/***  buildShipKeymap() -  initializes the ship specific keymaps and
+      buttonmaps, then searches defaults file for the ship specific entries   */
+/******************************************************************************/
+void
+buildShipKeymap(struct ship *shipp)
+{
+    char keybuf[40], ckeybuf[40], buttonbuf[40];
+    char *pek;
+
+#ifdef MOUSE_AS_SHIFT
+    memcpy(shipp->s_keymap, default_keymap, 672);
+#else
+    memcpy(shipp->s_keymap, default_keymap, 96);
+#endif
+    memcpy(shipp->s_buttonmap, default_buttonmap, 23);
+  
+    sprintf(keybuf, "keymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
+    sprintf(ckeybuf, "ckeymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
+    sprintf(buttonbuf, "buttonmap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
+
+    if (pek = stringDefault (keybuf))
+        keymapAdd(pek, shipp->s_keymap);
+
+    if (pek = stringDefault (ckeybuf))
+        ckeymapAdd(pek, shipp->s_keymap);
+        
+    if (pek = stringDefault (buttonbuf))
+        buttonmapAdd(pek, shipp->s_buttonmap);
 }
 
 /******************************************************************************/
@@ -1245,105 +1284,25 @@ keyaction (W_Event * data)
         }
     }
 
-
-    /* this may represent a considerable efficiency improvement */
-    /* removes the need for an INDEX and a couple tests */
     if (localflags & (PFREFIT))
     {
-        switch (key)
-        {
-        case 'c':
-            sendRefitReq (CRUISER);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'o':
-            sendRefitReq (STARBASE);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'a':
-            sendRefitReq (ASSAULT);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'd':
-            sendRefitReq (DESTROYER);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'g':
-            sendRefitReq (SGALAXY);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'b':
-            sendRefitReq (BATTLESHIP);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 's':
-            sendRefitReq (SCOUT);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case '*':
-            sendRefitReq (ATT);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'j':
-            if (paradise)
-                sendRefitReq (JUMPSHIP);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'f':
-            if (paradise)
-                sendRefitReq (FLAGSHIP);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'w':
-            if (paradise)
-                sendRefitReq (WARBASE);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'l':
-            if (paradise)
-                sendRefitReq (LIGHTCRUISER);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'v':
-            if (paradise)
-                sendRefitReq (CARRIER);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'u':
-            if (paradise)
-                sendRefitReq (UTILITY);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        case 'p':
-            if (paradise)
-                sendRefitReq (PATROL);
-            localflags &= ~(PFREFIT);
-            return;
-            break;
-        default:
-            localflags &= ~(PFREFIT);
-            return;
-            break;
+        struct shiplist *temp;
+        temp = shiptypes;
+        while (temp) {
+        if (temp->ship->s_letter == key) {
+                sendRefitReq(temp->ship->s_type);
+                localflags &= ~(PFREFIT);
+                return;
+            }
+           temp = temp->next;
         }
+        localflags &= ~(PFREFIT);
+        return;
     }
 
     if (key >= 32 && key < MAXKEY)
     {
-        key = mystats->st_keymap[key - 32];
+        key = myship->s_keymap[key - 32];
     }
     else
     {
@@ -1534,7 +1493,7 @@ mkeyaction (W_Event * data)
                 break;
             }
 
-            key = mystats->st_keymap[key - 32 + offset];
+            key = myship->s_keymap[key - 32 + offset];
         }
     }
 
@@ -1659,9 +1618,9 @@ buttonaction (W_Event * data)
     if (data->key >= W_LBUTTON && data->key <= W_WHEELDOWN)
 #endif
     {
-        if (buttonmap[data->key] != '\0')
+        if (myship->s_buttonmap[data->key] != '\0')
         {
-            data->key = buttonmap[data->key];
+            data->key = myship->s_buttonmap[data->key];
             keyaction (data);
             return;
         }

@@ -288,7 +288,7 @@ helpaction (W_Event * data)
 	if (message_number != -1)
 	{
 		/* And now we will remap the key in that message */
-		mystats->st_keymap[(data->key) - 32] = help_message[message_number][0];
+		myship->s_keymap[(data->key) - 32] = help_message[message_number][0];
 
 		/* Finally we want to update window */
 		fillhelp ();
@@ -355,7 +355,7 @@ update_Help_to_Keymap (char *helpmessage)
 
     for (i = 0; i < 96; i++)
     {
-        if (mystats->st_keymap[i] != key)
+        if (myship->s_keymap[i] != key)
             continue;
         if (i + 32 == key)
 	{

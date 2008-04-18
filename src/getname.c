@@ -420,18 +420,18 @@ getname (char *defname,
     // Reset the keymap for our player record
     for (j = 0; j < 95; j++)
     {
-        mystats->st_keymap[j] = (unsigned char) (j + 32);
-        mystats->st_keymap[j + 96] = (unsigned char) (j + 32 + 96);
+        myship->s_keymap[j] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 96] = (unsigned char) (j + 32 + 96);
 
 #ifdef MOUSE_AS_SHIFT
-        mystats->st_keymap[j + 192] = (unsigned char) (j + 32);
-        mystats->st_keymap[j + 288] = (unsigned char) (j + 32);
-        mystats->st_keymap[j + 384] = (unsigned char) (j + 32);
-        mystats->st_keymap[j + 480] = (unsigned char) (j + 32);
-        mystats->st_keymap[j + 576] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 192] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 288] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 384] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 480] = (unsigned char) (j + 32);
+        myship->s_keymap[j + 576] = (unsigned char) (j + 32);
 #endif
     }
-    mystats->st_keymap[95] = 0;
+    myship->s_keymap[95] = 0;
     mystats->st_tticks = 1;
     mystats->st_flags = ST_MAPMODE + ST_NAMEMODE + ST_SHOWSHIELDS +
         ST_KEEPPEACE + ST_SHOWLOCAL * 2 + ST_SHOWGLOBAL * 2;

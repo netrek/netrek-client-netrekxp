@@ -1041,7 +1041,7 @@ optiondone (void)
         {
             if (*(str + 1) == '\0')
                 break;
-            mystats->st_keymap[*str - 32] = *(str + 1);
+            myship->s_keymap[*str - 32] = *(str + 1);
         }
         if (*(str + 1) == '\0')
             break;
@@ -1055,76 +1055,76 @@ optiondone (void)
         switch (*str++)
         {
         case '1':
-            buttonmap[1] = getctrlkey (&str);
+            myship->s_buttonmap[1] = getctrlkey (&str);
             break;
         case '2':
-            buttonmap[2] = getctrlkey (&str);
+            myship->s_buttonmap[2] = getctrlkey (&str);
             break;
         case '3':
-            buttonmap[3] = getctrlkey (&str);
+            myship->s_buttonmap[3] = getctrlkey (&str);
             break;
         /* XButton 1 */
         case '4':
-            buttonmap[4] = getctrlkey (&str);
+            myship->s_buttonmap[4] = getctrlkey (&str);
             break;
         /* XButton 2 */
         case '5':
-            buttonmap[5] = getctrlkey (&str);
+            myship->s_buttonmap[5] = getctrlkey (&str);
             break;
         /* Wheel Up */
         case '6':
-            buttonmap[6] = getctrlkey (&str);
+            myship->s_buttonmap[6] = getctrlkey (&str);
             break;
         /* Wheel Down */
         case '7':
-            buttonmap[7] = getctrlkey (&str);
+            myship->s_buttonmap[7] = getctrlkey (&str);
             break;
 
 #ifdef SHIFTED_MOUSE
         case '8':
-            buttonmap[8] = getctrlkey (&str);
+            myship->s_buttonmap[8] = getctrlkey (&str);
             break;
         case '9':
-            buttonmap[9] = getctrlkey (&str);
+            myship->s_buttonmap[9] = getctrlkey (&str);
             break;
         case 'a':
-            buttonmap[10] = getctrlkey (&str);
+            myship->s_buttonmap[10] = getctrlkey (&str);
             break;
         case 'b':
-            buttonmap[11] = getctrlkey (&str);
+            myship->s_buttonmap[11] = getctrlkey (&str);
             break;
         case 'c':
-            buttonmap[12] = getctrlkey (&str);
+            myship->s_buttonmap[12] = getctrlkey (&str);
             break;
         case 'd':
-            buttonmap[13] = getctrlkey (&str);
+            myship->s_buttonmap[13] = getctrlkey (&str);
             break;
         case 'e':
-            buttonmap[14] = getctrlkey (&str);
+            myship->s_buttonmap[14] = getctrlkey (&str);
             break;
         case 'f':
-            buttonmap[15] = getctrlkey (&str);
+            myship->s_buttonmap[15] = getctrlkey (&str);
             break;
         case 'g':
-            buttonmap[16] = getctrlkey (&str);
+            myship->s_buttonmap[16] = getctrlkey (&str);
             break;
         case 'h':
-            buttonmap[17] = getctrlkey (&str);
+            myship->s_buttonmap[17] = getctrlkey (&str);
             break;
         case 'i':
-            buttonmap[18] = getctrlkey (&str);
+            myship->s_buttonmap[18] = getctrlkey (&str);
             break;
         case 'j':
-            buttonmap[19] = getctrlkey (&str);
+            myship->s_buttonmap[19] = getctrlkey (&str);
             break;
         case 'k':
-            buttonmap[20] = getctrlkey (&str);
+            myship->s_buttonmap[20] = getctrlkey (&str);
             break;
         case 'l':
-            buttonmap[21] = getctrlkey (&str);
+            myship->s_buttonmap[21] = getctrlkey (&str);
             break;
         case 'm':
-            buttonmap[22] = getctrlkey (&str);
+            myship->s_buttonmap[22] = getctrlkey (&str);
             break;
 #endif /* SHIFTED_MOUSE */
             

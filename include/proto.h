@@ -219,9 +219,9 @@ void noserver (void);
 /******************************************************************************/
 /***  getship.c
 /******************************************************************************/
-void getshipdefaults ();
-void getship (struct ship *shipp,
-              int s_type);
+void initialize_shiptypes();
+void getshipdefaults (struct ship *shipp, int s_type);
+struct ship * getship (int s_type);
 
 /******************************************************************************/
 /***  helpwin.c
@@ -255,6 +255,10 @@ void destroyInfo (void);
 unsigned char getctrlkey (unsigned char **s);
 unsigned char getkeyfromctrl (unsigned char c);
 void initkeymap (void);
+void buildShipKeymap (struct ship *shipp);
+void keymapAdd (char *str, char *kmap);
+void ckeymapAdd (char *cstr, char *kmap);
+void buttonmapAdd (char *str, char *bmap);
 void initinput (void);
 RETSIGTYPE detsetallow (int _dummy);
 void input ();

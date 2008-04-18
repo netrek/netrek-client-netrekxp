@@ -48,6 +48,7 @@ openmem (void)
 {
     /* Used to be struct memory universe, but leaving room for flexible struct
        sizes is better, and necessary for paradise - BB */
+    initialize_shiptypes();
     initialize_players();
     initialize_torps();
     initialize_plasmas();

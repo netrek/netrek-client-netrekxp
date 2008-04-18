@@ -41,6 +41,7 @@ extern struct status2 *status2;
 extern struct thingy *thingies;
 extern struct t_unit *terrainInfo;
 extern struct ship *myship;
+extern struct shiplist *shiptypes;
 extern struct stats *mystats;
 extern struct planet *planets;
 extern struct phaser *phasers;
@@ -70,7 +71,13 @@ extern int remap[];
 extern int udcounter;
 extern char *title;
 extern struct plupdate pl_update[];
-extern char buttonmap[];
+#ifdef MOUSE_AS_SHIFT
+extern unsigned char default_keymap[672];
+#else
+extern unsigned char default_keymap[96];
+#endif
+extern unsigned char default_buttonmap[23];
+extern int currentship;
 extern int messpend;
 #ifdef XTRA_MESSAGE_UI
 extern int messageHUD;          /* Show message being typed on the local display */

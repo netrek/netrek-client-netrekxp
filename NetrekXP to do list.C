@@ -53,6 +53,8 @@ during login sequence.
 14) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
 15) support variable # of ship types
+16) add terrain feature packet
+17) add POBSERV and PTQUEUE support
 
 Wish list:
 1) Rewrite graphics engine using SDL

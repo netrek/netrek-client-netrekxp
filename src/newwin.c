@@ -916,7 +916,7 @@ handleMessageWindowKeyDown (W_Event * event)
 {
     if (messageKeyOnly && messageon == 0)
     {
-    	if (mystats->st_keymap[(event->key)-32] != 109) /* Not a message key (Key109)*/
+    	if (myship->s_keymap[(event->key)-32] != 109) /* Not a message key (Key109)*/
     	    return;
     	else /* It is a message key, allow them to start a message */
     	    Key109();
@@ -1585,6 +1585,7 @@ void
 entrywindow (int *team,
              int *s_type)
 {
+    struct shiplist *shipscan;
     int typeok = 0, i = 0;
     time_t startTime;
     W_Event event;
@@ -1747,79 +1748,21 @@ entrywindow (int *team,
         if (!W_EventsPending ())
             continue;
         W_NextEvent (&event);
-        typeok = 1;
+        typeok = 0;
         switch ((int) event.type)
         {
         case W_EV_KEY:
-            switch (event.key)
+            shipscan = shiptypes;
+            while (shipscan) {
+                if (shipscan->ship->s_letter == event.key) {
+                    *s_type = shipscan->ship->s_type;
+                    typeok = 1;
+                    break;
+                }
+                shipscan = shipscan->next;
+            }
+            if (event.key == ' ')
             {
-            case 's':
-                *s_type = SCOUT;
-                break;
-            case 'd':
-                *s_type = DESTROYER;
-                break;
-            case 'c':
-                *s_type = CRUISER;
-                break;
-            case 'b':
-                *s_type = BATTLESHIP;
-                break;
-            case 'g':
-                *s_type = SGALAXY;
-                break;
-            case '*':
-                *s_type = ATT;
-                break;
-            case 'a':
-                *s_type = ASSAULT;
-                break;
-            case 'o':
-                *s_type = STARBASE;
-                break;
-            case 'j':
-                if (paradise)
-                    *s_type = JUMPSHIP;
-                else
-                    typeok = 0;
-                break;
-            case 'f':
-                if (paradise)
-                    *s_type = FLAGSHIP;
-                else
-                    typeok = 0;
-                break;    
-            case 'w':
-                if (paradise)
-                    *s_type = WARBASE;
-                else
-                    typeok = 0;
-                break;
-            case 'l':
-                if (paradise)
-                    *s_type = LIGHTCRUISER;
-                else
-                    typeok = 0;
-                break;        
-            case 'v':
-                if (paradise)
-                    *s_type = CARRIER;
-                else
-                    typeok = 0;
-                break;
-            case 'u':
-                if (paradise)
-                    *s_type = UTILITY;
-                else
-                    typeok = 0;
-                break;
-            case 'p':
-                if (paradise)
-                    *s_type = PATROL;
-                else
-                    typeok = 0;
-                break;
-            case ' ':
                 switch (me->p_team)
                 {
                 case FED:
@@ -1837,9 +1780,6 @@ entrywindow (int *team,
                 default:
                     break;
                 }
-                break;
-            default:
-                typeok = 0;
                 break;
             }
             if (event.Window == w)

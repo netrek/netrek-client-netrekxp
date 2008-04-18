@@ -1001,7 +1001,8 @@ cowmain (char *server,
 #endif /* RWATCH */
 
     sendVersion ();
-    getship (myship, myship->s_type);
+    myship = getship(myship->s_type);
+    currentship = myship->s_type;
 
 #ifdef BRMH
     redrawall = 2;

@@ -237,28 +237,29 @@ enum dist_type
 #define PARADISE_SHIP_OFFSET 7	/* To make jumpship first entry in the paradise ship bitmap array */
 #define NUM_TYPES_PARADISE 15	/* Typical total number of ships on a paradise server */
 #define NUM_TYPES_BRONCO 8	/* Concrete total number of ships on a bronco server */
-#ifdef PARADISE
-#define ATT 6
-#define JUMPSHIP 7
-#define SGALAXY 8	/* Not sure where to put this .. */
-#else
-#define SGALAXY	6
-#define ATT	7
-#define JUMPSHIP 8
-#endif
+
+#define DEFAULT -1
 #define SCOUT 0
 #define DESTROYER 1
 #define CRUISER 2
 #define BATTLESHIP 3
 #define ASSAULT 4
 #define STARBASE 5
-#define FLAGSHIP 8	/* shares bitmap with galaxy class */
+#define ATT 6		/* paradise */
+#define SGALAXY 6	/* bronco */
+#define JUMPSHIP 7	/* can be ATT on bronco */
+#define FLAGSHIP 8
 #define WARBASE 9
 #define LIGHTCRUISER 10
 #define CARRIER 11
 #define UTILITY 12
 #define PATROL 13
 #define PUCK 14
+
+struct shiplist {
+    struct ship *ship;
+    struct shiplist *prev, *next;
+};
 
 struct ship
 {
@@ -281,6 +282,13 @@ struct ship
     /* char s_name[16]; */
     char s_desig[2];
     short s_bitmap;
+#ifdef MOUSE_AS_SHIFT
+    unsigned char s_keymap[672];       /* keymap for this ship */
+#else
+    unsigned char s_keymap[96];        /* keymap for this ship */
+#endif
+    unsigned char s_buttonmap[23];     /* buttonmap for this ship */
+    char *rcfile;                      /* pointer to ship specific rcfile */
 };
 
 struct stats
@@ -305,12 +313,6 @@ struct stats
     LONG st_lastlogin;          /* Last time this player was
                                  * played */
     int st_flags;               /* Misc option flags */
-
-#ifdef MOUSE_AS_SHIFT
-    unsigned char st_keymap[672];       /* keymap for this player */
-#else
-    unsigned char st_keymap[96];        /* keymap for this player */
-#endif
     int st_rank;                /* Ranking of the player */
 };
 
@@ -836,15 +838,6 @@ struct s_line
 };
 
 #endif /* HOCKEY_LINES */
-
-struct shipdef
-{
-    char *name;
-    char *rcfile;
-    unsigned char *keymap;
-    unsigned char *buttonmap;
-    unsigned char *ckeymap;
-};
 
 #ifdef TOOLS
 struct key_list

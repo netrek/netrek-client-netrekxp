@@ -2274,7 +2274,7 @@ sendOptionsPacket (void)
                              ST_NAMEMODE * showPlanetNames + ST_SHOWSHIELDS +  /* always on */
                              ST_KEEPPEACE * keepPeace + ST_SHOWLOCAL * 1 +      /* This client no longer supports */
                              ST_SHOWGLOBAL * 1);        /* showlocal and showgalactic, set to 1 */
-    MCOPY (mystats->st_keymap, optPacket.keymap, 96);
+    MCOPY (myship->s_keymap, optPacket.keymap, 96);
     sendServerPacket ((struct player_spacket *) &optPacket);
 }
 
@@ -2552,13 +2552,14 @@ handlePlyrInfo (struct plyr_info_spacket *packet)
             redrawall = 1;      /* Update the map if I
                                  * change teams */
     }
-
-    getship (&pl->p_ship, packet->shiptype);
+    pl->p_ship = *getship(packet->shiptype);
     pl->p_mapchars[1] = shipnos[pl->p_no];
+    if (packet->pnum == me->p_no && currentship != packet->shiptype)
+	currentship = packet->shiptype;
 
-
-    if (me == pl && lastship != me->p_ship.s_type)
+    if (me == pl && lastship != currentship)
     {
+    	lastship = currentship;
         redrawTstats ();
         calibrate_stats ();
         redrawStats ();         /* TSH */
@@ -2704,7 +2705,7 @@ handleShipCap (struct ship_cap_spacket *packet)
         shipvals[stype].s_desig[2] = packet->s_desig2;
         shipvals[stype].s_bitmap = ntohs (packet->s_bitmap);
         /* strncpy(shipvals[stype].s_name, packet->s_name, 16); */
-        getship (myship, myship->s_type);
+        myship = getship (myship->s_type);
 
         redrawTstats (); /* Redraw dashboard */
         calibrate_stats (); /* Redefine colored statwin sliders */

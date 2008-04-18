@@ -21,44 +21,6 @@
 #include "proto.h"
 #include "version.h"
 
-#ifdef PARADISE
-#define DEFAULTSHIP NUM_TYPES_PARADISE
-struct shipdef shipdefaults[NUM_TYPES_PARADISE + 1] = {
-    {"sc", NULL, NULL, NULL, NULL},
-    {"dd", NULL, NULL, NULL, NULL},
-    {"ca", NULL, NULL, NULL, NULL},
-    {"bb", NULL, NULL, NULL, NULL},
-    {"as", NULL, NULL, NULL, NULL},
-    {"sb", NULL, NULL, NULL, NULL},
-    {"att", NULL, NULL, NULL, NULL},
-    {"js", NULL, NULL, NULL, NULL},
-    {"fl", NULL, NULL, NULL, NULL},
-    {"wb", NULL, NULL, NULL, NULL},
-    {"cl", NULL, NULL, NULL, NULL},
-    {"cv", NULL, NULL, NULL, NULL},
-    {"ut", NULL, NULL, NULL, NULL},
-    {"pt", NULL, NULL, NULL, NULL},
-    {"pu", NULL, NULL, NULL, NULL},
-    {"default", NULL, NULL, NULL, NULL}
-};
-#else
-#define DEFAULTSHIP NUM_TYPES_BRONCO
-struct shipdef shipdefaults[NUM_TYPES_BRONCO + 1] = {
-    {"sc", NULL, NULL, NULL, NULL},
-    {"dd", NULL, NULL, NULL, NULL},
-    {"ca", NULL, NULL, NULL, NULL},
-    {"bb", NULL, NULL, NULL, NULL},
-    {"as", NULL, NULL, NULL, NULL},
-    {"sb", NULL, NULL, NULL, NULL},
-    {"ga", NULL, NULL, NULL, NULL},
-    {"att", NULL, NULL, NULL, NULL},
-    {"default", NULL, NULL, NULL, NULL}
-};
-#endif
-
-int myshiptype = DEFAULTSHIP;
-struct shipdef *myshipdef = &shipdefaults[DEFAULTSHIP];
-
 struct save_options save_options[] = {
     {"agriCAPS", &agriCAPS, RC_BOOL,
         {
@@ -1124,8 +1086,6 @@ initDefaults (char *deffile)
     /* sizeof doesn't work if it isn't in the same source file, shoot me */
     MCOPY (dist_defaults, dist_prefered, sizedist);
 
-    getshipdefaults ();
-
     if (!deffile)
         if (findDefaults (deffile, file))
             deffile = file;
@@ -1750,7 +1710,6 @@ resetdefaults (void)
 {
     char *pek;
     char tmp[100];
-    int i;
 
     if (strlen (pigcall) == 0)
         sprintf (pigcall, "Netrek XP 2009 (%s) - the smarter netrek eXPerience!", mvers);
@@ -1988,42 +1947,6 @@ resetdefaults (void)
     tts_ypos = intDefault("tts_ypos", TWINSIDE / 2 - 16);
 #endif /* BEEPLITE */
 
-    shipdefaults[DEFAULTSHIP].keymap = (unsigned char *) stringDefault ("keymap");
-    shipdefaults[DEFAULTSHIP].buttonmap = (unsigned char *) stringDefault ("buttonmap");
-    shipdefaults[DEFAULTSHIP].ckeymap = (unsigned char *) stringDefault ("ckeymap");
-
-    for (i = DEFAULTSHIP; i >= 0; i--)
-    {
-        STRNCPY (tmp, "rcfile-", 8);
-        strcat (tmp, shipdefaults[i].name);
-        if (pek = stringDefault (tmp))
-            shipdefaults[i].rcfile = pek;
-        else
-            shipdefaults[i].rcfile = shipdefaults[DEFAULTSHIP].rcfile;
-
-        STRNCPY (tmp, "keymap-", 8);
-        strcat (tmp, shipdefaults[i].name);
-        if (pek = stringDefault (tmp))
-            shipdefaults[i].keymap = (unsigned char *) pek;
-        else
-            shipdefaults[i].keymap = shipdefaults[DEFAULTSHIP].keymap;
-
-        STRNCPY (tmp, "ckeymap-", 9);
-        strcat (tmp, shipdefaults[i].name);
-        if (pek = stringDefault (tmp))
-            shipdefaults[i].ckeymap = (unsigned char *) pek;
-        else
-            shipdefaults[i].ckeymap = shipdefaults[DEFAULTSHIP].ckeymap;
-
-        STRNCPY (tmp, "buttonmap-", 11);
-        strcat (tmp, shipdefaults[i].name);
-        if (pek = stringDefault (tmp))
-            shipdefaults[i].buttonmap = (unsigned char *) pek;
-        else
-            shipdefaults[i].buttonmap = shipdefaults[DEFAULTSHIP].buttonmap;
-    }
-    myshipdef = &shipdefaults[myshiptype];
-
 	/* Let's check whether windows settings had changed */
         /* Read in defaults was moved before window generation, thus this
            code is obsolete and not worth fixing - BB 04/07 */
@@ -2078,7 +2001,7 @@ resetdefaults (void)
 void
 shipchange (int type)
 {
-    if (type == myshiptype)
+/*    if (type == myshiptype)
         return;
     myshiptype = type;
     myshipdef = &shipdefaults[type];
@@ -2087,10 +2010,9 @@ shipchange (int type)
         initDefaults (shipdefaults[type].rcfile);
         resetdefaults ();
     }
-    initkeymap ();
+    initkeymap ();*/
 }
-
-
+ 
 /* Generally useful function that searches for a file
    in the current and home directories, also
    the executable directory on Win32 */
@@ -2270,13 +2192,13 @@ saveOptions ()
 
     for (c = 1; c < 95; c++)
     {
-        if (c + 32 != mystats->st_keymap[c])
+        if (c + 32 != default_keymap[c])
         {
-            if (mystats->st_keymap[c] != 'X' &&
-               (mystats->st_keymap[c] >= 32 &&
-                mystats->st_keymap[c] < 127))
+            if (default_keymap[c] != 'X' &&
+               (default_keymap[c] >= 32 &&
+                default_keymap[c] < 127))
             {
-                sprintf (str1, "%c%c", c + 32, mystats->st_keymap[c]);
+                sprintf (str1, "%c%c", c + 32, default_keymap[c]);
                 strcat (str, str1);
             }
             else
@@ -2284,9 +2206,9 @@ saveOptions ()
         }
     }
     // space time
-    if (mystats->st_keymap[0] != 32)
+    if (default_keymap[0] != 32)
     {
-        sprintf (str1, " %c", mystats->st_keymap[0]);
+        sprintf (str1, " %c", default_keymap[0]);
         strcat (str, str1);
     }
     if (saveBig && strlen (str) != 0)
@@ -2331,13 +2253,13 @@ saveOptions ()
     for (i = W_LBUTTON; i <= W_WHEELDOWN; i++)
 #endif
     {
-        if (buttonmap[i] != 0)
+        if (default_buttonmap[i] != 0)
         {
-            c = getkeyfromctrl (buttonmap[i]);
+            c = getkeyfromctrl (default_buttonmap[i]);
             if (c == '^')
                 sprintf (str, "%c^^", getcharfromdec (i));
             else
-                sprintf (str, "%c%c", getcharfromdec (i), getkeyfromctrl (buttonmap[i]));
+                sprintf (str, "%c%c", getcharfromdec (i), getkeyfromctrl (default_buttonmap[i]));
             strcat (str1, str);
         }
     }
@@ -2368,11 +2290,11 @@ saveOptions ()
     // macroKey
     if (strlen (macroKey) == 0)
     {
-        if (mystats->st_keymap[169] == 'X')
+        if (default_keymap[169] == 'X')
             strcpy (macroKey, "TAB");
-        else if (mystats->st_keymap[155] == 'X')
+        else if (default_keymap[155] == 'X')
             strcpy (macroKey, "ESC");
-        else if (mystats->st_keymap[56] == 'X')
+        else if (default_keymap[56] == 'X')
             strcpy (macroKey, "X");
     }
 
@@ -3435,10 +3357,12 @@ saveOptions ()
         fputs ("# button keymaps (b1keymap through b5keymap)\n", fp);
     }
     // Individual ship type settings
-    for (j = (paradise ? NUM_TYPES_PARADISE : NUM_TYPES_BRONCO); j >= 0; j--)
+    for (j = 0; j < nshiptypes; j++)
     {
-        STRNCPY (str1, "rcfile-", 8);
-        strcat (str1, shipdefaults[j].name);
+    	struct ship *shipp;
+
+        shipp = getship(j);
+        sprintf(str1, "rcfile-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
         adefault = stringDefault (str1);
         if (adefault != NULL)
         {
@@ -3446,9 +3370,7 @@ saveOptions ()
             fputs (str, fp);
         }
 
-
-        STRNCPY (str1, "keymap-", 8);
-        strcat (str1, shipdefaults[j].name);
+        sprintf(str1, "keymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
         adefault = stringDefault (str1);
         if (adefault != NULL)
         {
@@ -3456,8 +3378,7 @@ saveOptions ()
             fputs (str, fp);
         }
 
-        STRNCPY (str1, "ckeymap-", 9);
-        strcat (str1, shipdefaults[j].name);
+        sprintf(str1, "ckeymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
         adefault = stringDefault (str1);
         if (adefault != NULL)
         {
@@ -3465,8 +3386,7 @@ saveOptions ()
             fputs (str, fp);
         }
 
-        STRNCPY (str1, "buttonmap-", 11);
-        strcat (str1, shipdefaults[j].name);
+        sprintf(str1, "buttonmap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
         adefault = stringDefault (str1);
         if (adefault != NULL)
         {
