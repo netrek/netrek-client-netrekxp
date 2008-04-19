@@ -668,6 +668,8 @@ extern int F_turn_keys;
 extern int F_show_visibility_range;
 extern int F_sp_flags_all;
 extern int F_why_dead_2;
+extern int F_terrain;		/* paradise */
+extern int F_armies_shipcap;	/* paradise */
 
 #ifdef RECORDGAME
 extern int F_many_self;

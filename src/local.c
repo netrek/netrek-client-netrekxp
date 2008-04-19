@@ -1774,29 +1774,18 @@ DrawShips (void)
                     /* Here I will have to compute end coordinate */
                     /* Server will sometimes send us this information though,
                        so check if we have it first */
-                    if (!paradise && php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
+                    if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
                     {
                         tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
                     }
                     else
                     {
-                        /* Paradise servers changed the ship cap protocol for
-                           phaser damage :( */
-                        if (paradise)
-                        {
-                            tx = (int) (j->p_ship.s_phaserdamage * Cos[php->ph_dir]);
+                        tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                    Cos[php->ph_dir]);
 
-                            ty = (int) (j->p_ship.s_phaserdamage * Sin[php->ph_dir]);
-                        }
-                        else
-                        {
-                            tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                        Cos[php->ph_dir]);
-
-                            ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                        Sin[php->ph_dir]);
-                        }
+                        ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                    Sin[php->ph_dir]);
 
                         tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
                         ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;

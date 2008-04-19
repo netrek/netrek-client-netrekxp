@@ -798,14 +798,27 @@ db_redraw_krp (int fr)
         old_dam = me->p_damage;
     }
 
-    if (me->p_ship.s_type == ASSAULT)
-        cur_max = (((kills * 3) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 3));
-    else if (me->p_ship.s_type == STARBASE)
-        cur_max = me->p_ship.s_maxarmies;
+    if (!paradise && !F_armies_shipcap)
+    {
+        if (me->p_ship.s_type == ASSAULT)
+            cur_max = (((kills * 3) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 3));
+        else if (me->p_ship.s_type == STARBASE)
+            cur_max = me->p_ship.s_maxarmies;
+        else
+            cur_max = (((kills * 2) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 2));
+    }
     else
-        cur_max = (((kills * 2) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 2));
+    {
+        if (me->p_ship.s_armies & 0x80)
+            cur_max = (int) (kills * (me->p_ship.s_armies & 0x7f) / 10);
+        else
+            cur_max = me->p_ship.s_maxarmies;
+
+        if(cur_max > me->p_ship.s_maxarmies)
+            cur_max = me->p_ship.s_maxarmies;
+    }
 
     if (fr || me->p_armies != old_arm || cur_max != old_cur_arm)
     {
@@ -969,14 +982,27 @@ db_redraw_COW (int fr)
         old_dam = me->p_damage;
     }
 
-    if (me->p_ship.s_type == ASSAULT)
-        cur_max = (((kills * 3) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 3));
-    else if (me->p_ship.s_type == STARBASE)
-        cur_max = me->p_ship.s_maxarmies;
+    if (!paradise && !F_armies_shipcap)
+    {
+        if (me->p_ship.s_type == ASSAULT)
+            cur_max = (((kills * 3) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 3));
+        else if (me->p_ship.s_type == STARBASE)
+            cur_max = me->p_ship.s_maxarmies;
+        else
+            cur_max = (((kills * 2) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 2));
+    }
     else
-        cur_max = (((kills * 2) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 2));
+    {
+        if (me->p_ship.s_armies & 0x80)
+            cur_max = (int) (kills * (me->p_ship.s_armies & 0x7f) / 10);
+        else
+            cur_max = me->p_ship.s_maxarmies;
+
+        if(cur_max > me->p_ship.s_maxarmies)
+            cur_max = me->p_ship.s_maxarmies;
+    }
 
     if (fr || me->p_armies != old_arm || cur_max != old_cur_arm)
     {

@@ -531,17 +531,29 @@ db_redraw_lab2 (int fr)
             }
         }
     }
-    
-    if (me->p_ship.s_type == ASSAULT)
-        cur_arm = (((kills * 3) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 3));
-    else if (me->p_ship.s_type == STARBASE)
-        cur_arm = me->p_ship.s_maxarmies;
+
+    if (!paradise && !F_armies_shipcap)
+    {
+        if (me->p_ship.s_type == ASSAULT)
+            cur_arm = (((kills * 3) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 3));
+        else if (me->p_ship.s_type == STARBASE)
+            cur_arm = me->p_ship.s_maxarmies;
+        else
+            cur_arm = (((kills * 2) > me->p_ship.s_maxarmies) ?
+                       me->p_ship.s_maxarmies : (int) (kills * 2));
+    }
     else
-        cur_arm = (((kills * 2) > me->p_ship.s_maxarmies) ?
-                   me->p_ship.s_maxarmies : (int) (kills * 2));
-    
-        
+    {
+        if (me->p_ship.s_armies & 0x80)
+            cur_arm = (int) (kills * (me->p_ship.s_armies & 0x7f) / 10);
+        else
+            cur_arm = me->p_ship.s_maxarmies;
+
+        if(cur_arm > me->p_ship.s_maxarmies)
+            cur_arm = me->p_ship.s_maxarmies;
+    }
+
     if (fr || (old_arm != me->p_armies) || (old_cur_arm != cur_arm))
     {
         W_ClearArea (tstatw, W_Textwidth/3 + 5 * (BAR_LENGTH + 5), 2,

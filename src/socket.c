@@ -2719,8 +2719,8 @@ handleShipCap (struct ship_cap_spacket *packet)
 	    temp->ship->s_type = ntohs(packet->s_type);
 	    temp->ship->s_torpspeed = ntohs(packet->s_torpspeed);
 	    temp->ship->s_phaserdamage = ntohs(packet->s_phaserrange);
-	    if (paradise)	/* paradise compatibility */
-		temp->ship->s_phaserdamage *= PHASEDIST / 100;
+	    if (paradise)	/* paradise changed the protocol for this field :( */
+		temp->ship->s_phaserdamage = (temp->ship->s_phaserdamage * 100) / PHASEDIST;
 	    temp->ship->s_maxspeed = ntohl(packet->s_maxspeed);
 	    temp->ship->s_width = ntohs (packet->s_width);
 	    temp->ship->s_height = ntohs (packet->s_height);
@@ -2730,8 +2730,8 @@ handleShipCap (struct ship_cap_spacket *packet)
 	    temp->ship->s_maxwpntemp = ntohl(packet->s_maxwpntemp);
 	    temp->ship->s_maxegntemp = ntohl(packet->s_maxegntemp);
 	    temp->ship->s_maxarmies = ntohs(packet->s_maxarmies);
-	    //if(F_armies_shipcap == 1)
-  	    //  temp->ship->s_armies = packet->s_armies;
+	    if (F_armies_shipcap == 1)
+		temp->ship->s_armies = packet->s_armies;
 	    temp->ship->s_letter = packet->s_letter;
 	    temp->ship->s_desig[0] = packet->s_desig1;
 	    temp->ship->s_desig[1] = packet->s_desig2;
@@ -2759,8 +2759,8 @@ handleShipCap (struct ship_cap_spacket *packet)
     temp->ship->s_type = ntohs(packet->s_type);
     temp->ship->s_torpspeed = ntohs(packet->s_torpspeed);
     temp->ship->s_phaserdamage = ntohs(packet->s_phaserrange);
-    if (paradise)	/* paradise compatibility */
-         temp->ship->s_phaserdamage *= PHASEDIST / 100;
+    if (paradise)	/* paradise changed the protocol for this field :( */
+         temp->ship->s_phaserdamage = (temp->ship->s_phaserdamage * 100) / PHASEDIST;
     temp->ship->s_maxspeed = ntohl(packet->s_maxspeed);
     temp->ship->s_width = ntohs (packet->s_width);
     temp->ship->s_height = ntohs (packet->s_height);

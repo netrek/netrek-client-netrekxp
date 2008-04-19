@@ -44,17 +44,12 @@ during login sequence.
 3) A bunch of gridline/zoom options should be made into netrekrc options.
 4) The galactic zoom doesn't work
 5) Some of the paradise packet types may need some work
-7) Still missing asteroids and (flashing) warpbeacons.
-8) Show ratings on full/wide playerlist.
-9) CV army capacity is wrong - waiting on word from server experts to the right value
-11) Playing back recordings made by linux pclient is probably impossible.
-12) Mysterious crash bug, not reproducible by me.
-13) Issue with phaser misses on latest paradise server? on whitestar at least
-14) Don't think there is gettarget support for astral bodies like nebulae and stars
+6) Still missing asteroids and (flashing) warpbeacons.
+7) Show ratings on full/wide playerlist.
+8) Playing back recordings made by linux pclient is probably impossible.
+9) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
-15) support variable # of ship types
-16) add terrain feature packet
-17) add POBSERV and PTQUEUE support
+10) add POBSERV and PTQUEUE support
 
 Wish list:
 1) Rewrite graphics engine using SDL

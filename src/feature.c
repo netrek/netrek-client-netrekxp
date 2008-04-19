@@ -101,6 +101,10 @@ struct feature features[] = {
     {"SHOW_VISIBILITY_RANGE", &F_show_visibility_range, 'S', 1, 0, 0},
     {"SP_FLAGS_ALL", &F_sp_flags_all, 'S', 1, 0, 0},
     {"WHY_DEAD_2", &F_why_dead_2, 'S', 1, 0, 0},
+    /* paradise terrain features */
+    {"TERRAIN", &F_terrain, 'S', 1, 0, 0},
+    /* armies in paradise ship_cap_spacket */
+    {"ARMIES_IN_SHIPCAP", &F_armies_shipcap, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 

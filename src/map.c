@@ -1395,29 +1395,17 @@ map (void)
                         /* Here I will have to compute end coordinate */
                         /* Server will sometimes send us this information though,
                            so check if we have it first */
-                        if (!paradise && ph->ph_x > 0 && ph->ph_y > 0 && ph->ph_x < GWIDTH && ph->ph_y < GWIDTH)
+                        if (ph->ph_x > 0 && ph->ph_y > 0 && ph->ph_x < GWIDTH && ph->ph_y < GWIDTH)
                         {
                             tx = ph->ph_x * GWINSIDE / GWIDTH;
                             ty = ph->ph_y * GWINSIDE / GWIDTH;
                         }
                         else
                         {
-                            if (paradise)
-                            {
-                            /* Paradise servers changed the ship cap protocol for
-                               phaser damage :( */
-                            tx = (int) (j->p_x + j->p_ship.s_phaserdamage
-                                * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
-                            ty = (int) (j->p_y + j->p_ship.s_phaserdamage
-                                * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
-                            }
-                            else
-                            {
                             tx = (int) (j->p_x + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Cos[ph->ph_dir]) * GWINSIDE / GWIDTH;
                             ty = (int) (j->p_y + PHASEDIST * j->p_ship.s_phaserdamage / 100
                                 * Sin[ph->ph_dir]) * GWINSIDE / GWIDTH;
-                            }
                         }
                         break;
                     case PHHIT2:
