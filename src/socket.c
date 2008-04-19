@@ -2677,40 +2677,108 @@ handleReserved (struct reserved_spacket *packet,
 #endif /* defined(BORG) */
 }
 
-/* SP_SHIP_CAP is sent frequenly by bronco servers but only once
-   by a paradise server.  The paradise server packet contains ship
-   data for all ships.  The bronco server packet contains data on
-   only one ship. */
+/* SP_SHIP_CAP packets are sent frequently by bronco servers but only
+  during initial connect by a paradise server. */
 void
 handleShipCap (struct ship_cap_spacket *packet)
 {
-    unsigned short stype;
+    struct shiplist *temp;
 
-    stype = ntohs (packet->s_type);
-    if (!paradise)
-    {
-        shipvals[stype].s_torpspeed = ntohs (packet->s_torpspeed);
-        shipvals[stype].s_maxshield = ntohl (packet->s_maxshield);
-        shipvals[stype].s_maxdamage = ntohl (packet->s_maxdamage);
-        shipvals[stype].s_maxegntemp = ntohl (packet->s_maxegntemp);
-        shipvals[stype].s_maxwpntemp = ntohl (packet->s_maxwpntemp);
-        shipvals[stype].s_maxarmies = ntohs (packet->s_maxarmies);
-        shipvals[stype].s_maxfuel = ntohl (packet->s_maxfuel);
-        shipvals[stype].s_maxspeed = ntohl (packet->s_maxspeed);
-        shipvals[stype].s_width = ntohs (packet->s_width);
-        shipvals[stype].s_height = ntohs (packet->s_height);
-        shipvals[stype].s_phaserdamage = ntohs (packet->s_phaserrange);
-        shipvals[stype].s_letter = packet->s_letter;
-        shipvals[stype].s_desig[1] = packet->s_desig1;
-        shipvals[stype].s_desig[2] = packet->s_desig2;
-        shipvals[stype].s_bitmap = ntohs (packet->s_bitmap);
-        /* strncpy(shipvals[stype].s_name, packet->s_name, 16); */
-        myship = getship (myship->s_type);
+    /*
+       What are we supposed to do?
+    */
 
-        redrawTstats (); /* Redraw dashboard */
-        calibrate_stats (); /* Redefine colored statwin sliders */
-        redrawStats ();  /* Redraw statwin */
+    if (packet->operation) {	/* remove ship from list */
+	temp = shiptypes;
+	if (temp->ship->s_type == (int) ntohs(packet->s_type)) {
+	    shiptypes = temp->next;
+	    shiptypes->prev = NULL;
+	}
+	while (temp->next != NULL) {
+	    if (temp->next->ship->s_type == (int) ntohs(packet->s_type)) {
+		temp = temp->next;
+		temp->prev->next = temp->next;
+		if (temp->next)
+		    temp->next->prev = temp->prev;
+		free(temp->ship);
+		free(temp);
+		return;
+	    } else {
+		temp = temp->next;
+	    }
+	}
     }
+    /*
+       Since we're adding the ship, we need to find out if we already have
+       that ship, and if so, replace it.
+    */
+
+    temp = shiptypes;
+    while (temp != NULL) {
+	if (temp->ship->s_type == (int) ntohs(packet->s_type)) {
+	    temp->ship->s_type = ntohs(packet->s_type);
+	    temp->ship->s_torpspeed = ntohs(packet->s_torpspeed);
+	    temp->ship->s_phaserdamage = ntohs(packet->s_phaserrange);
+	    if (paradise)	/* paradise compatibility */
+		temp->ship->s_phaserdamage *= PHASEDIST / 100;
+	    temp->ship->s_maxspeed = ntohl(packet->s_maxspeed);
+	    temp->ship->s_width = ntohs (packet->s_width);
+	    temp->ship->s_height = ntohs (packet->s_height);
+	    temp->ship->s_maxfuel = ntohl(packet->s_maxfuel);
+	    temp->ship->s_maxshield = ntohl(packet->s_maxshield);
+	    temp->ship->s_maxdamage = ntohl(packet->s_maxdamage);
+	    temp->ship->s_maxwpntemp = ntohl(packet->s_maxwpntemp);
+	    temp->ship->s_maxegntemp = ntohl(packet->s_maxegntemp);
+	    temp->ship->s_maxarmies = ntohs(packet->s_maxarmies);
+	    //if(F_armies_shipcap == 1)
+  	    //  temp->ship->s_armies = packet->s_armies;
+	    temp->ship->s_letter = packet->s_letter;
+	    temp->ship->s_desig[0] = packet->s_desig1;
+	    temp->ship->s_desig[1] = packet->s_desig2;
+	    temp->ship->s_bitmap = ntohs(packet->s_bitmap);
+	    //buildShipKeymap(temp->ship);
+	    myship = getship (myship->s_type);
+            redrawTstats (); /* Redraw dashboard */
+            calibrate_stats (); /* Redefine colored statwin sliders */
+            redrawStats ();  /* Redraw statwin */
+	    return;
+	}
+	temp = temp->next;
+    }
+
+    /*
+       Not there, so we need to make a new entry in the list for it.
+    */
+    temp = (struct shiplist *) malloc(sizeof(struct shiplist));
+    temp->next = shiptypes;
+    temp->prev = NULL;
+    if (shiptypes)
+	shiptypes->prev = temp;
+    shiptypes = temp;
+    temp->ship = (struct ship *) malloc(sizeof(struct ship));
+    temp->ship->s_type = ntohs(packet->s_type);
+    temp->ship->s_torpspeed = ntohs(packet->s_torpspeed);
+    temp->ship->s_phaserdamage = ntohs(packet->s_phaserrange);
+    if (paradise)	/* paradise compatibility */
+         temp->ship->s_phaserdamage *= PHASEDIST / 100;
+    temp->ship->s_maxspeed = ntohl(packet->s_maxspeed);
+    temp->ship->s_width = ntohs (packet->s_width);
+    temp->ship->s_height = ntohs (packet->s_height);
+    temp->ship->s_maxfuel = ntohl(packet->s_maxfuel);
+    temp->ship->s_maxshield = ntohl(packet->s_maxshield);
+    temp->ship->s_maxdamage = ntohl(packet->s_maxdamage);
+    temp->ship->s_maxwpntemp = ntohl(packet->s_maxwpntemp);
+    temp->ship->s_maxegntemp = ntohl(packet->s_maxegntemp);
+    temp->ship->s_maxarmies = ntohs(packet->s_maxarmies);
+    temp->ship->s_armies = packet->s_armies;
+    temp->ship->s_letter = packet->s_letter;
+    temp->ship->s_desig[0] = packet->s_desig1;
+    temp->ship->s_desig[1] = packet->s_desig2;
+    temp->ship->s_bitmap = ntohs(packet->s_bitmap);
+    myship = getship (myship->s_type);
+    redrawTstats (); /* Redraw dashboard */
+    calibrate_stats (); /* Redefine colored statwin sliders */
+    redrawStats ();  /* Redraw statwin */
 }
 
 void

@@ -1586,7 +1586,7 @@ entrywindow (int *team,
              int *s_type)
 {
     struct shiplist *shipscan;
-    int typeok = 0, i = 0;
+    int typeok = 0, ship_found = 0, i = 0;
     time_t startTime;
     W_Event event;
     int lastplayercount[4];
@@ -1748,7 +1748,7 @@ entrywindow (int *team,
         if (!W_EventsPending ())
             continue;
         W_NextEvent (&event);
-        typeok = 0;
+        typeok = 1;
         switch ((int) event.type)
         {
         case W_EV_KEY:
@@ -1756,31 +1756,38 @@ entrywindow (int *team,
             while (shipscan) {
                 if (shipscan->ship->s_letter == event.key) {
                     *s_type = shipscan->ship->s_type;
-                    typeok = 1;
+                    ship_found = 1;
                     break;
                 }
                 shipscan = shipscan->next;
             }
+            /* Tried to find ship key but couldn't? */
+            if (ship_found == 0)
+                typeok = 0;
+            /* Failing to find ship via key, check spacebar */
             if (event.key == ' ')
             {
                 switch (me->p_team)
                 {
-                case FED:
-                    *team = 0;
-                    break;
-                case ROM:
-                    *team = 1;
-                    break;
-                case KLI:
-                    *team = 2;
-                    break;
-                case ORI:
-                    *team = 3;
-                    break;
-                default:
-                    break;
+                    case FED:
+                        *team = 0;
+                        typeok = 1;
+                        break;
+                    case ROM:
+                        *team = 1;
+                        typeok = 1;
+                        break;
+                    case KLI:
+                        *team = 2;
+                        typeok = 1;
+                        break;
+                    case ORI:
+                        *team = 3;
+                        typeok = 1;
+                        break;
+                    default:
+                        break;
                 }
-                break;
             }
             if (event.Window == w)
             {
@@ -2293,15 +2300,15 @@ newMotdLine (char *line)
     if (strncmp("BLK: ", line, 5) == 0) {
         /* See if it's a refit string.*/
         if (strncmp(&line[5], "REFIT", 5) == 0) {
-    	    strncpy(blk_refitstring, &line[10], 79);
-    	    blk_refitstring[79] = '\0';
+            strncpy(blk_refitstring, &line[10], 79);
+            blk_refitstring[79] = '\0';
         }
         /* Check to see if it's a borgish feature being enabled. */
         else if (strncmp(&line[5], "BORGISH ", 8) == 0) {
-    	    if (strncmp(&line[13], "FRCLOAK", 7) == 0)
-    	        blk_friendlycloak = 1;
+            if (strncmp(&line[13], "FRCLOAK", 7) == 0)
+                blk_friendlycloak = 1;
         }
-	return;
+        return;
     }
     if ( strncmp("\t@@b", line, 4) == 0) // Between pages
 	return;

@@ -1029,110 +1029,24 @@ SetMenuPage (int pagenum)
 void
 optiondone (void)
 {
-    char *str;
+    int shpn;
+    struct ship *shipp;
 
     /* Unmap window */
     W_UnmapWindow (optionWin);
 
-    /* update keymap */
-    for (str = newkeys; *str != '\0'; str += 2)
+    /* update default, myship, and individual ship keymaps/buttonmaps */
+    keymapAdd(newkeys, (char*) default_keymap);
+    buttonmapAdd(newbuttons, (char*) default_buttonmap);
+    keymapAdd(newkeys, (char*) myship->s_keymap);
+    buttonmapAdd(newbuttons, (char*) myship->s_buttonmap);
+    for (shpn = 0; shpn < nshiptypes; shpn++)
     {
-        if ((*str >= 32 && *str < 127) || *str == 'O')
-        {
-            if (*(str + 1) == '\0')
-                break;
-            myship->s_keymap[*str - 32] = *(str + 1);
-        }
-        if (*(str + 1) == '\0')
-            break;
+        shipp = getship(shpn);
+        keymapAdd(newkeys, (char*) shipp->s_keymap);
+        buttonmapAdd(newbuttons, (char*) shipp->s_buttonmap);
     }
     *newkeys = '\0';
-
-    /* update buttonmap */
-    str = newbuttons;
-    while (*str != '\0' && *(str + 1) != '\0')
-    {
-        switch (*str++)
-        {
-        case '1':
-            myship->s_buttonmap[1] = getctrlkey (&str);
-            break;
-        case '2':
-            myship->s_buttonmap[2] = getctrlkey (&str);
-            break;
-        case '3':
-            myship->s_buttonmap[3] = getctrlkey (&str);
-            break;
-        /* XButton 1 */
-        case '4':
-            myship->s_buttonmap[4] = getctrlkey (&str);
-            break;
-        /* XButton 2 */
-        case '5':
-            myship->s_buttonmap[5] = getctrlkey (&str);
-            break;
-        /* Wheel Up */
-        case '6':
-            myship->s_buttonmap[6] = getctrlkey (&str);
-            break;
-        /* Wheel Down */
-        case '7':
-            myship->s_buttonmap[7] = getctrlkey (&str);
-            break;
-
-#ifdef SHIFTED_MOUSE
-        case '8':
-            myship->s_buttonmap[8] = getctrlkey (&str);
-            break;
-        case '9':
-            myship->s_buttonmap[9] = getctrlkey (&str);
-            break;
-        case 'a':
-            myship->s_buttonmap[10] = getctrlkey (&str);
-            break;
-        case 'b':
-            myship->s_buttonmap[11] = getctrlkey (&str);
-            break;
-        case 'c':
-            myship->s_buttonmap[12] = getctrlkey (&str);
-            break;
-        case 'd':
-            myship->s_buttonmap[13] = getctrlkey (&str);
-            break;
-        case 'e':
-            myship->s_buttonmap[14] = getctrlkey (&str);
-            break;
-        case 'f':
-            myship->s_buttonmap[15] = getctrlkey (&str);
-            break;
-        case 'g':
-            myship->s_buttonmap[16] = getctrlkey (&str);
-            break;
-        case 'h':
-            myship->s_buttonmap[17] = getctrlkey (&str);
-            break;
-        case 'i':
-            myship->s_buttonmap[18] = getctrlkey (&str);
-            break;
-        case 'j':
-            myship->s_buttonmap[19] = getctrlkey (&str);
-            break;
-        case 'k':
-            myship->s_buttonmap[20] = getctrlkey (&str);
-            break;
-        case 'l':
-            myship->s_buttonmap[21] = getctrlkey (&str);
-            break;
-        case 'm':
-            myship->s_buttonmap[22] = getctrlkey (&str);
-            break;
-#endif /* SHIFTED_MOUSE */
-            
-        default:
-            LineToConsole ("%c ignored in buttonmap\n", *(str - 1));
-            break;
-        }
-    }
     *newbuttons = '\0';
     
     /* update login */

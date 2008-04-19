@@ -1994,24 +1994,6 @@ resetdefaults (void)
 	updateWindowsGeometry (war);
 */
 }
-
-/******************************************************************************/
-/***  shipchange()                                                          ***/
-/******************************************************************************/
-void
-shipchange (int type)
-{
-/*    if (type == myshiptype)
-        return;
-    myshiptype = type;
-    myshipdef = &shipdefaults[type];
-    if (shipdefaults[type].rcfile)
-    {
-        initDefaults (shipdefaults[type].rcfile);
-        resetdefaults ();
-    }
-    initkeymap ();*/
-}
  
 /* Generally useful function that searches for a file
    in the current and home directories, also
@@ -3351,7 +3333,7 @@ saveOptions ()
 
     if (saveBig)
     {
-        fputs ("# Esoteric features such as individual ship rcfiles/keymaps\n", fp);
+        fputs ("# Esoteric features such as individual ship keymaps\n", fp);
         fputs ("# /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>), observer\n", fp);
         fputs ("# /servertype options (i.e. keymap.bronco: <keymap>), and\n", fp);
         fputs ("# button keymaps (b1keymap through b5keymap)\n", fp);
@@ -3362,14 +3344,6 @@ saveOptions ()
     	struct ship *shipp;
 
         shipp = getship(j);
-        sprintf(str1, "rcfile-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
-        adefault = stringDefault (str1);
-        if (adefault != NULL)
-        {
-            sprintf (str, "%s: %s\n", str1, adefault);
-            fputs (str, fp);
-        }
-
         sprintf(str1, "keymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
         adefault = stringDefault (str1);
         if (adefault != NULL)

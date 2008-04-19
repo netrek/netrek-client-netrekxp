@@ -9,6 +9,10 @@ New features:
 1) Addition of 3rd metaserver to the metaserver list.
 2) Added support for new server feature packets (lame_refit and whydead_2).
 
+General changes:
+1) Removed option for ship specific netrekrc file (rcfile-<ship>).  Still can
+use ship specific keymaps and buttonmaps.
+
 
 Netrek XP 2006, Version 1.3: (Released July-2007)
 

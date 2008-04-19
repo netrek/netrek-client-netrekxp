@@ -298,7 +298,7 @@
 #define sendBombReq(state) sendShortPacket(CP_BOMB, (char) state)
 #define sendPractrReq() sendShortPacket(CP_PRACTR, 0)
 #define sendWarReq(mask) sendShortPacket(CP_WAR, (char) mask)
-#define sendRefitReq(ship) {sendShortPacket(CP_REFIT, (char) ship); shipchange(ship);}
+#define sendRefitReq(ship) sendShortPacket(CP_REFIT, (char) ship)
 #define sendPlaylockReq(pnum) sendShortPacket(CP_PLAYLOCK, (char) pnum)
 #define sendPlanlockReq(pnum) sendShortPacket(CP_PLANLOCK, (char) pnum)
 #define sendCoupReq() sendShortPacket(CP_COUP, 0)

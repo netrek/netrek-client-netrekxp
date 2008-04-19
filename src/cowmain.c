@@ -1010,7 +1010,6 @@ cowmain (char *server,
     redrawall = 1;
 #endif
 
-    shipchange (s_type);
     enter ();
     calibrate_stats ();
     W_ClearWindow (w);

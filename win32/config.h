@@ -115,7 +115,7 @@
 #undef  WARP_DEAD
 
 /*      PARADISE                - Support paradise servers                      */
-#undef PARADISE
+#define PARADISE
 
 /*      RCM                     - Receiver configurable Server messages         */
 #define RCM

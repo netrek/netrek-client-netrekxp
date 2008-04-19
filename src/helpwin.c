@@ -251,6 +251,9 @@ helpaction (W_Event * data)
 {
 	int i, message_number = -1;
 	int row, column = 0;
+	int shpn;
+	char newkeys[4];
+	struct ship *shipp;
 
 	/* Close window? */
 	if (data->key == W_MBUTTON
@@ -287,9 +290,20 @@ helpaction (W_Event * data)
 
 	if (message_number != -1)
 	{
-		/* And now we will remap the key in that message */
-		myship->s_keymap[(data->key) - 32] = help_message[message_number][0];
-
+		/* First we will place the key and the help message into typical
+		   keymap string form */
+		newkeys[0] = data->key;
+		newkeys[1] = help_message[message_number][0];
+		newkeys[2] = 0;
+		/* And then we will update default, myship, and individual ship
+		   keymaps/buttonmaps with that string */
+		keymapAdd(newkeys, (char*) default_keymap);
+		keymapAdd(newkeys, (char*) myship->s_keymap);
+		for (shpn = 0; shpn < nshiptypes; shpn++)
+		{
+			shipp = getship(shpn);
+			keymapAdd(newkeys, (char*) shipp->s_keymap);
+		}
 		/* Finally we want to update window */
 		fillhelp ();
 	}

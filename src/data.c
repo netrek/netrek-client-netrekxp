@@ -305,7 +305,7 @@ int number_of_teams = 4;
 /* MOTD data */
 struct page *currpage = NULL;
 struct page *pmotddata = NULL;
-char blk_refitstring[80] = "s=scout, d=destroyer, c=cruiser, b=battleship, a=assault, o=starbase";
+char blk_refitstring[80] = "s=scout, d=destroyer, c=cruiser, b=battleship, a=assault, g=galaxy, o=starbase";
 int blk_friendlycloak = 0;	/* Show color of cloakers who are friendly. */
 
 

@@ -451,7 +451,7 @@ initkeymap (void)
     unsigned char *str;
 
     if ((str = (unsigned char *) stringDefault ("keymap")) != NULL)
-    	keymapAdd(str, default_keymap);
+    	keymapAdd(str, (char*) default_keymap);
 
     /* See if we can get macroKey to work. What a hack -SAC */
     if ((str = (unsigned char *) stringDefault ("macroKey")) != NULL)
@@ -477,7 +477,7 @@ initkeymap (void)
     }
 
     if ((str = (unsigned char *) stringDefault ("ckeymap")) != NULL)
-        ckeymapAdd(str, default_keymap);
+        ckeymapAdd(str, (char*) default_keymap);
 
 #ifdef MOUSE_AS_SHIFT
     if ((str = (unsigned char *) stringDefault ("b1keymap")) != NULL)
@@ -549,7 +549,7 @@ initkeymap (void)
 
     /* note: not stored on server */
     if ((str = (unsigned char *) stringDefault ("buttonmap")) != NULL)
-    	buttonmapAdd(str, default_buttonmap);
+    	buttonmapAdd(str, (char*) default_buttonmap);
     
     /* Build ship specific keymaps */
     for (j = 0; j < nshiptypes; j++)
@@ -681,7 +681,8 @@ void
 buildShipKeymap(struct ship *shipp)
 {
     char keybuf[40], ckeybuf[40], buttonbuf[40];
-    char *pek;
+    char *keymap_str, *ckeymap_str, *buttonmap_str;
+    int i;
 
 #ifdef MOUSE_AS_SHIFT
     memcpy(shipp->s_keymap, default_keymap, 672);
@@ -694,14 +695,47 @@ buildShipKeymap(struct ship *shipp)
     sprintf(ckeybuf, "ckeymap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
     sprintf(buttonbuf, "buttonmap-%c%c", shipp->s_desig[0], shipp->s_desig[1]);
 
-    if (pek = stringDefault (keybuf))
-        keymapAdd(pek, shipp->s_keymap);
 
-    if (pek = stringDefault (ckeybuf))
-        ckeymapAdd(pek, shipp->s_keymap);
+    keymap_str = stringDefault (keybuf);
+    ckeymap_str = stringDefault (ckeybuf);
+    buttonmap_str = stringDefault (buttonbuf);
+
+    /* If individual ship keymap is found, reset the ship's keymap first before
+       parsing the keymap string */
+    if (keymap_str || ckeymap_str)
+    {
+        for (i = 0; i < 95; i++)
+        {
+            shipp->s_keymap[i] = (unsigned char) (i + 32);
+            shipp->s_keymap[i + 96] = (unsigned char) (i + 32 + 96);
+
+#ifdef MOUSE_AS_SHIFT
+            shipp->s_keymap[i + 192] = (unsigned char) (i + 32);
+            shipp->s_keymap[i + 288] = (unsigned char) (i + 32);
+            shipp->s_keymap[i + 384] = (unsigned char) (i + 32);
+            shipp->s_keymap[i + 480] = (unsigned char) (i + 32);
+            shipp->s_keymap[i + 576] = (unsigned char) (i + 32);
+#endif
+        }
+        shipp->s_keymap[95] = 0;
+    }
+    
+    /* If individual ship buttonmap is found, reset the ship's buttonmap first before
+       parsing the buttonmap string */
+    if (buttonmap_str)
+    {
+        for (i = 1; i < 23; i++)
+            shipp->s_buttonmap[i] = 0;
+    }
+
+    if (keymap_str)
+        keymapAdd(keymap_str, (char*) shipp->s_keymap);
+
+    if (ckeymap_str)
+        ckeymapAdd(ckeymap_str, (char*) shipp->s_keymap);
         
-    if (pek = stringDefault (buttonbuf))
-        buttonmapAdd(pek, shipp->s_buttonmap);
+    if (buttonmap_str)
+        buttonmapAdd(buttonmap_str, (char*) shipp->s_buttonmap);
 }
 
 /******************************************************************************/
@@ -3338,8 +3372,7 @@ void
 Key114 (void)
 {
     localflags |= PFREFIT;
-    warning
-        ("s=scout, d=destroyer, c=cruiser, b=battleship, a=assault, g=galaxy, o=starbase");
+    warning(blk_refitstring);
 }
 
 /******************************************************************************/

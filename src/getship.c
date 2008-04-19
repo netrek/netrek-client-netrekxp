@@ -262,7 +262,7 @@ getshipdefaults (struct ship *shipp, int s_type)
       shipp->s_bitmap = SGALAXY;
     }
     break;
-  case JUMPSHIP:                     /* or ATT */
+  case JUMPSHIP:                     /* or ATT_BRONCO */
     if (paradise) {
       shipp->s_phaserdamage = 25;
       shipp->s_torpspeed = 18;
@@ -295,13 +295,13 @@ getshipdefaults (struct ship *shipp, int s_type)
       shipp->s_maxegntemp = 10000; /* att: */
       shipp->s_width = 20; /* att: */
       shipp->s_height = 20;        /* att: */
-      shipp->s_type = ATT; /* att: */
+      shipp->s_type = ATT_BRONCO; /* att: */
       shipp->s_phaserfuse = 2; /* att: */
       shipp->s_repair = 30000; /* att: */
-      shipp->s_letter = 'X';
+      shipp->s_letter = '*';
       shipp->s_desig[0] = 'A';
       shipp->s_desig[1] = 'T';
-      shipp->s_bitmap = ATT;
+      shipp->s_bitmap = ATT_BRONCO;
     }
     break;
   case FLAGSHIP:
@@ -425,4 +425,5 @@ getshipdefaults (struct ship *shipp, int s_type)
     shipp->s_bitmap = PATROL;
     break;
   }
+  buildShipKeymap(shipp);
 }

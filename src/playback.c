@@ -222,7 +222,6 @@ pbmain (char *name)
 
     me->p_x = me->p_y = 50000;
     myship = getship(CRUISER);
-    shipchange (CRUISER);
     displayme = me;
     packetsme = me;
 
@@ -243,18 +242,18 @@ pbmain (char *name)
     mystats->st_tticks = 1;
     for (i = 0; i < 95; i++)
     {
-        myship->s_keymap[i] = (unsigned char) (i + 32);
-        myship->s_keymap[i + 96] = (unsigned char) (i + 32 + 96);
+        default_keymap[i] = (unsigned char) (i + 32);
+        default_keymap[i + 96] = (unsigned char) (i + 32 + 96);
 
 #ifdef MOUSE_AS_SHIFT
-        myship->s_keymap[i + 192] = (unsigned char) (i + 32);
-        myship->s_keymap[i + 288] = (unsigned char) (i + 32);
-        myship->s_keymap[i + 384] = (unsigned char) (i + 32);
-        myship->s_keymap[i + 480] = (unsigned char) (i + 32);
-        myship->s_keymap[i + 576] = (unsigned char) (i + 32);
+        default_keymap[i + 192] = (unsigned char) (i + 32);
+        default_keymap[i + 288] = (unsigned char) (i + 32);
+        default_keymap[i + 384] = (unsigned char) (i + 32);
+        default_keymap[i + 480] = (unsigned char) (i + 32);
+        default_keymap[i + 576] = (unsigned char) (i + 32);
 #endif
     }
-    myship->s_keymap[95] = 0;
+    default_keymap[95] = 0;
     mystats->st_flags = ST_MAPMODE + ST_NAMEMODE + ST_SHOWSHIELDS +
         ST_KEEPPEACE + ST_SHOWLOCAL * 2 + ST_SHOWGLOBAL * 2;
 
@@ -328,7 +327,6 @@ pbmain (char *name)
 #endif
 
     myship = getship (myship->s_type);
-    shipchange (myship->s_type);
     enter ();
     calibrate_stats ();
     W_ClearWindow (w);

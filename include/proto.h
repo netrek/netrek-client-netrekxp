@@ -112,7 +112,6 @@ char *stringDefault (char *str);
 char *geometryDefault (char *str);
 int findDefaults (char *deffile, char *file);
 void resetdefaults (void);
-void shipchange (int type);
 int findfile (char *fname,
               char *found);
 

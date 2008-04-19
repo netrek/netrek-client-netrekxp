@@ -417,21 +417,21 @@ getname (char *defname,
 
     MZERO (mystats, sizeof (struct stats));
 
-    // Reset the keymap for our player record
+    // Set up the default keymap
     for (j = 0; j < 95; j++)
     {
-        myship->s_keymap[j] = (unsigned char) (j + 32);
-        myship->s_keymap[j + 96] = (unsigned char) (j + 32 + 96);
+        default_keymap[j] = (unsigned char) (j + 32);
+        default_keymap[j + 96] = (unsigned char) (j + 32 + 96);
 
 #ifdef MOUSE_AS_SHIFT
-        myship->s_keymap[j + 192] = (unsigned char) (j + 32);
-        myship->s_keymap[j + 288] = (unsigned char) (j + 32);
-        myship->s_keymap[j + 384] = (unsigned char) (j + 32);
-        myship->s_keymap[j + 480] = (unsigned char) (j + 32);
-        myship->s_keymap[j + 576] = (unsigned char) (j + 32);
+        default_keymap[j + 192] = (unsigned char) (j + 32);
+        default_keymap[j + 288] = (unsigned char) (j + 32);
+        default_keymap[j + 384] = (unsigned char) (j + 32);
+        default_keymap[j + 480] = (unsigned char) (j + 32);
+        default_keymap[j + 576] = (unsigned char) (j + 32);
 #endif
     }
-    myship->s_keymap[95] = 0;
+    default_keymap[95] = 0;
     mystats->st_tticks = 1;
     mystats->st_flags = ST_MAPMODE + ST_NAMEMODE + ST_SHOWSHIELDS +
         ST_KEEPPEACE + ST_SHOWLOCAL * 2 + ST_SHOWGLOBAL * 2;

@@ -220,7 +220,7 @@ stline (int flag)
     else
         buf[16] = ' ';
     buf[17] = ' ';
-    if (me->p_ship.s_type != ATT)
+    if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
     {
         buf[18] = (char) ('0' + (me->p_damage / 100));
         if (buf[18] == '0')
@@ -239,7 +239,7 @@ stline (int flag)
         buf[20] = 'k';
     }
     buf[21] = ' ';
-    if (me->p_ship.s_type != ATT)
+    if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
     {
         buf[22] = (char) ('0' + (me->p_shield / 100));
         if (buf[22] == '0')
@@ -445,7 +445,7 @@ updateMaxStats (int redraw)
     sprintf (buf,
              "Flags        Warp Dam Shd Torps  Kills Armies   Fuel  Wtemp Etemp  Time");
     W_WriteText (tstatw, 50, 5, textColor, buf, strlen (buf), W_RegularFont);
-    if (me->p_ship.s_type != ATT)
+    if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
         sprintf (buf,
                 "Maximum:   %2d/%2d  %3d %3d              %2d/%2d  %6d   %3d   %3d",
                  maxspeed, me->p_ship.s_maxspeed,

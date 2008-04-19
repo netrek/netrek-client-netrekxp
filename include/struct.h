@@ -248,6 +248,7 @@ enum dist_type
 #define ATT 6		/* paradise */
 #define SGALAXY 6	/* bronco */
 #define JUMPSHIP 7	/* can be ATT on bronco */
+#define ATT_BRONCO 7
 #define FLAGSHIP 8
 #define WARBASE 9
 #define LIGHTCRUISER 10
@@ -288,7 +289,6 @@ struct ship
     unsigned char s_keymap[96];        /* keymap for this ship */
 #endif
     unsigned char s_buttonmap[23];     /* buttonmap for this ship */
-    char *rcfile;                      /* pointer to ship specific rcfile */
 };
 
 struct stats

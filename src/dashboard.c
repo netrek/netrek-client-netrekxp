@@ -763,7 +763,7 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Green;
-        if (me->p_ship.s_type == ATT)
+        if ((paradise && me->p_ship.s_type == ATT) || (!paradise && me->p_ship.s_type == ATT_BRONCO))
             db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_shield, me->p_ship.s_maxshield, me->p_ship.s_maxshield,
                     DB_5DIGITS, color);
@@ -785,7 +785,7 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Green;
-        if (me->p_ship.s_type == ATT)
+        if ((paradise && me->p_ship.s_type == ATT) || (!paradise && me->p_ship.s_type == ATT_BRONCO))
             db_bar ("Hu", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     (me->p_ship.s_maxdamage - me->p_damage),
                     me->p_ship.s_maxdamage, me->p_ship.s_maxdamage, DB_5DIGITS,
@@ -833,7 +833,7 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        if (me->p_ship.s_type != ATT)
+        if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
             db_bar ("Wt", 109 * W_Textwidth / 3, 3 + W_Textheight + SPACING,
                     me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
                     me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
@@ -849,7 +849,7 @@ db_redraw_krp (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        if (me->p_ship.s_type != ATT)
+        if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
             db_bar ("Et", 109 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING),
                     me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
                     me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
@@ -938,7 +938,7 @@ db_redraw_COW (int fr)
             color = W_Yellow;
         else
             color = W_White;
-        if (me->p_ship.s_type == ATT)
+        if ((paradise && me->p_ship.s_type == ATT) || (!paradise && me->p_ship.s_type == ATT_BRONCO))
             db_bar ("Sh", 15 * W_Textwidth, 3 + W_Textheight + SPACING,
                     me->p_ship.s_maxshield - me->p_shield, me->p_ship.s_maxshield,
                     me->p_ship.s_maxshield, DB_5DIGITS, color);
@@ -958,7 +958,7 @@ db_redraw_COW (int fr)
             color = W_Red;
         else
             color = W_Yellow;
-        if (me->p_ship.s_type == ATT)
+        if ((paradise && me->p_ship.s_type == ATT) || (!paradise && me->p_ship.s_type == ATT_BRONCO))
             db_bar ("Da", 15 * W_Textwidth, 3 + 2 * (W_Textheight + SPACING),
                     me->p_damage, me->p_ship.s_maxdamage, me->p_ship.s_maxdamage,
                     DB_5DIGITS, color);
@@ -1005,7 +1005,7 @@ db_redraw_COW (int fr)
             color = W_White;
         else
             color = W_Yellow;
-        if (me->p_ship.s_type != ATT)
+        if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
             db_bar ("Wt", 109 * W_Textwidth / 3, 3 + W_Textheight + SPACING,
                     me->p_wtemp / 10, me->p_ship.s_maxwpntemp / 10,
                     me->p_ship.s_maxwpntemp / 10, DB_3DIGITS, color);
@@ -1022,7 +1022,7 @@ db_redraw_COW (int fr)
             color = W_Yellow;
         else
             color = W_Red;
-        if (me->p_ship.s_type != ATT)
+        if ((paradise && me->p_ship.s_type != ATT) || (!paradise && me->p_ship.s_type != ATT_BRONCO))
             db_bar ("Et", 109 * W_Textwidth / 3, 3 + 2 * (W_Textheight + SPACING),
                     me->p_etemp / 10, me->p_ship.s_maxegntemp / 10,
                     me->p_ship.s_maxegntemp / 10, DB_3DIGITS, color);
