@@ -900,7 +900,7 @@ void loadmplanetsC()
                         LR_DEFAULTCOLOR);
     mgear_bitmap =
         W_StoreBitmap3 ("bitmaps/paradise/gear.bmp",
-                        BMP_GEAR_WIDTH, BMP_GEAR_HEIGHT, BMP_GEARBMP, w,
+                        BMP_GEAR_WIDTH, BMP_GEAR_HEIGHT, BMP_GEARBMP, mapw,
                         LR_DEFAULTCOLOR);
     mfuel_bitmap =
         W_StoreBitmap3 ("bitmaps/planlibm/color/fuel.bmp",
