@@ -2887,6 +2887,7 @@ initialize_players(void)
         players[i].p_cloakphase = 0;
         players[i].p_no = i;
         players[i].p_ntorp = 0;
+        players[i].p_nplasmatorp = 0;
         players[i].p_stats2.st_rank = 0;
         players[i].p_stats2.st_royal = 0;
         players[i].p_ndrone = 0;
