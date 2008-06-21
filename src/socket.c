@@ -2316,25 +2316,51 @@ pickSocket (int old)
         return;
     nextSocket = newsocket;
 }
+ 
+static void
+handleBadVersionSorry (char *reason)
+{
+    MessageBox(NULL, reason, "Try again later", MB_OK);
+    LineToConsole ("%s\n", reason);
+    LineToConsole ("Sorry, but you cannot play netrek now.\n");
+    LineToConsole ("Try again later.\n");
+}
+
+#define BADVERSION_SOCKET   0 /* CP_SOCKET version does not match, exiting */
+#define BADVERSION_DENIED   1 /* access denied by netrekd */
+#define BADVERSION_NOSLOT   2 /* no slot on queue */
+#define BADVERSION_BANNED   3 /* banned */
+#define BADVERSION_DOWN     4 /* game shutdown by server */
+#define BADVERSION_SILENCE  5 /* daemon stalled */
+#define BADVERSION_SELECT   6 /* internal error */
+
 
 void
 handleBadVersion (struct badversion_spacket *packet)
 {
     switch (packet->why)
     {
-    case 0:
+    case BADVERSION_SOCKET:
         LineToConsole ("Sorry, this is an invalid client version.\n");
         LineToConsole ("You need a new version of the client code.\n");
         break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-        MessageBox(NULL, "Sorry, but you cannot play netrek now.", "Try again later", MB_OK);
-        LineToConsole ("Sorry, but you cannot play netrek now.\n");
-        LineToConsole ("Try again later.\n");
+    case BADVERSION_DENIED:
+        handleBadVersionSorry("Access denied by server.");
+        break;
+    case BADVERSION_NOSLOT:
+        handleBadVersionSorry("No free slots on server queue.");
+        break;
+    case BADVERSION_BANNED:
+        handleBadVersionSorry("Banned from server.");
+        break;
+    case BADVERSION_DOWN:
+        handleBadVersionSorry("Game shutdown by server.");
+        break;
+    case BADVERSION_SILENCE:
+        handleBadVersionSorry("Server daemon stalled, internal error.");
+        break;
+    case BADVERSION_SELECT:
+        handleBadVersionSorry("Server reports internal error.");
         break;
     default:
         LineToConsole ("Unknown message from handleBadVersion.\n");
