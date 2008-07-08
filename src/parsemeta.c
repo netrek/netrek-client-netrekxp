@@ -333,7 +333,7 @@ parseInput (char *in,
 #endif
 
         /* Don't list servers we cannot use */
-        if (slist->typeflag != 'P' && !metablock(slist->address))
+        if (!metablock(slist->address))
         {
 #ifdef DEBUG
             LineToConsole ("HOST:%-30s PORT:%-6d %12s %-5d %d %c\n",
@@ -593,10 +593,12 @@ static void version_r(struct sockaddr_in *address) {
 #endif
     }
     /* if it was found, check age.  Don't update if old entry is newer or
-       of the same age.  However, make sure status hasn't changed.  If status
-       differs, we want to use the new information packet regardless of age. */
+       of the same age.  Always update servers with a status saved as 
+       statusNull or higher, as this indicates either old data from the cache
+       or that the server somehow has a permanent internal status state,
+       which we don't want.  */
     else {
-      if ((now-age) < (sp->when-sp->age) && (sp->status == tempstatus)) {
+      if ((now-age) < (sp->when-sp->age) && (sp->status < statusNull)) {
 	sp->age = (int)now - (int)(sp->when-sp->age);
 	sp->when = now;
 	sp->refresh = 1;
@@ -856,7 +858,10 @@ static void SaveMetasCache()
       	      continue;
 #endif
           /* Protect against saving corrupted server data */
-          if (serverlist[i].address == NULL || serverlist[i].lifetime > MAX_LIFETIME)
+          if (serverlist[i].address == NULL
+           || serverlist[i].lifetime > MAX_LIFETIME
+           || serverlist[i].age < 0
+           || serverlist[i].when > time(NULL))
               continue;
 
           sprintf(str,"%s,%d,%lld,%d,%d,%d,%d,%c\n",

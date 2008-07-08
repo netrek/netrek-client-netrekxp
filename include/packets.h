@@ -909,7 +909,7 @@ struct generic_32_spacket
     char version;		/* alphabetic */
     short repair_time;		/* server estimate of repair time in seconds */
     short pl_orbit;		/* what planet player orbiting, -1 if none */
-    char pad1[25];
+    char pad1[26];
 };
 #define GENERIC_32_VERSION 'a'
 #define GENERIC_32_LENGTH 32
