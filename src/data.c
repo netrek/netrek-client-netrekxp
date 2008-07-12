@@ -928,4 +928,5 @@ int mapscaleFactor = 40;        /* allows for scaling of galactic window, unused
 int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */
 int hideConsole = 0;            /* show console window or not */
 
+int generic_32_version = 0;     /* what version of generic_32 does server send us */
 struct context *context;

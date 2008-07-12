@@ -834,5 +834,6 @@ extern int mapscaleFactor;      /* allows for scaling of galactic window, unused
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 extern int hideConsole;         /* show console window or not */
 
+extern int generic_32_version;
 extern struct context *context;
 #endif /* _h_data */

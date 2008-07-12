@@ -903,8 +903,24 @@ struct ship_cap_spacket
     unsigned short s_bitmap;
 };
 
-#define GENERIC_32_LENGTH 32
 struct generic_32_spacket
+{
+    char        type;
+    char        pad[31];
+};
+#define GENERIC_32_LENGTH 32
+#define COST_GENERIC_32 (F_sp_generic_32 ? GENERIC_32_LENGTH : 0)
+struct generic_32_spacket_a
+{
+    char        type;
+    char        version;        /* alphabetic, 0x60 + version */
+    u_short     repair_time;    /* server estimate of repair time in seconds */
+    u_short     pl_orbit;       /* what planet player orbiting, -1 if none */
+    char        pad1[26];
+    /* NOTE: this version didn't use network byte order for the shorts */
+};
+#define GENERIC_32_VERSION_A 1
+struct generic_32_spacket_b
 {
     char        type;
     char        version;        /* alphabetic, 0x60 + version */
@@ -919,7 +935,7 @@ struct generic_32_spacket
     u_char      starbase_remain;         /* starbase reconstruction, mins   */
     u_char      team_remain;             /* team surrender time, seconds    */
     char        pad1[18];
-};
+}; //__attribute__ ((packed));
 #define GENERIC_32_VERSION_B 2
 #define GENERIC_32_VERSION GENERIC_32_VERSION_B /* default */
 

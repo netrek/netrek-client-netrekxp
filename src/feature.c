@@ -76,7 +76,7 @@ struct feature features[] = {
     {"SELF_8FLAGS2", &F_self_8flags2, 'S', 0, 0, 0},
     {"19FLAGS", &F_self_19flags, 'S', 1, 0, 0},
     {"SHIP_CAP", &F_ship_cap, 'S', 1, 0, 0},
-    {"SP_GENERIC_32", &F_sp_generic_32, 'S', 1, 0, 0},
+    {"SP_GENERIC_32", &F_sp_generic_32, 'S', 1, "\002", 0},
     {"FULL_DIRECTION_RESOLUTION", &F_full_direction_resolution, 'S', 1, 0, 0},
     {"FULL_WEAPON_RESOLUTION", &F_full_weapon_resolution, 'S', 1, 0, 0},
     {"CHECK_PLANETS", &F_check_planets, 'S', 1, 0, 0},
@@ -117,11 +117,15 @@ reportFeatures (void)
 {
     struct feature *f;
     int value;
+    char arg1, arg2;
 
     for (f = features; f->name != 0; f++)
     {
         if (strcmpi (f->name, "FEATURE_PACKETS") != 0)
         {
+            value = f->value;
+            arg1 = (f->arg1 ? *f->arg1 : 0);
+            arg2 = (f->arg2 ? *f->arg2 : 0);
             if (!strcmp(f->name, "CHECK_PLANETS"))
                 value = useCheckPlanets;
             else if (!strcmp(f->name, "FULL_DIRECTION_RESOLUTION"))
@@ -130,16 +134,10 @@ reportFeatures (void)
                 value = useFullWeapInfo;
             else if (!strcmp(f->name, "SP_GENERIC_32"))
                 value = useGeneric32;
-            else
-                value = f->value;
-            sendFeature (f->name,
-                         f->feature_type,
-                         value,
-                         (char) (f->arg1 ? *f->arg1 : 0),
-                         (char) (f->arg2 ? *f->arg2 : 0));
-
+            sendFeature (f->name, f->feature_type, value, arg1, arg2);
 #ifdef DEBUG
-            LineToConsole ("(C->S) %s (%c): %d\n", f->name, f->feature_type, value);
+            LineToConsole ("(C->S) %s (%c): %d (%d/%d)\n", f->name,
+                           f->feature_type, value, arg1, arg2);
 #endif
         }
     }
@@ -164,8 +162,9 @@ checkFeature (struct feature_cpacket *packet)
     }
 #endif
 
-    sprintf (buf, "%s: %s(%d)", &packet->name[0],
-             ((value == 1) ? "ON" : (value == 0) ? "OFF" : "UNKNOWN"), value);
+    sprintf (buf, "%s: %s(%d) (%d/%d)", &packet->name[0],
+             ((value == 1) ? "ON" : (value == 0) ? "OFF" : "UNKNOWN"), value,
+             packet->arg1, packet->arg2);
 
 #ifdef TOOLS
     W_WriteText (toolsWin, 0, 0, textColor, buf, strlen (buf), W_RegularFont);
@@ -213,7 +212,11 @@ checkFeature (struct feature_cpacket *packet)
         lame_base_refit = value;
         return;
     }
-   
+    if (strcmpi (packet->name, "SP_GENERIC_32") == 0)
+    {
+        generic_32_version = packet->arg1;
+        return;
+    }
     if (features[i].name == 0)
     {
         LineToConsole ("Feature %s from server unknown to client!\n", packet->name);

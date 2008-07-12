@@ -922,7 +922,7 @@ getvpsize (char *bufptr)
         if (paradise)
 	    size = sizeof(struct motd_pic_spacket);
         else
-	    size = sizeof(struct generic_32_spacket);
+	    size = GENERIC_32_LENGTH;
 	break;
     case SP_STATS2:
     //case SP_FLAGS_ALL:
@@ -2818,28 +2818,47 @@ handleGeneric32 (struct generic_32_spacket *packet)
 #endif
     	return;
     }
-    if (packet->version < 'a')
-        return;
-    else if (packet->version == 'a')
+    return;
+}
+
+void
+handleGeneric32_a (struct generic_32_spacket_a *packet)
+{
+
+    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH)
     {
-        me->p_repair_time = packet->repair_time;
-        me->pl_orbit = packet->pl_orbit;
-        return;
+#ifdef DEBUG
+    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(struct generic_32_spacket));
+#endif
+    	return;
     }
-    else if (packet->version == 'b') 
+    me->p_repair_time = packet->repair_time;
+    me->pl_orbit = packet->pl_orbit;
+    return;
+}
+
+void
+handleGeneric32_b (struct generic_32_spacket_b *packet)
+{
+
+    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH)
     {
-        me->p_repair_time = ntohs (packet->repair_time);
-        me->pl_orbit = packet->pl_orbit;
-        context->gameup = ntohs(packet->gameup);
-        context->tournament_teams = packet->tournament_teams;
-        context->tournament_age = packet->tournament_age;
-        context->tournament_age_units = packet->tournament_age_units;
-        context->tournament_remain = packet->tournament_remain;
-        context->tournament_remain_units = packet->tournament_remain_units;
-        context->starbase_remain = packet->starbase_remain;
-        context->team_remain = packet->team_remain;
-        return;
+#ifdef DEBUG
+    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(struct generic_32_spacket));
+#endif
+    	return;
     }
+    me->p_repair_time = ntohs (packet->repair_time);
+    me->pl_orbit = packet->pl_orbit;
+    context->gameup = ntohs(packet->gameup);
+    context->tournament_teams = packet->tournament_teams;
+    context->tournament_age = packet->tournament_age;
+    context->tournament_age_units = packet->tournament_age_units;
+    context->tournament_remain = packet->tournament_remain;
+    context->tournament_remain_units = packet->tournament_remain_units;
+    context->starbase_remain = packet->starbase_remain;
+    context->team_remain = packet->team_remain;
+    return;
 }
 
 void
@@ -2986,7 +3005,14 @@ void handlePacket32 (unsigned char *sbuf)
     if (paradise)
         handleMotdPic ((struct motd_pic_spacket *) sbuf);
     else
-        handleGeneric32 ((struct generic_32_spacket *) sbuf);
+    {
+    	if (generic_32_version == 'a')
+    	    handleGeneric32_a ((struct generic_32_spacket_a *) sbuf);
+    	else if (generic_32_version == 'b')
+    	    handleGeneric32_b ((struct generic_32_spacket_b *) sbuf);
+    	else
+            handleGeneric32 ((struct generic_32_spacket *) sbuf);
+    }
     return;
 }
 void handlePacket33 (unsigned char *sbuf)
@@ -5086,10 +5112,29 @@ void print_packet(char *packet, int size)
 	{
 	  LineToConsole("\nS->C SP_GENERIC_32\t");
 	  if (log_packets > 1)
-	    LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d,",
-		   ((struct generic_32_spacket *) packet)->version,
-		   ntohs(((struct generic_32_spacket *) packet)->repair_time),
-		   ntohs(((struct generic_32_spacket *) packet)->pl_orbit) );
+	  {
+	    if (generic_32_version == 'a')
+	      LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d,",
+		     ((struct generic_32_spacket_a *) packet)->version,
+		     ((struct generic_32_spacket_a *) packet)->repair_time,
+		     ((struct generic_32_spacket_a *) packet)->pl_orbit);
+	    else if (generic_32_version == 'b')
+	      LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d, gameup=%d, tourn_teams=%d, tourn_age=%d, tourn_age_units=%d, tourn_remain=%d, tourn_remain_units=%d, starbase_remain=%d, team_remain=%d,",
+		     ((struct generic_32_spacket_b *) packet)->version,
+		     ntohs(((struct generic_32_spacket_b *) packet)->repair_time),
+		     ((struct generic_32_spacket_b *) packet)->pl_orbit,
+		     ((struct generic_32_spacket_b *) packet)->gameup,
+		     ((struct generic_32_spacket_b *) packet)->tournament_teams,
+		     ((struct generic_32_spacket_b *) packet)->tournament_age,
+		     ((struct generic_32_spacket_b *) packet)->tournament_age_units,
+		     ((struct generic_32_spacket_b *) packet)->tournament_remain,
+		     ((struct generic_32_spacket_b *) packet)->tournament_remain_units,
+		     ((struct generic_32_spacket_b *) packet)->starbase_remain,
+		     ((struct generic_32_spacket_b *) packet)->team_remain );      
+		      
+	    else
+	      LineToConsole("  version=unknown," );
+	  }
 	  break;
 	}
        case SP_FLAGS_ALL    :
