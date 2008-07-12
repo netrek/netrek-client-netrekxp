@@ -939,4 +939,17 @@ struct cons_buffer
     struct cons_buffer * next;
 };
 
+// Game context variables, sent in generic_32 packet
+struct context
+{
+    u_short     gameup;                  /* server status flags             */
+    u_char      tournament_teams;        /* what teams are involved         */
+    u_char      tournament_age;          /* duration of t-mode so far       */
+    char        tournament_age_units;    /* units for above, see s2du       */
+    u_char      tournament_remain;       /* remaining INL game time         */
+    char        tournament_remain_units; /* units for above, see s2du       */
+    u_char      starbase_remain;         /* starbase reconstruction, mins   */
+    u_char      team_remain;             /* team surrender time, seconds    */
+};
+
 #endif /* _h_struct */

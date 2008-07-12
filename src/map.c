@@ -544,7 +544,7 @@ DrawPlanets ()
         if (F_check_planets)
         {
             if ((me->p_flags & PFORBIT)
-            && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+            && ((F_sp_generic_32 && me->pl_orbit != -1) ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
             {
                 orbit_planet_refresh++;
                 if ((orbit_planet_refresh * 10 / server_ups) >= 1)

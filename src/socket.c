@@ -2818,10 +2818,28 @@ handleGeneric32 (struct generic_32_spacket *packet)
 #endif
     	return;
     }
-    if (packet->version < 'a') return;
-    me->p_repair_time = packet->repair_time;
-    me->pl_orbit = packet->pl_orbit;
-    if (packet->version < 'b') return;
+    if (packet->version < 'a')
+        return;
+    else if (packet->version == 'a')
+    {
+        me->p_repair_time = packet->repair_time;
+        me->pl_orbit = packet->pl_orbit;
+        return;
+    }
+    else if (packet->version == 'b') 
+    {
+        me->p_repair_time = ntohs (packet->repair_time);
+        me->pl_orbit = packet->pl_orbit;
+        context->gameup = ntohs(packet->gameup);
+        context->tournament_teams = packet->tournament_teams;
+        context->tournament_age = packet->tournament_age;
+        context->tournament_age_units = packet->tournament_age_units;
+        context->tournament_remain = packet->tournament_remain;
+        context->tournament_remain_units = packet->tournament_remain_units;
+        context->starbase_remain = packet->starbase_remain;
+        context->team_remain = packet->team_remain;
+        return;
+    }
 }
 
 void

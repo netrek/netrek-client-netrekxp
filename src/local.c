@@ -699,7 +699,7 @@ DrawPlanets (void)
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
          && (paradise ? (PL_TYPE(*l) == PLPLANET) : 1)
          && (F_show_army_count || 
-           ( (me->p_flags & PFORBIT) && (F_sp_generic_32 ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
+           ( (me->p_flags & PFORBIT) && ((F_sp_generic_32 && me->pl_orbit != -1) ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
           || (!paradise && (me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
         {
             char armbuf[4];
