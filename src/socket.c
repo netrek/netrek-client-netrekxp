@@ -2810,28 +2810,12 @@ handleShipCap (struct ship_cap_spacket *packet)
 void
 handleGeneric32 (struct generic_32_spacket *packet)
 {
-
-    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH)
-    {
-#ifdef DEBUG
-    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(struct generic_32_spacket));
-#endif
-    	return;
-    }
     return;
 }
 
 void
 handleGeneric32_a (struct generic_32_spacket_a *packet)
 {
-
-    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH)
-    {
-#ifdef DEBUG
-    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(struct generic_32_spacket));
-#endif
-    	return;
-    }
     me->p_repair_time = packet->repair_time;
     me->pl_orbit = packet->pl_orbit;
     return;
@@ -2840,14 +2824,6 @@ handleGeneric32_a (struct generic_32_spacket_a *packet)
 void
 handleGeneric32_b (struct generic_32_spacket_b *packet)
 {
-
-    if (sizeof(struct generic_32_spacket) != GENERIC_32_LENGTH)
-    {
-#ifdef DEBUG
-    	LineToConsole("Generic32 packet length of %d, ignoring packet.\n", sizeof(struct generic_32_spacket));
-#endif
-    	return;
-    }
     me->p_repair_time = ntohs (packet->repair_time);
     me->pl_orbit = packet->pl_orbit;
     context->gameup = ntohs(packet->gameup);
@@ -3006,11 +2982,11 @@ void handlePacket32 (unsigned char *sbuf)
         handleMotdPic ((struct motd_pic_spacket *) sbuf);
     else
     {
-    	if (generic_32_version == 'a')
-    	    handleGeneric32_a ((struct generic_32_spacket_a *) sbuf);
-    	else if (generic_32_version == 'b')
-    	    handleGeneric32_b ((struct generic_32_spacket_b *) sbuf);
-    	else
+    	if (sbuf[1] == 'a')
+            handleGeneric32_a ((struct generic_32_spacket_a *) sbuf);
+        else if (sbuf[1] == 'b')
+            handleGeneric32_b ((struct generic_32_spacket_b *) sbuf);
+        else
             handleGeneric32 ((struct generic_32_spacket *) sbuf);
     }
     return;
@@ -5113,12 +5089,12 @@ void print_packet(char *packet, int size)
 	  LineToConsole("\nS->C SP_GENERIC_32\t");
 	  if (log_packets > 1)
 	  {
-	    if (generic_32_version == 'a')
+	    if (packet[1] == 'a')
 	      LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d,",
 		     ((struct generic_32_spacket_a *) packet)->version,
 		     ((struct generic_32_spacket_a *) packet)->repair_time,
 		     ((struct generic_32_spacket_a *) packet)->pl_orbit);
-	    else if (generic_32_version == 'b')
+	    else if (packet[1] == 'b')
 	      LineToConsole("  version=%d, repair_time=%d, pl_orbit=%d, gameup=%d, tourn_teams=%d, tourn_age=%d, tourn_age_units=%d, tourn_remain=%d, tourn_remain_units=%d, starbase_remain=%d, team_remain=%d,",
 		     ((struct generic_32_spacket_b *) packet)->version,
 		     ntohs(((struct generic_32_spacket_b *) packet)->repair_time),

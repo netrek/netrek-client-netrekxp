@@ -658,6 +658,7 @@ extern int F_self_19flags;
 extern int F_ship_cap;
 extern int F_show_all_tractors;
 extern int F_sp_generic_32;
+extern char A_sp_generic_32;
 extern int F_full_direction_resolution;
 extern int F_full_weapon_resolution;
 extern int F_check_planets;
@@ -834,6 +835,5 @@ extern int mapscaleFactor;      /* allows for scaling of galactic window, unused
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 extern int hideConsole;         /* show console window or not */
 
-extern int generic_32_version;
 extern struct context *context;
 #endif /* _h_data */

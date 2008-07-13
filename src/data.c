@@ -762,6 +762,7 @@ int F_self_19flags = 1;
 int F_ship_cap = 0;
 int F_show_all_tractors = 1;
 int F_sp_generic_32 = 0;
+char A_sp_generic_32 = 0;    /* last sp_generic_32 version sent by server */
 int F_full_direction_resolution = 0;
 int F_full_weapon_resolution = 0;
 int F_check_planets = 0;
@@ -928,5 +929,4 @@ int mapscaleFactor = 40;        /* allows for scaling of galactic window, unused
 int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */
 int hideConsole = 0;            /* show console window or not */
 
-int generic_32_version = 0;     /* what version of generic_32 does server send us */
 struct context *context;
