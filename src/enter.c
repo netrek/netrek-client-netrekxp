@@ -57,6 +57,7 @@ openmem (void)
     initialize_thingies();
     status2 = (struct status2 *) malloc(sizeof(*status2));
     status = (struct status *) malloc(sizeof(*status));
+    context = (struct context *) malloc(sizeof(*context));
     initialize_planets();
     mctl = (struct mctl *) malloc(sizeof(*mctl));
     messages = (struct message *) malloc(sizeof(*messages) * MAXMESSAGE);
