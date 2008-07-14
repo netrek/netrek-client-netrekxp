@@ -5099,7 +5099,7 @@ void print_packet(char *packet, int size)
 		     ((struct generic_32_spacket_b *) packet)->version,
 		     ntohs(((struct generic_32_spacket_b *) packet)->repair_time),
 		     ((struct generic_32_spacket_b *) packet)->pl_orbit,
-		     ((struct generic_32_spacket_b *) packet)->gameup,
+		     ntohs(((struct generic_32_spacket_b *) packet)->gameup),
 		     ((struct generic_32_spacket_b *) packet)->tournament_teams,
 		     ((struct generic_32_spacket_b *) packet)->tournament_age,
 		     ((struct generic_32_spacket_b *) packet)->tournament_age_units,

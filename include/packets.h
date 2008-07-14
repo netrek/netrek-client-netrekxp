@@ -903,6 +903,7 @@ struct ship_cap_spacket
     unsigned short s_bitmap;
 };
 
+#pragma pack(push,1)
 struct generic_32_spacket
 {
     char        type;
@@ -935,7 +936,9 @@ struct generic_32_spacket_b
     u_char      starbase_remain;         /* starbase reconstruction, mins   */
     u_char      team_remain;             /* team surrender time, seconds    */
     char        pad1[18];
-}; //__attribute__ ((packed));
+};
+#pragma pack(pop)
+
 #define GENERIC_32_VERSION_B 2
 #define GENERIC_32_VERSION GENERIC_32_VERSION_B /* default */
 
