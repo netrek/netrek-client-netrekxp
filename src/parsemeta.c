@@ -1278,6 +1278,8 @@ parsemeta (int metaType)
  * used in newwin() to set the height of the meta-server window.
  */
 {
+    int fuse = 3;
+  	
     /* host names of metaservers, default in data.c, comma delimited */
     if ((stringDefault("metaServer")) != NULL)
         metaServer = stringDefault("metaServer");
@@ -1308,7 +1310,11 @@ parsemeta (int metaType)
         case 1:
 	    ReadMetasSend();
 	    LoadMetasCache();
-	    if (num_servers == 0) ReadMetasRecv(-1);
+	    while (num_servers < 2) {
+		ReadMetasRecv(-1);
+		sleep(1);
+		if (!fuse--) break;
+	    }
 	    if (num_servers != 0) {
 	    	/* Allocate 4 spots for header/refresh/quit/link */
 	        metaHeight = num_servers + 4;
@@ -1629,10 +1635,10 @@ metawindow (void)
 
     /* Add refresh option */
     if (type == 1)
-        W_WriteText(metaWin, 0, metaHeight-3, W_Yellow, "Refresh", 7, 0);
+        W_WriteText(metaWin, 0, metaHeight-3, W_Yellow, "Refresh (Ctrl-R)", 16, 0);
 
     /* Add quit option */
-    W_WriteText (metaWin, 0, metaHeight-2, W_Yellow, "Quit", 4, 0);
+    W_WriteText (metaWin, 0, metaHeight-2, W_Yellow, "Quit (q)", 8, 0);
 
     /* Additional Help Options */
     W_WriteText (metaWin, 0, metaHeight-1, W_Yellow, 
@@ -1792,8 +1798,16 @@ metainput (void)
         switch ((int) data.type)
         {
         case W_EV_KEY:
-            if (data.Window == metaWin)
-                metaaction (&data);
+            if (data.key == 113 || data.key == 196) { /* q or ^d */
+                metadone();
+                terminate (0);
+            }
+            else if (data.key == 114 || data.key == 210) { /* r or ^r */
+                W_WriteText(metaWin, 0, metaHeight-3, W_Red, "Asking for refresh from metaservers and nearby servers", 54, 0);
+                ReadMetasSend();
+            }
+            else if (data.Window == metaWin)
+                metaaction(&data);
             break;
         case W_EV_BUTTON:
             if (data.Window == metaWin)

@@ -931,7 +931,7 @@ struct generic_32_spacket_b
     char        pl_orbit;       /* what planet player orbiting, -1 if none  */
     u_short     gameup;                  /* server status flags             */
     u_char      tournament_teams;        /* what teams are involved         */
-    u_char      tournament_age;          /* duration of t-mode so far       */
+    u_char      tournament_age;          /* time since last t-mode start    */
     char        tournament_age_units;    /* units for above, see s2du       */
     u_char      tournament_remain;       /* remaining INL game time         */
     char        tournament_remain_units; /* units for above, see s2du       */

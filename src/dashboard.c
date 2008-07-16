@@ -245,13 +245,13 @@ db_timer (int fr, int xloc, int yloc)
                 break;
             case T_UTIL:
                 if (context->tournament_remain)
-                    sprintf(timer, "   %03d %c", context->tournament_remain, context->tournament_remain_units);
+                    sprintf(timer, "   %3d %c", context->tournament_remain, context->tournament_remain_units);
                 else if (context->team_remain)
-                    sprintf(timer, "   %03d s", context->team_remain);
+                    sprintf(timer, "   %3d s", context->team_remain);
                 else if (context->starbase_remain)
-                    sprintf(timer, "   %03d m", context->starbase_remain);
+                    sprintf(timer, "   %3d m", context->starbase_remain);
                 else if (context->tournament_age)
-                    sprintf(timer, "   %03d %c", context->tournament_age, context->tournament_age_units);
+                    sprintf(timer, "   %3d %c", context->tournament_age, context->tournament_age_units);
                 else
                     timer = timeString(now - timeBank[timerType]);
                 break;
