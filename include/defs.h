@@ -487,7 +487,8 @@
 #define T_SERVER    2   /* time on server */
 #define T_SHIP      3   /* time in ship */
 #define T_USER      4   /* user reset timer */
-#define T_TOTAL     5   /* number of T_ defs */
+#define T_UTIL      5   /* t mode/sb/inl/surr time, from generic 32 */
+#define T_TOTAL     6   /* number of T_ defs */
 
 /* The maximum length of message in buffer */
 #define MAX_MLENGTH 286

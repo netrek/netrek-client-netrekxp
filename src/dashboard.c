@@ -204,6 +204,19 @@ db_timer (int fr, int xloc, int yloc)
         case T_USER:
             s = "TMR";
             break;
+        /* Variable game-related timers, display in order of importance */
+        case T_UTIL:
+            if (context->tournament_remain)
+                s = "INL";
+            else if (context->team_remain)
+                s = "SUR";
+            else if (context->starbase_remain)
+                s = "SB ";
+            else if (context->tournament_age)
+                s = "TMD";
+            else
+                s = "NOW";
+            break;
         }
         if(s) 
         {
@@ -222,7 +235,27 @@ db_timer (int fr, int xloc, int yloc)
             get the timer string and start comparing it with the old one. Only
             print the differences
         */
-        timer = timeString(now - timeBank[timerType]);
+        switch (timerType)
+        {
+            case T_DAY:
+            case T_SERVER:
+            case T_SHIP:
+            case T_USER:
+                timer = timeString(now - timeBank[timerType]);
+                break;
+            case T_UTIL:
+                if (context->tournament_remain)
+                    sprintf(timer, "   %03d %c", context->tournament_remain, context->tournament_remain_units);
+                else if (context->team_remain)
+                    sprintf(timer, "   %03d s", context->team_remain);
+                else if (context->starbase_remain)
+                    sprintf(timer, "   %03d m", context->starbase_remain);
+                else if (context->tournament_age)
+                    sprintf(timer, "   %03d %c", context->tournament_age, context->tournament_age_units);
+                else
+                    timer = timeString(now - timeBank[timerType]);
+                break;
+        }
         x = xloc + 4 * W_Textwidth;
         left = 0;
         right = -1;

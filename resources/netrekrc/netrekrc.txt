@@ -463,6 +463,7 @@ theirPhaserShrink: 0
 # 2 - show time on server
 # 3 - show time in ship
 # 4 - show user-set time
+# 5 - show game-related timers
 timerType: 1
 
 # Distance between tractor/pressor dots
@@ -487,7 +488,7 @@ udpClientReceive: 1
 # 0 - TCP
 # 1 - simple UDP (default)
 # 2 - enforced UDP (state)
-# 3 - enfotrced UDP (state & weapons)
+# 3 - enforced UDP (state & weapons)
 udpClientSend: 1
 
 # Print UDP debug information

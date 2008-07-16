@@ -837,6 +837,7 @@ struct save_options save_options[] = {
             "2 - show time on server",
             "3 - show time in ship",
             "4 - show user-set time",
+            "5 - show game-related timers",
             NULL
         }
     },

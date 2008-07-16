@@ -154,6 +154,7 @@ static char *timermess[] = { "Timer shows nothing (off)",
                             "Timer shows time on server",
                             "Timer shows time in ship",
                             "Timer shows user-set time",
+                            "Timer shows game-related info",
                             ""
 };
 

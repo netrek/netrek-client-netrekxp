@@ -903,7 +903,9 @@ struct ship_cap_spacket
     unsigned short s_bitmap;
 };
 
-#pragma pack(push,1)
+#pragma pack(push,1) /* Necessary to remove padding during compile,
+                        size of struct needs to be exact, GCC equivalent
+                        is __attribute__ (( packed )) */
 struct generic_32_spacket
 {
     char        type;
@@ -937,7 +939,7 @@ struct generic_32_spacket_b
     u_char      team_remain;             /* team surrender time, seconds    */
     char        pad1[18];
 };
-#pragma pack(pop)
+#pragma pack(pop) /* Restores packing values saved by push */
 
 #define GENERIC_32_VERSION_B 2
 #define GENERIC_32_VERSION GENERIC_32_VERSION_B /* default */

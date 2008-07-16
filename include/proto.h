@@ -1161,6 +1161,7 @@ void initialize_players (void);
 void initialize_plasmas (void);
 void initialize_torps (void);
 void initialize_phasers (void);
+void initialize_context (void);
 // Paradise handlers
 void build_default_configuration (void);
 void load_default_teams (void);

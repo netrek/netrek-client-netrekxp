@@ -304,6 +304,7 @@ timerType:                (0-4) type of timer on dashboard window
 # 2 - server time
 # 3 - time in ship
 # 4 - user-set time
+# 5 - game-related timers
 
 tpDotDist:                (int) distance between tractor/pressor dots (default 10)
 tractorID:                (on/off) show the ID of player you are tractoring as a number below your ship

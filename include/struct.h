@@ -166,6 +166,23 @@ enum dist_type
  * (append) ) byte18++: the text to pre or append .. depending on termination
  * above. text is null terminated and the last thing in this distress */
 
+/* The following defines are for gameup field */
+#define GU_GAMEOK 0x1
+#define GU_PRACTICE 0x2			/* Basepractice robot is present */
+/* also set by INL robot during a pause, in pre-game, or post-game */
+#define GU_CHAOS 0x4
+/* also set by INL robot in post-game */
+#define GU_PAUSED 0x8
+#define GU_INROBOT 0x10			/* INL robot is present	*/
+#define GU_NEWBIE 0x20			/* Newbie robot is present */
+#define GU_PRET 0x40			/* Pre-t robot is present */
+#define GU_BOT_IN_GAME 0x80		/* Pre-t robot + bots are present */
+#define GU_CONQUER 0x100		/* conquest parade in progress	*/
+#define GU_PUCK 0x200			/* Hockey robot is present */
+#define GU_DOG 0x400			/* Dogfight robot is present */
+#define GU_INL_DRAFTING 0x800		/* INL draft pre-game is in progress */
+#define GU_INL_DRAFTED 0x1000		/* INL draft game is in progress */
+
 #define PFREE 0
 #define POUTFIT 1
 #define PALIVE 2

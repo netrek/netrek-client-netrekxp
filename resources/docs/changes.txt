@@ -8,6 +8,8 @@ tactical.
 New features:
 1) Addition of 3rd metaserver to the metaserver list.
 2) Added support for new server feature packets (lame_refit and whydead_2).
+3) Added new timerType option for displaying useful game-related timers like
+surrender, sb reconstruct, INL, and t mode duration.
 
 General changes:
 1) Removed option for ship specific netrekrc file (rcfile-<ship>).  Still can

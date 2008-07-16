@@ -2975,6 +2975,21 @@ initialize_phasers(void)
     }
 }
 
+void
+initialize_context(void)
+{
+    context = (struct context *) malloc(sizeof(*context));
+
+    context->gameup = 0;
+    context->tournament_teams = 0;
+    context->tournament_age = 0;
+    context->tournament_age_units = 0;
+    context->tournament_remain = 0;
+    context->tournament_remain_units = 0;
+    context->starbase_remain = 0;
+    context->team_remain = 0;
+}
+
 /* Functions to handle the overloaded packet types 32 and 33 */
 void handlePacket32 (unsigned char *sbuf)
 {
