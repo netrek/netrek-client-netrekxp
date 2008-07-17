@@ -1517,7 +1517,7 @@ DrawShips (void)
             }
 #endif
 
-            if (context->gameup & GU_PAUSED)\
+            if ((context->gameup & GU_PAUSED) && !(context->gameup & GU_CONQUER))
             {
                 W_WriteTTSText(w, TWINSIDE, tts_ypos, "G A M E  P A U S E D", 20);
                 clearzone[0][clearcount] = last_tts_xpos;
