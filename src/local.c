@@ -1517,20 +1517,31 @@ DrawShips (void)
             }
 #endif
 
+            if (context->gameup & GU_PAUSED)\
+            {
+                W_WriteTTSText(w, TWINSIDE, tts_ypos, "G A M E  P A U S E D", 20);
+                clearzone[0][clearcount] = last_tts_xpos;
+                clearzone[1][clearcount] = tts_ypos - W_Textheight;
+                clearzone[2][clearcount] = last_tts_width;
+                clearzone[3][clearcount] = W_Textheight;
+                clearcount++;
+            }
+            else
+            {
 #ifdef BEEPLITE
             if (tts_timer)
             {
-            	tts_timer--;
-            	if (!tts_timer)
-            	{
-            	    /* timed out */
-            	    last_tts_width = 0;
-            	}
-            	else
-            	{
-            	    /* draw */
-            	    W_WriteTTSText(w, TWINSIDE, tts_ypos, lastIn, tts_len);
-            	    clearzone[0][clearcount] = last_tts_xpos;
+                tts_timer--;
+                if (!tts_timer)
+                {
+                    /* timed out */
+                    last_tts_width = 0;
+                }
+                else
+                {
+                    /* draw */
+                    W_WriteTTSText(w, TWINSIDE, tts_ypos, lastIn, tts_len);
+                    clearzone[0][clearcount] = last_tts_xpos;
                     clearzone[1][clearcount] = tts_ypos - W_Textheight;
                     clearzone[2][clearcount] = last_tts_width;
                     clearzone[3][clearcount] = W_Textheight;
@@ -1538,6 +1549,7 @@ DrawShips (void)
                 }
             }
 #endif
+            }
 
             /* When cloaked, stop here. */
             if (j->p_flags & PFCLOAK)
