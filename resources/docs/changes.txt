@@ -1,4 +1,4 @@
-Netrek XP 2009, Version 1.0: (Released April-2008)
+Netrek XP 2009, Version 1.0: (Released July-2008)
 
 General bug fixes:
 1) Fix to cloak bug where ships would briefly be seen to flash when entering
@@ -7,9 +7,12 @@ tactical.
 
 New features:
 1) Addition of 3rd metaserver to the metaserver list.
-2) Added support for new server feature packets (lame_refit and whydead_2).
+2) Added support for new server feature packets (lame_refit, whydead_2,
+generic_32_b).
 3) Added new timerType option for displaying useful game-related timers like
 surrender, sb reconstruct, INL, and t mode duration.
+4) Added game paused message to local window (at TTS location) if server is
+paused, such as during an INL timeout.
 
 General changes:
 1) Removed option for ship specific netrekrc file (rcfile-<ship>).  Still can
