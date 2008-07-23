@@ -366,7 +366,7 @@ lockPlanetOrBase (W_Window ww,
         }
     }
 
-    for (i = 0, j = &players[i]; i < MAXPLAYER; i++, j++)
+    for (i = 0, j = &players[i]; i < nplayers; i++, j++)
     {
         if (j->p_status != PALIVE)
             continue;
