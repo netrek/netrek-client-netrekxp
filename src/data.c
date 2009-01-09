@@ -670,7 +670,7 @@ int continuousMouseFix = 1;
 int motionThresh = 16;
 int clickDelay = 0;             /* # of updates to delay before repeating */
 int motion_mouse_enablable = 1;
-int motion_mouse_steering = 0;
+int motion_mouse_steering = 1;
 
 #endif
 

@@ -141,7 +141,7 @@ initStars()
 {
     register int i, j, k;
     int imax, jmax, kmax;
-    
+
     if (TWINSIDE == 0)
         return;
 
@@ -176,18 +176,18 @@ DrawStars()
     /*
        note: cpp symbols in expressions (TWINSIDE*SCALE) will be precalculated
        by any C optimizer
-    */ 
+    */
     int sectorx, sectory, sector_offx, sector_offy;
     int l = 0, r = 0, t = 0, b = 0;
-    
+
     if (fullview == 0)
         return;
-        
+
     sectorx = me->p_x / (fullview);
     sectory = me->p_y / (fullview);
     sector_offx = me->p_x - sectorx * (fullview);
     sector_offy = me->p_y - sectory * (fullview);
-    
+
     if (warpStreaks && streaks_on)
     /* Streaks_on is toggled on by redrawStarSector with a change in warp state,
        and toggled off after certain conditions are met.  Only need to track
@@ -196,18 +196,18 @@ DrawStars()
     	star_updates++;
         last_speed = me->p_speed;
     }
-        
+
     if (sector_offx < 0)
     {  /* goddamn rounding towards 0 */
         sectorx--;
-        sector_offx += fullview; 
+        sector_offx += fullview;
     }
-    if (sector_offy < 0) 
+    if (sector_offy < 0)
     {  /* goddamn rounding towards 0 */
         sectory--;
-        sector_offy += fullview; 
-    }   
-  
+        sector_offy += fullview;
+    }
+
     /* at worst we have to redraw 4 star sectors */
 
     /* draw the one we're in */
@@ -223,7 +223,7 @@ DrawStars()
     t = sector_offy < view && sectory > 0;
     b = sector_offy > view && sectory + 1 < MAXSECTORS;
 
-    if (t) 
+    if (t)
     {
         if (l)
             /* redraw upper-left sector */
@@ -232,31 +232,31 @@ DrawStars()
         /* redraw upper sector */
         redrawStarSector (sectorx, sectory-1);
 
-        if (r)          
+        if (r)
             /* redraw upper-right sector */
             redrawStarSector (sectorx+1, sectory-1);
     }
-    if (l)          
+    if (l)
         /* redraw left sector */
         redrawStarSector (sectorx - 1, sectory);
 
     /* redraw center sector */
     redrawStarSector (sectorx, sectory);
 
-    if (r)          
+    if (r)
         /* redraw right sector */
         redrawStarSector (sectorx + 1, sectory);
 
-    if (b) 
+    if (b)
     {
-        if (l)          
+        if (l)
             /* redraw bottom-left sector */
             redrawStarSector (sectorx - 1, sectory + 1);
 
         /* redraw bottom sector */
         redrawStarSector (sectorx, sectory + 1);
 
-        if (r)          
+        if (r)
             /* redraw bottom-right sector */
             redrawStarSector (sectorx + 1, sectory + 1);
     }
@@ -283,7 +283,7 @@ redrawStarSector (int sectorx, int sectory)
         {
             streaks_on = 1;
             warpflag = (me->p_flags & PFWARP);
-        } 
+        }
         if (!paradise && warpflag != (me->p_flags & PFTWARP))
         {   /* change in warp state */
             streaks_on = 1;
@@ -432,7 +432,7 @@ planetBitmapC (register struct planet *p)
 {
     int i, j;
     W_Icon (*planet_bits);
-    
+
     if ((p->pl_info & me->p_team)
 #ifdef RECORDGAME
         || playback
@@ -509,7 +509,7 @@ planetBitmapC (register struct planet *p)
 
 /******************************************************************************/
 /***  planetResourcesC()
-/******************************************************************************/		           
+/******************************************************************************/
 static inline void
 planetResourcesC (register struct planet *p, int destwidth, int destheight,
                   int dx, int dy, W_Window window)
@@ -517,9 +517,9 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
  *  Draw the resources for a colorized planet.  Destwidth and destheight
  *  are the dimensions of the planet (not the resources) bitmap.  Dx and
  *  dy are the coordinates of the upper left corner of the planet bitmap.
- *  Resources are aligned based on those factors. 
+ *  Resources are aligned based on those factors.
  */
-{   
+{
     if ((p->pl_info & me->p_team)
 #ifdef RECORDGAME
         || playback
@@ -536,7 +536,7 @@ planetResourcesC (register struct planet *p, int destwidth, int destheight,
                                BMP_ARMY_HEIGHT,
                                0,
                                army_bitmap, planetColor(p),
-                               window);       
+                               window);
         if (p->pl_flags & PLREPAIR)
             W_WriteScaleBitmap(dx,
                                dy - destheight/3 - 1,
@@ -698,13 +698,13 @@ DrawPlanets (void)
            if observer is locked onto a planet, or is show_army_count feature packet is on */
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
          && (paradise ? (PL_TYPE(*l) == PLPLANET) : 1)
-         && (F_show_army_count || 
+         && (F_show_army_count ||
            ( (me->p_flags & PFORBIT) && ((F_sp_generic_32 && me->pl_orbit != -1) ? me->pl_orbit : get_closest_planet(me->p_x, me->p_y)) == l->pl_no)
           || (!paradise && (me->p_flags & PFPLLOCK) && (me->p_flags & PFOBSERV) && (me->p_planet == l->pl_no)) ))
         {
             char armbuf[4];
             int armbuflen;
-            
+
             if (l->pl_armies < 10)
             {
                 armbuf[0] = (char) (l->pl_armies + '0');
@@ -836,7 +836,7 @@ DrawShips (void)
         if ((j->p_status != PALIVE) && (j->p_status != PEXPLODE))
             continue;
 
-/* Twarp sounds put up here so observers can hear them */            
+/* Twarp sounds put up here so observers can hear them */
 #ifdef SOUND
         if (paradise && myPlayer(j))
         {
@@ -851,7 +851,7 @@ DrawShips (void)
           {
               // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
 	      Mix_HaltGroup(3);
-	      Play_Sound(ENTER_WARP_WAV, SF_INFO);                
+	      Play_Sound(ENTER_WARP_WAV, SF_INFO);
 	      warpchange = 0;
 	  }
 	  if (warpchange && !(j->p_flags & PFWARP))
@@ -879,7 +879,7 @@ DrawShips (void)
               {
                   // Kill any channels with ENTER_WARP_WAV or EXIT_WARP_WAV (group 3)
 	    	  Mix_HaltGroup(3);
-	          Play_Sound(ENTER_WARP_WAV, SF_INFO);                
+	          Play_Sound(ENTER_WARP_WAV, SF_INFO);
 	          warpchange = 0;
 	      }
 	      if (warpchange && !(j->p_flags & PFTWARP))
@@ -924,7 +924,7 @@ DrawShips (void)
                     // To avoid hearing twarp cloak sounds as the twarper/observer
                     if ( isMe(j) ? ((!paradise && (me->p_flags & PFTWARP)) ? 0 : 1) : 1 )
                     {
-                    	SetDistAngle(dx / scaleFactor + TWINSIDE / 2, dy / scaleFactor + TWINSIDE / 2);   
+                    	SetDistAngle(dx / scaleFactor + TWINSIDE / 2, dy / scaleFactor + TWINSIDE / 2);
                         // At short distances, don't use angular sound
                         if (!soundAngles || distance < SCALE/2)
                             Play_Sound_Loc(CLOAKED_WAV, SF_CLOAKING, -1, distance);
@@ -958,7 +958,7 @@ DrawShips (void)
                     }
                     else    // Kill any channels with CLOAKED_WAV on them (group 1)
                         Mix_HaltGroup(1);
-                }            
+                }
 #endif
 
                 j->p_cloakphase--;
@@ -1152,7 +1152,7 @@ DrawShips (void)
                     break;
                 }
             }
-            
+
             type = j->p_ship.s_type;
             // If it's a paradise ship, use a paradise bitmap set.
             if (paradise && type >= PARADISE_SHIP_OFFSET)
@@ -1173,7 +1173,7 @@ DrawShips (void)
                 case ORI:
                     pos = 3;
                     break;
-                default: // Ind 
+                default: // Ind
                     pos = 1;
                     break;
                 }
@@ -1208,7 +1208,7 @@ DrawShips (void)
                                     j->p_ship.s_height * SCALE / scaleFactor,
                                     BMP_SHIP_WIDTH,
                                     BMP_SHIP_HEIGHT,
-                                    // If fullBitmapRotation, use actual angle and ship bitmap in 
+                                    // If fullBitmapRotation, use actual angle and ship bitmap in
                                     // pointing up position.  If not, find the correct bitmap in
                                     // the ship rosette and set angle to 0.
                                     fullBitmapRotation ? (360 * j->p_dir/255) : 0,
@@ -1361,12 +1361,12 @@ DrawShips (void)
             if (vary_hull)
             {
             	if (isMe(j))
-            	{	
+            	{
             	    int hull_left = (100 * (me->p_ship.s_maxdamage -
 		                     me->p_damage)) / me->p_ship.s_maxdamage;
 		    int hull_num = 7;
 		    int hull_color;
-		    
+
 		    if (hull_left <= 16)
 		    {
 		    	hull_num = 0;
@@ -1412,7 +1412,7 @@ DrawShips (void)
                                         hull_width,
                                         hull_height,
 			                0, hull[hull_num], hull_color, w);
-			          
+
 		    clearzone[0][clearcount] = dx - (hull_width / 2) * SCALE / scaleFactor;
 		    clearzone[1][clearcount] = dy - (hull_height / 2) * SCALE / scaleFactor;
 		    clearzone[2][clearcount] = hull_width * SCALE / scaleFactor;
@@ -1425,7 +1425,7 @@ DrawShips (void)
             {
             	if (myPlayer(j))
             	{
-                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, DETDIST/scaleFactor, 0, 0, W_Red);         
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, DETDIST/scaleFactor, 0, 0, W_Red);
                     clearzone[0][clearcount] = TWINSIDE/2 - (DETDIST/scaleFactor);
                     clearzone[1][clearcount] = TWINSIDE/2 - (DETDIST/scaleFactor);
                     clearzone[2][clearcount] = 2*DETDIST/scaleFactor + 1;
@@ -1443,14 +1443,14 @@ DrawShips (void)
                     starty = dy + (int) (TIC_DIST/scaleFactor * Sin[j->p_dir]);
                     endx = startx + (int) (TIC_LEN * Cos[j->p_dir]);
                     endy = starty + (int) (TIC_LEN * Sin[j->p_dir]);
-                    
+
                     W_MakeLine(w, startx, starty, endx, endy, W_White);
                     clearline[0][clearlcount] = startx;
                     clearline[1][clearlcount] = starty;
                     clearline[2][clearlcount] = endx;
                     clearline[3][clearlcount] = endy;
                     clearlcount++;
-                    
+
                     /* Update desired heading if locked, in a similiar way
                        to how the server sets our heading */
                     if (j->p_flags & PFPLOCK)
@@ -1463,15 +1463,15 @@ DrawShips (void)
                         j->p_desdir = (int) (atan2(planets[j->p_planet].pl_x - me->p_x,
                         j->p_y - planets[j->p_planet].pl_y) / XPI * 128.);
                     }
-                    
+
                     if (j == me && j->p_dir != j->p_desdir && !(j->p_flags & (PFORBIT | PFDOCK | PFOBSERV)))
                     {
                         startx = dx + (int) (TIC_DIST/scaleFactor * Cos[j->p_desdir]);
                         starty = dy + (int) (TIC_DIST/scaleFactor * Sin[j->p_desdir]);
                         endx = startx + (int) (DESIRED_TIC_LEN * Cos[j->p_desdir]);
                         endy = starty + (int) (DESIRED_TIC_LEN * Sin[j->p_desdir]);
-      
-                        W_MakeLine(w, startx, starty, endx, endy, 
+
+                        W_MakeLine(w, startx, starty, endx, endy,
                                   (j->p_flags & (PFPLOCK | PFPLLOCK)) ? W_Green : W_White);
                         clearline[0][clearlcount] = startx;
                         clearline[1][clearlcount] = starty;
@@ -1487,7 +1487,7 @@ DrawShips (void)
             {
             	if (isMe(j))
             	{
-                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/scaleFactor, 0, 0, W_Grey);         
+                    W_WriteCircle(w, TWINSIDE/2, TWINSIDE/2, SHOTRANGE/scaleFactor, 0, 0, W_Grey);
                     clearzone[0][clearcount] = TWINSIDE/2 - (SHOTRANGE/scaleFactor);
                     clearzone[1][clearcount] = TWINSIDE/2 - (SHOTRANGE/scaleFactor);
                     clearzone[2][clearcount] = 2*SHOTRANGE/scaleFactor + 1;
@@ -1560,7 +1560,7 @@ DrawShips (void)
 
 #ifdef HOCKEY_LINES
                 /* Do we want to see puck's letter ? Nah. */
-                if (playing_hockey && 
+                if (playing_hockey &&
                     strcmp(j->p_name, "Puck") == 0 &&
                     strcmp(j->p_login, "Robot") == 0 &&
                     j->p_team == NOBODY &&
@@ -1637,7 +1637,7 @@ DrawShips (void)
                 clearzone[2][clearcount] = buflen * W_Textwidth;
                 clearzone[3][clearcount] = W_Textheight;
                 clearcount++;
-                
+
                 /* Tractor target ID */
                 if (tractorID && isMe(j))
                 {
@@ -1738,10 +1738,10 @@ DrawShips (void)
 
         /* Now draw his phaser (if it exists) */
         php = &phasers[j->p_no];
-        
+
         /* Reset colorful phasers here */
 #ifdef JUBILEE_PHASERS
-        if (j == me && colorfulPhasers 
+        if (j == me && colorfulPhasers
             && (php->ph_status == PHFREE || php->ph_updateFuse == 0))
             ph_col = 0;
 #endif
@@ -1751,7 +1751,7 @@ DrawShips (void)
 
 #ifdef SOUND
             if (php->sound_phaser)
-            {           
+            {
                 if (isMe(j))
                     Play_Sound(PHASER_WAV, SF_WEAPONS);
                 else
@@ -1779,182 +1779,236 @@ DrawShips (void)
                     php->ph_fuse = 0;
                 }
             }
-            else
+
+            if (php->ph_status == PHMISS)
             {
-                if (php->ph_status == PHMISS)
-                {
-                    /* Here I will have to compute end coordinate */
-                    /* Server will sometimes send us this information though,
-                       so check if we have it first */
-                    if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
-                    {
-                        tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
-                        ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
-                    }
-                    else
-                    {
-                        tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                    Cos[php->ph_dir]);
-
-                        ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
-                                    Sin[php->ph_dir]);
-
-                        tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
-                        ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
-                    }
-                }
-                else if (php->ph_status == PHHIT2)
+                /* Here I will have to compute end coordinate */
+                /* Server will sometimes send us this information though,
+                   so check if we have it first */
+                if (php->ph_x > 0 && php->ph_y > 0 && php->ph_x < GWIDTH && php->ph_y < GWIDTH)
                 {
                     tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
                     ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
                 }
                 else
                 {
-                    /* Start point is dx, dy.  With short packets, target
-                       dx, dy not sent, and thus can be out of galaxy bounds
-                       in certain cases.  For example, if you die while phasering,
-                       and your target's ship is no longer visible to your team.
-                       Best solution seems to be to not draw the phaser by setting
-                       phaser length to 0. */
-                    if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_x > GWIDTH)
-                    {
-                        tx = dx;
-                        ty = dy;
-                    }
-                    else
-                    {
-                        tx = (players[php->ph_target].p_x - me->p_x) /
-                            scaleFactor + TWINSIDE / 2;
-                        ty = (players[php->ph_target].p_y - me->p_y) /
-                            scaleFactor + TWINSIDE / 2;
-                    }
+                    tx = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                Cos[php->ph_dir]);
+
+                    ty = (int) (PHASEDIST * j->p_ship.s_phaserdamage / 100 *
+                                Sin[php->ph_dir]);
+
+                    tx = (j->p_x + tx - me->p_x) / scaleFactor + TWINSIDE / 2;
+                    ty = (j->p_y + ty - me->p_y) / scaleFactor + TWINSIDE / 2;
                 }
-
-
-                /* Shrink the phasers if necessary:
-                 *
-                 * Measure length in 16ths to make the maths a little
-                 * easier for the computer (div 16 is a 4 bit shift).
-                 * 
-                 * Add 8 to each sum to round properly. */
-
-                if (shrinkPhaserOnMiss || php->ph_status != PHMISS)
+            }
+            else if (php->ph_status == PHHIT2)
+            {
+                tx = (php->ph_x - me->p_x) / scaleFactor + TWINSIDE / 2;
+                ty = (php->ph_y - me->p_y) / scaleFactor + TWINSIDE / 2;
+            }
+            else
+            {
+                /* Start point is dx, dy.  With short packets, target
+                   dx, dy not sent, and thus can be out of galaxy bounds
+                   in certain cases.  For example, if you die while phasering,
+                   and your target's ship is no longer visible to your team.
+                   Best solution seems to be to not draw the phaser by setting
+                   phaser length to 0. */
+                if (players[php->ph_target].p_x < 0 || players[php->ph_target].p_x > GWIDTH)
                 {
-                	
-                    if (isMe(j))
+                    tx = dx;
+                    ty = dy;
+                }
+                else
+                {
+                    tx = (players[php->ph_target].p_x - me->p_x) /
+                        scaleFactor + TWINSIDE / 2;
+                    ty = (players[php->ph_target].p_y - me->p_y) /
+                        scaleFactor + TWINSIDE / 2;
+                }
+            }
+
+
+            /* Shrink the phasers if necessary:
+             *
+             * Measure length in 16ths to make the maths a little
+             * easier for the computer (div 16 is a 4 bit shift).
+             *
+             * Add 8 to each sum to round properly. */
+
+            if (shrinkPhaserOnMiss || php->ph_status != PHMISS)
+            {
+
+                if (isMe(j))
+                {
+                    if (phaserShrinkStyle == 1)
                     {
-                        if (phaserShrinkStyle == 1)
-                        {
-                            px = (dx * 16 + 8) / 16;
-                            py = (dy * 16 + 8) / 16;
-                            get_shrink_phaser_coords(&new_dx, &new_dy,
-                                                    px, py, tx, ty, 
-                                                    php->ph_fuse, php->ph_maxfuse,
-                                                    phaserShrink);
-                            px = new_dx;
-                            py = new_dy;
-                        }
-                        else
-                        {
-                            px = (dx * (16 - phaserShrink) + tx * phaserShrink +
-                                    8) / 16;
-                            py = (dy * (16 - phaserShrink) + ty * phaserShrink +
-                                    8) / 16;
-                        }
+                        px = (dx * 16 + 8) / 16;
+                        py = (dy * 16 + 8) / 16;
+                        get_shrink_phaser_coords(&new_dx, &new_dy,
+                                                px, py, tx, ty,
+                                                php->ph_fuse, php->ph_maxfuse,
+                                                phaserShrink);
+                        px = new_dx;
+                        py = new_dy;
                     }
                     else
                     {
-                    	if (phaserShrinkStyle == 1)
-                        {
-                            px = (dx * 16 + 8) / 16;
-                            py = (dy * 16 + 8) / 16;
-                            get_shrink_phaser_coords(&new_dx, &new_dy,
-                                                    px, py, tx, ty, 
-                                                    php->ph_fuse, php->ph_maxfuse,
-                                                    theirPhaserShrink);
-                            px = new_dx;
-                            py = new_dy;
-                        }
-                        else
-                        {
-                            px = (dx * (16 - theirPhaserShrink) +
-                                  tx * theirPhaserShrink + 8) / 16;
-
-                            py = (dy * (16 - theirPhaserShrink) +
-                                  ty * theirPhaserShrink + 8) / 16;
-                        }
+                        px = (dx * (16 - phaserShrink) + tx * phaserShrink +
+                                8) / 16;
+                        py = (dy * (16 - phaserShrink) + ty * phaserShrink +
+                                8) / 16;
                     }
                 }
                 else
                 {
-                    px = dx;
-                    py = dy;
+                	if (phaserShrinkStyle == 1)
+                    {
+                        px = (dx * 16 + 8) / 16;
+                        py = (dy * 16 + 8) / 16;
+                        get_shrink_phaser_coords(&new_dx, &new_dy,
+                                                px, py, tx, ty,
+                                                php->ph_fuse, php->ph_maxfuse,
+                                                theirPhaserShrink);
+                        px = new_dx;
+                        py = new_dy;
+                    }
+                    else
+                    {
+                        px = (dx * (16 - theirPhaserShrink) +
+                              tx * theirPhaserShrink + 8) / 16;
+
+                        py = (dy * (16 - theirPhaserShrink) +
+                              ty * theirPhaserShrink + 8) / 16;
+                    }
                 }
+            }
+            else
+            {
+                px = dx;
+                py = dy;
+            }
 
 
-                /* Now draw the phasers */
+            /* Now draw the phasers */
 
-                if (friendlyPlayer (j))
-                {
+            if (friendlyPlayer (j))
+            {
 #ifdef JUBILEE_PHASERS
-                    if (isMe(j) && php->ph_status == PHHIT && colorfulPhasers)
-                    {
-                        int col;
+                if (isMe(j) && php->ph_status == PHHIT && colorfulPhasers)
+                {
+                    int col;
 
-                        switch (scaled_ph_col)
-                        {
-                        case 1:
-                        case 2:
-                            col = W_Red;
-                            break;
-                        case 3:
-                        case 4:
-                            col = W_Green;
-                            break;
-                        case 5:
-                        case 6:
-                            col = W_Yellow;
-                            break;
-                        case 7:
-                        case 8:
-                            col = W_Cyan;
-                            break;
-                        default:
-                            col = shipCol[remap[j->p_team]];
-                            break;
-                        }
-                        ph_col += (10/j->p_ship.s_phaserfuse);
-                        scaled_ph_col = ph_col * 10 / server_ups;
-                        W_CacheLine (w, px, py, tx, ty, col);
-                    }
-                    else
+                    switch (scaled_ph_col)
                     {
-                        if (php->ph_status != PHMISS)
-                        {
-                            if (highlightFriendlyPhasers)
-                                W_CacheLine (w, px, py, tx, ty, foreColor);
-                            else
-                            {
-	                        if ((php->ph_fuse % 2) == 1)
-                                    W_CacheLine (w, px, py, tx, ty, foreColor);
-	                        else
-                                    W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
-                            }
-                        }
-                        else
-                            W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                    case 1:
+                    case 2:
+                        col = W_Red;
+                        break;
+                    case 3:
+                    case 4:
+                        col = W_Green;
+                        break;
+                    case 5:
+                    case 6:
+                        col = W_Yellow;
+                        break;
+                    case 7:
+                    case 8:
+                        col = W_Cyan;
+                        break;
+                    default:
+                        col = shipCol[remap[j->p_team]];
+                        break;
                     }
-#else
-                    if (highlightFriendlyPhasers && (php->ph_status == PHHIT))
-                        W_CacheLine (w, px, py, tx, ty, foreColor);
-                    else
+                    ph_col += (10/j->p_ship.s_phaserfuse);
+                    scaled_ph_col = ph_col * 10 / server_ups;
+                    W_CacheLine (w, px, py, tx, ty, col);
+                }
+                else
+                {
+                    if (php->ph_status != PHMISS)
                     {
-                        if ((php->ph_fuse % 2) == 1)
+                        if (highlightFriendlyPhasers)
                             W_CacheLine (w, px, py, tx, ty, foreColor);
                         else
-                            W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                        {
+                        if ((php->ph_fuse % 2) == 1)
+                                W_CacheLine (w, px, py, tx, ty, foreColor);
+                        else
+                                W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                        }
                     }
+                    else
+                        W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                }
+#else
+                if (highlightFriendlyPhasers && (php->ph_status == PHHIT))
+                    W_CacheLine (w, px, py, tx, ty, foreColor);
+                else
+                {
+                    if ((php->ph_fuse % 2) == 1)
+                        W_CacheLine (w, px, py, tx, ty, foreColor);
+                    else
+                        W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+                }
 #endif
+                php->ph_fuse++;
+
+                clearline[0][clearlcount] = px;
+                clearline[1][clearlcount] = py;
+                clearline[2][clearlcount] = tx;
+                clearline[3][clearlcount] = ty;
+                clearlcount++;
+            }
+            else
+            {
+                if ((enemyPhasers > 0) && (enemyPhasers <= 10))
+                {
+                    unsigned char dir;
+
+                    if (tx == px && ty == py)
+                        continue;
+#ifdef SHORT_PACKETS
+                    if (php->ph_status != PHMISS)   /* KOC 10/20/95  */
+                    {       /* hack for SP_2 */
+                        dir = (unsigned char)
+                              nint (atan2((double) (ty - py),
+                                   (double) (tx - px)) / XPI * 128.0);
+                    }
+                    else
+#endif
+                    {
+                        dir = (unsigned char) (NORMALIZE (php->ph_dir + 64));
+                    }
+
+                    wx = (int) (px + enemyPhasers * Cos[dir]);
+                    wy = (int) (py + enemyPhasers * Sin[dir]);
+                    lx = (int) (px - enemyPhasers * Cos[dir]);
+                    ly = (int) (py - enemyPhasers * Sin[dir]);
+
+                    W_MakePhaserLine (w, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
+                    W_MakePhaserLine (w, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
+
+                    php->ph_fuse++;
+
+                    clearline[0][clearlcount] = wx;
+                    clearline[1][clearlcount] = wy;
+                    clearline[2][clearlcount] = tx;
+                    clearline[3][clearlcount] = ty;
+                    clearlcount++;
+
+                    clearline[0][clearlcount] = lx;
+                    clearline[1][clearlcount] = ly;
+                    clearline[2][clearlcount] = tx;
+                    clearline[3][clearlcount] = ty;
+                    clearlcount++;
+                }
+                else
+                {
+                    W_MakePhaserLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
+
                     php->ph_fuse++;
 
                     clearline[0][clearlcount] = px;
@@ -1962,62 +2016,6 @@ DrawShips (void)
                     clearline[2][clearlcount] = tx;
                     clearline[3][clearlcount] = ty;
                     clearlcount++;
-                }
-                else
-                {
-                    if ((enemyPhasers > 0) && (enemyPhasers <= 10))
-                    {
-                        unsigned char dir;
-
-                        if (tx == px && ty == py)
-                            continue;
-#ifdef SHORT_PACKETS
-                        if (php->ph_status != PHMISS)   /* KOC 10/20/95  */
-                        {       /* hack for SP_2 */
-                            dir = (unsigned char) 
-                                  nint (atan2((double) (ty - py),
-                                       (double) (tx - px)) / XPI * 128.0);
-                        }
-                        else
-#endif
-                        {
-                            dir = (unsigned char) (NORMALIZE (php->ph_dir + 64));
-                        }
-
-                        wx = (int) (px + enemyPhasers * Cos[dir]);
-                        wy = (int) (py + enemyPhasers * Sin[dir]);
-                        lx = (int) (px - enemyPhasers * Cos[dir]);
-                        ly = (int) (py - enemyPhasers * Sin[dir]);
-
-                        W_MakePhaserLine (w, wx, wy, tx, ty, shipCol[remap[j->p_team]]);
-                        W_MakePhaserLine (w, lx, ly, tx, ty, shipCol[remap[j->p_team]]);
-
-                        php->ph_fuse++;
-
-                        clearline[0][clearlcount] = wx;
-                        clearline[1][clearlcount] = wy;
-                        clearline[2][clearlcount] = tx;
-                        clearline[3][clearlcount] = ty;
-                        clearlcount++;
-
-                        clearline[0][clearlcount] = lx;
-                        clearline[1][clearlcount] = ly;
-                        clearline[2][clearlcount] = tx;
-                        clearline[3][clearlcount] = ty;
-                        clearlcount++;
-                    }
-                    else
-                    {
-                        W_MakePhaserLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
-
-                        php->ph_fuse++;
-
-                        clearline[0][clearlcount] = px;
-                        clearline[1][clearlcount] = py;
-                        clearline[2][clearlcount] = tx;
-                        clearline[3][clearlcount] = ty;
-                        clearlcount++;
-                    }
                 }
             }
         }
@@ -2092,7 +2090,7 @@ DrawShips (void)
                         This is the fix.  [BDyess]
                     */
                     if (tractcurrent == NULL)
-                    { 
+                    {
                         /* just starting */
                         tractcurrent = (struct tractor *) malloc (sizeof (struct tractor));
                         tracthead = tractcurrent;
@@ -2106,12 +2104,12 @@ DrawShips (void)
                     tractcurrent->d2y = ly[1];
                     /* get ready for the next run through */
                     if (tractcurrent->next)
-                    {   
+                    {
                         /* already malloc'd before */
                         tractcurrent = tractcurrent->next;
-                    } 
-                    else 
-                    {        
+                    }
+                    else
+                    {
                         /* new maximum, create a new struct */
                         tractcurrent->next = (struct tractor *) malloc (sizeof (struct tractor));
                         tractcurrent = tractcurrent->next;
@@ -2203,15 +2201,15 @@ DrawTorps (void)
                 {
                     other_torp_dist = distance;
                     other_torp_angle = angle;
-                }	
+                }
             }
-#endif         
+#endif
 
             if (k->t_status == TEXPLODE)
             {
                 k->t_fuse--;
                 frame = k->t_fuse * 10 / server_ups;
-                
+
                 if (k->t_fuse < 0)
                 {
                     k->t_status = TFREE;
@@ -2313,7 +2311,7 @@ DrawTorps (void)
                             torpTeam = 2;
                         }
                     }
-                    
+
                     if (j != me && ((k->t_war & me->p_team) ||
                                         (j->p_team & (me->p_hostile | me->p_swar))))
                     {
@@ -2341,7 +2339,7 @@ DrawTorps (void)
                         /* solid.  Looks strange. W_FillArea(w, dx - (etorp_width/2),
                          * dy - (etorp_height/2), etorp_width, etorp_height,
                          * torpColor(k)); */
-        
+
                         /* XFIX */
                         W_WriteBitmap (dx - (etorp_width / 2),
                                        dy - (etorp_height / 2), etorp, torpColor (k), w);
@@ -2431,9 +2429,9 @@ DrawPlasmaTorps (void)
             {
                 other_plasma_dist = distance;
                 other_plasma_angle = angle;
-            }   	
+            }
         }
-#endif   
+#endif
 
         if (pt->pt_status == PTEXPLODE)
         {
@@ -2563,7 +2561,7 @@ DrawPlasmaTorps (void)
                 clearcount++;
             }
             else
-            {   
+            {
                 if (pt->pt_war & me->p_team)
                 {
                     W_WriteBitmap (dx - (eplasmatorp_width / 2),
@@ -2622,7 +2620,7 @@ draw_one_thingy(struct thingy *k)
             {
                 other_missile_dist = distance;
                 other_missile_angle = angle;
-            }   	
+            }
         }
 #endif
         if (colorWeapons)
@@ -2682,7 +2680,7 @@ draw_one_thingy(struct thingy *k)
     case SHP_FBOOM:
         k->t_fuse--;
         frame = k->t_fuse * 10 / server_ups;
-                
+
         if (k->t_fuse < 0)
         {
             k->t_shape = SHP_BLANK;
@@ -2724,7 +2722,7 @@ draw_one_thingy(struct thingy *k)
     case SHP_DBOOM:
         k->t_fuse--;
         frame = k->t_fuse * 10 / server_ups;
-                
+
         if (k->t_fuse < 0)
         {
             k->t_shape = SHP_BLANK;
@@ -2772,7 +2770,7 @@ draw_one_thingy(struct thingy *k)
             {
                 other_missile_dist = distance;
                 other_missile_angle = angle;
-            }   	
+            }
         }
 #endif
         if (colorWeapons)
@@ -2829,7 +2827,7 @@ draw_one_thingy(struct thingy *k)
         clearzone[3][clearcount] = BMP_FIGHTER_HEIGHT * SCALE / scaleFactor + 2;
         clearcount++;
         break;
-/*  
+/*
     These 4 appear unused....
 
     case SHP_TORP:
@@ -3201,7 +3199,7 @@ DrawMisc (void)
             else
                 alertBorderColor = W_White;
             W_ChangeBorder (baseWin, rColor);
-            
+
 #if defined(SOUND)
             Play_Sound(RED_ALERT_WAV, SF_ALERT);
 #endif
@@ -3363,7 +3361,7 @@ local (void)
         /* If alive but out of bounds, we probably missed a packet giving our location,
            so quietly request a new one */
 #ifdef SHORT_PACKETS
-        if (me->p_status == PALIVE) 
+        if (me->p_status == PALIVE)
             sendShortReq (SPK_SALL, 0);
 #endif
         return;
@@ -3434,7 +3432,7 @@ clearLocal (void)
         W_MakeLines (w, clearline[0], clearline[1], clearline[2],
                      clearline[3], clearlcount, backColor);
         clearlcount = 0;
-        
+
         if (clearccount)
         {
             W_WriteCircle(w, clearx, cleary, clearr, 0, 0, backColor);

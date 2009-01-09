@@ -58,7 +58,7 @@ struct feature features[] = {
 
 #ifdef MOTION_MOUSE
     {"CONTINUOUS_MOUSE", &motion_mouse_enablable, 'C', 1, 0, 0},
-    {"CONTINUOUS_STEER", &motion_mouse_steering, 'C', 0, 0, 0},
+    {"CONTINUOUS_STEER", &motion_mouse_steering, 'C', 1, 0, 0},
 #endif
 
     {"NEWMACRO", &UseNewMacro, 'C', 1, 0, 0},

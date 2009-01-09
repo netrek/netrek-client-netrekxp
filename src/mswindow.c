@@ -6174,7 +6174,7 @@ SDB_lookup (W_Window window)
 void
 W_Win2Mem (SDBUFFER * sdb)
 {
-    BitBlt (sdb->mem_dc, 0, 0, sdb->wr.right, sdb->wr.bottom, sdb->mem_dc, 0, 0, SRCCOPY);
+    //BitBlt (sdb->mem_dc, 0, 0, sdb->wr.right, sdb->wr.bottom, sdb->win_dc, 0, 0, SRCCOPY);
 }
 
 void
