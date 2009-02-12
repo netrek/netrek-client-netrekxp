@@ -291,6 +291,7 @@ int macrocnt = 0;
 extern double Sin[], Cos[];
 
 int paradise = 0;		/* is the server a paradise server */
+int login_received = 0;
 int received_terrain_info = 0;
 int terrain_x;
 int terrain_y;

@@ -88,7 +88,6 @@ char numofbits[256] = { 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1,
 static int vtsize[9] = { 4, 8, 8, 12, 12, 16, 20, 20, 24 };     /* How big is the torppacket */
 static int vtdata[9] = { 0, 3, 5, 7, 9, 12, 14, 16, 18 };       /* How big is Torpdata */
 int vtisize[9] = { 4, 7, 9, 11, 13, 16, 18, 20, 22 };   /* 4 byte Header + torpdata */
-static int login_received = 0;
 
 /* S_P2 */
 int shortversion = SHORTVERSION;        /* Which version do we use? */

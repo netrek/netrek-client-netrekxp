@@ -292,6 +292,7 @@ extern int debug;
 extern double Sin[], Cos[];
 
 extern int paradise;
+extern int login_received;
 extern int received_terrain_info;
 extern int terrain_x;
 extern int terrain_y;

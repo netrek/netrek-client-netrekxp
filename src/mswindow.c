@@ -6106,6 +6106,11 @@ W_RecreateSDBDCs(W_Window window, SDBUFFER* sdb)
 
     sdb->old_bmp = (HBITMAP) SelectObject (sdb->mem_dc, sdb->mem_bmp);
 
+    if (NetrekPalette)
+    {
+        SelectPalette (sdb->mem_dc, NetrekPalette, FALSE);
+        RealizePalette (sdb->mem_dc);
+    }
     FillRect (sdb->mem_dc, &sdb->wr, colortable[W_Black].brush);
 
     return 1;

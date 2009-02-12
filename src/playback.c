@@ -197,6 +197,20 @@ pbmain (char *name)
     if ((stringDefault ("indshipHRbmpfile")) != NULL)
         ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
 
+    for (i = 0; i < 95; i++)
+    {
+        default_keymap[i] = (unsigned char) (i + 32);
+        default_keymap[i + 96] = (unsigned char) (i + 32 + 96);
+
+#ifdef MOUSE_AS_SHIFT
+        default_keymap[i + 192] = (unsigned char) (i + 32);
+        default_keymap[i + 288] = (unsigned char) (i + 32);
+        default_keymap[i + 384] = (unsigned char) (i + 32);
+        default_keymap[i + 480] = (unsigned char) (i + 32);
+        default_keymap[i + 576] = (unsigned char) (i + 32);
+#endif
+    }
+    default_keymap[95] = 0;
 
     resetdefaults ();
     build_default_configuration();
@@ -240,20 +254,7 @@ pbmain (char *name)
     MZERO (mystats, sizeof (struct stats));
 
     mystats->st_tticks = 1;
-    for (i = 0; i < 95; i++)
-    {
-        default_keymap[i] = (unsigned char) (i + 32);
-        default_keymap[i + 96] = (unsigned char) (i + 32 + 96);
 
-#ifdef MOUSE_AS_SHIFT
-        default_keymap[i + 192] = (unsigned char) (i + 32);
-        default_keymap[i + 288] = (unsigned char) (i + 32);
-        default_keymap[i + 384] = (unsigned char) (i + 32);
-        default_keymap[i + 480] = (unsigned char) (i + 32);
-        default_keymap[i + 576] = (unsigned char) (i + 32);
-#endif
-    }
-    default_keymap[95] = 0;
     mystats->st_flags = ST_MAPMODE + ST_NAMEMODE + ST_SHOWSHIELDS +
         ST_KEEPPEACE + ST_SHOWLOCAL * 2 + ST_SHOWGLOBAL * 2;
 
@@ -491,6 +492,7 @@ ckRecordPacket (char packet)
     case SP_YOU:
     case SP_STATUS:
     case SP_PLANET:
+    case SP_LOGIN:
     case SP_FLAGS:
     case SP_MASK:
     case SP_PSTATUS:
@@ -506,7 +508,6 @@ ckRecordPacket (char packet)
     case SP_S_YOU_SS:
     case SP_S_PLAYER:
     case SP_SHIP_CAP:
-    case SP_GENERIC_32:
     case SP_S_TORP:
     case SP_S_TORP_INFO:
     case SP_S_8_TORP:
@@ -527,6 +528,10 @@ ckRecordPacket (char packet)
     case SP_TERRAIN2:
     case SP_TERRAIN_INFO2:
         return 1;
+    case SP_GENERIC_32:
+        if (!paradise) /* MOTD pic */
+            return 1;
+        break;
     }
     return 0;
 }
@@ -729,7 +734,10 @@ readFromFile ()
  */
 #define RPB_NORMAL_SEQUENCE 0
 #define RPB_NORMAL_STATUS 1
-#define RPB_NORMAL_MAX 2
+#define RPB_NORMAL_SHIPCAP 2
+#define RPB_NORMAL_GENERIC32 3
+#define RPB_NORMAL_FEATURE 4
+#define RPB_NORMAL_MAX 5
 
 #define RPB_PLAYER_OFFSET (RPB_NORMAL_MAX)
 #define RPB_PLAYER_INFO 0
@@ -745,6 +753,19 @@ readFromFile ()
 #define RPB_PLAYER_PHASER 10
 #define RPB_PLAYER_MAX 11
 
+/* TODO: add to rpb
+SP_SCAN:
+SP_STATS2:
+SP_STATUS2:
+SP_PLANET2:
+SP_THINGY:
+SP_THINGY_INFO:
+SP_GPARAM:
+SP_PARADISE_EXT1:
+SP_TERRAIN2:
+SP_TERRAIN_INFO2:
+*/
+   
 #define RPB_PLASMA_OFFSET (RPB_PLAYER_OFFSET + RPB_PLAYER_MAX*MAXPLAYER)
 #define RPB_PLASMA_POSITION 0
 #define RPB_PLASMA_INFO 1
@@ -822,6 +843,15 @@ rpb_analyze (int diskpos,
     case SP_S_SEQUENCE:
     case SP_SC_SEQUENCE:
         rpb_insert (diskpos, RPB_NORMAL_SEQUENCE);
+        break;
+    case SP_SHIP_CAP:
+        rpb_insert (diskpos, RPB_NORMAL_SHIPCAP);
+        break;
+    case SP_GENERIC_32:
+        rpb_insert (diskpos, RPB_NORMAL_GENERIC32);
+        break;
+    case SP_FEATURE:
+        rpb_insert (diskpos, RPB_NORMAL_FEATURE);
         break;
 
     case SP_PLAYER_INFO:
