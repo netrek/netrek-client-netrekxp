@@ -235,7 +235,7 @@ pbmain (char *name)
     mystats = &(me->p_stats);
 
     me->p_x = me->p_y = 50000;
-    myship = getship(CRUISER);
+    me->p_ship = *getship(CRUISER);
     displayme = me;
     packetsme = me;
 
