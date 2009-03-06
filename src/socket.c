@@ -1036,6 +1036,10 @@ getvpsize (char *bufptr)
     case SP_S_KILLS:           /* S_P2 */
         size = ((unsigned char) bufptr[1] * 2) + 2;
         break;
+    case REC_UPDATE:
+        if (paradise && inplayback)	/* if not, something's very wrong... */
+            size = 4;
+        break;
     default:
         LineToConsole ("Unknown variable packet\n");
         /* terminate(1); */

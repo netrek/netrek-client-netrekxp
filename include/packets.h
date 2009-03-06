@@ -211,6 +211,9 @@
 #define SP_FEATURE	60
 #endif
 
+/* special paradise type tells us when to update the display on playback.
+    Not sent or received, only placed in the recorder file */
+#define REC_UPDATE 127
 
 #define SOCKVERSION 	4
 
@@ -1177,7 +1180,7 @@ struct thingy_info_spacket {
 
 struct thingy_spacket {
     char    type;		/* SP_THINGY */
-    char    dir;
+    unsigned char    dir;
     unsigned short   tnum;
     LONG    x, y;
 };
@@ -1186,19 +1189,19 @@ struct thingy_spacket {
 /* 5/16/95 rpg */
 
 struct terrain_info_packet2 {
-    char   type;		/* SP_TERRAIN_INFO2 */
-    char   pad;
+    unsigned char   type;		/* SP_TERRAIN_INFO2 */
+    unsigned char   pad;
     unsigned short  pad2;
     unsigned short  xdim;
     unsigned short  ydim;
 };
 
 struct terrain_packet2 {
-    char   type;		/* SP_TERRAIN2 */
-    char   sequence;
-    char   total_pkts;
-    char   length;
-    char   terrain_type[128];	/* Ugh... this needs to be fixed 5/16/95 rpg */
+    unsigned char   type;		/* SP_TERRAIN2 */
+    unsigned char   sequence;
+    unsigned char   total_pkts;
+    unsigned char   length;
+    unsigned char   terrain_type[128];	/* Ugh... this needs to be fixed 5/16/95 rpg */
  /* unsigned short  terrain_alt1[128]; */
  /* unsigned short  terrain_alt2[128]; */
 };

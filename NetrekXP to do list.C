@@ -18,11 +18,6 @@ Things that are sorta fixed, but could use improvement:
 is rotated.  Only solution so far is to moderate border refresh with scaled bitmaps.
 2) AddFontResourceEx caused problems with win 98 machines.  Commented out, and using
 old AddFontResource function.
-3) Metaping on a Unknown server is causing unseemly delay due to threading.  I believe
-this is fixed.
-4) sendto() error: 10049 on metaserver connect to a bad server, believe it's due
-to hostname not resolving.  Currently fixed by using mulitple attempts to resolve bad
-host names.
 
 Things to do:
 1) Get square planet bitmaps so I can turn them into mapped rotating globes.
@@ -46,7 +41,6 @@ during login sequence.
 5) Some of the paradise packet types may need some work
 6) Still missing asteroids and (flashing) warpbeacons.
 7) Show ratings on full/wide playerlist.
-8) Playing back recordings made by linux pclient is probably impossible.
 9) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
 10) add POBSERV and PTQUEUE support

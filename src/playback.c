@@ -550,7 +550,9 @@ pb_dopacket (char *buf)
     }
 
     size = handlers[buf[0]].size;
-    if (size == -1)
+
+    /* paradise hack - REC_UPDATE */
+    if (size == -1 || buf[0] == REC_UPDATE)
     {
         if (buf[0] == SP_S_MESSAGE)
         {
@@ -574,11 +576,13 @@ pb_dopacket (char *buf)
         return 1;
     }
 
+    if (buf[0] != REC_UPDATE) {
     (*(handlers[buf[0]].handler)) (buf
 #ifdef CORRUPTED_PACKETS
                                    , recordFile
 #endif
         );
+    }
     return 0;
 }
 

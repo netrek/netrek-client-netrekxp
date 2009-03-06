@@ -1,6 +1,7 @@
 to  disable  this  window  permanently  you  should  add  "showHints: off"  to  your  rc  file.
 you can close this window with shift-right click if you don't have a middle mouse button.
 most windows (such as this one) can be closed by the unmap special windows key.
+you can open the options menu with shift-O.  Most game settings can be changed from here.
 the red circle you may see flash around your ship when detting is the range at which you can detonate enemy torpedoes, you can turn this circle off through the ship menu.
 you can use Alt+Enter to toggle the main title bar on and off.
 you can use Ctrl+a and Ctrl+z to zoom in/out the tactical window.
