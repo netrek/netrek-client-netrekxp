@@ -146,6 +146,7 @@ int planetHighlighting = 0;
 int rotatePlanets = 1;
 
 int logging = 0;
+int log_ignore = 0;
 int continueTractor = 1;
 int tcounter = 2;
 char *title = NULL;

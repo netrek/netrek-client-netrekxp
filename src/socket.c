@@ -3292,22 +3292,23 @@ void handleTempPack (struct obvious_packet *packet)
 
 void handleExtension1 (struct paradiseext1_spacket *packet)
 {
-    switch (packet->subtype) {
-    case SP_PE1_MISSING_BITMAP:
-	{
-	    struct pe1_missing_bitmap_spacket *pkt = (struct pe1_missing_bitmap_spacket *) packet;
-	    newMotdPic(ntohs(pkt->x), ntohs(pkt->y), ntohs(pkt->width), ntohs(pkt->height), 0, ntohs(pkt->page));
-	}
-	break;
-    case SP_PE1_NUM_MISSILES:
-	me->p_totmissiles = ntohs(((struct pe1_num_missiles_spacket *) packet)->num);
-	// printf("updated totmissiles to %d\n",me->p_totmissiles);
-	if (me->p_totmissiles < 0)
-	    me->p_totmissiles = 0;	// SB/WB have -1
-	break;
-    default:
-	printf("unknown paradise extension packet 1 subtype = %d\n",
-	       packet->subtype);
+    switch (packet->subtype)
+    {
+      case SP_PE1_MISSING_BITMAP:
+        {
+        struct pe1_missing_bitmap_spacket *pkt = (struct pe1_missing_bitmap_spacket *) packet;
+        newMotdPic(ntohs(pkt->x), ntohs(pkt->y), ntohs(pkt->width), ntohs(pkt->height), 0, ntohs(pkt->page));
+        }
+        break;
+      case SP_PE1_NUM_MISSILES:
+        me->p_totmissiles = ntohs(((struct pe1_num_missiles_spacket *) packet)->num);
+        // printf("updated totmissiles to %d\n",me->p_totmissiles);
+        if (me->p_totmissiles < 0)
+          me->p_totmissiles = 0;	// SB/WB have -1
+        break;
+      default:
+        LineToConsole ("unknown paradise extension packet 1 subtype = %d\n", packet->subtype);
+        break;
     }
 }
 void handleThingy (struct thingy_spacket *packet)

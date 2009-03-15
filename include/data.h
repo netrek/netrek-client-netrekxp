@@ -279,6 +279,7 @@ extern int planetBitmapGalaxy;
 extern int planetHighlighting;
 extern int rotatePlanets;
 extern int logging;
+extern int log_ignore;
 extern int continueTractor;
 extern int tcounter;
 extern int autoKey;

@@ -27,10 +27,9 @@ player's candock, cantranswarp, ban, ignore, etc.
 rect doesn't take these into account.
 4) With expanded tactical ..can now see ships at galactic coordinates (-500,-500),
 if you fly into the NW corner of the galaxy.  this was never anticipated!
-6) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
+5) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
-7) Verbosity setting for logfile..phaser and torp warn messages can be very spammy.
-8) Make server packet for variable rank requirements like min offense.
+6) Make server packet for variable rank requirements like min offense.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
@@ -41,6 +40,8 @@ during login sequence.
 5) Some of the paradise packet types may need some work
 6) Still missing asteroids and (flashing) warpbeacons.
 7) Show ratings on full/wide playerlist.
+8) Playback crashes if compiled in DEBUG mode but not if run in debugger or RELEASE
+mode - reason unknown.
 9) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
 10) add POBSERV and PTQUEUE support

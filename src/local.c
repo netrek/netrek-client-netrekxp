@@ -1317,7 +1317,7 @@ DrawShips (void)
                     else if (value <= 66)
                         color = yColor;
                     else
-                       color = gColor;
+                        color = gColor;
                 }
                 else
                     color = playerColor (j);

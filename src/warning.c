@@ -131,7 +131,7 @@ warning (char *text)
                  tm->tm_min, tm->tm_sec);
         warncount = (warncount > 100) ? 109 : warncount + 9;
 
-        if (logging)
+        if (logging && !log_ignore)
         {
             if (logFile != NULL)
             {
@@ -141,6 +141,7 @@ warning (char *text)
             else
                 puts (newtext);
         }
+        log_ignore = 0;
 
         if (doPhaser)
             W_MessageAllowedWindows (WAM_PHASER, 0, 0, textColor, newtext, warncount, 0);

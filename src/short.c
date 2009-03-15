@@ -121,7 +121,7 @@ char *w_texts[] = {
 /* beam_up()       */
     "Must be orbiting or docked to beam up.",   /* 44 */
     "Those aren't our men.",    /* 45 */
-    "Comm Officer: We're not authorized to beam foriegn troops on board!",      /* 46 */
+    "Comm Officer: We're not authorized to beam foreign troops on board!",      /* 46 */
 /* beam_down() */
     "Must be orbiting or docked to beam down.", /* 47 */
     "Comm Officer: Starbase refuses permission to beam our troops over.",       /* 48 */
@@ -1344,7 +1344,11 @@ handleSWarning (struct warning_s_spacket *packet)
         else
 #endif
         if (damage >= 0 && damage < NUMWTEXTS)
+        {
+            /* Don't log spammy warning messages. */
+            log_ignore = 1;
             warning (w_texts[damage]);
+        }
         break;
     case PHASER_HIT_TEXT:
         target = &players[(unsigned char) packet->argument & 0x3f];
