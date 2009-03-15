@@ -879,7 +879,7 @@ singleMacro: EF
 macro.0.A:%    __    __   ______        __   Zoom in/out!  Anti-packet loss,
 macro.0.A:%   /  \  / /__/_  __/______ / /__ observers see all weapons, etc.
 macro.0.A:%  / /\ \/ / -_)/ / / __/ -_)  '_/ Plus 50 updates/sec support! 
-macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2009, v1.0
+macro.0.A:% /_/  \__/\__//_/ /_/  \__/_/\_\ XP 2009, v1.1
 macro.0.A:%          Get it today at http://play.netrek.org
 
 macro.P.A:%    \~~\    _ _             ,----------------------------------,
@@ -1045,7 +1045,7 @@ macro.).A:/*   http://groups.google.com/group/netrek-clue-games         */
 macro.).A:/*   INL-style timed bronco games are every Wednesday!        */
 
 macro.(.A:/*   Get the latest version of Netrek XP 2009 today!            */
-macro.(.A:/*   Current version is 1.0                                     */
+macro.(.A:/*   Current version is 1.1                                     */
 macro.(.A:/*   Download it at http://www.netrek.org/files/NetrekXP_2009/  */
 macro.(.A:/*   or at http://play.netrek.org                               */
 
