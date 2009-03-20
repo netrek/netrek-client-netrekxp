@@ -2766,10 +2766,11 @@ handleShipCap (struct ship_cap_spacket *packet)
 	    temp->ship->s_desig[1] = packet->s_desig2;
 	    temp->ship->s_bitmap = ntohs(packet->s_bitmap);
 	    //buildShipKeymap(temp->ship);
-	    myship = getship (myship->s_type);
-            redrawTstats (); /* Redraw dashboard */
-            calibrate_stats (); /* Redefine colored statwin sliders */
-            redrawStats ();  /* Redraw statwin */
+	    me->p_ship = *getship (myship->s_type);
+	    myship = &(me->p_ship);
+	    redrawTstats (); /* Redraw dashboard */
+	    calibrate_stats (); /* Redefine colored statwin sliders */
+	    redrawStats ();  /* Redraw statwin */
 	    return;
 	}
 	temp = temp->next;
@@ -2804,7 +2805,8 @@ handleShipCap (struct ship_cap_spacket *packet)
     temp->ship->s_desig[0] = packet->s_desig1;
     temp->ship->s_desig[1] = packet->s_desig2;
     temp->ship->s_bitmap = ntohs(packet->s_bitmap);
-    myship = getship (myship->s_type);
+    me->p_ship = *getship (myship->s_type);
+    myship = &(me->p_ship);
     redrawTstats (); /* Redraw dashboard */
     calibrate_stats (); /* Redefine colored statwin sliders */
     redrawStats ();  /* Redraw statwin */

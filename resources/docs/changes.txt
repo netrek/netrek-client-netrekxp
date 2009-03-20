@@ -8,6 +8,8 @@ General bug fixes:
 hardware configurations.
 5) Fix bug with custom color palette (forcedisplay = 2) which caused local
 window to have a red background.
+6) Fixed bug causing ship values on dashboard to not display properly when
+upgrades were bought in sturgeon.
 
 New features:
 1) Warning messages are no longer logged.  Cuts down on logfile spam.
