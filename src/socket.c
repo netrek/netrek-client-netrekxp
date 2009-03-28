@@ -2455,11 +2455,16 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
         LineToConsole ("handlePlyrLogin: received player num larger than nplayers\n");
         return;
     }
+    /* So apparently the server sends this packet before it tells us if it is a paradise
+       server or not, which makes this check throw out valid player login packets on paradise
+       servers.  Sanity check on pl->p_stats.st_rank moved to playerlist.c and newwin.c 
+       as needed.  BB*/
+    /* 
     if (!paradise && packet->rank >= NUMRANKS)
     {
         LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
-    }
+    }*/
     packet->name[sizeof (packet->name) - 1] = '\0';
     packet->monitor[sizeof (packet->monitor) - 1] = '\0';
     packet->login[sizeof (packet->login) - 1] = '\0';
@@ -2932,6 +2937,7 @@ initialize_players(void)
         players[i].p_no = i;
         players[i].p_ntorp = 0;
         players[i].p_nplasmatorp = 0;
+        players[i].p_stats.st_rank = 0;
         players[i].p_stats2.st_rank = 0;
         players[i].p_stats2.st_royal = 0;
         players[i].p_ndrone = 0;

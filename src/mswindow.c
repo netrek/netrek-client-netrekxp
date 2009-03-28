@@ -811,7 +811,8 @@ W_Initialize (char *display)
     lf.lfPitchAndFamily = FF_MODERN | FIXED_PITCH;
 
     strcpy (lf.lfFaceName, "Netrek");
-    lf.lfHeight = -intDefault ("fontSize", fontSize);
+    fontSize = intDefault ("fontSize", fontSize);
+    lf.lfHeight = -fontSize;
     lf.lfWeight = FW_REGULAR;
 
     W_RegularFont = (W_Font) CreateFontIndirect (&lf);

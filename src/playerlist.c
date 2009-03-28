@@ -1129,7 +1129,12 @@ PlistLine (W_Window win,
                 //format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
                 format (buffPoint, "UNKN", 4, 0);
             else
-                format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
+            {
+                if (j->p_stats.st_rank >= NUMRANKS)
+                    format (buffPoint, "UNKN", 4, 0);
+                else
+                    format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
+            }
             buffPoint += 4;
             break;
 
@@ -1137,7 +1142,12 @@ PlistLine (W_Window win,
             if (paradise)
                 format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
             else
-                format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
+            {
+                if (j->p_stats.st_rank >= NUMRANKS)
+                    format (buffPoint, "Unknown!  ", 10, 0);
+                else
+                    format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
+            }
             buffPoint += 10;
             break;
 

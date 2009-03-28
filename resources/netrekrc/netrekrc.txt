@@ -101,8 +101,8 @@ doubleBuffering: on
 
 # Allow switching of ship bitmaps in game.  With this option disabled
 # not all bitmaps load into memory.  This option is thus not changeable
-# in game.  Do not attempt to edit your netrekrc to turn dynamic bitmaps
-# on and then reload the netrekrc with the & key - restart the client instead.
+# in game.  Do not attempt to edit your netrekrc.txt to turn dynamic bitmaps
+# on and then reload netrekrc.txt with the & key - restart the client instead.
 dynamicBitmaps: on
 
 # Angle between enemy phaser lines
@@ -1118,7 +1118,7 @@ color.Ori: cyan
 color.Ind: gray63
 
 
-# Esoteric features such as individual ship rcfiles/keymaps
+# Esoteric features such as individual ship keymaps
 # /ckeymaps/buttonmaps (i.e. keymap-ca: <keymap>), observer
 # /servertype options (i.e. keymap.bronco: <keymap>), and
 # button keymaps (b1keymap through b5keymap)

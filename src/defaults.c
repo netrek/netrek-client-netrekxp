@@ -882,7 +882,7 @@ struct save_options save_options[] = {
             "0 - TCP",
             "1 - simple UDP (default)",
             "2 - enforced UDP (state)",
-            "3 - enfotrced UDP (state & weapons)",
+            "3 - enforced UDP (state & weapons)",
             NULL
         }
     },
@@ -939,7 +939,8 @@ struct save_options save_options[] = {
         {
             "Receive SP_GENERIC_32 packets, which are used to convey things",
             "like repair time and planet being orbitted.  Increases bandwidth",
-            "usage by 320 bytes/second for a server running at 10 UPS.",
+            "usage anywhere from 0 to 320 bytes/second for a server running",
+            "at 10 UPS.",
             NULL
         }
     },

@@ -1931,7 +1931,12 @@ entrywindow (int *team,
             sprintf (buf, "Welcome aboard %s!",
                     (me->p_stats2.st_royal == 0 ? ranks2[me->p_stats2.st_rank].name : royal[me->p_stats2.st_royal].name));
         else
-            sprintf (buf, "Welcome aboard %s!", ranks[me->p_stats.st_rank].name);
+        {
+            if (me->p_stats.st_rank >= NUMRANKS)
+                sprintf (buf, "Welcome aboard!");
+            else
+                sprintf (buf, "Welcome aboard %s!", ranks[me->p_stats.st_rank].name);
+        }
         warning (buf);
     }
 

@@ -10,6 +10,7 @@ hardware configurations.
 window to have a red background.
 6) Fixed bug causing ship values on dashboard to not display properly when
 upgrades were bought in sturgeon.
+7) Fixed bug where font size was not saving properly.
 
 New features:
 1) Warning messages are no longer logged.  Cuts down on logfile spam.
