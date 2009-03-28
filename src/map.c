@@ -537,7 +537,7 @@ DrawPlanets ()
 
     for (l = planets + nplanets - 1; l >= planets; --l)
     {
-        /* Synchronize planet info (up to 10 times/second) for current orbitted
+        /* Synchronize planet info (up to 10 times/second) for current orbited
            planet.  For all other planets, send info on planet 0 through last
            planet (nplanets) every nplanets/10 seconds, one planet at a time,
            10 times/second. */
@@ -1301,7 +1301,7 @@ map (void)
 	    && (isMe(j))
 	    && j->p_ship.s_type != STARBASE)
         {
-          /* Orbitting any non-owned planet gets you seen,
+          /* Orbiting any non-owned planet gets you seen,
              so don't draw the circle */
           if ((j->p_flags & PFORBIT) &&
           (planets[j->p_planet].pl_owner != j->p_team)) ;

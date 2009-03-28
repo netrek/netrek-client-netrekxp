@@ -694,7 +694,7 @@ DrawPlanets (void)
             clearcount++;
         }
 
-        /* Allow army display if player/observer is orbitting a planet, or alternatively
+        /* Allow army display if player/observer is orbiting a planet, or alternatively
            if observer is locked onto a planet, or is show_army_count feature packet is on */
         if ((showArmy == 1 || showArmy == 3) && (l->pl_info & me->p_team)
          && (paradise ? (PL_TYPE(*l) == PLPLANET) : 1)
@@ -2960,7 +2960,7 @@ DrawMisc (void)
     if (viewRange && (MAXDISTCLOAK / scaleFactor < TWINSIDE / 2) &&
        (me->p_flags & PFCLOAK) && me->p_ship.s_type != STARBASE)
     {
-        /* Orbitting any non-owned planet gets you seen,
+        /* Orbiting any non-owned planet gets you seen,
            so don't draw the circle */
         if ((me->p_flags & PFORBIT) && (planets[me->p_planet].pl_owner != me->p_team)) ;
         /* Don't draw if not carrying and viewRange is 2 */

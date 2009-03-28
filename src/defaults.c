@@ -938,7 +938,7 @@ struct save_options save_options[] = {
     {"useGeneric32", &useGeneric32, RC_BOOL,
         {
             "Receive SP_GENERIC_32 packets, which are used to convey things",
-            "like repair time and planet being orbitted.  Increases bandwidth",
+            "like repair time and planet being orbited.  Increases bandwidth",
             "usage anywhere from 0 to 320 bytes/second for a server running",
             "at 10 UPS.",
             NULL

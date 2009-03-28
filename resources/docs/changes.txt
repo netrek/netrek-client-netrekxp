@@ -225,7 +225,7 @@ galactic map.
 been replaced by the mainTitleBar option.
 14) Added "viewRange: (0-3)" option to draw a dashed circle on the map showing
 the range at which enemies can see you.  You can choose to draw it at all times,
-only when you are cloaked, only when carrying, or not at all.  If orbitting a
+only when you are cloaked, only when carrying, or not at all.  If orbiting a
 foreign planet, no circle is drawn, as you are visible to all.  View range is
 disabled if your ship is a starbase.  Cloaked view range will also show on the
 tactical map if tactical is resized large enough.  Showing view range circles on
@@ -255,7 +255,7 @@ checks with the server to make sure your planet info is up to date, so no more
 phantom armies on a planet or delay on bombing a planet flat because you lost a
 planet packet.  Also no more wondering if you missed a planet packet while
 dropping if planet army count doesn't go down.  This cross-check with server
-occurs 10 times/second for a planet you are orbitting (critical), and will cycle
+occurs 10 times/second for a planet you are orbiting (critical), and will cycle
 through the rest of the planets at a rate of 1 planet every 100 ms.  Adds 100
 bytes/sec in upstream data from client to server.
 22) New netrekrc option "infoRange: (on)/off" to draw a dashed white box on your
@@ -410,7 +410,7 @@ Netrek XP 2006, Version 1.2: (Released Mar-2007)
   as it allows for future data to be sent in this packet (lots of empty room).  Currently
   it sends your ship's repair time..removing the need for the client side repair time
   calculation, which had several flaws and didn't work well with observers.  It also
-  sends info on which planet you are orbitting.
+  sends info on which planet you are orbiting.
 - added "UseFullShipInfo: (on)/off" to choose whether to use short or long type packets
   for other player info.  Default is on.  This netrekrc setting controls whether the
   feature packet FULL_DIRECTION_RESOLUTION is used.
