@@ -2459,8 +2459,8 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
        server or not, which makes this check throw out valid player login packets on paradise
        servers.  Sanity check on pl->p_stats.st_rank moved to playerlist.c and newwin.c 
        as needed.  BB*/
-    /* 
-    if (!paradise && packet->rank >= NUMRANKS)
+    /*
+    if (packet->rank >= NUMRANKS)
     {
         LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
@@ -3790,7 +3790,7 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     reinitialize_royal();
 
     resize_players();
-    // Reinit playerlist - absolutely necessary or it will break horribly
+    // Reinit playerlist - necessary as max number of players (nplayers) may have changed
     InitPlayerList();
     initialize_torps();
     initialize_phasers();

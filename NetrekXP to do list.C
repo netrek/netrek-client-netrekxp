@@ -34,14 +34,13 @@ Maybe with enforced state?
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
 2) Autologin with name and password seems to break any motd pics - race condition
-during login sequence.
+during login sequence.  But this is a paradise server issue, occurs for paradise
+client as well.
 3) A bunch of gridline/zoom options should be made into netrekrc options.
 4) The galactic zoom doesn't work
 5) Some of the paradise packet types may need some work
 6) Still missing asteroids and (flashing) warpbeacons.
 7) Show ratings on full/wide playerlist.
-8) Playback crashes if compiled in DEBUG mode but not if run in debugger or RELEASE
-mode - reason unknown.
 9) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.
 10) add POBSERV and PTQUEUE support
