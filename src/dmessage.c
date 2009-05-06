@@ -398,12 +398,12 @@ instr (char *string1,
 void
 sendVersion (void)
 {
-    char client_ver[15];
+    char client_ver[80];
 
     if (!version_sent)
     {
         version_sent = 1;
-        sprintf (client_ver, "@%s", mvers);
+        sprintf (client_ver, "@%s %s", version, mvers);
 
         pmessage (client_ver, (short) me->p_no, MINDIV | MCONFIG);
     }
