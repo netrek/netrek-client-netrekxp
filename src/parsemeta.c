@@ -695,7 +695,10 @@ static void version_s(struct sockaddr_in *address)
   sp->refresh = 1;
   sp->lifetime = MAX_LIFETIME;
   sp->players = players;
-  sp->status = statusOpen;
+  if (players == 0)
+      sp->status = statusNobody;
+  else
+      sp->status = statusOpen;
   sp->typeflag = type;
   strncpy(sp->comment, comment, LINE);
   free(comment);
