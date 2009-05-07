@@ -355,8 +355,8 @@ static int ReadMetasSend()
   char *metaservers;		/* our copy of the metaserver host names */
   char *token;			/* current metaserver host name          */
   struct sockaddr_in address;	/* the address of the metaservers	 */
-  char req[80];			/* the request packet for the metaserver */
-  int reqlen;			/* the length of the request packet      */
+  static char *req;		/* the request packet for the metaserver */
+  static int reqlen;		/* the length of the request packet      */
 
   /* create the socket */
   if (msock < 0) {
@@ -372,9 +372,10 @@ static int ReadMetasSend()
       closesocket(msock);
       return 0;
     }
+    req = (char *) malloc(80);
+    sprintf(req, "?version=%s %s", version, mvers);
+    reqlen = strlen(req);
   }
-  sprintf(req, "?version=%s %s", version, mvers);
-  reqlen = strlen(req);
 
   /* send request to a multicast metaserver on local area network */
   address.sin_family = AF_INET;
