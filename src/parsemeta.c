@@ -55,6 +55,7 @@
 #include "struct.h"
 #include "data.h"
 #include "proto.h"
+#include "version.h"
 #ifdef METAPING
 #include <process.h>	// for _getpid
 #endif
@@ -354,6 +355,8 @@ static int ReadMetasSend()
   char *metaservers;		/* our copy of the metaserver host names */
   char *token;			/* current metaserver host name          */
   struct sockaddr_in address;	/* the address of the metaservers	 */
+  char *req;			/* the request packet for the metaserver */
+  int reqlen;			/* the length of the request packet      */
 
   /* create the socket */
   if (msock < 0) {
@@ -369,6 +372,9 @@ static int ReadMetasSend()
       closesocket(msock);
       return 0;
     }
+    req = malloc(80);
+    snprintf(req, 80, "?version=%s %s", version, mvers);
+    reqlen = strlen(req);
   }
 
   /* send request to a multicast metaserver on local area network */
@@ -378,7 +384,7 @@ static int ReadMetasSend()
   if (metaVerbose)
     LineToConsole ("Requesting player list from nearby servers on %s\n",
                     inet_ntoa(address.sin_addr));
-  if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
+  if (sendto(msock, req, reqlen, 0, (struct sockaddr *)&address,
 	     sizeof(address)) < 0) {
     perror("ReadMetasSend: sendto");
   } else {
@@ -417,7 +423,7 @@ static int ReadMetasSend()
 	  if (metaVerbose)
             LineToConsole ("Requesting player list from metaserver %s at %s\n",
                             token, inet_ntoa(address.sin_addr));
-	  if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
+	  if (sendto(msock, req, reqlen, 0, (struct sockaddr *)&address,
 		sizeof(address)) < 0) {
 	    perror("ReadMetasSend: sendto");
 	  } else {
@@ -430,7 +436,7 @@ static int ReadMetasSend()
       if (metaVerbose)
         LineToConsole ("Requesting player list from metaserver %s\n",
                         inet_ntoa(address.sin_addr));
-      if (sendto(msock, "?", 1, 0, (struct sockaddr *)&address,
+      if (sendto(msock, req, reqlen, 0, (struct sockaddr *)&address,
 	sizeof(address)) < 0) {
         perror("ReadMetasSend: sendto");
       } else {
