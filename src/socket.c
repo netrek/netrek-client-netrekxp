@@ -133,13 +133,7 @@ struct packet_handler handlers[] = {
     {sizeof (struct udp_reply_spacket), handleUdpReply},        /* SP_UDP_STAT */
     {sizeof (struct sequence_spacket), handleSequence}, /* SP_SEQUENCE */
     {sizeof (struct sc_sequence_spacket), handleSequence},      /* SP_SC_SEQUENCE */
-
-#ifdef RSA
-    {sizeof (struct rsa_key_spacket), handleRSAKey},    /* SP_RSA_KEY */
-#else
-    {0, dummy},                 /* #31, and dummy won't */
-#endif
-
+    {0, dummy},                 /* #31, old SP_RSA_KEY */
     {-1, handlePacket32}, /* SP_MOTD_PIC and SP_GENERIC_32 */
     {-1, handlePacket33}, /* SP_STATS2 and SP_FLAGS_ALL */
     {sizeof (struct status_spacket2), handleStatus2}, /* SP_STATUS2 */
@@ -244,13 +238,7 @@ int sizes[] = {
     sizeof (struct scan_cpacket),       /* CP_SCAN (ATM) */
     sizeof (struct udp_req_cpacket),    /* CP_UDP_REQ */
     sizeof (struct sequence_cpacket),   /* CP_SEQUENCE */
-
-#ifdef RSA
-    sizeof (struct rsa_key_cpacket),    /* CP_RSA_KEY */
-#else
-    0,                          /* 37 */
-#endif
-
+    0,                          /* 37 old CP_RSA_KEY*/
     sizeof (struct planet_cpacket),     /* CP_PLANET */
     0,                          /* 39 */
     0,                          /* 40 */
@@ -2674,41 +2662,9 @@ handleReserved (struct reserved_spacket *packet,
 #endif
 
 #if !defined(BORG)
-
-#ifndef RSA
     encryptReservedPacket (packet, &response, me->p_no);
     sendServerPacket ((struct player_spacket *) &response);
-#else
-
-    if (useRsa)
-    {                           /* can use -o option for old
-                                 * blessing */
-        /* client sends back a 'reserved' packet just saying RSA_VERSION info */
-        /* theoretically, the server then sends off a rsa_key_spacket * for the
-         * client to then respond to */
-        warning (RSA_VERSION);
-        STRNCPY (response.resp, RSA_VERSION, RESERVED_SIZE);
-        MCOPY (packet->data, response.data, RESERVED_SIZE);
-        response.type = CP_RESERVED;
-
-#ifdef DEBUG
-        LineToConsole ("Sending RSA reserved response\n");
 #endif
-    }
-    else
-    {
-        /* If server gods don't like NEWMACRO/SMARTMACRO they better install
-         * RSA... */
-        UseNewMacro = 1;
-        UseSmartMacro = 1;
-// SRS - Parameter 3 is incorrect?
-        encryptReservedPacket (packet, &response, me->p_no);
-    }
-
-    sendServerPacket ((struct player_spacket *) &response);
-#endif /* RSA */
-
-#endif /* defined(BORG) */
 }
 
 /* SP_SHIP_CAP packets are sent frequently by bronco servers but only
@@ -2852,76 +2808,6 @@ handleFlagsAll (struct flags_all_spacket *packet)
 {
     new_flags(ntohl(packet->flags), packet->offset);
 }
-
-#ifdef RSA
-void
-handleRSAKey (struct rsa_key_spacket *packet)
-{
-    struct rsa_key_cpacket response;
-    struct sockaddr_in saddr;
-    int len;
-    unsigned char *data;
-
-#ifdef GATEWAY
-    extern unsigned LONG netaddr;
-    extern int serv_port;
-
-#endif
-
-    response.type = CP_RSA_KEY;
-    /* encryptRSAPacket (packet, &response);      old style rsa-client  */
-
-#ifdef GATEWAY
-    /* if we didn't get it from -H, go ahead and query the socket */
-    if (netaddr == 0)
-    {
-        len = sizeof (saddr);
-        if (getpeername (sock, (struct sockaddr *) &saddr, &len) < 0)
-        {
-            perror ("getpeername(sock)");
-#ifdef THREADED
-            terminate2 (RETURNBASE + 1);
-#else
-            terminate (1);
-#endif
-        }
-    }
-    else
-    {
-        saddr.sin_addr.s_addr = htonl (netaddr);
-        saddr.sin_port = htons (serv_port);
-    }
-#else
-    /* query the socket to determine the remote host (ATM) */
-    len = sizeof (saddr);
-    if (getpeername (sock, (struct sockaddr *) &saddr, &len) < 0)
-    {
-        perror ("getpeername(sock)");
-#ifdef THREADED
-        terminate2 (RETURNBASE + 1);
-#else
-        terminate (1);
-#endif
-    }
-#endif
-
-    /* replace the first few bytes of the message */
-    /* will be the low order bytes of the number */
-    data = packet->data;
-    MCOPY (&saddr.sin_addr.s_addr, data, sizeof (saddr.sin_addr.s_addr));
-    data += sizeof (saddr.sin_addr.s_addr);
-    MCOPY (&saddr.sin_port, data, sizeof (saddr.sin_port));
-
-    rsa_black_box (response.resp, packet->data, response.public,
-                   response.global);
-
-    sendServerPacket ((struct player_spacket *) &response);
-    /* #ifdef DEBUG */
-    LineToConsole ("RSA verification requested.\n");
-    /* #endif */
-}
-
-#endif
 
 void
 initialize_players(void)
@@ -5084,19 +4970,6 @@ void print_packet(char *packet, int size)
 	   LineToConsole("  sequence=%u,",
 		   ntohs(((struct sc_sequence_spacket *) packet)->sequence) );
 	 break;
-#ifdef RSA
-       case SP_RSA_KEY      :                  /* handles binary * *
-						* verification */
-	 LineToConsole("\nS->C SP_RSA_KEY\t");
-	 if(log_packets > 1)
-	   {
-	     LineToConsole("  data=");
-	     for(i = 0; i < KEY_SIZE; i++)
-	       LineToConsole("0x%0X ",((struct rsa_key_spacket *) packet)->data[i]);
-	     LineToConsole(",");
-	   }
-	 break;
-#endif
        case SP_GENERIC_32   :
        //case SP_MOTD_PIC   :
 	if (paradise)
@@ -5716,27 +5589,6 @@ void print_opacket(char *packet, int size)
 	LineToConsole("  sequence=%u,",
 		ntohs(((struct sequence_cpacket *) packet)->sequence) );
       break;
-#ifdef RSA
-    case CP_RSA_KEY      :                    /* handles binary * *
-					       * verification */
-      LineToConsole("\nC->S CP_RSA_KEY\t");
-      if (log_packets > 1)
-	{
-	LineToConsole("  global=");
-	for(i = 0; i < KEY_SIZE; i++)
-	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->global[i]);
-	fprintf(stderr,",");
-	LineToConsole("  public=");
-	for(i = 0; i < KEY_SIZE; i++)
-	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->public[i]);
-	fprintf(stderr,",");
-	LineToConsole("  resp=");
-	for(i = 0; i < KEY_SIZE; i++)
-	  LineToConsole("0x%0X ",((struct rsa_key_cpacket *)packet)->resp[i]);
-	fprintf(stderr,",");
-	}
-      break;
-#endif
     case CP_PING_RESPONSE :                   /* client response */
       LineToConsole("\nC->S CP_PING_RESPONSE\t");
       if (log_packets > 1)

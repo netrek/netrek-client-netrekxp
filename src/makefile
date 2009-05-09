@@ -3,7 +3,6 @@
 #
 
 DEBUG = 1
-RSA = 1
 
 # Borland C++ 5.5
 cc     = bcc32
@@ -56,15 +55,6 @@ INPUTOBJ        = input.obj redraw.obj
 MAINOBJ         = main.obj
 MAINSRC         = main.c
 
-!ifdef RSA
-GMPLIB = ..\Win32\lib\BCC\libgmpbcc.lib
-RSADEFS = -DRSA
-RSASRC = rsa_box.c rsa_box_0.c rsa_box_1.c rsa_box_2.c\
-                  rsa_box_3.c rsa_box_4.c
-RSAOBJ = rsa_box.obj rsa_box_0.obj rsa_box_1.obj rsa_box_2.obj\
-                  rsa_box_3.obj rsa_box_4.obj
-!endif
-
 WIN32_SRCS = winmain.c mswindow.c
 WIN32_OBJS = winmain.obj mswindow.obj
 
@@ -76,9 +66,9 @@ INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
 
 all: netrek.exe
 
-OBJS = $(ROBJ) $(MAINOBJ) $(RSAOBJ) $(INPUTOBJ) $(WIN32_OBJS)
+OBJS = $(ROBJ) $(MAINOBJ) $(INPUTOBJ) $(WIN32_OBJS)
 .c.obj:
-        $(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(RSADEFS) $(DEBUGDEFS) $(INCS) $<
+        $(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(DEBUGDEFS) $(INCS) $<
 
 RESOURCES = bccnetrek.res
 

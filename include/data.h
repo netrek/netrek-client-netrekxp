@@ -126,18 +126,6 @@ extern unsigned LONG netaddr;   /* for blessing */
 
 extern int messageon;
 
-#ifdef RSA
-extern char testdata[];
-extern int useRsa;
-extern char key_name[];
-extern char client_type[];
-extern char client_arch[];
-extern char client_creator[];
-extern char client_comments[];
-extern char client_key_date[];
-
-#endif
-
 #ifdef META
 extern char *metaServer;
 extern int metaPort;

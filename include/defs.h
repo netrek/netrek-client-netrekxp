@@ -125,17 +125,6 @@
 #define TRACTCOST   20          /* fuel cost of activated
                                  * tractor beam */
 
-
-#ifdef RSA
-/* RSA stuff */
-#define RSA_VERSION "RSA v2.0 CLIENT"   /* string must begin with
-                                         * characters "RSA" */
-#define KEY_SIZE 32
-#define RESERVED_SIZE 16
-#define NAME_LEN 16
-#define KEYMAP_LEN 96
-#endif
-
 #define MSG_LEN 80
 
 

@@ -3,7 +3,6 @@
 #
 
 #DEBUG = 1
-RSA = 1
 
 # Cygwin
 cc     = gcc
@@ -67,15 +66,6 @@ INPUTOBJ        = input.o redraw.o
 MAINOBJ         = main.o
 MAINSRC         = main.c
 
-ifndef RSA
-GMPLIB = ..\Win32\lib\libgmp.lib
-RSADEFS = -DRSA
-RSASRC = rsa_box.c rsa_box_0.c rsa_box_1.c rsa_box_2.c\
-                  rsa_box_3.c rsa_box_4.c
-RSAOBJ = rsa_box.o rsa_box_0.o rsa_box_1.o rsa_box_2.o\
-                  rsa_box_3.o rsa_box_4.o
-endif
-
 WIN32_SRCS = winmain.c mswindow.c
 WIN32_OBJS = winmain.o mswindow.o
 
@@ -87,9 +77,9 @@ INCLUDES        = struct.h packets.h defs.h copyright.h bitmaps.h data.h\
 
 all: netrek.exe
 
-OBJS = $(ROBJ) $(MAINOBJ) $(RSAOBJ) $(INPUTOBJ) $(WIN32_OBJS)
+OBJS = $(ROBJ) $(MAINOBJ) $(INPUTOBJ) $(WIN32_OBJS)
 .c.o:
-	$(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(RSADEFS) $(DEBUGDEFS) $(INCS) $<
+	$(cc) $(cflags) $(ccompileonly) $(cdebug) $(DEFS) $(DEBUGDEFS) $(INCS) $<
 
 RESOURCES = vccnetrek.o
 

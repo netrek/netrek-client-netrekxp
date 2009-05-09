@@ -188,9 +188,6 @@
 /*      NO_UNWARRING_BOMBING    - No 3rd space bombing */
 #define NO_UNWARRING_BOMBING
 
-/*      SHOW_RSA                - Display the client type at login */
-#define SHOW_RSA
-
 /*      RESETGALAXY             - Reset the galaxy after each conquer */
 #define RESETGALAXY
 
@@ -372,18 +369,6 @@ typedef short SHORT;
 
 /*  System dependend Include files */
 
-
-/* Some GMP/RSA based stuff SRS 2/9/98 */
-#ifdef RSA
-
-#define MPTYPEDEF typedef MINT *MPTYPE;
-#define assignItom(x,i) x= itom(i)
-/* I had to rename pow in the gmp libraries to mpow */
-#define mp_pow(x, y, z, a) mpow(x, y, z, a)
-#define INC_MP <mp.h>
-
-#endif
-/* End of GMP/RSA based stuff SRS 2/9/98 */
 
 /* Unchecked machine dependencies */
 

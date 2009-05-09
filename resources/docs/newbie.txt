@@ -1956,6 +1956,8 @@ Even if you do manage to create a "blessed borg", the server gods can
 simply disable the particular key you are using, without causing too much 
 disruption.  [ Shekter ]
 
+RSA is now deprecated server side and is no longer used (May 2009).
+
 Scum:
      Of course I like that one definition I read on this group a while 
 back, that a ___ scum is someone who does ___ more than I do. [ Walter 

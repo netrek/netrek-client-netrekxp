@@ -55,11 +55,6 @@ printUsage (char *prog)
     LineToConsole (" [-H]   specify host (via gateway)\n");
 #endif
 
-#ifdef RSA
-    LineToConsole (" [-o]   use old style binary verification\n");
-    LineToConsole (" [-R]   use RSA binary verification\n");
-#endif
-
 #ifdef PACKET_LOG
     LineToConsole (" [-P]   log server packets, repeat for increased information\n");
 #endif
@@ -246,31 +241,6 @@ main2 (int argc,
                  break;
 #endif
 
-#ifdef RSA
-            case 'o':               /* try old binary verification */
-                useRsa = -1;        /* will be reset leter, set
-                                     * negative here * to flag
-                                     * that it should override
-                                     * xtrekrc */
-                LineToConsole ("Using standard binary verification\n");
-                break;
-
-            case 'R':               /* try RSA verification */
-                useRsa = -2;        /* will be reset leter, set
-                                     * negative here * to flag
-                                     * that it should override
-                                     * xtrekrc */
-                LineToConsole ("Using RSA verification\n");
-                break;
-#else
-            case 'R':
-                LineToConsole ("This client does not support RSA verification\n");
-
-            case 'o':
-                LineToConsole ("Using standard binary verification\n");
-                break;
-#endif
-
             case 'h':           /* server to connect to */
                 if (i < argc && argv[i + 1])
                 {
@@ -362,13 +332,6 @@ main2 (int argc,
             case 'v':           /* output version info */
                 LineToConsole ("%s %s\n", version, mvers);
                 LineToConsole ("%s\n", CBUGS);
-#ifdef RSA
-                LineToConsole ("RSA key installed: %s --- Created by: %s\n", key_name, client_creator);
-                LineToConsole ("Client type: %s\n", client_type);
-                LineToConsole ("Client arch: %s\n", client_arch);
-                LineToConsole ("Key permutation date: %s\n", client_key_date);
-                LineToConsole ("Comments: %s\n", client_comments);
-#endif
                 exit (0);
                 break;
             

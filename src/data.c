@@ -241,12 +241,6 @@ int debug = 0;
 
 int messageon = 0;
 
-#ifdef RSA
-char testdata[16];
-int useRsa = 1;
-
-#endif
-
 int SBhours = 0;
 
 #ifdef SHORT_PACKETS

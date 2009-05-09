@@ -5,8 +5,7 @@
 /*** March, 1994.    Joe Rumsey, Tedd Hadley                                ***/
 /***                                                                        ***/
 /*** most of the functions needed to handle SP_FEATURE/CP_FEATURE packets.  ***/
-/*** fill in the features list below for your client, and add a call to     ***/
-/*** reportFeatures just before the RSA response is sent. handleFeature     ***/
+/*** fill in the features list below for your client,  handleFeature        ***/
 /*** should just call checkFeature, which will search the list and set the  ***/
 /*** appropriate variable.  features unknown to the server are set to the   ***/
 /*** desired value for client features, and off for server/client features. ***/
@@ -111,7 +110,6 @@ struct feature features[] = {
 /******************************************************************************/
 /***  reportFeatures()                                                      ***/
 /******************************************************************************/
-/* call this from handleRSAKey, before sending the response. */
 static void
 reportFeatures (void)
 {

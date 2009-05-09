@@ -65,15 +65,4 @@ extern int use_trekhopd;
 extern unsigned LONG netaddr;
 #endif
 
-#ifdef RSA
-extern int useRsa;
-extern char key_name[];
-extern char client_type[];
-extern char client_arch[];
-extern char client_creator[];
-extern char client_comments[];
-extern char client_key_date[];
-
-#endif
-
 #endif /* _h_cow */

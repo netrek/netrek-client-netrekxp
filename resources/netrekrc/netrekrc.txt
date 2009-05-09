@@ -534,9 +534,6 @@ useLite: on
 # Use default beeplite settings
 defLite: on
 
-# Use RSA verification
-useRsa: on
-
 # Change shields graphic on shield damage
 varyShields: on
 

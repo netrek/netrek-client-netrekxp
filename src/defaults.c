@@ -957,14 +957,6 @@ struct save_options save_options[] = {
             NULL
         }
     },
-#endif 
-#ifdef RSA
-    {"useRsa", &useRsa, RC_BOOL,
-        {
-            "Use RSA verification",
-            NULL
-        }
-    },
 #endif
 #ifdef VSHIELD_BITMAPS
     {"varyShields", &varyShields, RC_BOOL,
@@ -1711,7 +1703,6 @@ void
 resetdefaults (void)
 {
     char *pek;
-    char tmp[100];
 
     if (strlen (pigcall) == 0)
         sprintf (pigcall, "Netrek XP 2009 (%s) - the smarter netrek eXPerience!", mvers);
@@ -1819,21 +1810,6 @@ resetdefaults (void)
 
     warnShields = booleanDefault ("warnShields", warnShields);
     vary_hull = booleanDefault("warnHull", vary_hull);
-
-#ifdef RSA
-    if (useRsa >= 0)
-    {
-        useRsa = booleanDefault ("useRsa", useRsa);
-        sprintf (tmp, "useRSA.%s", serverName);
-        useRsa = booleanDefault (tmp, useRsa);
-
-    }
-    else
-    {
-        /* RSA mode was specified in the command line args */
-        useRsa = (useRsa == -2) ? 1 : 0;
-    }
-#endif
 
 #ifdef METAPING
     metaPing = booleanDefault ("metaPing", metaPing);

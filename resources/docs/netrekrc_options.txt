@@ -330,8 +330,6 @@ useFullWeapInfo:          (on/off) support showing more weapon info on galaxy ma
 useGeneric32:             (on/off) receive generic_32 server packets which carry repair time, etc.
 useLite:                  (on/off) use beeplite
 defLite:                  (on/off) use default beeplite settings
-useRSA:                   (on/off) use RSA client verification
-useRSA.<server>           (on/off) user RSA for <server>
 varyShields:              (on/off) change shields graphic on shield damage
 varyShieldsColor:         (on/off) change shields color on shield damage
 viewBox:                  (on/off) show tactical window boundaries on map

@@ -94,8 +94,6 @@ run netrek from the same userid / account and still have unique defaults files.
   -A <password>		: specify character password
   -C <name>		: specify character name
   -U <udp port>		: specify UDP port
-  -o			: use old style binary verification
-  -R			: use RSA binary verification
   -P			: log server packets
   -c			: check players on server and return list
   -f <file name>		: record game to file (can be viewed later with -F)

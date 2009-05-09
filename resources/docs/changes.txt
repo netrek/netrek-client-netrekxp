@@ -16,6 +16,8 @@ New features:
 1) Warning messages are no longer logged.  Cuts down on logfile spam.
 2) Add hint about options menu to the startup hint list.
 3) Cambot playback now works for paradise recordings made by paradise clients.
+4) Removed RSA verification as this is now deprecated server side.  Using new
+client identification method as defined in server.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)

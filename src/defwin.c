@@ -16,63 +16,7 @@
  * health and/or system. Its use is at your own risk. I assume no
  * responsibility for damages, real, potential, or imagined, resulting  from
  * the use of it.)
- * 
- * $Log: defwin.c,v $
- * Revision 1.6  2007/02/24 10:19:55  modemhero
- * Cygwin makefile changes: fixed up a bunch of problems to get build to work, still not
- * perfect as libdir not resolving correctly.  Also removed CYGWIN define from code and
- * placed it as a compiler runtime define.  Progress of Cygwin build is that client runs, but
- * select() is broken.  Most likely related to struct fd_set definition.
- * Added observer support for shrink phasers, color phaser, warn and vary shields, and
- * removed observer support for detcircle.
- * Fixed detcircle so turning it off really does turn it off (oops).
- * Fixed color phaser with regards to FPS changes, so it works at all framerates.
- * Added observer support for showArmy for locking onto planets.
- * Split varyShields into 2 netrekrc options, varyShields and varyShieldsColor, to be
- * able to vary either/neither/both shield graphic and shield color with damage.
- * Changed defaults for FPS client/server values back to 10 from 50.  Let the user
- * have it in netrekrc if they want to request a higher rate, and don't assume servers
- * are running at 50 FPS.  Require that feature packet to be sent to increase the
- * update rate.
- *
- * Revision 1.5  2006/05/14 02:14:54  modemhero
- * New planet bitmaps!  Using Defcom's art.  Changeable via planets menu.
- * New netrekrc option, "planetBitmapGalaxy: (0-3)", same options as planetBitmap, but now you have
- * the choice to change map display planets too!  And have map and local planets use different
- * bitmap sets
- * Fixed bug where map window border wasn't being redrawn on death
- * Shortpackets is now off by default.  In the current state of internet connectivity, most people
- *  don't need the reduced packets, which don't send complete information and break certain features
- *  such as which direction other players are moving, robot shields, observer geno messages,
- *  shield/cloak status for warp 0 players, etc.
- * Fix to problem with bottom and right borders in certain windows (like map) getting overwritten - thanks Stas!
- * Client now recognizes planets that are flagged as "core", waiting on server patch to
- * actually get this information and do something with it
- *
- * Revision 1.4  2006/05/07 16:59:27  modemhero
- * Major features in this patch are:
- * Merge of Stas' latest source into client.
- *  - Lots of double buffering code
- *  - Cleanup of protoyping functions and proper variable initialization
- *  - Addition of working RSA key generator mkkey.exe (this necessitates another DLL in the source)
- *  - Updated compile instructions, and a new document on how to make a RSA key
- *  - Working version of winkey with BCC compiler
- *  - Bug fixes as per listed in his change log
- * Cleanup of changes list to remove bug fix/stuff only coders need to know.
- * Removal of buildexe script - Stas rewrote build to make this obsolete
- * Addition of HR bitmap set (including a few placeholder bitmaps until art is done)
- * Metablock patch accepted (not working proper yet though due to retrieving login issue)
- * Probably a few other things I forgot about!
- *
- * Revision 1.2  2004/08/11 00:12:56  stas_p
- * replaced printf by more generic console functions fro console.c
- *
- * Revision 1.2  1999/06/13 05:51:49  sheldon
- * Added code for Cambot playback
- *
- * Revision 1.1.1.1  1999/03/10 06:21:13  sheldon
- * Initial public release of Netrek:1999
- * */
+ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -405,16 +349,6 @@ def_messages[] =
         ,}
     ,}
     ,
-#ifdef RSA
-    {
-        "useRSA", BOOL_DEF, "Use RSA checking", &useRsa,
-        {
-            {0, NULL, ""},
-            {0, NULL, NULL}
-        ,}
-    ,}
-    ,
-#endif
 #ifdef VSHIELD_BITMAPS
     {
         "varyShields", BOOL_DEF, "Vary shields based on damage",

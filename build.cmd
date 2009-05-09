@@ -1,4 +1,3 @@
-set RSAKey="\netrek_files\rsa\NetrekXP-2009-RSA-Key-Win32.secret"
 set InstCWD="\netrek_files"
 set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
 rem set Compiler=VCC
@@ -8,7 +7,6 @@ set Compiler=CYGWIN
 @echo off
 Set MyCWD=%cd%
 if /I "%1" == "clean" goto :clean
-if /I "%1" == "cleanrsa" goto :cleanrsa
 if /I "%1" == "dist" goto :dist
 if /I "%1" == "build" goto :build
 if /I "%1" == "pics" goto :pics
@@ -363,10 +361,6 @@ pushd htmlhelp
 popd
 popd
 
-pushd src
-%MyCWD%\tools\mkkey -k %RSAKEY%
-popd
-
 if /I "%Compiler%" == "BCC" goto :CompilerBCC
 if /I "%Compiler%" == "VCC" goto :CompilerVCC
 if /I "%Compiler%" == "CYGWIN" goto :CompilerCYGWIN
@@ -628,13 +622,6 @@ popd
 pushd winkey
 make clean --makefile=makecyg
 popd
-popd
-
-goto :end
-
-:cleanrsa
-pushd src
-del rsa*.c
 popd
 
 goto :end

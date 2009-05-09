@@ -77,10 +77,8 @@
 #define SP_SC_SEQUENCE  30      /* this trans is
                                  * semi-critical info */
 
-#ifdef RSA
-#define SP_RSA_KEY	31      /* handles binary
-                                 * verification */
-#endif
+#define SP_RSA_KEY	31      /* deprecated - handles binary verification */
+
 
 // Note the conflicting defines for types 32 and 33
 #define SP_MOTD_PIC	32	/* paradise - motd bitmap pictures */
@@ -187,10 +185,7 @@
 #define CP_UDP_REQ      35      /* request UDP on/off */
 #define CP_SEQUENCE     36      /* sequence # packet */
 
-#ifdef RSA
-#define CP_RSA_KEY      37      /* handles binary
-                                 * verification */
-#endif
+#define CP_RSA_KEY      37      /* deprecated - handles binary verification */
 
 /* Note the conflicting defines for packet type 38*/
 #define CP_ASK_MOTD	38	/* paradise - request MOTD */
@@ -853,29 +848,6 @@ struct feature_cpacket
     char arg1, arg2;
     int value;
     char name[80];
-};
-
-#endif
-
-#ifdef RSA
-struct rsa_key_spacket
-{
-    char type;                  /* SP_RSA_KEY */
-    char pad1;
-    char pad2;
-    char pad3;
-    unsigned char data[KEY_SIZE];
-};
-
-struct rsa_key_cpacket
-{
-    char type;                  /* CP_RSA_KEY */
-    char pad1;
-    char pad2;
-    char pad3;
-    unsigned char global[KEY_SIZE];
-    unsigned char public[KEY_SIZE];
-    unsigned char resp[KEY_SIZE];
 };
 
 #endif
