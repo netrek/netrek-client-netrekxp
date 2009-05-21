@@ -48,6 +48,10 @@ allowWheelActions: on
 # Autoquit timer (default 60)
 autoQuit: 60
 
+# Phaser exact location of enemy target closest to cursor
+# Enemy must be within phaser range of your ship
+autoPhaser: on
+
 # Automatically rotate galaxy so teams are on left side of map
 autoRotate: off
 
@@ -502,6 +506,13 @@ udpSequenceCheck: on
 # Value may be constrained by server to be evenly divisible
 # by server frame rate
 updatesPerSec: 50
+
+# Ignore server settings for info/control feature packets.
+# This will automatically turn on motion mouse steering
+# show army counts, show other's speed, show cloakers, turn
+# keys, visibility range and beeplite regardless of what
+# features the server requests that you turn off.
+useAllFeatures: on
 
 # Crosscheck with server to make sure all planet information is
 # correct.  Prevents against lost planet updates which can cause

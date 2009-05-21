@@ -924,5 +924,7 @@ int scaleFactor = 40;           /* allows for scaling of tactical window */
 int mapscaleFactor = 40;        /* allows for scaling of galactic window, unused */
 int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */
 int hideConsole = 0;            /* show console window or not */
+int autoPhaser = 1;             /* phaser exact location of enemy target closest to cursor */
+int useAllFeatures = 1;         /* ignore server settings for info/control feature packets */
 
 struct context *context;

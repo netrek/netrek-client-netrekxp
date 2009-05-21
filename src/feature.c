@@ -302,16 +302,26 @@ checkFeature (struct feature_cpacket *packet)
 	    break;
 	}
     }
-    /* Ignore these feature packets for testing purposes */
-#if DEBUG
-    motion_mouse_steering = 1;
-    F_show_army_count = 1;
-    F_show_other_speed = 1;
-    F_show_cloakers = 1;
-    F_turn_keys = 1;
-    F_show_visibility_range = 1;
-#endif
 #endif /* BEEPLITE */
+    /* Ignore these feature packets? */
+    if (useAllFeatures)
+    {
+        motion_mouse_steering = 1;
+        F_show_army_count = 1;
+        F_show_other_speed = 1;
+        F_show_cloakers = 1;
+        F_turn_keys = 1;
+        F_show_visibility_range = 1;
+#ifdef BEEPLITE
+        F_beeplite_flags = LITE_PLAYERS_MAP |
+            LITE_PLAYERS_LOCAL |
+            LITE_SELF |
+            LITE_PLANETS |
+            LITE_SOUNDS |
+            LITE_COLOR |
+            LITE_TTS;
+#endif
+    }
 }
 
 /******************************************************************************/

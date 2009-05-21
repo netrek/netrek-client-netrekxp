@@ -18,6 +18,10 @@ New features:
 3) Cambot playback now works for paradise recordings made by paradise clients.
 4) Removed RSA verification as this is now deprecated server side.  Using new
 client identification method as defined in server.
+5) Added netrekrc option "useAllFeatures" to ignore server settings for
+info/control feature packets.
+6) Added netrekrc option "autoPhaser" to phaser exact location of enemy target
+closest to cursor.  Enemy must be within phaser range of your ship.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)

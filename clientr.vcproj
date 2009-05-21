@@ -47,7 +47,7 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="win32;win32\h;win32\SDL;include"
-				PreprocessorDefinitions="WIN32;_DEBUG;DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;DEBUG;RSA;_CONSOLE"
 				MinimalRebuild="false"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile="\netrek_files\tmp\src\Debug/clientr.pch"

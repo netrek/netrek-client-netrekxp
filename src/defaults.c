@@ -43,6 +43,13 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"autoPhaser", &autoPhaser, RC_INT,
+        {
+            "Phaser exact location of enemy target closest to cursor",
+            "Enemy must be within phaser range of your ship",
+            NULL
+        }
+    },
     {"autoQuit", &autoQuit, RC_INT,
         {
             "Autoquit timer (default 60)",
@@ -904,6 +911,16 @@ struct save_options save_options[] = {
             "1-50 (or whatever server frame rate is)",
             "Value may be constrained by server to be evenly divisible",
             "by server frame rate",
+            NULL
+        }
+    },
+    {"useAllFeatures", &useAllFeatures, RC_INT,
+        {
+            "Ignore server settings for info/control feature packets.",
+            "This will automatically turn on motion mouse steering",
+            "show army counts, show other's speed, show cloakers, turn",
+            "keys, visibility range and beeplite regardless of what",
+            "features the server requests that you turn off.",
             NULL
         }
     },

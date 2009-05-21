@@ -54,6 +54,8 @@ extern jmp_buf env;
 struct obtype *target;
 unsigned char key = ' ';
 
+void phaseraction (W_Event * data);
+
 /* this used to be 177 for an unknown reason...I think it may * have included
  * various control characters.  We don't support * those anyway right?? - jn */
 #define MAXKEY 224
@@ -1697,8 +1699,7 @@ buttonaction (W_Event * data)
     }
     else if (data->key == W_MBUTTON)
     {
-        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
-        sendPhaserReq (course);
+        phaseraction(data);
     }
     else if (data->key == W_XBUTTON1)
     {
@@ -1910,6 +1911,48 @@ buttonaction (W_Event * data)
         sendPractrReq ();
     }
 #endif /* SHIFTED_MOUSE */
+}
+
+/******************************************************************************/
+/***  phaseraction()                                                        ***/
+/******************************************************************************/
+void
+phaseraction (W_Event * data)
+{
+    unsigned char course;
+    int x, y;
+    register struct player *j;
+    struct obtype *gettarget (W_Window ww,
+                              int x,
+                              int y,
+                              int targtype),
+    *target;
+
+    if (autoPhaser) /* add range check here */ {
+        target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK);
+        if (target->o_num == -1) { /* failed to find a target */
+            course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+            sendPhaserReq (course);
+            return;
+        }
+        j = &players[target->o_num];
+        if (data->Window == mapw)
+        {
+            x = j->p_x * GWINSIDE / GWIDTH;
+            y = j->p_y * GWINSIDE / GWIDTH;
+        }
+        else
+        {
+            x = (j->p_x - me->p_x) / scaleFactor + TWINSIDE / 2;
+            y = (j->p_y - me->p_y) / scaleFactor + TWINSIDE / 2;
+        }
+        /* Sanity check on x, y? Use ship max phaser range? */
+        /* How about phasering plasma? */
+        course = (unsigned char) (getcourse (data->Window, x, y));
+    }
+    else
+        course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+    sendPhaserReq (course);
 }
 
 /******************************************************************************/
@@ -3333,19 +3376,13 @@ Key111 (void)
 void
 Key112 (W_Event * data)
 {
-    unsigned char course;
-
 #ifdef AUTOKEY
     if (autoKey)
         autoKeyPhaserReqOn ();
     else
-    {
-        course = getcourse (data->Window, data->x, data->y);
-        sendPhaserReq (course);
-    }
+        phaseraction(data);
 #else
-    course = (unsigned char) (getcourse (data->Window, data->x, data->y));
-    sendPhaserReq (course);
+    phaseraction (data);
 #endif /* AUTOKEY */
 
 }

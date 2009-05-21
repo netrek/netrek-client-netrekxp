@@ -824,6 +824,8 @@ extern int scaleFactor;         /* allows for scaling of tactical window */
 extern int mapscaleFactor;      /* allows for scaling of galactic window, unused */
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 extern int hideConsole;         /* show console window or not */
+extern int autoPhaser;          /* phaser exact location of enemy target closest to cursor */
+extern int useAllFeatures;      /* ignore server settings for info/control feature packets */
 
 extern struct context *context;
 #endif /* _h_data */
