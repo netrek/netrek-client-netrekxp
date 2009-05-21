@@ -856,10 +856,10 @@ optionaction (W_Event * data)
     /* Is it a special non-linear option range? i.e updatesPerSec */
     else if (op->op_range && op->op_option == &updatesPerSec)
     {
-    	if (data->key == W_RBUTTON)
-    	{
-    	    if (++updatesPerSec > server_fps) ; /* Don't exceed server fps */
-    	    else 
+        if (data->key == W_RBUTTON)
+        {
+            if (++updatesPerSec > server_fps) ; /* Don't exceed server fps */
+            else 
                 while (server_fps % updatesPerSec != 0) updatesPerSec++;
         }
         else if (data->key == W_MBUTTON)
@@ -875,6 +875,11 @@ optionaction (W_Event * data)
             updatesPerSec = 1;
         if (updatesPerSec < 1)
             updatesPerSec = server_fps;
+        if (updatesPerSec != lastUpdateSpeed)
+        {
+            sendUpdatePacket (1000000 / updatesPerSec);
+            lastUpdateSpeed = updatesPerSec;
+        }
     }
 
     /* Does the button have a range of values? */
@@ -1055,11 +1060,6 @@ optiondone (void)
     {
         STRNCPY (login, newlogin, PSEUDOSIZE);
         *newlogin = '\0';
-    }
-    if (updatesPerSec != lastUpdateSpeed)
-    {
-        sendUpdatePacket (1000000 / updatesPerSec);
-        lastUpdateSpeed = updatesPerSec;
     }
 
     sendOptionsPacket ();       /* update server as to the

@@ -1796,10 +1796,10 @@ metainput (void)
     {
     	if (type == 1)
 	{
-	    do
-            {
-	        if (ReadMetasRecv(W_Socket())) metawindow();
-	    } while (!W_EventsPending());
+            while (1) {
+                if (W_EventsPending()) break;
+                if (ReadMetasRecv(W_Socket())) metawindow();
+            }
 	}
 	/* wait for any event */
 	W_NextEvent (&data);
