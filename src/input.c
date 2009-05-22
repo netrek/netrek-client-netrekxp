@@ -1928,6 +1928,7 @@ phaseraction (W_Event * data)
                               int targtype),
     *target;
 
+#if DEBUG
     if (autoPhaser) /* add range check here */ {
         target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK);
         if (target->o_num == -1) { /* failed to find a target */
@@ -1951,6 +1952,7 @@ phaseraction (W_Event * data)
         course = (unsigned char) (getcourse (data->Window, x, y));
     }
     else
+#endif
         course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     sendPhaserReq (course);
 }

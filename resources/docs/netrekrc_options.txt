@@ -8,7 +8,6 @@ agriColor:                (0-2) select color to display agri planet names on the
 # 2 - gray
 
 allowWheelActions:        (on/off) allow mouse wheel to work in non-scrolling windows
-autoPhaser:               (on/off) auto aim phasers
 autoQuit:                 (int) autoquit time after death
 autoRotate:               (on/off) automatically rotate galaxy so teams are on left side of map
 autoSetWar:               (0-2) declare war with enemy races when you first join
@@ -325,7 +324,6 @@ udpClientSend:            (0-3) how to send data to server
 udpDebug:                 (0/1) debug UDP traffic
 udpSequenceCheck:         (on/off) check UDP sequence
 updatesPerSec:            (1-50 generally) how many data updates per second to request from server
-useAllFeatures:           (on/off) turn on all feature packets regardless of server setting
 useCheckPlanets:          (on/off) crosscheck with server to make sure planet info always correct
 useFullShipInfo:          (on/off) display other ships to 256 directions instead of 16
 useFullWeapInfo:          (on/off) support showing more weapon info on galaxy map

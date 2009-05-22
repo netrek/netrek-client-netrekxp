@@ -303,9 +303,10 @@ checkFeature (struct feature_cpacket *packet)
 	}
     }
 #endif /* BEEPLITE */
-    /* Ignore these feature packets? */
-    if (useAllFeatures)
-    {
+
+
+#if DEBUG
+        /* Ignore these feature packets? */
         motion_mouse_steering = 1;
         F_show_army_count = 1;
         F_show_other_speed = 1;
@@ -321,7 +322,7 @@ checkFeature (struct feature_cpacket *packet)
             LITE_COLOR |
             LITE_TTS;
 #endif
-    }
+#endif
 }
 
 /******************************************************************************/

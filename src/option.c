@@ -298,7 +298,6 @@ struct option Ship_Menu[] = {
 struct option Weapons_Menu[] = {
     {0, "Weapons Menu", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
     {1, "Page %d (click to change)", &MenuPage, 0, 0, 0, NULL, &Menus_Range},
-    {1, "use auto aim phasers", &autoPhaser, 0, 0, 0, NULL, NULL},
     {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
     {1, "show weapons on galactic", &weaponsOnMap, 0, 0, 0, NULL, NULL},
 #ifdef JUBILEE_PHASERS
@@ -439,7 +438,6 @@ struct option Visual_Menu[] = {
     {1, "", &messageHUD, 0, 0, 0, messagehudmess, &messagehud_range},
 #endif
     {1, "use double buffering", &doubleBuffering, 0, 0, 0, NULL, NULL},
-    {1, "turn on all feature packets", &useAllFeatures, 0, 0, 0, NULL, NULL},
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };
