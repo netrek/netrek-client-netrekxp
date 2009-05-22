@@ -1920,6 +1920,8 @@ void
 phaseraction (W_Event * data)
 {
     unsigned char course;
+
+#if DEBUG
     int x, y;
     register struct player *j;
     struct obtype *gettarget (W_Window ww,
@@ -1928,7 +1930,6 @@ phaseraction (W_Event * data)
                               int targtype),
     *target;
 
-#if DEBUG
     if (autoPhaser) /* add range check here */ {
         target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK);
         if (target->o_num == -1) { /* failed to find a target */
