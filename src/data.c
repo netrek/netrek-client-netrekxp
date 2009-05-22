@@ -265,7 +265,7 @@ int lame_base_refit = 1;
 
 #ifdef META
 /* Metaservers list - comma delimited  */
-char *metaServer = "metaserver.us.netrek.org, metaserver2.us.netrek.org, metaserver3.us.netrek.org";
+char *metaServer = "metaserver.us.netrek.org, metaserver2.us.netrek.org, metaserver3.us.netrek.org, metaserver.servegame.org";
 int metaPort = 3521;
 int metaVerbose = 0;
 char *metaCache = NULL;
