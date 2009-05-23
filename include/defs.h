@@ -169,6 +169,7 @@
 #define TARG_SELF	0x8
 #define TARG_ENEMY      0x10
 #define TARG_FRIEND     0x20
+#define TARG_PLASMA     0x40
 
 #define DEFAULT_PORT	2592
 

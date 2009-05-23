@@ -726,11 +726,14 @@ struct mctl
 
 #define PLANETTYPE 0x1
 #define PLAYERTYPE 0x2
+#define PLASMATYPE 0x4
 
 struct obtype
 {
     int o_type;
     int o_num;
+    int o_dist_x;
+    int o_dist_y;
 };
 
 struct rank

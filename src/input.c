@@ -1921,6 +1921,7 @@ phaseraction (W_Event * data)
 {
     unsigned char course;
     int x, y;
+    int distance;
     register struct player *j;
     struct obtype *gettarget (W_Window ww,
                               int x,
@@ -1928,27 +1929,57 @@ phaseraction (W_Event * data)
                               int targtype),
     *target;
 
-    if (F_auto_weapons && autoPhaser) {
-        target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK);
-        if (target->o_num == -1) { 
+    if (F_auto_weapons && autoPhaser)
+    {
+        target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK | TARG_PLASMA);
+        if (target->o_type == PLAYERTYPE && target->o_num == me->p_no)
+        { 
             /* failed to find a target */
             course = (unsigned char) (getcourse (data->Window, data->x, data->y));
             sendPhaserReq (course);
             return;
         }
-        j = &players[target->o_num];
-        if (data->Window == mapw)
+        if (target->o_type == PLAYERTYPE)
         {
-            x = j->p_x * GWINSIDE / GWIDTH;
-            y = j->p_y * GWINSIDE / GWIDTH;
+            j = &players[target->o_num];
+            if (data->Window == mapw)
+            {
+                x = j->p_x * GWINSIDE / GWIDTH;
+                y = j->p_y * GWINSIDE / GWIDTH;
+            }
+            else if (data->Window == w)
+            {
+                x = (j->p_x - me->p_x) / scaleFactor + TWINSIDE / 2;
+                y = (j->p_y - me->p_y) / scaleFactor + TWINSIDE / 2;
+            }
         }
-        else
+        else if (target->o_type == PLASMATYPE)
         {
-            x = (j->p_x - me->p_x) / scaleFactor + TWINSIDE / 2;
-            y = (j->p_y - me->p_y) / scaleFactor + TWINSIDE / 2;
+            x = target->o_dist_x;
+            y = target->o_dist_y;
         }
-        /* Sanity check on x, y? Use ship max phaser range? */
-        /* How about phasering plasma? */
+  
+        /* Sanity check on distance.  Negative x or y indicates phaser is in local
+           window but target is outside viewable range. */
+        if (x < 0 || y < 0)
+        { 
+            course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+            sendPhaserReq (course);
+            return;
+        }
+        /* Check ship max phaser range for local window phasers.  Sometimes phasers
+           are fired to "point".  Not checking galaxy map phasers. */
+        if (data->Window == w)
+        {
+            distance = (int) sqrt((x- TWINSIDE / 2)*(x - TWINSIDE / 2) + (y - TWINSIDE / 2)*(y - TWINSIDE /2));
+            if (distance > (PHASEDIST * j->p_ship.s_phaserdamage / 100 / scaleFactor))
+            { 
+                course = (unsigned char) (getcourse (data->Window, data->x, data->y));
+                sendPhaserReq (course);
+                return;
+            }
+        }
+        /* Everything checks out */
         course = (unsigned char) (getcourse (data->Window, x, y));
     }
     else

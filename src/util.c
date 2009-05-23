@@ -64,6 +64,8 @@ gettarget (W_Window ww,
         g_y = (y - 4) / W_Textheight;
         _targ.o_type = PLAYERTYPE;
         _targ.o_num = GetPlayerFromPlist (g_x, g_y);
+        _targ.o_dist_x = -1;
+        _targ.o_dist_y = -1;
         targ = &_targ;
         return (targ);
     }
@@ -75,6 +77,8 @@ gettarget (W_Window ww,
         g_y = (y - 4) / W_Textheight - 2; // Two header lines
         _targ.o_type = PLANETTYPE;
         _targ.o_num = GetPlanetFromPlist (g_x, g_y);
+        _targ.o_dist_x = -1;
+        _targ.o_dist_y = -1;
         targ = &_targ;
         return (targ);
     }
@@ -105,6 +109,7 @@ gettarget2 (int x,
     register int i;
     register struct player *j;
     register struct planet *k;
+    register struct plasmatorp *pt;
     double dist, closedist;
     int friendly;
 
@@ -118,6 +123,8 @@ gettarget2 (int x,
             {
                 _target.o_type = PLANETTYPE;
                 _target.o_num = i;
+                _target.o_dist_x = -1;
+                _target.o_dist_y = -1;
                 closedist = dist;
             }
 
@@ -145,6 +152,28 @@ gettarget2 (int x,
             {
                 _target.o_type = PLAYERTYPE;
                 _target.o_num = i;
+                _target.o_dist_x = -1;
+                _target.o_dist_y = -1;
+                closedist = dist;
+            }
+        }
+    }
+    if (targtype & TARG_PLASMA)
+    {
+        for (pt = plasmatorps + (nplasmas * nplayers) - 1; pt >= plasmatorps; --pt)
+        {
+            if (!pt->pt_status)
+                continue;
+            if (pt->pt_status == PTEXPLODE || pt->pt_status == PTFREE)
+                continue;
+
+            dist = hypot ((double) (x - pt->pt_x), (double) (y - pt->pt_y));
+            if (dist < closedist)
+            {
+                _target.o_type = PLASMATYPE;
+                _target.o_num = -1;
+                _target.o_dist_x = (int) ((x - pt->pt_x) / scaleFactor + TWINSIDE / 2);
+                _target.o_dist_y = (int) ((y - pt->pt_y) / scaleFactor + TWINSIDE / 2);
                 closedist = dist;
             }
         }
@@ -155,6 +184,8 @@ gettarget2 (int x,
         _target.o_type = PLAYERTYPE;
         _target.o_num = me->p_no;       /* Return myself.  Oh
                                          * well... */
+        _target.o_dist_x = -1;
+        _target.o_dist_y = -1;
         return (&_target);
     }
     else
