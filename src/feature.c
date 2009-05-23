@@ -311,6 +311,7 @@ checkFeature (struct feature_cpacket *packet)
         F_show_army_count = 1;
         F_show_other_speed = 1;
         F_show_cloakers = 1;
+        F_auto_weapons = 1;
         F_turn_keys = 1;
         F_show_visibility_range = 1;
 #ifdef BEEPLITE

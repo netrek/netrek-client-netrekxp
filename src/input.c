@@ -1920,8 +1920,6 @@ void
 phaseraction (W_Event * data)
 {
     unsigned char course;
-
-#if DEBUG
     int x, y;
     register struct player *j;
     struct obtype *gettarget (W_Window ww,
@@ -1930,9 +1928,10 @@ phaseraction (W_Event * data)
                               int targtype),
     *target;
 
-    if (autoPhaser) /* add range check here */ {
+    if (F_auto_weapons && autoPhaser) {
         target = gettarget (data->Window, data->x, data->y, TARG_ENEMY | TARG_CLOAK);
-        if (target->o_num == -1) { /* failed to find a target */
+        if (target->o_num == -1) { 
+            /* failed to find a target */
             course = (unsigned char) (getcourse (data->Window, data->x, data->y));
             sendPhaserReq (course);
             return;
@@ -1953,7 +1952,6 @@ phaseraction (W_Event * data)
         course = (unsigned char) (getcourse (data->Window, x, y));
     }
     else
-#endif
         course = (unsigned char) (getcourse (data->Window, data->x, data->y));
     sendPhaserReq (course);
 }

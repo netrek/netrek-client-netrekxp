@@ -43,6 +43,14 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"autoPhaser", &autoPhaser, RC_INT,
+        {
+            "Phaser exact location of enemy target closest to cursor",
+            "Enemy must be within phaser range of your ship",
+            "Server god decides whether to enable it on server",
+            NULL
+       }
+    },
     {"autoQuit", &autoQuit, RC_INT,
         {
             "Autoquit timer (default 60)",
@@ -1776,6 +1784,7 @@ resetdefaults (void)
     puckArrow = booleanDefault ("puckArrow", puckArrow);
     showArmy = intDefault ("showArmy", showArmy);
     showCloakers = booleanDefault ("showCloakers", showCloakers);
+    autoPhaser = booleanDefault ("autoPhaser", autoPhaser);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);

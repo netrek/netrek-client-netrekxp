@@ -8,6 +8,7 @@ agriColor:                (0-2) select color to display agri planet names on the
 # 2 - gray
 
 allowWheelActions:        (on/off) allow mouse wheel to work in non-scrolling windows
+autoPhaser:               (on/off) auto aim phasers
 autoQuit:                 (int) autoquit time after death
 autoRotate:               (on/off) automatically rotate galaxy so teams are on left side of map
 autoSetWar:               (0-2) declare war with enemy races when you first join

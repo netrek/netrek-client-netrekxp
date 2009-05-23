@@ -45,6 +45,11 @@ agriColor: 1
 # allow mouse wheel to produce action in non-scrollable windows
 allowWheelActions: on
 
+# Phaser exact location of enemy target closest to cursor
+# Enemy must be within phaser range of your ship
+# Server god decides whether to enable it on server
+autoPhaser: on
+
 # Autoquit timer (default 60)
 autoQuit: 60
 
