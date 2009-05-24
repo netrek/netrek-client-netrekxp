@@ -123,8 +123,8 @@ gettarget2 (int x,
             {
                 _target.o_type = PLANETTYPE;
                 _target.o_num = i;
-                _target.o_dist_x = -1;
-                _target.o_dist_y = -1;
+                _target.o_dist_x = k->pl_x;
+                _target.o_dist_y = k->pl_y;
                 closedist = dist;
             }
 
@@ -152,8 +152,8 @@ gettarget2 (int x,
             {
                 _target.o_type = PLAYERTYPE;
                 _target.o_num = i;
-                _target.o_dist_x = -1;
-                _target.o_dist_y = -1;
+                _target.o_dist_x = j->p_x;
+                _target.o_dist_y = j->p_y;
                 closedist = dist;
             }
         }
@@ -172,8 +172,8 @@ gettarget2 (int x,
             {
                 _target.o_type = PLASMATYPE;
                 _target.o_num = -1;
-                _target.o_dist_x = (int) ((x - pt->pt_x) / scaleFactor + TWINSIDE / 2);
-                _target.o_dist_y = (int) ((y - pt->pt_y) / scaleFactor + TWINSIDE / 2);
+                _target.o_dist_x = pt->pt_x;
+                _target.o_dist_y = pt->pt_y;
                 closedist = dist;
             }
         }

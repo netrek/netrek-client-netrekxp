@@ -1920,9 +1920,8 @@ void
 phaseraction (W_Event * data)
 {
     unsigned char course;
-    int x, y;
+    int x, y, dx, dy;
     int distance;
-    register struct player *j;
     struct obtype *gettarget (W_Window ww,
                               int x,
                               int y,
@@ -1939,47 +1938,31 @@ phaseraction (W_Event * data)
             sendPhaserReq (course);
             return;
         }
-        if (target->o_type == PLAYERTYPE)
-        {
-            j = &players[target->o_num];
-            if (data->Window == mapw)
-            {
-                x = j->p_x * GWINSIDE / GWIDTH;
-                y = j->p_y * GWINSIDE / GWIDTH;
-            }
-            else if (data->Window == w)
-            {
-                x = (j->p_x - me->p_x) / scaleFactor + TWINSIDE / 2;
-                y = (j->p_y - me->p_y) / scaleFactor + TWINSIDE / 2;
-            }
-        }
-        else if (target->o_type == PLASMATYPE)
-        {
-            x = target->o_dist_x;
-            y = target->o_dist_y;
-        }
+        dx = target->o_dist_x - me->p_x;
+        dy = target->o_dist_y - me->p_y;
   
-        /* Sanity check on distance.  Negative x or y indicates phaser is in local
-           window but target is outside viewable range. */
-        if (x < 0 || y < 0)
+        /* Sanity check on distance.  */
+        /* Check ship max phaser range for phasers.  Sometimes phasers are fired to "point". */
+
+        distance = (int) sqrt((double) dx*dx + (double) dy*dy);
+        if (distance > (PHASEDIST * me->p_ship.s_phaserdamage / 100))
         { 
             course = (unsigned char) (getcourse (data->Window, data->x, data->y));
             sendPhaserReq (course);
             return;
         }
-        /* Check ship max phaser range for local window phasers.  Sometimes phasers
-           are fired to "point".  Not checking galaxy map phasers. */
+
+        /* Everything checks out.  Scale to window coordinates. */
         if (data->Window == w)
         {
-            distance = (int) sqrt((x- TWINSIDE / 2)*(x - TWINSIDE / 2) + (y - TWINSIDE / 2)*(y - TWINSIDE /2));
-            if (distance > (PHASEDIST * j->p_ship.s_phaserdamage / 100 / scaleFactor))
-            { 
-                course = (unsigned char) (getcourse (data->Window, data->x, data->y));
-                sendPhaserReq (course);
-                return;
-            }
+            x = dx / scaleFactor + TWINSIDE / 2;
+            y = dy / scaleFactor + TWINSIDE / 2;
         }
-        /* Everything checks out */
+        else
+        {
+            x = target->o_dist_x * GWINSIDE / GWIDTH;
+            y = target->o_dist_y * GWINSIDE / GWIDTH;
+        }
         course = (unsigned char) (getcourse (data->Window, x, y));
     }
     else
