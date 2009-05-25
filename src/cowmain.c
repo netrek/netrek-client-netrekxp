@@ -779,7 +779,7 @@ cowmain (char *server,
         ind_ship_bmp_HR = stringDefault ("indshipHRbmpfile");
 
     resetdefaults ();
-    build_default_configuration(); // for paradise
+    build_default_configuration(); // load ranks/royals
     newwin (display_host, name);
 
     if (hideConsole)

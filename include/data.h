@@ -440,9 +440,10 @@ extern char pseudo[PSEUDOSIZE];
 extern char defpasswd[PSEUDOSIZE];
 extern char login[PSEUDOSIZE];
 
-extern struct rank ranks[NUMRANKS];
+extern struct rank *ranks;
 extern struct rank2 *ranks2;
 extern struct royalty *royal;
+extern int nranks;
 extern int nranks2;
 extern int nroyals;
 
@@ -660,6 +661,7 @@ extern int F_show_visibility_range;
 extern int F_sp_flags_all;
 extern int F_why_dead_2;
 extern int F_auto_weapons;
+extern int F_sp_ranks;
 extern int F_terrain;		/* paradise */
 extern int F_armies_shipcap;	/* paradise */
 

@@ -998,8 +998,8 @@ newwin (char *hostmon,
     planetw = W_MakeTextWindow ("planet", TWINSIDE + 2 * THICKBORDER + 10, 10, 57, nplanets + 3, baseWin, 2);
     W_SetWindowExposeHandler (planetw, planetlist);
 
-    // Rank window sized assuming only 9 (NUMRANKS) ranks, resized in paradise, see ranklist.c
-    rankw = W_MakeTextWindow ("rank", 10, 300, 80, NUMRANKS + 9, baseWin, 2);
+    // Rank window sized assuming only 9 (nranks) ranks, may be resized, see ranklist.c
+    rankw = W_MakeTextWindow ("rank", 10, 300, 80, nranks + 9, baseWin, 2);
     W_SetWindowExposeHandler (rankw, ranklist);
 
     // Player list windows will be too small if players > 36, which is possible in paradise
@@ -1932,7 +1932,7 @@ entrywindow (int *team,
                     (me->p_stats2.st_royal == 0 ? ranks2[me->p_stats2.st_rank].name : royal[me->p_stats2.st_royal].name));
         else
         {
-            if (me->p_stats.st_rank >= NUMRANKS)
+            if (me->p_stats.st_rank >= nranks)
                 sprintf (buf, "Welcome aboard!");
             else
                 sprintf (buf, "Welcome aboard %s!", ranks[me->p_stats.st_rank].name);

@@ -131,6 +131,7 @@
 #define SP_S_PHASER     57      /* see struct */
 #define SP_S_KILLS      58      /* # of kills player have */
 #define SP_S_STATS      59      /* see SP_STATS */
+#define SP_RANKS        61      /* rank data */
 
 /* variable length packets */
 #define VPLAYER_SIZE    4
@@ -851,6 +852,19 @@ struct feature_cpacket
 };
 
 #endif
+
+struct ranks_spacket
+{
+    char        type;           /* SP_RANKS */
+    int         rankn;          /* rank number */
+    char        name[11];       /* rank name */
+    char        cname[5];       /* short name */
+    unsigned    hours;          /* where 1234=12.34 hours
+                                 * and 0=0.00 hours */
+    unsigned    ratings;        /* as per hours */
+    unsigned    offense;        /* as per hours */
+
+};
 
 struct ship_cap_spacket
 {                               /* Server configuration of

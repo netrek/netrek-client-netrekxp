@@ -104,6 +104,7 @@ struct feature features[] = {
     {"TERRAIN", &F_terrain, 'S', 1, 0, 0},
     /* armies in paradise ship_cap_spacket */
     {"ARMIES_IN_SHIPCAP", &F_armies_shipcap, 'S', 1, 0, 0},
+    {"SP_RANKS", &F_sp_ranks, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 

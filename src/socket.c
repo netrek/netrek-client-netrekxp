@@ -197,7 +197,7 @@ struct packet_handler handlers[] = {
 #ifdef FEATURE_PACKETS
     {sizeof (struct feature_cpacket), handleFeature},   /* CP_FEATURE; 60 */
 #endif
-
+    {sizeof (struct ranks_spacket), handleRanks},      /* SP_RANKS */
 };
 
 int sizes[] = {
@@ -2448,7 +2448,7 @@ handlePlyrLogin (struct plyr_login_spacket *packet,
        servers.  Sanity check on pl->p_stats.st_rank moved to playerlist.c and newwin.c 
        as needed.  BB*/
     /*
-    if (packet->rank >= NUMRANKS)
+    if (packet->rank >= nranks)
     {
         LineToConsole ("handlePlyrLogin: bad rank %d\n", packet->rank);
         return;
@@ -2807,6 +2807,36 @@ void
 handleFlagsAll (struct flags_all_spacket *packet)
 {
     new_flags(ntohl(packet->flags), packet->offset);
+}
+
+void
+handleRanks (struct ranks_spacket *packet)
+{
+    int rankn;
+    int size;
+
+#ifdef CORRUPTED_PACKETS
+    if (packet->rankn > nranks)
+    {
+        LineToConsole ("handleRanks: bad index\n");
+        return;
+    }
+#endif
+    /* A new rank.  Reallocate memory as necessary. */
+    if (packet->rankn == nranks)
+    {
+        size = sizeof(struct rank) * ( nranks + 1 );
+        ranks = (struct rank *) realloc(ranks, size);
+        ranks[nranks].name = strdup("blank");
+        ranks[nranks].cname = strdup("UNKN");
+        nranks++;
+    }
+    rankn = packet->rankn;
+    STRNCPY(ranks[rankn].name, packet->name, 11);
+    STRNCPY(ranks[rankn].cname, packet->cname, 5);
+    ranks[rankn].hours = (float) (ntohl (packet->hours) / 100.0);
+    ranks[rankn].ratings = (float) (ntohl (packet->ratings) / 100.0);
+    ranks[rankn].offense = (float) (ntohl (packet->offense) / 100.0);
 }
 
 void
@@ -3333,7 +3363,63 @@ initialize_thingies(void)
 void
 initialize_ranks(void)
 {
+    ranks = (struct rank *) malloc(sizeof(*ranks) * nranks);
     ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
+
+    ranks[0].hours = 0.0;
+    ranks[0].ratings = 0.0;
+    ranks[0].offense = 0.0;
+    ranks[0].name = strdup("Ensign");
+    ranks[0].cname = strdup("Esgn");
+
+    ranks[1].hours = 2.0;
+    ranks[1].ratings = 1.0;
+    ranks[1].offense = 0.0;
+    ranks[1].name = strdup("Lieutenant");
+    ranks[1].cname = strdup("Lt  ");
+
+    ranks[2].hours = 4.0;
+    ranks[2].ratings = 2.0;
+    ranks[2].offense = 0.0;
+    ranks[2].name = strdup("Lt. Cmdr.");
+    ranks[2].cname = strdup("LtCm");
+
+    ranks[3].hours = 8.0;
+    ranks[3].ratings = 3.0;
+    ranks[3].offense = 0.0;
+    ranks[3].name = strdup("Commander");
+    ranks[3].cname = strdup("Cder");
+
+    ranks[4].hours = 15.0;
+    ranks[4].ratings = 4.0;
+    ranks[4].offense = 0.0;
+    ranks[4].name = strdup("Captain");
+    ranks[4].cname = strdup("Capt");
+
+    ranks[5].hours = 20.0;
+    ranks[5].ratings = 5.0;
+    ranks[5].offense = 0.0;
+    ranks[5].name = strdup("Flt. Capt.");
+    ranks[5].cname = strdup("FltC");
+
+    ranks[6].hours = 25.0;
+    ranks[6].ratings = 6.0;
+    ranks[6].offense = 0.0;
+    ranks[6].name = strdup("Commodore");
+    ranks[6].cname = strdup("Cdor");
+
+    ranks[7].hours = 30.0;
+    ranks[7].ratings = 7.0;
+    ranks[7].offense = 0.0;
+    ranks[7].name = strdup("Rear Adm.");
+    ranks[7].cname = strdup("RAdm");
+
+    ranks[8].hours = 40.0;
+    ranks[8].ratings = 8.0;
+    ranks[8].offense = 0.0;
+    ranks[8].name = strdup("Admiral");
+    ranks[8].cname = strdup("Admr");
+    
     ranks2[0].genocides = 0;
     ranks2[0].di = 0;
     ranks2[0].battle = 0.0;
@@ -3476,6 +3562,7 @@ initialize_royal(void)
 void
 reinitialize_ranks(void)
 {
+    // Only used by paradise (when receive GPsizes packet)
     int     i;
     ranks2 = (struct rank2 *) malloc(sizeof(*ranks2) * nranks2);
 
@@ -3625,11 +3712,20 @@ free_thingies(void)
 void
 free_ranks(void)
 {
-    int     i;
+    int i;
+    for (i = 0; i < nranks; i++)
+    {
+        if (ranks[i].name)
+            free(ranks[i].name);
+        if (ranks[i].cname)
+            free(ranks[i].cname);
+    }
     for (i = 0; i < nranks2; i++)
-	if (ranks2[i].name)
-	    free(ranks2[i].name);
+        if (ranks2[i].name)
+            free(ranks2[i].name);
+    free(ranks);
     free(ranks2);
+    ranks = 0;
     ranks2 = 0;
 }
 

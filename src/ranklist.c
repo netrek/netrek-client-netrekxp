@@ -117,9 +117,10 @@ ranklist (void)
     char buf[100];
 
     /* W_ClearWindow(rankw); */
+    W_ResizeTextWindow(rankw, 80, nranks2 + 9);
     (void) strcpy (buf, "  Rank       Hours  Offense  Ratings      DI");
     W_WriteText (rankw, 1, 1, textColor, buf, strlen (buf), W_BoldFont);
-    for (i = 0; i < NUMRANKS; i++)
+    for (i = 0; i < nranks; i++)
     {
         sprintf (buf, "%-11.11s %5.0f %8.2f %8.2f   %7.2f",
                  ranks[i].name,
@@ -128,7 +129,7 @@ ranklist (void)
                  ranks[i].ratings, ranks[i].ratings * ranks[i].hours);
         if (mystats->st_rank == i)
         {
-            if (i < NUMRANKS-1)
+            if (i < nranks-1)
             {
                 char buf2[35];
                 float DI;

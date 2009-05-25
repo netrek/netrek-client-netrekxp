@@ -22,6 +22,11 @@ client identification method as defined in server.
 (enemy ship or enemy plasma) closest to cursor.  Can target cloaked ships.
 Enemy must be within phaser range of your ship.  Only works if server has
 feature packet F_auto_weapons enabled.
+6) Added support for server feature packet SP_RANKS.  This allows the rank
+table to be dynamic rather than static.  In short, it allows servers to
+have more or less ranks than normal.  Practical application - grand admiral
+rank on sturgeon now displays correctly in player list and rank window.
+
 
 Netrek XP 2009, Version 1.0: (Released July-2008)
 

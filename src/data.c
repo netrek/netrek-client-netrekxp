@@ -453,19 +453,9 @@ char login[PSEUDOSIZE];
 
 struct ship shipvals[NUM_TYPES_BRONCO];
 
-/* 10 Aug 96 - Added curt (short) names -SAC */
-struct rank ranks[NUMRANKS] = {
-    {0.0, 0.0, 0.0, "Ensign", "Esgn"},
-    {2.0, 1.0, 0.0, "Lieutenant", "Lt "},
-    {4.0, 2.0, 0.0, "Lt. Cmdr.", "LtCm"},
-    {8.0, 3.0, 0.0, "Commander", "Cder",},
-    {15.0, 4.0, 0.0, "Captain", "Capt"},
-    {20.0, 5.0, 0.0, "Flt. Capt.", "FltC"},
-    {25.0, 6.0, 0.0, "Commodore", "Cdor"},
-    {30.0, 7.0, 0.0, "Rear Adm.", "RAdm"},
-    {40.0, 8.0, 0.0, "Admiral", "Admr"}
-};
+int nranks = 9;
 int nranks2 = 18;
+struct rank *ranks;
 struct rank2 *ranks2;
 int nroyals = 5;
 struct royalty *royal = 0;
@@ -770,6 +760,7 @@ int F_show_visibility_range = 0;
 int F_sp_flags_all = 0;
 int F_why_dead_2 = 0;
 int F_auto_weapons = 0;
+int F_sp_ranks = 0;
 int F_terrain = 0;		/* paradise */
 int F_armies_shipcap = 0;	/* paradise */
 

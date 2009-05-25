@@ -61,7 +61,6 @@
 #define CLOAK_PHASES 12         /* number of drawing phases
                                  * in a cloak
                                  * engage/disengage */
-#define NUMRANKS 9
 #define PUCKARROW_LEN 6
 #define TIC_DIST 5000           /* distance from ship to draw
                                  * heading tic mark */
