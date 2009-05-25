@@ -2830,6 +2830,7 @@ handleRanks (struct ranks_spacket *packet)
         ranks[nranks].name = strdup("blank");
         ranks[nranks].cname = strdup("UNKN");
         nranks++;
+        W_ResizeTextWindow(rankw, 80, nranks + 9);
     }
     rankn = packet->rankn;
     STRNCPY(ranks[rankn].name, packet->name, 11);
@@ -3772,6 +3773,8 @@ void handleGPsizes (struct gp_sizes_spacket *pkt)
     reinitialize_royal();
 
     resize_players();
+    // Resize rank window
+    W_ResizeTextWindow(rankw, 65, nranks2 + 8);
     // Reinit playerlist - necessary as max number of players (nplayers) may have changed
     InitPlayerList();
     initialize_torps();

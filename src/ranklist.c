@@ -78,8 +78,6 @@ print_ranks_paradise(void)
     register int i;
     char    buf[80];
 
-    W_ResizeTextWindow(rankw, 65, nranks2 + 8);
-
     (void) strcpy(buf, "  Rank       genocides  DI    battle strategy  special ships");
     W_WriteText(rankw, 1, 1, textColor, buf, strlen(buf), W_BoldFont);
     for (i = 0; i < nranks2; i++) {
@@ -117,7 +115,7 @@ ranklist (void)
     char buf[100];
 
     /* W_ClearWindow(rankw); */
-    W_ResizeTextWindow(rankw, 80, nranks2 + 9);
+
     (void) strcpy (buf, "  Rank       Hours  Offense  Ratings      DI");
     W_WriteText (rankw, 1, 1, textColor, buf, strlen (buf), W_BoldFont);
     for (i = 0; i < nranks; i++)
