@@ -25,7 +25,8 @@ feature packet F_auto_weapons enabled.
 6) Added support for server feature packet SP_RANKS.  This allows the rank
 table to be dynamic rather than static.  In short, it allows servers to
 have more or less ranks than normal.  Practical application - grand admiral
-rank on sturgeon now displays correctly in player list and rank window.
+rank on sturgeon now displays correctly in player list and rank window.  And
+rank window now properly displays offense requirements for rank.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)

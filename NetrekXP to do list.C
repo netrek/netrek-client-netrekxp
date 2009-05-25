@@ -29,7 +29,6 @@ rect doesn't take these into account.
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 5) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
-6) Make server packet for variable rank requirements like min offense.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
