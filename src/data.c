@@ -760,7 +760,7 @@ int F_show_visibility_range = 0;
 int F_sp_flags_all = 0;
 int F_why_dead_2 = 0;
 int F_auto_weapons = 0;
-int F_sp_ranks = 0;
+int F_sp_rank = 0;
 int F_terrain = 0;		/* paradise */
 int F_armies_shipcap = 0;	/* paradise */
 

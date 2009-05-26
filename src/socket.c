@@ -197,7 +197,7 @@ struct packet_handler handlers[] = {
 #ifdef FEATURE_PACKETS
     {sizeof (struct feature_cpacket), handleFeature},   /* CP_FEATURE; 60 */
 #endif
-    {sizeof (struct ranks_spacket), handleRanks},      /* SP_RANKS */
+    {sizeof (struct rank_spacket), handleRank},      /* SP_RANK */
 };
 
 int sizes[] = {
@@ -2810,7 +2810,7 @@ handleFlagsAll (struct flags_all_spacket *packet)
 }
 
 void
-handleRanks (struct ranks_spacket *packet)
+handleRank (struct rank_spacket *packet)
 {
     int rankn;
     int size;
