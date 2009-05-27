@@ -154,7 +154,7 @@ ranklist (void)
     strcpy (buf, "in less than the hours allowed (DI = ratings x hours).");
     W_WriteText (rankw, 1, i + 4, textColor, buf, strlen (buf),
                  W_RegularFont);
-    strcpy (buf, "OR, get offense+boming+planets above corresponding Ratings");
+    strcpy (buf, "OR, get offense+bombing+planets above corresponding Ratings");
     W_WriteText (rankw, 1, i + 5, textColor, buf, strlen (buf),
                  W_RegularFont);
     strcpy (buf, "Promotions also occur at 2xDI with Ratings - 1");
