@@ -2812,18 +2812,18 @@ handleFlagsAll (struct flags_all_spacket *packet)
 void
 handleRank (struct rank_spacket *packet)
 {
-    int rankn;
+    int i = packet->rankn;
     int size;
 
 #ifdef CORRUPTED_PACKETS
-    if (packet->rankn > nranks)
+    if (i > nranks)
     {
         LineToConsole ("handleRanks: bad index\n");
         return;
     }
 #endif
     /* A new rank.  Reallocate memory as necessary. */
-    if (packet->rankn == nranks)
+    if (i == nranks)
     {
         size = sizeof(struct rank) * ( nranks + 1 );
         ranks = (struct rank *) realloc(ranks, size);
@@ -2832,12 +2832,13 @@ handleRank (struct rank_spacket *packet)
         nranks++;
         W_ResizeTextWindow(rankw, 80, nranks + 9);
     }
-    rankn = packet->rankn;
-    STRNCPY(ranks[rankn].name, packet->name, 11);
-    STRNCPY(ranks[rankn].cname, packet->cname, 5);
-    ranks[rankn].hours = (float) (ntohl (packet->hours) / 100.0);
-    ranks[rankn].ratings = (float) (ntohl (packet->ratings) / 100.0);
-    ranks[rankn].offense = (float) (ntohl (packet->offense) / 100.0);
+    packet->name[15] = 0;
+    packet->cname[7] = 0;
+    ranks[i].name = strdup(packet->name);
+    ranks[i].cname = strdup(packet->cname);
+    ranks[i].hours = (float) (ntohl (packet->hours) / 100.0);
+    ranks[i].ratings = (float) (ntohl (packet->ratings) / 100.0);
+    ranks[i].offense = (float) (ntohl (packet->offense) / 100.0);
 }
 
 void
@@ -5314,7 +5315,18 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct feature_cpacket *) packet)->value),
 		   ((struct feature_cpacket *) packet)->name );
 	 break;
-#endif       
+#endif
+       case SP_RANK :
+	 LineToConsole("\nS->C SP_RANK\t");
+	 if (log_packets > 1)
+	   LineToConsole(" rankn=%d, name=\"%s\", hours=%d, ratings=%d, offense=%d, cname=\"%s\"",
+		   ((struct rank_spacket *) packet)->rankn,
+		   ((struct rank_spacket *) packet)->name,
+		   ntohl(((struct rank_spacket *) packet)->hours),
+		   ntohl(((struct rank_spacket *) packet)->ratings),
+		   ntohl(((struct rank_spacket *) packet)->offense),
+		   ((struct rank_spacket *) packet)->cname );
+	 break;
 #ifdef SHORT_PACKETS
        case SP_S_TORP       :                  /* variable length torp * *
 						* packet */
