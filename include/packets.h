@@ -856,8 +856,9 @@ struct feature_cpacket
 struct rank_spacket
 {
     char        type;           /* SP_RANK */
-    char        pad[3];
-    int         rankn;          /* rank number */
+    char        rnum;           /* rank number */
+    char        rmax;           /* rank number maximum */
+    char        pad;
     char        name[16];       /* full rank name */
     int         hours;          /* hundredths of hours required */
     int         ratings;        /* hundredths of ratings required */

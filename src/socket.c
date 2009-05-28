@@ -2812,24 +2812,22 @@ handleFlagsAll (struct flags_all_spacket *packet)
 void
 handleRank (struct rank_spacket *packet)
 {
-    int i = packet->rankn;
-    int size;
+    int i = packet->rnum;
+    int j = packet->rmax + 1;
 
 #ifdef CORRUPTED_PACKETS
-    if (i > nranks)
+    if (i < 0 || j < 0 || i > j)
     {
-        LineToConsole ("handleRanks: bad index\n");
+        LineToConsole ("handleRanks: invalid rnum or rmax\n");
         return;
     }
 #endif
-    /* A new rank.  Reallocate memory as necessary. */
-    if (i == nranks)
+    /* Reallocate rank memory as necessary. */
+    if (j > nranks)
     {
-        size = sizeof(struct rank) * ( nranks + 1 );
-        ranks = (struct rank *) realloc(ranks, size);
-        ranks[nranks].name = strdup("blank");
-        ranks[nranks].cname = strdup("UNKN");
-        nranks++;
+        ranks = (struct rank *) realloc(ranks, j * sizeof(struct rank));
+        memset(&ranks[nranks], 0, (j - nranks) * sizeof(struct rank));
+        nranks = j;
         W_ResizeTextWindow(rankw, 80, nranks + 9);
     }
     packet->name[15] = 0;
@@ -5319,8 +5317,9 @@ void print_packet(char *packet, int size)
        case SP_RANK :
 	 LineToConsole("\nS->C SP_RANK\t");
 	 if (log_packets > 1)
-	   LineToConsole(" rankn=%d, name=\"%s\", hours=%d, ratings=%d, offense=%d, cname=\"%s\"",
-		   ((struct rank_spacket *) packet)->rankn,
+	   LineToConsole(" rnum=%d, rmax=%d, name=\"%s\", hours=%d, ratings=%d, offense=%d, cname=\"%s\"",
+		   ((struct rank_spacket *) packet)->rnum,
+		   ((struct rank_spacket *) packet)->rmax,
 		   ((struct rank_spacket *) packet)->name,
 		   ntohl(((struct rank_spacket *) packet)->hours),
 		   ntohl(((struct rank_spacket *) packet)->ratings),

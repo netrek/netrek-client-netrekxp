@@ -89,7 +89,10 @@ death (void)
 
     if (promoted)
     {
-        sprintf (rankmessage, "Congratulations, You have scummed up to %s",
+        if (mystats->st_rank >= nranks)
+            sprintf (rankmessage, "Congratulations, you have been promoted!");
+        else
+            sprintf (rankmessage, "Congratulations, you have scummed up to %s!",
                  paradise ? ranks2[mystats->st_rank].name : ranks[mystats->st_rank].name);
         W_WriteText (w, 50, 80, W_Yellow, rankmessage,
                      strlen (rankmessage), W_BoldFont);
