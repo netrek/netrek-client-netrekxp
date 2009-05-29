@@ -112,9 +112,15 @@ ranklist (void)
     else
     {
     register int i;
+    static int size = 0;
     char buf[100];
 
-    /* W_ClearWindow(rankw); */
+    if (size != nranks)
+    {
+        W_ClearWindow(rankw);
+        W_ResizeTextWindow(rankw, 80, nranks + 9);
+        size = nranks;
+    }
 
     (void) strcpy (buf, "  Rank       Hours  Offense  Ratings      DI");
     W_WriteText (rankw, 1, 1, textColor, buf, strlen (buf), W_BoldFont);

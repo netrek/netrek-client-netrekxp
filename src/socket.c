@@ -2827,9 +2827,8 @@ handleRank (struct rank_spacket *packet)
     {
         ranks = (struct rank *) realloc(ranks, j * sizeof(struct rank));
         memset(&ranks[nranks], 0, (j - nranks) * sizeof(struct rank));
-        nranks = j;
-        W_ResizeTextWindow(rankw, 80, nranks + 9);
     }
+    nranks = j;
     packet->name[15] = 0;
     packet->cname[7] = 0;
     ranks[i].name = strdup(packet->name);
