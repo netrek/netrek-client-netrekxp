@@ -3711,20 +3711,13 @@ free_thingies(void)
 void
 free_ranks(void)
 {
+    // Only used by paradise (when receive GPsizes packet)
     int i;
-    for (i = 0; i < nranks; i++)
-    {
-        if (ranks[i].name)
-            free(ranks[i].name);
-        if (ranks[i].cname)
-            free(ranks[i].cname);
-    }
+
     for (i = 0; i < nranks2; i++)
         if (ranks2[i].name)
             free(ranks2[i].name);
-    free(ranks);
     free(ranks2);
-    ranks = 0;
     ranks2 = 0;
 }
 
