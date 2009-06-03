@@ -95,6 +95,7 @@ typedef enum {
 
 /* LTD stats structure */
 
+#pragma pack(push,1)
 struct ltd_stats {
 
   /* How many times have I killed in this ship */
@@ -119,11 +120,7 @@ struct ltd_stats {
                                            torp blow */
     unsigned int plasmaed;		/* number of kills made with a
                                            plamsa */
-#if defined(_64BIT) && defined(linux)
-  } __attribute__((packed)) kills;
-#else
  } kills;
-#endif
 
   /* How many times have I died in this ship */
 
@@ -305,12 +302,8 @@ struct ltd_stats {
     /* damage repaired */
 
   } weapons;
-
-#if defined(_64BIT) && defined(linux)
-} __attribute__((packed));
-#else
 };
-#endif
+#pragma pack(pop)
 
 /* LTD history structure - this is needed to calculate the LTD stats
    every tick. */

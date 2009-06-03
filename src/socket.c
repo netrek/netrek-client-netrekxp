@@ -2863,6 +2863,7 @@ handleLtd (struct ltd_spacket *packet)
     ltd = &packet->ltd;
 
     LineToConsole("SP_LTD test output begins\n");
+    LineToConsole("SP_LTD: ltd_stats size is %d\n", sizeof(struct ltd_stats));
     dump_prefix("kt", "kills total"); dump_stat(kills.total);
     dump_prefix("kmax", "kills max"); dump_max(kills.max);
     dump_prefix("k1", "kills first"); dump_stat(kills.first);
