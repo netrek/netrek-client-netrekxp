@@ -198,6 +198,7 @@ struct packet_handler handlers[] = {
     {sizeof (struct feature_cpacket), handleFeature},   /* CP_FEATURE; 60 */
 #endif
     {sizeof (struct rank_spacket), handleRank},      /* SP_RANK */
+    {sizeof (struct ltd_spacket), handleLtd},         /* SP_LTD */
 };
 
 int sizes[] = {
@@ -2838,6 +2839,113 @@ handleRank (struct rank_spacket *packet)
     ranks[i].offense = (float) (ntohl (packet->offense) / 100.0);
 }
 
+static void
+dump_prefix(const char *abbr, const char *name)
+{
+    LineToConsole("%-10s %-30s ", abbr, name);
+}
+
+#define dump_stat(STAT) { \
+    LineToConsole(" %8u\n", (unsigned int) ltd->STAT); \
+}
+
+#define dump_max(STAT) { \
+    LineToConsole(" %8u\n", (unsigned int) ltd->STAT); \
+}
+
+void
+handleLtd (struct ltd_spacket *packet)
+{
+    struct ltd_stats *ltd;
+    if (packet->version != LTD_VERSION) return;
+    if (packet->endian != 'l') return;
+
+    ltd = &packet->ltd;
+
+    LineToConsole("SP_LTD test output begins\n");
+    dump_prefix("kt", "kills total"); dump_stat(kills.total);
+    dump_prefix("kmax", "kills max"); dump_max(kills.max);
+    dump_prefix("k1", "kills first"); dump_stat(kills.first);
+    dump_prefix("k1p", "kills first potential"); dump_stat(kills.first_potential);
+    dump_prefix("k1c", "kills first converted"); dump_stat(kills.first_converted);
+    dump_prefix("k2", "kills second"); dump_stat(kills.second);
+    dump_prefix("k2p", "kills second potential"); dump_stat(kills.second_potential);
+    dump_prefix("k2c", "kills second converted"); dump_stat(kills.second_converted);
+    dump_prefix("kbp", "kills by phaser"); dump_stat(kills.phasered);
+    dump_prefix("kbt", "kills by torp"); dump_stat(kills.torped);
+    dump_prefix("kbs", "kills by smack"); dump_stat(kills.plasmaed);
+    dump_prefix("dt", "deaths total"); dump_stat(deaths.total);
+    dump_prefix("dpc", "deaths as potential carrier"); dump_stat(deaths.potential);
+    dump_prefix("dcc", "deaths as converted carrier"); dump_stat(deaths.converted);
+    dump_prefix("ddc", "deaths as dooshed carrier"); dump_stat(deaths.dooshed);
+    dump_prefix("dbp", "deaths by phaser"); dump_stat(deaths.phasered);
+    dump_prefix("dbt", "deaths by torp"); dump_stat(deaths.torped);
+    dump_prefix("dbs", "deaths by smack"); dump_stat(deaths.plasmaed);
+    dump_prefix("acc", "actual carriers created"); dump_stat(deaths.acc);
+    dump_prefix("ptt", "planets taken total"); dump_stat(planets.taken);
+    dump_prefix("pdt", "planets destroyed total"); dump_stat(planets.destroyed);
+    dump_prefix("bpt", "bombed planets total"); dump_stat(bomb.planets);
+    dump_prefix("bp8", "bombed planets <=8"); dump_stat(bomb.planets_8);
+    dump_prefix("bpc", "bombed planets core"); dump_stat(bomb.planets_core);
+    dump_prefix("bat", "bombed armies total"); dump_stat(bomb.armies);
+    dump_prefix("ba8", "bombed_armies <= 8"); dump_stat(bomb.armies_8);
+    dump_prefix("bac", "bombed armies core"); dump_stat(bomb.armies_core);
+    dump_prefix("oat", "ogged armies total"); dump_stat(ogged.armies);
+    dump_prefix("odc", "ogged dooshed carrier"); dump_stat(ogged.dooshed);
+    dump_prefix("occ", "ogged converted carrier"); dump_stat(ogged.converted);
+    dump_prefix("opc", "ogged potential carrier"); dump_stat(ogged.potential);
+    dump_prefix("o>c", "ogged bigger carrier"); dump_stat(ogged.bigger_ship);
+    dump_prefix("o=c", "ogged same carrier"); dump_stat(ogged.same_ship);
+    dump_prefix("o<c", "ogger smaller carrier"); dump_stat(ogged.smaller_ship);
+    dump_prefix("osba", "ogged sb armies"); dump_stat(ogged.sb_armies);
+    dump_prefix("ofc", "ogged friendly carrier"); dump_stat(ogged.friendly);
+    dump_prefix("ofa", "ogged friendly armies"); dump_stat(ogged.friendly_armies);
+    dump_prefix("at", "armies carried total"); dump_stat(armies.total);
+    dump_prefix("aa", "armies used to attack"); dump_stat(armies.attack);
+    dump_prefix("ar", "armies used to reinforce"); dump_stat(armies.reinforce);
+    dump_prefix("af", "armies ferried"); dump_stat(armies.ferries);
+    dump_prefix("ak", "armies killed"); dump_stat(armies.killed);
+    dump_prefix("ct", "carries total"); dump_stat(carries.total);
+    dump_prefix("cp", "carries partial"); dump_stat(carries.partial);
+    dump_prefix("cc", "carries completed"); dump_stat(carries.completed);
+    dump_prefix("ca", "carries to attack"); dump_stat(carries.attack);
+    dump_prefix("cr", "carries to reinforce"); dump_stat(carries.reinforce);
+    dump_prefix("cf", "carries to ferry"); dump_stat(carries.ferries);
+    dump_prefix("tt", "ticks total"); dump_stat(ticks.total);
+    dump_prefix("tyel", "ticks in yellow"); dump_stat(ticks.yellow);
+    dump_prefix("tred", "ticks in red"); dump_stat(ticks.red);
+    dump_prefix("tz0", "ticks in zone 0"); dump_stat(ticks.zone[0]);
+    dump_prefix("tz1", "ticks in zone 1"); dump_stat(ticks.zone[1]);
+    dump_prefix("tz2", "ticks in zone 2"); dump_stat(ticks.zone[2]);
+    dump_prefix("tz3", "ticks in zone 3"); dump_stat(ticks.zone[3]);
+    dump_prefix("tz4", "ticks in zone 4"); dump_stat(ticks.zone[4]);
+    dump_prefix("tz5", "ticks in zone 5"); dump_stat(ticks.zone[5]);
+    dump_prefix("tz6", "ticks in zone 6"); dump_stat(ticks.zone[6]);
+    dump_prefix("tz7", "ticks in zone 7"); dump_stat(ticks.zone[7]);
+    dump_prefix("tpc", "ticks as potential carrier"); dump_stat(ticks.potential);
+    dump_prefix("tcc", "ticks as carrier++"); dump_stat(ticks.carrier);
+    dump_prefix("tr", "ticks in repair"); dump_stat(ticks.repair);
+    dump_prefix("dr", "damage repaired"); dump_stat(damage_repaired);
+    dump_prefix("wpf", "weap phaser fired"); dump_stat(weapons.phaser.fired);
+    dump_prefix("wph", "weap phaser hit"); dump_stat(weapons.phaser.hit);
+    dump_prefix("wpdi", "weap phaser damage inflicted"); dump_stat(weapons.phaser.damage.inflicted);
+    dump_prefix("wpdt", "weap phaser damage taken"); dump_stat(weapons.phaser.damage.taken);
+    dump_prefix("wtf", "weap torp fired"); dump_stat(weapons.torps.fired);
+    dump_prefix("wth", "weap torp hit"); dump_stat(weapons.torps.hit);
+    dump_prefix("wtd", "weap torp detted"); dump_stat(weapons.torps.detted);
+    dump_prefix("wts", "weap torp self detted"); dump_stat(weapons.torps.selfdetted);
+    dump_prefix("wtw", "weap torp hit wall"); dump_stat(weapons.torps.wall);
+    dump_prefix("wtdi", "weap torp damage inflicted"); dump_stat(weapons.torps.damage.inflicted);
+    dump_prefix("wtdt", "weap torp damage taken"); dump_stat(weapons.torps.damage.taken);
+    dump_prefix("wsf", "weap smack fired"); dump_stat(weapons.plasma.fired);
+    dump_prefix("wsh", "weap smack hit"); dump_stat(weapons.plasma.hit);
+    dump_prefix("wsp", "weap smack phasered"); dump_stat(weapons.plasma.phasered);
+    dump_prefix("wsw", "weap smack hit wall"); dump_stat(weapons.plasma.wall);
+    dump_prefix("wsdi", "weap smack damage inflicted"); dump_stat(weapons.plasma.damage.inflicted);
+    dump_prefix("wsdt", "weap smack damage taken"); dump_stat(weapons.plasma.damage.taken);
+    LineToConsole("SP_LTD test output ends\n");
+}
+
 void
 initialize_players(void)
 {
@@ -4793,7 +4901,7 @@ void print_packet(char *packet, int size)
    unsigned char *data;
    int kills, pnum, packet_planets;
    struct planet_s_spacket *plpacket;
-   if(log_packets == 0) return;
+   if (log_packets == 0) return;
    switch ( packet[0] )
      {
        case SP_MESSAGE:
@@ -4877,13 +4985,13 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct plasma_spacket *) packet)->y) );
 	 break;
        case SP_WARNING      :                  /* like SP_MESG */
-	 fprintf(stderr,"\nS->C SP_WARNING\t");
+	 LineToConsole("\nS->C SP_WARNING\t");
 	 if (log_packets > 1)
 	   LineToConsole("  mesg=\"%s\",",
 		   ((struct warning_spacket *) packet)->mesg);
 	 break;
        case SP_MOTD         :                  /* line from .motd screen */
-	 fprintf(stderr,"\nS->C SP_MOTD\t");
+	 LineToConsole("\nS->C SP_MOTD\t");
 	 if (log_packets > 1)
 	   LineToConsole("  line=\"%s\",",
 		   ((struct motd_spacket *) packet)->line);
@@ -5223,7 +5331,7 @@ void print_packet(char *packet, int size)
 						* request */
 	 LineToConsole("\nS->C SP_S_REPLY\t");
 	 if (log_packets > 1)
-	   fprintf(stderr,"  repl=%d, windside=%u, gwidth=%ld,",
+	   LineToConsole("  repl=%d, windside=%u, gwidth=%ld,",
 		   ((struct shortreply_spacket *) packet)->repl,
 		   ntohs(((struct shortreply_spacket *) packet)->winside),
 		   ntohl(((struct shortreply_spacket *) packet)->gwidth) );
@@ -5318,6 +5426,33 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct rank_spacket *) packet)->offense),
 		   ((struct rank_spacket *) packet)->cname );
 	 break;
+       case SP_LTD :
+	 LineToConsole("\nS->C SP_LTD\t");
+	 if (log_packets > 1)
+	 {
+	   LineToConsole(" version='%c', endian='%c', pad='%c',\n",
+		   ((struct ltd_spacket *) packet)->version,
+		   ((struct ltd_spacket *) packet)->endian,
+		   ((struct ltd_spacket *) packet)->pad );
+	   switch (((struct ltd_spacket *) packet)->version)
+	   {
+		case LTD_VERSION:
+		{
+		    struct ltd_stats *ltd = &(((struct ltd_spacket *)packet)->ltd);
+		    unsigned char *ptr = (unsigned char *) ltd;
+		    int i;
+
+		    for (i = 0; i < sizeof(struct ltd_stats); i++)
+		    {
+			if (i%20 == 0)
+			    LineToConsole("\n");
+			LineToConsole(" %02x ", ptr[i]);
+		    }
+		}
+		LineToConsole("\n");
+	    }
+	 }
+	 break;
 #ifdef SHORT_PACKETS
        case SP_S_TORP       :                  /* variable length torp * *
 						* packet */
@@ -5351,7 +5486,6 @@ void print_packet(char *packet, int size)
 		       plpacket->armies,
 		       ntohs(plpacket->flags) );
 	   }
-	 fprintf(stderr,"\n");
 	 break;
        case SP_GPARAM       :
 	 LineToConsole("\nS->C SP_GPARAM\t");
@@ -5391,7 +5525,6 @@ void print_packet(char *packet, int size)
                  LineToConsole("pnum = %d, kills = %d ",pnum, kills);
 	       }
 	   }
-	 fprintf(stderr,"\n");
 	 break;
        case SP_S_STATS      :                  /* see SP_STATS */
 	 LineToConsole("\nS->C SP_S_STATS\t");
@@ -5415,7 +5548,7 @@ void print_packet(char *packet, int size)
 #endif
      default: 
        LineToConsole("\nS->C UNKNOWN\t");
-       if(log_packets > 1)
+       if (log_packets > 1)
 	 LineToConsole("  type=%d,",packet[0]);
      }
 #ifdef nodef /* #ifdef SHORT_PACKETS */

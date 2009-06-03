@@ -3,6 +3,7 @@
  * 
  * Kevin P. Smith 1/29/89 */
 #include "copyright2.h"
+#include "ltd_stats.h"
 
 
 #define STATUS_TOKEN    "\t@@@" /* ATM */
@@ -132,6 +133,7 @@
 #define SP_S_KILLS      58      /* # of kills player have */
 #define SP_S_STATS      59      /* see SP_STATS */
 #define SP_RANK         61      /* rank data */
+#define SP_LTD          62      /* LTD stats for character */
 
 /* variable length packets */
 #define VPLAYER_SIZE    4
@@ -864,6 +866,15 @@ struct rank_spacket
     int         ratings;        /* hundredths of ratings required */
     int         offense;        /* hundredths of offense required */
     char        cname[8];       /* short 'curt' rank name */
+};
+
+struct ltd_spacket
+{
+    char type;
+    char version;
+    char endian;
+    char pad;
+    struct ltd_stats ltd;
 };
 
 struct ship_cap_spacket

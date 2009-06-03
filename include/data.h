@@ -662,6 +662,7 @@ extern int F_sp_flags_all;
 extern int F_why_dead_2;
 extern int F_auto_weapons;
 extern int F_sp_rank;
+extern int F_sp_ltd;
 extern int F_terrain;		/* paradise */
 extern int F_armies_shipcap;	/* paradise */
 

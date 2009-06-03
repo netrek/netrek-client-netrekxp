@@ -1127,11 +1127,11 @@ PlistLine (W_Window win,
         case 'C':              /* Curt (short) Rank */
             if (paradise)
                 //format (buffPoint, (j->p_stats2.st_royal == 0 ? ranks2[j->p_stats2.st_rank].name : royal[j->p_stats2.st_royal].name), 10, 0);
-                format (buffPoint, "UNKN", 4, 0);
+                format (buffPoint, "", 4, 0);
             else
             {
                 if (j->p_stats.st_rank >= nranks)
-                    format (buffPoint, "UNKN", 4, 0);
+                    format (buffPoint, "", 4, 0);
                 else
                     format (buffPoint, ranks[j->p_stats.st_rank].cname, 4, 0);
             }
@@ -1144,7 +1144,7 @@ PlistLine (W_Window win,
             else
             {
                 if (j->p_stats.st_rank >= nranks)
-                    format (buffPoint, "Unknown!  ", 10, 0);
+                    format (buffPoint, "", 10, 0);
                 else
                     format (buffPoint, ranks[j->p_stats.st_rank].name, 10, 0);
             }

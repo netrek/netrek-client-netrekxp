@@ -1631,6 +1631,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\include\ltd_stats.h"
+			>
+		</File>
+		<File
 			RelativePath="src\main.ico"
 			>
 			<FileConfiguration
@@ -1640,6 +1644,10 @@
 					Name="VCCustomBuildTool"
 				/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\include\patchlevel.h"
+			>
 		</File>
 		<File
 			RelativePath=".\src\vccnetrek.rc"

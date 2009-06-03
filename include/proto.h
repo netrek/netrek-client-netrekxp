@@ -1134,6 +1134,7 @@ void handleGeneric32 (struct generic_32_spacket *packet);
 struct flags_all_spacket;
 void handleFlagsAll (struct flags_all_spacket *packet);
 void handleRank (struct rank_spacket *packet);
+void handleLtd (struct ltd_spacket *packet);
 void initialize_players (void);
 void initialize_plasmas (void);
 void initialize_torps (void);
