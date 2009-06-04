@@ -20,8 +20,6 @@
 
 #include "defs.h"	/* We need defines from this file */
 
-#define LTD_VERSION 'a' /* version for SP_LTD packet */
-
 typedef enum {
 
   LTD_TZONE_0		= 0,	/* Zone 0 = backfield */
@@ -95,7 +93,6 @@ typedef enum {
 
 /* LTD stats structure */
 
-#pragma pack(push,1)
 struct ltd_stats {
 
   /* How many times have I killed in this ship */
@@ -303,7 +300,6 @@ struct ltd_stats {
 
   } weapons;
 };
-#pragma pack(pop)
 
 /* LTD history structure - this is needed to calculate the LTD stats
    every tick. */
