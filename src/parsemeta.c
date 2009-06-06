@@ -373,7 +373,7 @@ static int ReadMetasSend()
       return 0;
     }
     req = (char *) malloc(80);
-    sprintf(req, "?version=%s %s", version, mvers);
+    sprintf(req, "?version=%s %s %s", version, mvers, (metaBroncoOnly ? "Bronco" : ""));
     reqlen = strlen(req);
   }
 
