@@ -725,6 +725,7 @@ extern int forceDisplay;
 extern int forceMono;
 extern int metaType;
 extern int metaStatusLevel;
+extern int metaBroncoOnly;
 extern int mungScrollbarColors;
 extern int showMotd;
 

@@ -188,6 +188,9 @@ messageHUD: 2
 # if cursor is in the message windows
 messageKeyOnly: on
 
+# Only list Bronco/INL servers on the metaserver
+metaBroncoOnly: off
+
 # Metaserver port
 metaPort: 3521
 

@@ -145,7 +145,7 @@ enum statusTypes
 };
 
 int metaStatusLevel = statusNobody;
-
+int metaBroncoOnly = 0;
 
 /* Functions */
 extern void terminate (int error);
@@ -447,7 +447,7 @@ static int ReadMetasSend()
     token = strtok(NULL,",");
   } /* while (token != NULL) */
 
-  metaWindowName = "Netrek XP 2009 Server List";
+  metaWindowName = "Netrek XP 2010 Server List";
   return sent;
 }
 
@@ -572,8 +572,8 @@ static void version_r(struct sockaddr_in *address) {
       throwaway++;
 
 
-    /* ignore paradise servers */
-    // if (type == 'P') throwaway++;
+    /* Ignore non-Bronco servers?  INL server counts as Bronco... */
+    if (metaBroncoOnly && type != 'B' && type != 'I') throwaway++;
 
     /* if it's to be thrown away, do not add this server, skip to next */
     if (throwaway) continue;
@@ -1175,7 +1175,7 @@ ReadFromMeta ()
     }
 
     free (sockbuf);
-    metaWindowName = "Netrek XP 2009 Server List";
+    metaWindowName = "Netrek XP 2010 Server List";
 
     return 1;
 }
@@ -1298,6 +1298,9 @@ parsemeta (int metaType)
 
     /* whether to report everything that happens */
     metaVerbose = booleanDefault("metaVerbose", metaVerbose);
+
+    /* whether to list only Bronco servers */
+    metaBroncoOnly = booleanDefault("metaBroncoOnly", metaBroncoOnly);
 
     /* status cutoff for listing servers */
     metaStatusLevel = intDefault ("metaStatusLevel", metaStatusLevel);

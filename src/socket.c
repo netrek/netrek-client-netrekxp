@@ -1122,21 +1122,20 @@ doRead (int asock)
         if (*bufptr < 1 || *bufptr > NUM_PACKETS
             || handlers[*bufptr].size == 0)
         {
-#ifndef CORRUPTED_PACKETS
             int i;
-#endif
 
-            LineToConsole ("Unknown packet type: %d\n", *bufptr);
-
-#ifndef CORRUPTED_PACKETS
-            LineToConsole ("count: %d, bufptr at %d,  Content:\n", count,
-                            bufptr - buf);
+            LineToConsole ("netrek protocol stream alignment failure, "
+                           "next byte %d (0x%02x)\n", *bufptr, *bufptr);
+            LineToConsole ("protocol buffer dump, bytes %d, [bufptr] at %d :\n",
+                           count, bufptr - buf);
             for (i = 0; i < count; i++)
             {
-                LineToConsole ("0x%x, ", (unsigned int) buf[i]);
+                if (i == (bufptr - buf))
+                    LineToConsole ("[%02x]", (unsigned int) buf[i] & 0xff);
+                else
+                    LineToConsole (" %02x ", (unsigned int) buf[i] & 0xff);
             }
-#endif
-
+            LineToConsole("\n");
             return (0);
         }
         size = handlers[*bufptr].size;

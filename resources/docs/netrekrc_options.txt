@@ -103,7 +103,7 @@ messageHUD:               (0-2) where to duplicate message that is written in me
 
 messageKeyOnly:           (on/off) only start messages with the actual message key(s),
                                    if cursor is in the message windows
-messageKeyOnly: 1
+metaBroncoOnly:           (on/off) only list Bronco/INL servers
 metaCache:                (path) path to metacache file
 metaPing:                 (on/off) show ping stats to all servers in metaserver window
 metaPort:                 (port) metaserver port

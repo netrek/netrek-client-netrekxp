@@ -75,7 +75,7 @@ showreadme (void)
 
     static char *README[] = {
         "",
-        "Netrek XP 2009 - the better netrek eXPerience!",
+        "Netrek XP 2010 - the better netrek eXPerience!",
         "",
         "",
         "",

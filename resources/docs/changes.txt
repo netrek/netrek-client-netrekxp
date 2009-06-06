@@ -1,4 +1,4 @@
-Netrek XP 2009, Version 1.1:
+Netrek XP 2010, Version 1.0:
 
 General bug fixes:
 1) Many paradise bugs fixed.
@@ -27,6 +27,10 @@ table to be dynamic rather than static.  In short, it allows servers to
 have more or less ranks than normal.  Practical application - grand admiral
 rank on sturgeon now displays correctly in player list and rank window.  And
 rank window now properly displays offense requirements for rank.
+7) Added support for server feature packet SP_LTD.  This allows detailed stats
+to be sent to the client.
+8) Added netrekrc option "metaBroncoOnly" to only list Bronco/INL servers in
+the list of servers provided by the aggregate metaservers.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)
