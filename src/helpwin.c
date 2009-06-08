@@ -135,13 +135,9 @@ char *help_message[] = {
     "+     Show UDP options window",
     "=     Update all",
     ",     Ping stats window",
-
-#ifdef SHORT_PACKETS
     "`     Toggle PacketWindow",
     "-     Update small",
     "|     Update medium",
-#endif                          /* SHORT_PACKETS */
-
     "      (space) Unmap special windows",
     "\\     Reset user timer",
 

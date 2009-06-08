@@ -300,7 +300,6 @@ def_messages[] =
         ,}
     ,}
     ,
-#ifdef SHORT_PACKETS
     {
         "tryShort", BOOL_DEF, "Use short packets for communications", &tryShort1,
         {
@@ -309,7 +308,6 @@ def_messages[] =
         ,}
     ,}
     ,
-#endif
     {
         "tryUdp", BOOL_DEF, "Use UDP for communications", &tryUdp1,
         {

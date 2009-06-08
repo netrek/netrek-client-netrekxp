@@ -8,9 +8,6 @@
 /******************************************************************************/
 
 #include "config.h"
-
-#ifdef SHORT_PACKETS
-/* */
 #include "copyright.h"
 
 #include <stdio.h>
@@ -199,6 +196,3 @@ spdone (void)
     /* Unmap window */
     W_UnmapWindow (spWin);
 }
-
-
-#endif

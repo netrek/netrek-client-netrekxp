@@ -1037,8 +1037,7 @@ cowmain (char *server,
         if (tryUdp && commMode != COMM_UDP)
             sendUdpReq (COMM_UDP);
 
-#ifdef SHORT_PACKETS            /* should we be checking for
-                                 * udp on here? */
+        /* should we be checking for udp on here? */
         if (tryShort)
             sendShortReq (SPK_VON, 1);
         else
@@ -1050,10 +1049,6 @@ cowmain (char *server,
 
             sendUdpReq (COMM_UPDATE);
         }
-#else
-        /* `=' style update to get the kills in the playerlist right */
-        sendUdpReq (COMM_UPDATE);
-#endif
         /* Send request for updatesPerSec.  New servers now support 50 u/s */
         lastUpdateSpeed = updatesPerSec = intDefault ("updatesPerSec", updatesPerSec);
         sendUpdatePacket (1000000 / updatesPerSec);

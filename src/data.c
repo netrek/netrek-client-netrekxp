@@ -243,7 +243,6 @@ int messageon = 0;
 
 int SBhours = 0;
 
-#ifdef SHORT_PACKETS
 int why_dead = 0;
 int tryShort = 1;               /* for .xtrekrc option */
 int tryShort1 = 0;
@@ -253,8 +252,6 @@ int recv_kmesg = 1;
 int recv_threshold = 0;
 char recv_threshold_s[8] = { '0', '\0' };
 int recv_warn = 1;
-
-#endif
 
 int updatesPerSec = 10;		/* client requested updates per second */
 int lastUpdateSpeed = 10;	/* last update speed client requested */
@@ -465,10 +462,7 @@ W_Window messagew, w, mapw, statwin, baseWin = 0, infow, tstatw, war,
 W_Window udpWin, phaserwin, hintWin;
 W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
-#ifdef SHORT_PACKETS
 W_Window spWin = NULL;
-
-#endif
 
 #ifdef NBT
 W_Window macroWin = NULL;

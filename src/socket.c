@@ -67,7 +67,6 @@ dummy (void)
 {
 }
 
-#ifdef SHORT_PACKETS
 char numofbits[256] = { 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1,
     2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1,
     2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2,
@@ -92,8 +91,6 @@ int vtisize[9] = { 4, 7, 9, 11, 13, 16, 18, 20, 22 };   /* 4 byte Header + torpd
 
 /* S_P2 */
 int shortversion = SHORTVERSION;        /* Which version do we use? */
-
-#endif /* SHORT_PACKETS */
 
 #ifdef PACKET_LOG
 void Log_Packet (char type,
@@ -144,8 +141,6 @@ struct packet_handler handlers[] = {
     {sizeof (struct thingy_info_spacket), handleThingyInfo}, /* SP_THINGY_INFO */
 
     {sizeof (struct ship_cap_spacket), handleShipCap},  /* SP_SHIP_CAP */
-
-#ifdef SHORT_PACKETS
     {sizeof (struct shortreply_spacket), handleShortReply},     /* SP_S_REPLY */
     {-1, handleSMessage},       /* SP_S_MESSAGE */
     {-1                         /* sizeof(struct
@@ -154,47 +149,21 @@ struct packet_handler handlers[] = {
     {sizeof (struct youshort_spacket), handleSelfShort},        /* SP_S_YOU */
     {sizeof (struct youss_spacket), handleSelfShip},    /* SP_S_YOU_SS */
     {-1, /* variable */ handleVPlayer}, /* SP_S_PLAYER */
-#else
-    {0, dummy},                 /* 40 */
-    {0, dummy},                 /* 41 */
-    {0, dummy},                 /* 42 */
-    {0, dummy},                 /* 43 */
-    {0, dummy},                 /* 44 */
-    {0, dummy},                 /* 45 */
-#endif
     {sizeof (struct ping_spacket), handlePing}, /* SP_PING */
-
-#ifdef SHORT_PACKETS
     {-1, /* variable */ handleVTorp},   /* SP_S_TORP */
     {-1, handleVTorpInfo},      /* SP_S_TORP_INFO */
     {20, handleVTorp},          /* SP_S_8_TORP */
     {-1, handleVPlanet},        /* SP_S_PLANET */
-#else
-    {0, dummy},                 /* 47 */
-    {0, dummy},                 /* 48 */
-    {0, dummy},                 /* 49 */
-    {0, dummy},                 /* 50 */
-#endif
-
     {-1, /* variable */ handleGameparams},
     {-1, /* variable */ handleExtension1},
     {sizeof (struct terrain_packet2), handleTerrain2}, /* 53 */
     {sizeof (struct terrain_info_packet2), handleTerrainInfo2},	/* 54 */
     {0, dummy},                 /* 55 */
-
-#ifdef SHORT_PACKETS            /* S_P2 */
     {0, dummy},                 /* SP_S_SEQUENCE not yet
                                  * implemented */
     {-1, handleVPhaser},        /* SP_S_PHASER */
     {-1, handleVKills},         /* SP_S_KILLS */
     {sizeof (struct stats_s_spacket), handle_s_Stats},  /* SP_S_STATS */
-#else
-    {0, dummy},                 /* 56 */
-    {0, dummy},                 /* 57 */
-    {0, dummy},                 /* 58 */
-    {0, dummy},                 /* 59 */
-#endif
-
     {sizeof (struct feature_cpacket), handleFeature},   /* CP_FEATURE; 60 */
     {sizeof (struct rank_spacket), handleRank},      /* SP_RANK */
     {sizeof (struct ltd_spacket), handleLtd},         /* SP_LTD */
@@ -244,17 +213,9 @@ int sizes[] = {
     0,                          /* 40 */
     0,                          /* 41 */
     sizeof (struct ping_cpacket),       /* CP_PING_RESPONSE */
-
-#ifdef SHORT_PACKETS
     sizeof (struct shortreq_cpacket),   /* CP_S_REQ */
     sizeof (struct threshold_cpacket),  /* CP_S_THRS */
     -1,                         /* CP_S_MESSAGE */
-#else
-    0,                          /* 43 */
-    0,                          /* 44 */
-    0,                          /* 45 */
-#endif
-
     0,                          /* 46 */
     0,                          /* 47 */
     0,                          /* 48 */
@@ -1129,7 +1090,6 @@ doRead (int asock)
         }
         size = handlers[*bufptr].size;
 
-#ifdef SHORT_PACKETS
         if (size == -1)
         {                       /* variable packet */
             size = getvpsize (bufptr);
@@ -1145,7 +1105,6 @@ doRead (int asock)
                                 size, *bufptr);
             }
         }
-#endif /* SHORT_PACKETS */
 
         if (packetLights)
             light_receive();
@@ -2214,7 +2173,6 @@ sendMessage (char *mes,
 {
     struct mesg_cpacket mesPacket;
 
-#ifdef SHORT_PACKETS
     if (recv_short)
     {
         int size;
@@ -2229,8 +2187,6 @@ sendMessage (char *mes,
         mesPacket.type = CP_S_MESSAGE;
     }
     else
-#endif
-
         mesPacket.type = CP_MESSAGE;
     mesPacket.group = (char) group;
     mesPacket.indiv = (char) indiv;
@@ -4210,14 +4166,12 @@ sendUdpReq (int req)
     if (req == COMM_UPDATE)
     {
 
-#ifdef SHORT_PACKETS
         if (recv_short)
         {                       /* not necessary */
             /* Let the client do the work, and not the network :-) */
 
             resetWeaponInfo ();
         }
-#endif
 
         sendServerPacket ((struct player_spacket *) &packet);
         warning ("Sent request for full update");
@@ -4852,10 +4806,8 @@ Log_OPacket (int tpe,
     outpacket_log[tpe]++;
     outdata_this_sec += size;
 
-#ifdef SHORT_PACKETS
     if (tpe == CP_S_MESSAGE)
         cp_msg_size += size;    /* HW */
-#endif
 }
 
 /* print out out the cool information on packet logging */
@@ -4884,7 +4836,6 @@ Dump_Packet_Log_Info (void)
                     (int) sqrt ((numpl * sout2 - sumout * sumout) /
                     (numpl * (numpl - 1))));
 
-#ifdef SHORT_PACKETS
     /* total_bytes = ALL_BYTES; *//* Hope this works  HW */
     for (i = 0; i <= NUM_PACKETS; i++)
     {                           /* I think it must be <= */
@@ -4894,24 +4845,13 @@ Dump_Packet_Log_Info (void)
             total_bytes += vari_sizes[i];
     }                           /* The result should be ==
                                  * ALL_BYTES HW */
-#else
-    for (i = 0; i <= NUM_PACKETS; i++)
-    {
-        total_bytes += handlers[i].size * packet_log[i];
-    }
-#endif
 
     for (i = 0; i <= NUM_SIZES; i++)
     {
-
-#ifdef SHORT_PACKETS
         if (handlers[i].size != -1)
             outtotal_bytes += outpacket_log[i] * sizes[i];
         else
             outtotal_bytes += cp_msg_size;      /* HW */
-#else
-        outtotal_bytes += outpacket_log[i] * sizes[i];
-#endif
     }
 
     LineToConsole ("Total bytes received %d, average CPS: %4.1f\n",
@@ -4920,8 +4860,6 @@ Dump_Packet_Log_Info (void)
     LineToConsole ("Num #Rcvd    Size   TotlBytes   %%Total\n");
     for (i = 0; i <= NUM_PACKETS; i++)
     {
-
-#ifdef SHORT_PACKETS
         if (handlers[i].size != -1)
             calc_temp = handlers[i].size * packet_log[i];
         else
@@ -4930,12 +4868,6 @@ Dump_Packet_Log_Info (void)
         LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
                         i, packet_log[i], handlers[i].size, calc_temp,
                         (float) (calc_temp * 100 / total_bytes));
-#else
-        calc_temp = handlers[i].size * packet_log[i];
-        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
-                        i, packet_log[i], handlers[i].size, calc_temp,
-                        (float) (calc_temp * 100 / total_bytes));
-#endif
     }
     LineToConsole ("Total bytes sent %d, average CPS: %4.1f\n",
                     outtotal_bytes, (float) (outtotal_bytes / (Now - Start_Time)));
@@ -4943,8 +4875,6 @@ Dump_Packet_Log_Info (void)
     LineToConsole ("Num #Sent    Size   TotlBytes   %%Total\n");
     for (i = 0; i <= NUM_SIZES; i++)
     {
-
-#ifdef SHORT_PACKETS
         if (sizes[i] == -1)
             calc_temp = cp_msg_size;
         else
@@ -4953,13 +4883,6 @@ Dump_Packet_Log_Info (void)
                         i, outpacket_log[i], sizes[i], calc_temp,
                         (float) (calc_temp * 100 / outtotal_bytes));
     }
-#else
-        calc_temp = sizes[i] * outpacket_log[i];
-        LineToConsole ("%3d %5d    %4d   %9d   %3.2f\n",
-                        i, outpacket_log[i], sizes[i], calc_temp,
-                        (float) (calc_temp * 100 / outtotal_bytes));
-    }
-#endif
 }
 
 void print_packet(char *packet, int size)
@@ -5394,7 +5317,6 @@ void print_packet(char *packet, int size)
 		   ((struct ship_cap_spacket *) packet)->s_desig2,
 		   ntohs(((struct ship_cap_spacket *) packet)->s_bitmap) );
 	 break;
-#ifdef SHORT_PACKETS
        case SP_S_REPLY      :                  /* reply to send-short * *
 						* request */
 	 LineToConsole("\nS->C SP_S_REPLY\t");
@@ -5456,7 +5378,6 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct player_s_spacket *) packet)->x),
 		   ntohl(((struct player_s_spacket *) packet)->y) );
 	 break;
-#endif
        case SP_PING         :                  /* ping packet */
 	 LineToConsole("\nS->C SP_PING\t");
 	 if (log_packets > 1)
@@ -5659,7 +5580,6 @@ void print_packet(char *packet, int size)
 			ntohl(lp->wsdt) );
 	 }
 	 break;
-#ifdef SHORT_PACKETS
        case SP_S_TORP       :                  /* variable length torp * *
 						* packet */
 	 LineToConsole("\nS->C SP_S_TORP\t");
@@ -5751,13 +5671,12 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct stats_spacket *) packet)->maxkills),
 		   ntohl(((struct stats_spacket *) packet)->sbmaxkills) );
 	 break;
-#endif
      default: 
        LineToConsole("\nS->C UNKNOWN\t");
        if (log_packets > 1)
 	 LineToConsole("  type=%d,",packet[0]);
      }
-#ifdef nodef /* #ifdef SHORT_PACKETS */
+#ifdef nodef /* Short packet stuff */
    switch( *((char *) packet) )
      {
        /* variable length packets */
@@ -6039,7 +5958,6 @@ void print_opacket(char *packet, int size)
 		ntohl(((struct ping_cpacket *) packet)->cp_sent),
 		ntohl(((struct ping_cpacket *) packet)->cp_recv) );
       break;
-#ifdef SHORT_PACKETS
     case CP_S_REQ        :          
       LineToConsole("\nC->S CP_S_REQ\t");
       if (log_packets > 1)
@@ -6072,7 +5990,6 @@ void print_opacket(char *packet, int size)
       if (log_packets > 1)
 	LineToConsole("  no struct defined,");
       break;
-#endif
     case CP_FEATURE      :  
       LineToConsole("\nC->S CP_FEATURE\t");
       if (log_packets > 1)

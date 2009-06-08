@@ -867,14 +867,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
-#ifdef SHORT_PACKETS
     {"tryShort", &tryShort, RC_BOOL,
         {
             "Use short packets for communications",
             NULL
         }
     },
-#endif
     {"tryUdp", &tryUdp, RC_BOOL,
         {
             "Use UDP for communications",
@@ -1866,10 +1864,8 @@ resetdefaults (void)
     udpSequenceCheck = booleanDefault ("udpSequenceCheck", udpSequenceCheck);
     baseUdpLocalPort = intDefault ("baseUdpLocalPort", baseUdpLocalPort);
 
-#ifdef SHORT_PACKETS
     tryShort = booleanDefault ("tryShort", tryShort);
     tryShort1 = tryShort;
-#endif
 
     newDistress = booleanDefault ("newDistress", newDistress);
     rejectMacro = booleanDefault ("rejectMacro", rejectMacro);
@@ -1963,9 +1959,7 @@ resetdefaults (void)
 	updateWindowsGeometry (reviewWin);
 	updateWindowsGeometry (pStats);
 	updateWindowsGeometry (udpWin);
-#ifdef SHORT_PACKETS
 	updateWindowsGeometry (spWin);
-#endif
 #ifdef SOUND
 	updateWindowsGeometry (soundWin);
 #endif
@@ -2745,7 +2739,6 @@ saveOptions ()
         fputs (str, fp);
         fputs ("\n", fp);
 
-#ifdef SHORT_PACKETS
         // Short packets window
         if ((adefault = stringDefault ("network.parent")) != NULL)
         {
@@ -2760,7 +2753,6 @@ saveOptions ()
                   W_IsMapped (spWin) ? "on" : "off");
         fputs (str, fp);
         fputs ("\n", fp);
-#endif
 
 #ifdef TOOLS
         // Tools window

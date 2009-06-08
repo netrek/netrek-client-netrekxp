@@ -171,7 +171,6 @@ extern int showOtherSpeed;
 extern int colorfulPhasers;
 #endif
 
-#ifdef SHORT_PACKETS
 extern int why_dead;
 extern int tryShort, tryShort1;
 extern int recv_short;
@@ -184,7 +183,6 @@ extern int recv_warn;
 /* S_P2 */
 extern int shortversion;        /* Which version do we use? */
 
-#endif
 
 extern int globalerr;
 extern int ingame;              /* If player is in game - to distinguish between whether
@@ -452,10 +450,7 @@ extern W_Window messagew, w, mapw, statwin, baseWin, infow, tstatw,
 extern W_Window udpWin, phaserwin, hintWin;
 extern W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
-#ifdef SHORT_PACKETS
 extern W_Window spWin;
-
-#endif
 
 #ifdef NBT
 extern W_Window macroWin;

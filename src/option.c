@@ -393,9 +393,7 @@ struct option Window_Menu[] = {
 #endif
     {1, "show UDP control window", 0, &udpWin, 0, 0, NULL, NULL},
     {1, "show ping stats window", 0, &pStats, 0, 0, NULL},
-#ifdef SHORT_PACKETS
     {1, "show short packets window", 0, &spWin, 0, 0, NULL, NULL},
-#endif
     {1, "done", &notdone, 0, 0, 0, NULL, NULL},
     {-1, NULL, 0, 0, 0, 0, NULL, NULL}
 };

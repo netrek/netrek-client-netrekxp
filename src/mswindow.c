@@ -5446,7 +5446,6 @@ W_Mono ()
 }
 
 
-#ifdef  SHORT_PACKETS
 /* Apparently this solves some problem on X, but here it just forces a redraw...*/
 /* Hrm - This was using redrawScrolling(win), updated to (win, hdc) -SAC 24 Jul 96 */
 /* Was void W_SetSensitive(Window *window, int b) -SAC */
@@ -5466,7 +5465,6 @@ W_SetSensitive (Window * window,
         ReleaseDC (((Window *)win)->hwnd, hdc);
     }
 }
-#endif
 
 // Uses SRCAND for raster operation - useful for masking
 void

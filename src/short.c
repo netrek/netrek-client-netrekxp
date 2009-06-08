@@ -9,7 +9,6 @@
 
 #include "config.h"
 
-#ifdef SHORT_PACKETS
 #include <stdio.h>
 #include <sys/types.h>
 #include <winsock.h>
@@ -2199,7 +2198,3 @@ new_flags (unsigned int data,
         PlistNoteUpdate (pnum);
     }                           /* for */
 }
-
-#endif
-
-/* END SHORT_PACKETS */

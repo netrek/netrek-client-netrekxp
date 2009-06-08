@@ -91,8 +91,6 @@
 #define SP_THINGY	37	/* paradise - thingy location */
 #define SP_THINGY_INFO	38	/* paradise - thingy status */
 #define SP_SHIP_CAP	39	/* Handles server ship mods */
-
-#ifdef SHORT_PACKETS
 #define SP_S_REPLY      40      /* reply to send-short
                                  * request */
 #define SP_S_MESSAGE    41      /* var. Message Packet */
@@ -102,11 +100,7 @@
 #define SP_S_YOU_SS     44      /* your ship status */
 #define SP_S_PLAYER     45      /* variable length player
                                  * packet */
-#endif
-
 #define SP_PING         46      /* ping packet */
-
-#ifdef SHORT_PACKETS
 #define SP_S_TORP       47      /* variable length torp
                                  * packet */
 #define SP_S_TORP_INFO  48      /* SP_S_TORP with TorpInfo */
@@ -136,7 +130,6 @@
 #define VPLAYER_SIZE    4
 #define SHORTVERSION    11      /* S_P2 */
 #define OLDSHORTVERSION 10      /* Short packets version 1*/
-#endif
 
 
 /* packets sent from remote client to xtrek server */
@@ -193,13 +186,11 @@
 
 #define CP_PING_RESPONSE 42     /* client response */
 
-#ifdef SHORT_PACKETS
 #define CP_S_REQ                43
 #define CP_S_THRS               44
 #define CP_S_MESSAGE    45      /* vari. Message Packet */
 #define CP_S_RESERVED       46
 #define CP_S_DUMMY      47
-#endif
 
 #define CP_FEATURE	60
 #define SP_FEATURE	60
@@ -1051,7 +1042,6 @@ struct flags_all_spacket
 #define FLAGS_ALL_CLOAK_OFF_SHIELDS_UP   2
 #define FLAGS_ALL_CLOAK_OFF_SHIELDS_DOWN 3
 
-#ifdef SHORT_PACKETS
 struct shortreq_cpacket
 {                               /* CP_S_REQ */
     char type;
@@ -1234,7 +1224,6 @@ struct stats_s_spacket
     unsigned int sbmaxkills;    /* max kills as sb * 100 */
 };
 
-#endif
 
 /* Shapes of thingys.  It would be best to add to the end of this list and
    try to coordinate your additions with other hackers. */

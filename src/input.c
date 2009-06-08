@@ -2014,11 +2014,8 @@ detmine (void)
             torps[i + (me->p_no * ntorps)].t_status == TSTRAIGHT)
         {
             sendDetMineReq ((short) (i + (me->p_no * ntorps)));
-
-#ifdef SHORT_PACKETS
             if (recv_short)
                 break;          /* Let the server det for me */
-#endif
         }
     }
     }
@@ -2278,9 +2275,7 @@ Key32 (void)
     W_UnmapWindow (docwin);
 #endif
 
-#ifdef SHORT_PACKETS
     W_UnmapWindow (spWin);
-#endif
 
     W_UnmapWindow (pStats);
     W_UnmapWindow (statwin);
@@ -2456,10 +2451,7 @@ Key44 (void)
 void
 Key45 (void)
 {
-#ifdef SHORT_PACKETS
     sendShortReq (SPK_SALL, 1);
-#endif
-
 }
 
 /******************************************************************************/
@@ -3113,14 +3105,10 @@ Key95 (W_Event * data)
 void
 Key96 (void)
 {
-
-#ifdef SHORT_PACKETS
     if (spWin != NULL && W_IsMapped (spWin))
         spdone ();
     else
         spwindow ();
-#endif
-
 }
 
 /******************************************************************************/
@@ -3569,11 +3557,7 @@ Key123 (void)
 void
 Key124 (void)
 {
-
-#ifdef SHORT_PACKETS
     sendShortReq (SPK_ALL, 1);
-#endif
-
 }
 
 /******************************************************************************/

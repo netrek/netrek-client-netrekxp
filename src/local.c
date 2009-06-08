@@ -1970,7 +1970,6 @@ DrawShips (void)
 
                     if (tx == px && ty == py)
                         continue;
-#ifdef SHORT_PACKETS
                     if (php->ph_status != PHMISS)   /* KOC 10/20/95  */
                     {       /* hack for SP_2 */
                         dir = (unsigned char)
@@ -1978,7 +1977,6 @@ DrawShips (void)
                                    (double) (tx - px)) / XPI * 128.0);
                     }
                     else
-#endif
                     {
                         dir = (unsigned char) (NORMALIZE (php->ph_dir + 64));
                     }
@@ -3360,10 +3358,8 @@ local (void)
     {
         /* If alive but out of bounds, we probably missed a packet giving our location,
            so quietly request a new one */
-#ifdef SHORT_PACKETS
         if (me->p_status == PALIVE)
             sendShortReq (SPK_SALL, 0);
-#endif
         return;
     }
 

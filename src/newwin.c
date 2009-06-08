@@ -1126,11 +1126,9 @@ newwin (char *hostmon,
     udpWin = W_MakeMenu ("UDP", TWINSIDE + 10, -BORDER + 10, 40, UDP_NUMOPTS, NULL, 2);
     W_SetWindowButtonHandler (udpWin, udpaction);
 
-#ifdef SHORT_PACKETS
     spWin = W_MakeMenu ("network", TWINSIDE + 10, -BORDER + 10, 40, SPK_NUMFIELDS, NULL, 2);
     W_SetWindowKeyDownHandler (spWin, spaction);
     W_SetWindowButtonHandler (spWin, spaction);
-#endif
 
 #if defined(SOUND)
     soundWin = W_MakeMenu("sound", TWINSIDE + 20, -BORDER + 10, 33,
@@ -1198,10 +1196,7 @@ newwin (char *hostmon,
     W_DefineTrekCursor (tstatw);
     W_DefineWarningCursor (qwin);
     W_DefineArrowCursor (udpWin);
-
-#ifdef SHORT_PACKETS
     W_DefineArrowCursor (spWin);
-#endif
 
 /* SRS these are not defined? Oh, because it's a inline def... grrr*/
     W_DefineFedCursor (teamWin[0]);
@@ -1269,11 +1264,8 @@ mapAll (void)
         W_MapWindow (reviewWin);
     if (checkMapped ("UDP"))
         udpwindow ();
-
-#ifdef SHORT_PACKETS
     if (checkMapped ("network"))
         spwindow ();
-#endif
     if (checkMapped ("stats"))
         W_MapWindow (statwin);
 }

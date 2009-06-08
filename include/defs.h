@@ -395,7 +395,6 @@
 #define         NETSTAT_DF_NFT_S        "2000"
 
 
-#ifdef SHORT_PACKETS
 #define         SPK_VOFF        0       /* variable packets off */
 #define         SPK_VON         1       /* variable packets on */
 #define         SPK_MOFF        2       /* message packets off */
@@ -417,7 +416,6 @@
 #define         SPK_WFIELD      3
 #define         SPK_TFIELD      4
 #define         SPK_DONE        5
-#endif
 
 #ifndef NBT
 #define NBT
