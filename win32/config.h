@@ -5,22 +5,13 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-/* 
-################################################################################
-        Type of code (select in configure.in)    
-################################################################################
-*/
-
-#define COW
-#undef SERVER
-
 /*
 ################################################################################
 		Compilation specific defines
 ################################################################################
 */
 
-#define CBUGS "Send bugs/suggestions to: billbalcerski@hotmail.com"
+#define CBUGS "Send bugs/suggestions to: billbalcerski@gmail.com"
 
 /* 
 ################################################################################
@@ -39,26 +30,14 @@
                 Common defines
    ------------------------------------------------------------
 */
-
-/*      RCD             - Support Reciever variable distresses */
-#define RCD                     
-                                                     
-/*      PING            - Ping statistics */
-#define PING
-
 /*      SHORT_PACKETS   - Reduce Network load */
 #define SHORT_PACKETS
 
-
-/*      FEATURE_PACKETS - feature packets */
-#define FEATURE_PACKETS
-
 /* 
    ------------------------------------------------------------
-                COW only defines
+                Client defines
    ------------------------------------------------------------
 */
-#ifdef COW
 
 /*      THREADED                - Multi-threaded input handling                 */
 #define THREADED
@@ -147,163 +126,6 @@
 
 /* We want reverse-playback!!! */
 #define REVERSE_PLAYBACK
-
-#endif          /* COW */
-
-
-/* 
-   ------------------------------------------------------------
-                SERVER only defines
-   ------------------------------------------------------------
-*/
-#ifdef SERVER
-
-/*     AUTOMOTD                 - Updates your MOTD every 12 hours */
-#undef AUTOMOTD
-
-/*      CHAIN_REACTION          - Don't give credit for chain reactions */
-#define CHAIN_REACTION
-
-/*      CHECKMESG               - Check for god messages and/or log all messages */
-#define CHECKMESG
-
-/*      ERIKPLAGUE              - Define for Erik's Plagueing */
-#define ERIKPLAGUE
-
-/*      FEATURES                - Server/client communication */
-#define FEATURES
-
-/*      FULL_HOSTNAMES          - Show entire player location (domain) */
-#define FULL_HOSTNAMES
-
-/*      INL_RESOURCES           - Use INL resources */
-#define INL_RESOURCES
-
-/*      INL_POP                 - Use INL style planet popping scheme */
-#define INL_POP
-
-/*      NO_PLANET_PLAGUE        - Define for plagueing (Don't use with ERIKPLAGUE) */
-#undef  NO_PLANET_PLAGUE
-
-/*      NO_UNWARRING_BOMBING    - No 3rd space bombing */
-#define NO_UNWARRING_BOMBING
-
-/*      RESETGALAXY             - Reset the galaxy after each conquer */
-#define RESETGALAXY
-
-/*      RESTRICT_BOMB           - No bombing out of t-mode */
-#define RESTRICT_BOMB
-
-/*      SELF_RESET              - Galaxy will reset if the daemon dies */
-#define SELF_RESET
-
-/*      SHORT_THRESHOLD         - For Short Packets */
-#define SHORT_THRESHOLD
-
-/*      SURRENDER_SHORT         - Cut surrender time in half */
-#undef  SURRENDER_SHORT
-
-/*      TWO_RACE                - Conquer only a 1/4 of the galaxy for reset */
-#define TWO_RACE
-
-/*      SENDFLAGS               - Print flags set in MOTD */
-#undef  SENDFLAGS
-
-/*      CHECK_ENV               - Check environment variable NTSERV_PATH for location of system files */
-#undef  CHECK_ENV
-
-/*      GPPRINT                 - Print which path is being used to find the system files */
-#undef  GPPRINT
-
-/*       ONCHECK                - support for trekon player check */
-#define  ONCHECK
-
-/*      NBR                     - Leave in for server. It tells programs like xsg that it is this code. */
-#define NBR
-
-/*      DS                      - Daemon Sychronization - Tedd Hadley */
-#define DS
-
-
-/*      NEED_EXIT               - For systems that need exit defined */
-#define NEED_EXIT
-
-/*      NEWMASK                 - New tournament selection code. Less rigid than older code. */
-#define NEWMASK
-
-/*      SB_TRANSWARP            - starbase transwarp */
-#define SB_TRANSWARP
-
-/*     FLAT_BONUS               - 3x bonus for killing last army on a planet */
-#undef FLAT_BONUS
-
-/*      BASEPRACTICE            - trainingserver support */
-#define BASEPRACTICE
-
-/*     NEW_CREDIT               - give 1 planet for destroying, two planets for taking */
-#undef NEW_CREDIT
-
-/*      FASTER_SB_MAXUPDATES    - allow 10 ups/sec for SB's */
-#define FASTER_SB_MAXUPDATES
-
-/*      SBFUEL_FIX              - fix starbase re-fueling */
-#define SBFUEL_FIX
-
-/*     NEW_ETEMP                - Wreck's etemp fix */
-#undef NEW_ETEMP
-
-/*      DOGFIGHT                - .sysdef interface for dogfight robot */
-#define DOGFIGHT
-
-/*      OBSERVERS               - allow players to watch */
-#define OBSERVERS
-
-/*      VOTING                  - allow voting mode */
-#define VOTING
-
-/*     ALLOW_EJECT              - define to allow players to eject others */
-#ifdef VOTING
-#undef ALLOW_EJECT
-#endif
-
-/*      NO_BRUTALITY            - disallow fighting between waiting players in the dogfighting mode */
-#ifdef DOGFIGHT
-#define NO_BRUTALITY
-#endif
-
-/*     AS_CLOAK                 - gives cloaked AS's more randomness in their apparent positions */
-#undef AS_CLOAK
-
-/*     GENO_COUNT               - keep track of a player's winning genocides */
-#undef GENO_COUNT
-
-#ifdef VOTING
-/*      AUTO_INL                - starts up INL robot by majority vote   */
-#define AUTO_INL
-
-/*      AUTO_PRACTICE           - starts up PRACTICE robot by majority vote   */
-#ifdef BASEPRACTICE
-#define AUTO_PRACTICE
-#endif
-
-/*      AUTO_HOCKEY             - starts up HOCKEY robot by majority vote   */
-#define AUTO_HOCKEY
-
-/*      AUTO_DOGFIGHT           - starts up DOGFIGHT robot by majority vote   */
-#ifdef DOGFIGHT
-#define AUTO_DOGFIGHT
-#endif
-
-/*      TRIPLE_PLANET_MAYHEM    - enable voting for the three planet cool server idea by felix@coop.com */
-#define TRIPLE_PLANET_MAYHEM
-#endif
-                                
-/*     MESSAGES_ALL_TIME        - allow messaging during freezes like twarp, refit, and war decl.  */
-#undef MESSAGES_ALL_TIME
-
-
-#endif          /* SERVER */
-
 
 /*
 ##############################################################################

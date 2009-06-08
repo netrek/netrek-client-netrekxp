@@ -493,11 +493,7 @@ HandleGenDistr (char *message,
 
     mtext = &message[ADDRLEN];
 
-#ifndef SERVER
     MZERO ((char *) dist, sizeof (dist));
-#else
-    bzero ((char *) dist, sizeof (dist));
-#endif
 
     dist->sender = from;
     dist->distype = (unsigned char) (mtext[0] & 0x1f);
@@ -618,14 +614,10 @@ makedistress (struct distress *dist,
     struct player *j;
     struct planet *l;
     char *strcap (char *s);
-
-#ifndef SERVER
     extern int ping_tloss_sc;   /* total % loss 0--100, server to client */
     extern int ping_tloss_cs;   /* total % loss 0--100, client to server */
     extern int ping_av;         /* average rt */
     extern int ping_sd;         /* standard deviation */
-
-#endif
     char c;
 
 
@@ -766,7 +758,6 @@ makedistress (struct distress *dist,
                 *pbuf1++ = sender->p_mapchars[1];
                 break;
             case 'W':          /* push WTEMP flag into buf */
-
 #ifdef RCM
                 if (dist->distype == rcm)       /* whydead for RCM */
                 {
@@ -774,7 +765,6 @@ makedistress (struct distress *dist,
                 }
                 else
 #endif
-
                 if (dist->wtmpflag)
                     *pbuf1++ = '1';
                 else
@@ -805,17 +795,12 @@ makedistress (struct distress *dist,
                 else
                 {
 #endif
-
                     sprintf (tmp, "%5.2f\0", j->p_kills);
-
                     APPEND (pbuf1, tmp);
-
 #ifdef RCM
                 }
 #endif
-
                 break;
-
             case 'U':          /* push player name into buf */
                 cap = 1;
             case 'u':          /* push player name into buf */
@@ -830,45 +815,25 @@ makedistress (struct distress *dist,
                 cap = 0;
                 break;
             case 'S':          /* push ship type into buf */
-
-#ifndef SERVER
-                APPEND (pbuf1, classes[sender->p_ship.s_type]);
-#else
-                APPEND (pbuf1, shiptypes[sender->p_ship.s_type]);
-#endif
-
+                sprintf (tmp, "%c%c", sender->p_ship.s_desig[0], sender->p_ship.s_desig[1]);
+                APPEND (pbuf1, tmp);
                 break;
-
-#ifdef SERVER
-            case 'v':          /* push average ping round trip time into buf */
-            case 'V':          /* push ping stdev into buf */
-            case 'y':          /* push packet loss into buf */
-                *pbuf1++ = '0';
-            case 'M':          /* push capitalized lastMessage into buf */
-            case 'm':          /* push lastMessage into buf */
-                break;
-#else
             case 'M':          /* push capitalized lastMessage into buf */
                 cap = 1;
             case 'm':          /* push lastMessage into buf */
                 APPEND_CAP (pbuf1, cap, lastMessage);
                 cap = 0;
                 break;
-
             case 'v':          /* push average ping round trip time into buf */
                 APPEND_INT (pbuf1, ping_av);
                 break;
-
             case 'V':          /* push ping stdev into buf */
                 APPEND_INT (pbuf1, ping_sd);
                 break;
-
             case 'y':          /* push packet loss into buf */
                 /* this is the weighting formula used be socket.c ntserv */
                 APPEND_INT (pbuf1, (2 * ping_tloss_sc + ping_tloss_cs) / 3);
                 break;
-#endif
-
             case '*':          /* push %* into buf */
             case '}':          /* push %} into buf */
             case '{':          /* push %{ into buf */

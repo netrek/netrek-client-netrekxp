@@ -433,7 +433,6 @@ extern char *colornames[COLORS];
 /* jn - SMARTMACRO */
 extern char lastMessage[];
 extern int MacroNum;
-extern char *classes[];
 extern char teamlet[];
 extern char *teamshort[];
 extern char pseudo[PSEUDOSIZE];
@@ -637,10 +636,7 @@ extern int multiline_enabled;
 
 #endif
 
-#ifdef FEATURE_PACKETS
 extern int F_feature_packets;
-
-#endif
 
 extern int F_cloak_maxwarp;
 extern int F_self_8flags;

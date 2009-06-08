@@ -195,9 +195,7 @@ struct packet_handler handlers[] = {
     {0, dummy},                 /* 59 */
 #endif
 
-#ifdef FEATURE_PACKETS
     {sizeof (struct feature_cpacket), handleFeature},   /* CP_FEATURE; 60 */
-#endif
     {sizeof (struct rank_spacket), handleRank},      /* SP_RANK */
     {sizeof (struct ltd_spacket), handleLtd},         /* SP_LTD */
 };
@@ -245,12 +243,7 @@ int sizes[] = {
     0,                          /* 39 */
     0,                          /* 40 */
     0,                          /* 41 */
-
-#ifdef PING
     sizeof (struct ping_cpacket),       /* CP_PING_RESPONSE */
-#else
-    0,
-#endif
 
 #ifdef SHORT_PACKETS
     sizeof (struct shortreq_cpacket),   /* CP_S_REQ */
@@ -276,11 +269,7 @@ int sizes[] = {
     0,                          /* 57 */
     0,                          /* 58 */
     0,                          /* 59 */
-
-#ifdef FEATURE_PACKETS
     sizeof (struct feature_cpacket),    /* CP_FEATURE; 60 */
-#endif
-
 };
 
 #define NUM_PACKETS (sizeof(handlers) / sizeof(handlers[0]) - 1)
@@ -5468,7 +5457,6 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct player_s_spacket *) packet)->y) );
 	 break;
 #endif
-#ifdef PING
        case SP_PING         :                  /* ping packet */
 	 LineToConsole("\nS->C SP_PING\t");
 	 if (log_packets > 1)
@@ -5480,8 +5468,6 @@ void print_packet(char *packet, int size)
 		   ((struct ping_spacket *) packet)->iloss_sc,
 		   ((struct ping_spacket *) packet)->iloss_cs );
 	 break;
-#endif
-#ifdef FEATURE_PACKETS
        case SP_FEATURE      :
 	 LineToConsole("\nS->C SP_FEATURE\t");
 	 if (log_packets > 1)
@@ -5492,7 +5478,6 @@ void print_packet(char *packet, int size)
 		   ntohl(((struct feature_cpacket *) packet)->value),
 		   ((struct feature_cpacket *) packet)->name );
 	 break;
-#endif
        case SP_RANK :
 	 LineToConsole("\nS->C SP_RANK\t");
 	 if (log_packets > 1)
@@ -6088,7 +6073,6 @@ void print_opacket(char *packet, int size)
 	LineToConsole("  no struct defined,");
       break;
 #endif
-#ifdef FEATURE_PACKETS
     case CP_FEATURE      :  
       LineToConsole("\nC->S CP_FEATURE\t");
       if (log_packets > 1)
@@ -6099,7 +6083,6 @@ void print_opacket(char *packet, int size)
 		ntohl(((struct feature_cpacket *) packet)->value),
 		((struct feature_cpacket *) packet)->name );
       break;
-#endif
     default             :
        LineToConsole("\nC->S UNKNOWN\t");
        if(log_packets > 1)

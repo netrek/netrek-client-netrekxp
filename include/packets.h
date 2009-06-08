@@ -104,9 +104,7 @@
                                  * packet */
 #endif
 
-#ifdef PING
 #define SP_PING         46      /* ping packet */
-#endif
 
 #ifdef SHORT_PACKETS
 #define SP_S_TORP       47      /* variable length torp
@@ -203,10 +201,8 @@
 #define CP_S_DUMMY      47
 #endif
 
-#ifdef FEATURE_PACKETS
 #define CP_FEATURE	60
 #define SP_FEATURE	60
-#endif
 
 /* special paradise type tells us when to update the display on playback.
     Not sent or received, only placed in the recorder file */
@@ -842,7 +838,6 @@ struct planet_loc_spacket
     char name[16];
 };
 
-#ifdef FEATURE_PACKETS
 struct feature_cpacket
 {
     char type;
@@ -851,8 +846,6 @@ struct feature_cpacket
     int value;
     char name[80];
 };
-
-#endif
 
 struct rank_spacket
 {

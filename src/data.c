@@ -440,7 +440,6 @@ int MacroNum = 0;
 
 #endif /* NEWMACRO */
 char lastMessage[80];
-char *classes[] = { "SC", "DD", "CA", "BB", "AS", "SB", "GA", "AT" };
 char teamlet[] = { 'I', 'F', 'R', 'X', 'K', 'X', 'X', 'X', 'O', 'X', 'X', 'X',
     'X', 'X', 'X', 'A'
 };
@@ -736,10 +735,7 @@ int multiline_enabled = 0;
 
 #endif
 
-#ifdef FEATURE_PACKETS
 int F_feature_packets = 0;
-
-#endif
 
 int F_cloak_maxwarp = 0;
 int F_self_8flags = 0;

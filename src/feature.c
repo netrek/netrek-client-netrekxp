@@ -21,8 +21,6 @@
 /* type is CP_FEATURE, which is 60.  feature_spacket is identical. */
 #include "config.h"
 
-#ifdef FEATURE_PACKETS
-
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -360,4 +358,3 @@ handleFeature (struct feature_cpacket *packet)
     checkFeature (packet);
 }
 
-#endif /* FEATURE_PACKETS */

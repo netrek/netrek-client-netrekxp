@@ -180,7 +180,6 @@ void init_hockey_lines (void);
 /******************************************************************************/
 /***  feature.c                                                             ***/
 /******************************************************************************/
-#ifdef FEATURE_PACKETS
 void sendFeature (char *name,
                   char feature_type,
                   int value,
@@ -188,7 +187,6 @@ void sendFeature (char *name,
                   char arg2);
 struct feature_cpacket;
 void handleFeature (struct feature_cpacket *packet);
-#endif
 
 /******************************************************************************/
 /***  findslot.c                                                            ***/

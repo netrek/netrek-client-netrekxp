@@ -847,9 +847,7 @@ cowmain (char *server,
     else
         connectToServer (xtrekPort);
 
-#ifdef FEATURE_PACKETS
     sendFeature ("FEATURE_PACKETS", 'S', 1, 0, 0);
-#endif
 
     /* TIMER */
     timeStart = time(NULL);

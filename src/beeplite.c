@@ -10,10 +10,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <ctype.h>
-
-#ifndef SERVER
 #include "Wlib.h"
-#endif
 
 #include "defs.h"
 #include "struct.h"
