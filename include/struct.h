@@ -410,12 +410,7 @@ struct player
                                  * onto, set only client */
     short pl_orbit;             /* Planet orbiting, sent by server */
     short p_playerl;            /* Player locked onto */
-
-#ifdef ARMY_SLIDER
     int p_armies;               /* XXX: for stats */
-#else
-    short p_armies;
-#endif                          /* ARMY_SLIDER */
     int p_fuel;
     short p_explode;            /* Keeps track of final
                                  * explosion */

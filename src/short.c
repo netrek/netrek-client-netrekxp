@@ -1990,14 +1990,6 @@ handleVKills (unsigned char *sbuf)
             players[pnum].p_kills = (float) (pkills / 100.0);
             /* FAT: prevent redundant player update */
             PlistNoteUpdate (pnum);
-
-#ifdef ARMY_SLIDER
-            if (me == &players[(int) pnum])
-            {
-                calibrate_stats ();
-                redrawStats ();
-            }
-#endif /* ARMY_SLIDER */
         }
 
     }                           /* for */

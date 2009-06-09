@@ -40,9 +40,6 @@
 /*      CORRUPTED_PACKETS       - prevents some seg faults but verbose output   */
 #define CORRUPTED_PACKETS
 
-/*      ARMY_SLIDER             - some sort of funky status window thing        */
-#define ARMY_SLIDER
-
 /*      META                    - show active servers via metaserver - NBT      */
 #define META
 

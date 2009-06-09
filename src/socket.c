@@ -2097,14 +2097,6 @@ handleKills (struct kills_spacket *packet)
         players[packet->pnum].p_kills = (float) (ntohl (packet->kills) / 100.0);
         /* FAT: prevent redundant player update */
         PlistNoteUpdate (packet->pnum);
-
-#ifdef ARMY_SLIDER
-        if (me == &players[packet->pnum])
-        {
-            calibrate_stats ();
-            redrawStats ();
-        }
-#endif /* ARMY_SLIDER */
     }
 }
 
