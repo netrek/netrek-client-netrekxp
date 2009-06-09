@@ -264,13 +264,9 @@ fillmacro (void)
                 strcat (macromessage, " SHELL ");
                 break;
 #endif
-
-#ifdef NEWMACRO
             case '\0':
                 strcat (macromessage, " SPEC  ");
                 break;
-#endif
-
             default:
                 strcat (macromessage, " ----  ");
                 break;

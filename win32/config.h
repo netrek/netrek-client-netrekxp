@@ -46,12 +46,6 @@
 /*      PACKET_LOG              - log packets to stdout (for bandwith measurement) */
 #define PACKET_LOG
 
-/*      NEWMACRO                - newmacro language                             */
-#define NEWMACRO 
-
-/*      SMARTMACRO              - macro extension (needs NEWMACRO)              */
-#define SMARTMACRO
-
 /*      MULTILINE_MACROS        - enables multiline macros                      */
 #define MULTILINE_MACROS
 

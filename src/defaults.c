@@ -2975,7 +2975,7 @@ saveOptions ()
             fputs ("#      %m   the last message you sent\n", fp);
             fputs ("#      %M   the last message you sent in all caps\n", fp);
             fputs ("#\n", fp);
-            fputs ("# As a further extension to NEWMACRO, a macro may now be sent to any of the following destinations:\n", fp);
+            fputs ("# As a further extension, a macro may now be sent to any of the following destinations:\n", fp);
             fputs ("#      %i %I %c  send message to self\n", fp);
             fputs ("#      %u %U %p  send message to player nearest mouse\n", fp);
             fputs ("#      %t %z %Z  send message to team of player nearest mouse\n", fp);

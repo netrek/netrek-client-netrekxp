@@ -416,7 +416,6 @@ extern W_Color borderColor, backColor, textColor, myColor, warningColor,
     shipCol[5], rColor, yColor, gColor, unColor, foreColor;
 extern char *colornames[COLORS];
 
-/* jn - SMARTMACRO */
 extern char lastMessage[];
 extern int MacroNum;
 extern char teamlet[];

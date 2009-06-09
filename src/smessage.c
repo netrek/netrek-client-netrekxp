@@ -651,7 +651,7 @@ message_hold (void)
 #endif
 
 
-/* Used in NEWMACRO, useful elsewhere also */
+/* Used in newmacro, useful elsewhere also */
 int
 getgroup (char addr,
           int *recip)

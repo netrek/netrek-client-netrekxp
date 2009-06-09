@@ -420,12 +420,7 @@ W_Icon paradise_base_mplanets;
 W_Icon paradise_bplanets[PARADISE_PLANET_VIEWS];
 W_Icon paradise_bmplanets[PARADISE_PLANET_VIEWS];
 
-/* jn - SMARTMACRO */
-
-#ifdef NEWMACRO
 int MacroNum = 0;
-
-#endif /* NEWMACRO */
 char lastMessage[80];
 char teamlet[] = { 'I', 'F', 'R', 'X', 'K', 'X', 'X', 'X', 'O', 'X', 'X', 'X',
     'X', 'X', 'X', 'A'
