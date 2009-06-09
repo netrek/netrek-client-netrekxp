@@ -2320,9 +2320,12 @@ newMotdLine (char *line)
     /* Motd clearing code */
     if (strcmp (line, MOTDCLEARLINE) == 0)
     {
+        free(*temp);
         ClearMotd ();
         motddata = NULL;
         temp = &motddata;
+        MaxMotdLine = 0;
+        statmode = 0;
         return;
     }
 
