@@ -2304,7 +2304,7 @@ newMotdLine (char *line)
 	newMotdStuff = 1;	/* set flag for event loop */
 	first = 1;		/* check for bold again */
     }
-    
+
     if (!statmode && !strcmp (line, STATUS_TOKEN))
         statmode = 1;
     if (!statmode)
@@ -2321,6 +2321,8 @@ newMotdLine (char *line)
     if (strcmp (line, MOTDCLEARLINE) == 0)
     {
         ClearMotd ();
+        motddata = NULL;
+        temp = &motddata;
         return;
     }
 
