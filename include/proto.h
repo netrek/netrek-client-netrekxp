@@ -150,7 +150,6 @@ void dmessage (char *message,
                unsigned char to);
 int instr (char *string1,
            char *string2);
-// static void CheckFeatures(char *m);
 void sendVersion (void);
 #ifdef CLUECHECKBORG
 void ClueRespond (char *message);
