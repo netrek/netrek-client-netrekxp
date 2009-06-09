@@ -309,7 +309,7 @@ playerListStyle: 4
 # Port to connect
 port: 2592
 
-# Use new UDP code
+# Swap ports around to try to use UDP through firewalls
 portSwap: on
 
 # Put a small tic mark on the puck to indicate its direction

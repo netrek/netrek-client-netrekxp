@@ -84,25 +84,17 @@
 
 #define PLIST1 
 #define PLIST 
-#define CONTROL_KEY
 #define BRMH 
 #define DOC_WIN
-#define RABBIT_EARS 
 #define ROTATERACE
 
 /* client options */
-#define NEW_DASHBOARD_2
 #define MOUSE_AS_SHIFT
 #define SHIFTED_MOUSE
 #define MOTION_MOUSE
 #define DIST_KEY_NAME
 #define XTRA_MESSAGE_UI
 #define PHASER_STATS
-
-
-/* Swap ports around to try to go through firewalls */
-#define UDP_PORTSWAP
-#define USE_PORTSWAP
 
 /* Enabled playback of recorded games */
 #define RECORDGAME

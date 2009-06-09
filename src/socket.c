@@ -4209,12 +4209,10 @@ sendUdpReq (int req)
     }
 #endif
 
-#ifdef UDP_PORTSWAP
     if (portSwap)
         packet.connmode = CONNMODE_PORT;        /* have him send his port */
-#else
-    packet.connmode = CONNMODE_PACKET;  /* we get addr from packet */
-#endif
+    else
+        packet.connmode = CONNMODE_PACKET;  /* we get addr from packet */
 
     sendServerPacket ((struct player_spacket *) &packet);
 
@@ -4230,9 +4228,7 @@ sendUdpReq (int req)
     UDPDIAG (("Sent request for %s mode\n", (req == COMM_TCP) ?
               "TCP" : "UDP"));
 
-#ifdef UDP_PORTSWAP
     if (!portSwap)
-#endif
         if ((req == COMM_UDP) && recvUdpConn () < 0)
         {
             UDPDIAG (("Sending TCP reset message\n"));
@@ -4296,8 +4292,6 @@ handleUdpReply (struct udp_reply_spacket *packet)
             }
             else
             {
-
-#ifdef UDP_PORTSWAP
                 if (portSwap)
                 {
                     udpServerPort = ntohl (packet->port);
@@ -4319,11 +4313,8 @@ handleUdpReply (struct udp_reply_spacket *packet)
                         goto send;
                     }
                 }
-#else
                 /* this came down UDP, so we MUST be connected */
                 /* (do the verify thing anyway just for kicks) */
-#endif
-
                 UDPDIAG (("Connected to server's UDP port\n"));
                 commStatus = STAT_VERIFY_UDP;
                 if (udpWin)
@@ -4465,7 +4456,6 @@ openUdpConn (void)
     return (0);
 }
 
-#ifdef UDP_PORTSWAP
 int
 connUdpConn ()
 {
@@ -4487,8 +4477,6 @@ connUdpConn ()
 
     return (0);
 }
-
-#endif
 
 int
 recvUdpConn (void)

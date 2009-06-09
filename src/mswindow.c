@@ -2501,14 +2501,11 @@ NetrekWndProc (HWND hwnd,
 
         EventQueue[EventTail].type = W_EV_KEY;
 
-#ifdef CONTROL_KEY
-        if (use_control_key && (GetKeyState (VK_CONTROL) & ~0x1))
+        /* Check if it control key is down - use control keymap */
+        if (GetKeyState (VK_CONTROL) & ~0x1)
             EventQueue[EventTail].key = (unsigned char) (j + 96);
         else
             EventQueue[EventTail].key = (unsigned char) j;
-#else
-        EventQueue[EventTail].key = (unsigned char) j;
-#endif
         return (0);
 
     case WM_MOUSEMOVE:

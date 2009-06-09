@@ -1161,9 +1161,7 @@ void sendUdpReq (int req);
 struct udp_reply_spacket;
 void handleUdpReply (struct udp_reply_spacket *packet);
 int openUdpConn (void);
-#ifdef UDP_PORTSWAP
 int connUdpConn ();
-#endif
 int recvUdpConn (void);
 int closeUdpConn (void);
 void printUdpInfo (void);

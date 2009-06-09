@@ -667,11 +667,6 @@ W_Window defWin = NULL;
 
 #endif
 
-#ifdef CONTROL_KEY
-int use_control_key = 1;
-
-#endif
-
 #ifdef DOC_WIN
 W_Window docwin = NULL, xtrekrcwin = NULL;
 int maxdoclines = 0, maxxtrekrclines = 0;
@@ -752,9 +747,7 @@ int F_many_self = 0;
 int F_dead_warp = 0;
 #endif
 
-#ifdef UDP_PORTSWAP
-int portSwap = 0;
-#endif
+int portSwap = 0;		/* Swap ports around to try to use UDP through firewalls */
 
 // Load Ship Bitmaps from .BMP files
 char *fed_ship_bmp;

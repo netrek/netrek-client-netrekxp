@@ -530,14 +530,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
-#ifdef UDP_PORTSWAP
     {"portSwap", &portSwap, RC_BOOL,
         {
-            "Use new UDP code",
+            "Swap ports around to try to use UDP through firewalls",
             NULL
         }
     },
-#endif
     {"puckArrow", &puckArrow, RC_BOOL,
         {
             "Put a small tic mark on the puck to indicate its direction",
@@ -1911,9 +1909,7 @@ resetdefaults (void)
     shellTools = booleanDefault ("shellTools", shellTools);
 #endif
 
-#ifdef UDP_PORTSWAP
     portSwap = booleanDefault ("portSwap", TRUE);
-#endif
 
 #ifdef BEEPLITE
     defLite = booleanDefault("defLite", defLite);

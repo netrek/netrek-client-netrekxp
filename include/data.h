@@ -569,11 +569,6 @@ extern W_Window defWin;
 
 #endif
 
-#ifdef CONTROL_KEY
-extern int use_control_key;
-
-#endif
-
 #ifdef DOC_WIN
 extern W_Window docwin, xtrekrcwin;
 extern int maxdoclines, maxxtrekrclines;
@@ -655,9 +650,7 @@ extern int F_many_self;
 extern int F_dead_warp;
 #endif
 
-#ifdef UDP_PORTSWAP
 extern int portSwap;
-#endif
 
 // Load Ship Bitmaps from .BMP files
 extern char *fed_ship_bmp;
