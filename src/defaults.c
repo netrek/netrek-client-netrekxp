@@ -1282,13 +1282,11 @@ initDefaults (char *deffile)
                 {
                     dm->macro = strdup (v);
 
-#ifdef DIST_KEY_NAME
                     if (c)
                     {
                         dm->c = c;
                         dm_def->c = c;
                     }
-#endif /* DIST_KEY_NAME */
 
                     notdone = 0;
                 }

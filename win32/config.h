@@ -83,7 +83,6 @@
 #define MOUSE_AS_SHIFT
 #define SHIFTED_MOUSE
 #define MOTION_MOUSE
-#define DIST_KEY_NAME
 #define XTRA_MESSAGE_UI
 #define PHASER_STATS
 

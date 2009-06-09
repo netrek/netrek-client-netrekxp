@@ -2232,8 +2232,6 @@ doMacro (W_Event * data)
     if (found)
         return;
 
-
-#ifdef DIST_KEY_NAME
     /* scan for distress call here */
 
     for (i = take; distmacro[i].name; i++)
@@ -2244,9 +2242,6 @@ doMacro (W_Event * data)
             return;
         }
     }
-
-#endif
-
 
     warning ("Unknown macro");
     W_Beep ();
