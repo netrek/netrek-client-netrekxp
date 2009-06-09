@@ -73,9 +73,6 @@
 /*      VSHIELD_BITMAPS         - damage dependent shields (hull)               */
 #define VSHIELD_BITMAPS
 
-/*      JUBILEE_PHASERS         - Cycle phaser color when it's a hit            */
-#define JUBILEE_PHASERS
-
 /*      WARP_DEAD               - Use death detection                           */
 #undef  WARP_DEAD
 

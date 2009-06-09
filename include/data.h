@@ -163,10 +163,7 @@ extern int SBhours;
 
 extern int showMySpeed;
 extern int showOtherSpeed;
-
-#ifdef JUBILEE_PHASERS
 extern int colorfulPhasers;
-#endif
 
 extern int why_dead;
 extern int tryShort, tryShort1;

@@ -499,10 +499,7 @@ int messageKeyOnly = 1;
 
 int showMySpeed = 1;
 int showOtherSpeed = 1;
-
-#ifdef JUBILEE_PHASERS
 int colorfulPhasers = 0;
-#endif
 
 /* tried to automate this as much as possible... the entries are * the
  * character, string identifier, and the default macro for * each distress

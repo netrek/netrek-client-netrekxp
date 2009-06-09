@@ -105,14 +105,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
-#ifdef JUBILEE_PHASERS
     {"colorfulPhasers", &colorfulPhasers, RC_BOOL,
         {
             "Display color phasers",
             NULL
         }
     },
-#endif
     {"colorWeapons", &colorWeapons, RC_BOOL,
         {
             "Use colored bitmaps for torps and plasmas",
@@ -1903,10 +1901,7 @@ resetdefaults (void)
     infoRange = booleanDefault ("infoRange", infoRange);
     showMySpeed = booleanDefault ("showMySpeed", showMySpeed);
     showOtherSpeed = booleanDefault ("showOtherSpeed", showOtherSpeed);
-
-#ifdef JUBILEE_PHASERS
     colorfulPhasers = booleanDefault ("colorfulPhasers", colorfulPhasers);
-#endif
 
 #ifdef SOUND
     sound_init = booleanDefault ("sound", sound_init);

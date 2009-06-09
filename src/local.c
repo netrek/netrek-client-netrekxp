@@ -1740,11 +1740,9 @@ DrawShips (void)
         php = &phasers[j->p_no];
 
         /* Reset colorful phasers here */
-#ifdef JUBILEE_PHASERS
         if (j == me && colorfulPhasers
             && (php->ph_status == PHFREE || php->ph_updateFuse == 0))
             ph_col = 0;
-#endif
 
         if (php->ph_status != PHFREE)
         {
@@ -1895,7 +1893,6 @@ DrawShips (void)
 
             if (friendlyPlayer (j))
             {
-#ifdef JUBILEE_PHASERS
                 if (isMe(j) && php->ph_status == PHHIT && colorfulPhasers)
                 {
                     int col;
@@ -1943,17 +1940,6 @@ DrawShips (void)
                     else
                         W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
                 }
-#else
-                if (highlightFriendlyPhasers && (php->ph_status == PHHIT))
-                    W_CacheLine (w, px, py, tx, ty, foreColor);
-                else
-                {
-                    if ((php->ph_fuse % 2) == 1)
-                        W_CacheLine (w, px, py, tx, ty, foreColor);
-                    else
-                        W_CacheLine (w, px, py, tx, ty, shipCol[remap[j->p_team]]);
-                }
-#endif
                 php->ph_fuse++;
 
                 clearline[0][clearlcount] = px;

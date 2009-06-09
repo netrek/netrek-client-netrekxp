@@ -301,9 +301,7 @@ struct option Weapons_Menu[] = {
     {1, "use auto aim phasers", &autoPhaser, 0, 0, 0, NULL, NULL},
     {1, "use color weapon bitmaps", &colorWeapons, 0, 0, 0, NULL, NULL},
     {1, "show weapons on galactic", &weaponsOnMap, 0, 0, 0, NULL, NULL},
-#ifdef JUBILEE_PHASERS
     {1, "use colorful phasers", &colorfulPhasers, 0, 0, 0, NULL, NULL},
-#endif
     {1, "highlight friendly phasers", &highlightFriendlyPhasers, 0, 0, 0, NULL, NULL},
     {1, "enemy phaser width: %d", &enemyPhasers, 0, 0, 0, NULL, &enPhasRng},
     {1, "", &phaserShrinkStyle, 0, 0, 0, shrinkphasermess, NULL},
