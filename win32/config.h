@@ -70,9 +70,6 @@
 /*      BEEPLITE                - player and planets highlighting		*/
 #define BEEPLITE
 
-/*      VSHIELD_BITMAPS         - damage dependent shields (hull)               */
-#define VSHIELD_BITMAPS
-
 /*      WARP_DEAD               - Use death detection                           */
 #undef  WARP_DEAD
 

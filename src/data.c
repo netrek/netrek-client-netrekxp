@@ -327,16 +327,10 @@ W_Icon plasmacloud[BMP_TORPDET_FRAMES];
 W_Icon etorp, mtorp;
 W_Icon eplasmatorp, mplasmatorp;
 
-#ifdef VSHIELD_BITMAPS
 W_Icon base_vshield;
 W_Icon shield[SHIELD_FRAMES], cloakicon;
 int varyShields = 1;
 int varyShieldsColor = 1;
-
-#else
-W_Icon shield, cloakicon;
-
-#endif
 
 W_Icon base_hull;
 W_Icon hull[BMP_HULL_FRAMES];

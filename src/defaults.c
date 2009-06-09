@@ -966,7 +966,6 @@ struct save_options save_options[] = {
         }
     },
 #endif
-#ifdef VSHIELD_BITMAPS
     {"varyShields", &varyShields, RC_BOOL,
         {
             "Change shields graphic on shield damage",
@@ -979,7 +978,6 @@ struct save_options save_options[] = {
             NULL
         }
     },
-#endif
     {"viewBox", &viewBox, RC_BOOL,
         {
             "Show limits of tactical display on galaxy",
@@ -1808,10 +1806,8 @@ resetdefaults (void)
 
     windowMove = booleanDefault ("windowMove", windowMove);
 
-#ifdef VSHIELD_BITMAPS
     varyShields = booleanDefault ("varyShields", varyShields);
     varyShieldsColor = booleanDefault ("varyShieldsColor", varyShieldsColor);
-#endif
 
     warnShields = booleanDefault ("warnShields", warnShields);
     vary_hull = booleanDefault("warnHull", vary_hull);

@@ -566,14 +566,8 @@ W_Cleanup (void)
         free (expview[i]);
     for (i = 0; i < BMP_SBEXPL_FRAMES; i++)
         free (sbexpview[i]);
-
-#ifdef VSHIELD_BITMAPS
     for (i = 0; i < SHIELD_FRAMES; i++)
         free (shield[i]);
-#else
-    free (shield);
-#endif
-
     for (i = 0; i < BMP_HULL_FRAMES; i++)
         free (hull[i]);
 

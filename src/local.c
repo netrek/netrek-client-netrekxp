@@ -1295,7 +1295,6 @@ DrawShips (void)
             {
                 int color = playerColor (j);
 
-#ifdef VSHIELD_BITMAPS
                 int shieldnum;
 
                 if (isMe(j) && varyShields)
@@ -1321,7 +1320,6 @@ DrawShips (void)
                 }
                 else
                     color = playerColor (j);
-#endif
 
                 if (warnShields && isMe(j))
                 {
@@ -1339,7 +1337,6 @@ DrawShips (void)
                     }
                 }
 
-#ifdef VSHIELD_BITMAPS
                 W_WriteScaleBitmap (dx - (BMP_SHIELD_WIDTH / 2) * SCALE / scaleFactor,
                                     dy - (BMP_SHIELD_HEIGHT / 2) * SCALE / scaleFactor,
                                     BMP_SHIELD_WIDTH * SCALE / scaleFactor,
@@ -1347,15 +1344,6 @@ DrawShips (void)
                                     BMP_SHIELD_WIDTH,
                                     BMP_SHIELD_HEIGHT,
                                     0, shield[shieldnum], color, w);
-#else
-                W_WriteScaleBitmap (dx - (BMP_SHIELD_WIDTH / 2) * SCALE / scaleFactor,
-                                    dy - (BMP_SHIELD_HEIGHT / 2) * SCALE / scaleFactor,
-                                    BMP_SHIELD_WIDTH * SCALE / scaleFactor,
-                                    BMP_SHIELD_HEIGHT * SCALE / scaleFactor,
-                                    BMP_SHIELD_WIDTH,
-                                    BMP_SHIELD_HEIGHT,
-                                    0, shield, color, w);
-#endif
             }
             /* Warning hull */
             if (vary_hull)

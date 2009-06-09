@@ -317,17 +317,11 @@ extern W_Icon plasmacloud[BMP_TORPDET_FRAMES];
 extern W_Icon etorp, mtorp;
 extern W_Icon eplasmatorp, mplasmatorp;
 
-#ifdef VSHIELD_BITMAPS
 #define SHIELD_FRAMES 5
 extern W_Icon base_vshield;
 extern W_Icon shield[SHIELD_FRAMES], cloakicon;
 extern int varyShields;
 extern int varyShieldsColor;
-
-#else
-extern W_Icon shield, cloakicon;
-
-#endif
 
 extern W_Icon base_hull;
 extern W_Icon hull[BMP_HULL_FRAMES];

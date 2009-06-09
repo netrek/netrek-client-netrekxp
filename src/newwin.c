@@ -1502,12 +1502,6 @@ savebitmaps (void)
             W_PointBitmap2 (base_sbexpview, 0, i, BMP_SBEXPL_WIDTH,
                             BMP_SBEXPL_HEIGHT);
     }
-
-#ifndef VSHIELD_BITMAPS
-    shield =
-        W_StoreBitmap3 ("bitmaps/misclib/shield.bmp", BMP_SHIELD_WIDTH,
-                        BMP_SHIELD_HEIGHT, BMP_SHIELD, w, LR_MONOCHROME);
-#else
     base_vshield =
         W_StoreBitmap3 ("bitmaps/misclib/vshield.bmp", BMP_SHIELD_WIDTH,
                         BMP_SHIELD_HEIGHT * SHIELD_FRAMES, BMP_SHIELD, w,
@@ -1515,7 +1509,6 @@ savebitmaps (void)
     for (i = 0; i < SHIELD_FRAMES; i++)
         shield[i] =
             W_PointBitmap2 (base_vshield, 0, i, BMP_SHIELD_WIDTH, BMP_SHIELD_HEIGHT);
-#endif
 
     base_hull =
         W_StoreBitmap3 ("bitmaps/misclib/varyhull.bmp", hull_width,

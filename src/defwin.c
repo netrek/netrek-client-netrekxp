@@ -347,7 +347,6 @@ def_messages[] =
         ,}
     ,}
     ,
-#ifdef VSHIELD_BITMAPS
     {
         "varyShields", BOOL_DEF, "Vary shields based on damage",
             &varyShields,
@@ -357,7 +356,6 @@ def_messages[] =
         ,}
     ,}
     ,
-#endif
     {
         "warnShields", BOOL_DEF, "Shield color based on alert status",
             &warnShields,
