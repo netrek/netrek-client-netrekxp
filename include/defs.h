@@ -33,9 +33,7 @@
 /* #$!@$#% length of address field of messages */
 #define ADDRLEN 10
 
-#ifdef NBT
 #define MAX_MACRO       500
-#endif
 
 #define MAXPLAYER 257           /* Paradise can apparently go over 36 ... for
                                    most purposes, the nplayers variable will be
@@ -416,10 +414,6 @@
 #define         SPK_WFIELD      3
 #define         SPK_TFIELD      4
 #define         SPK_DONE        5
-
-#ifndef NBT
-#define NBT
-#endif /* NBT */
 
 #define MAXMACLEN       85
 #define NBTM            0

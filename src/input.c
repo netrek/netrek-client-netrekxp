@@ -2055,19 +2055,14 @@ doMacro (W_Event * data)
      *target;
     int targettype;
     enum dist_type i;
-
-#ifdef NBT
     int c;
     char who;
     int found = 0;
-
-#endif
 
     warning (" ");              /* We are here now, so turn off macro mode */
     MacroMode = 0;
 
 
-#ifdef NBT
     if (data->key == '?')
     {
         showMacroWin ();
@@ -2255,8 +2250,6 @@ doMacro (W_Event * data)
 
     warning ("Unknown macro");
     W_Beep ();
-
-#endif
 }
 
 /******************************************************************************/
@@ -2285,10 +2278,7 @@ Key32 (void)
         destroyInfo ();
     W_UnmapWindow (helpWin);
     W_UnmapWindow (playerw2);
-
-#ifdef NBT
     W_UnmapWindow (macroWin);
-#endif
 
 #ifdef XTREKRC_HELP
     if (defWin)

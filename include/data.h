@@ -139,12 +139,9 @@ extern int metaPing;
 
 #define NUM_DIST 27        /* Number of distress macros */
 
-#ifdef NBT
 extern int MacroMode;
 extern int macrocnt;
 extern struct macro_list macro[];       /* NBT 2/26/93 */
-
-#endif
 
 #ifdef ROTATERACE
 extern int autoRotate;
@@ -451,11 +448,7 @@ extern W_Window udpWin, phaserwin, hintWin;
 extern W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
 extern W_Window spWin;
-
-#ifdef NBT
 extern W_Window macroWin;
-
-#endif
 
 #ifdef META
 extern W_Window metaWin;

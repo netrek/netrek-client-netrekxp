@@ -1104,9 +1104,7 @@ initDefaults (char *deffile)
 
     LineToConsole ("Reading defaults file %s\n", deffile);
 
-#ifdef NBT
     macrocnt = 0;               /* reset macros */
-#endif
 
     STRNCPY (defaultsFile, deffile, sizeof (defaultsFile));
     while (fgets (file, 250, fp))
@@ -1129,7 +1127,6 @@ initDefaults (char *deffile)
             v++;
         }
 
-#ifdef NBT
         /* not very robust but if it breaks nothing will die horribly I think -
          * jmn */
         if (strncmpi (file, "macro.", 6) == 0)
@@ -1171,7 +1168,6 @@ initDefaults (char *deffile)
             }
         }
         else
-#endif
 
         if (strncmpi (file, "mac.", 4) == 0)
         {
@@ -3098,7 +3094,6 @@ saveOptions ()
         {
             switch (macro[i].type)
             {
-#ifdef NBT
             case NBTM:
                 if (macro[i].key != 0)
                 {
@@ -3118,7 +3113,6 @@ saveOptions ()
                         fputs ("\n", fp);
                 }
                 break;
-#endif /* NBT */
             case NEWM:
                 if (macro[i].key != 0)
                 {
@@ -3190,7 +3184,6 @@ saveOptions ()
                         fputs ("\n", fp);
                 }
                 break;
-#ifdef NBT
 #ifdef MULTILINE_MACROS
             case NEWMULTIM:
                 if (macro[i].key != 0)
@@ -3213,7 +3206,6 @@ saveOptions ()
                 }
                 break;
 #endif /* MULTILINE_MACROS */
-#endif /* NBT */
             }
         }
     }

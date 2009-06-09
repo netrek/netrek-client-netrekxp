@@ -140,11 +140,8 @@ char *help_message[] = {
     "|     Update medium",
     "      (space) Unmap special windows",
     "\\     Reset user timer",
-
-#ifdef NBT
     "X     Enter Macro Mode",
     "X?    Show current Macros",
-#endif
 
 #ifdef TOOLS
     "M     Toggle shell tools window",

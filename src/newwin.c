@@ -1899,12 +1899,8 @@ entrywindow (int *team,
                 else
 #endif
                     fillhelp ();
-
-#ifdef NBT
             else if (event.Window == macroWin)
                 fillmacro ();
-#endif
-
             else if (event.Window == playerw)
                 RedrawPlayerList ();
             else if (event.Window == warnw)

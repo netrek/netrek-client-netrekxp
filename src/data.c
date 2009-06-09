@@ -272,13 +272,9 @@ int metaPing = 1;				/*  ICMP ping the metaserverlist */
 #endif
 #endif
 
-
-#ifdef NBT
 struct macro_list macro[MAX_MACRO];     /* NBT 2/26/93 */
 int MacroMode = 0;
 int macrocnt = 0;
-
-#endif
 
 extern double Sin[], Cos[];
 
@@ -463,11 +459,7 @@ W_Window udpWin, phaserwin, hintWin;
 W_Window waitWin, waitqWin, countWin, motdButtonWin, motdWin;
 
 W_Window spWin = NULL;
-
-#ifdef NBT
 W_Window macroWin = NULL;
-
-#endif
 
 #ifdef META
 W_Window metaWin = NULL;

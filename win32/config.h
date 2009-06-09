@@ -34,9 +34,6 @@
 /*      THREADED                - Multi-threaded input handling                 */
 #define THREADED
 
-/*      NBT                     - Nick trown's macro code                       */
-#define NBT
-
 /*      CORRUPTED_PACKETS       - prevents some seg faults but verbose output   */
 #define CORRUPTED_PACKETS
 
