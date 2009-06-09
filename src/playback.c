@@ -321,11 +321,7 @@ pbmain (char *name)
     /* End entrywindow() */
 //#endif
 
-#ifdef BRMH
     redrawall = 2;
-#else
-    redrawall = 1;
-#endif
 
     myship = getship (myship->s_type);
     enter ();
@@ -362,13 +358,12 @@ pbmain (char *name)
 
     while (1)
     {
-#ifdef BRMH
         fd_set readfds;
         struct timeval timeout;
 
         timeout.tv_sec = 0;
         timeout.tv_usec = 0;
-#endif
+
         if (keepInfo > 0 && opened_info != -2 &&        /* 6/1/93 LAB */
             opened_info < 0 && infomapped)
             destroyInfo ();
@@ -379,11 +374,8 @@ pbmain (char *name)
             process_event ();
         }
 
-#ifdef BRMH
         intrupt (&readfds);
-#else
-        intrupt ();
-#endif
+
         Sleep (pbdelay);
     }
 }

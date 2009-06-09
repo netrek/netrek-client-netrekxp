@@ -229,8 +229,6 @@ run_clock (time_t curtime)
 {
     char timebuf[9];
     struct tm *tm;
-
-#ifdef BRMH
     static time_t tt;
 
     if ((curtime - tt) < 1)
@@ -245,9 +243,6 @@ run_clock (time_t curtime)
     timebuf[5] = ':';
     timebuf[6] = (char) (tm->tm_sec / 10 + '0');
     timebuf[7] = (char) ((tm->tm_sec % 10) + '0');
-#else
-    sprintf (timebuf, "%02d:%02d:%02d", tm->tm_hour, tm->tm_min, tm->tm_sec);
-#endif
 
     tm = NULL;
 

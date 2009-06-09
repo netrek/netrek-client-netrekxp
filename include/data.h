@@ -573,10 +573,7 @@ extern int refresh_interval;
 
 #endif
 
-#ifdef BRMH
 extern int max_fd;
-
-#endif
 
 #ifdef TOOLS
 extern W_Window toolsWin;

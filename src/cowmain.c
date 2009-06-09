@@ -1002,11 +1002,7 @@ cowmain (char *server,
     myship = getship(myship->s_type);
     currentship = myship->s_type;
 
-#ifdef BRMH
     redrawall = 2;
-#else
-    redrawall = 1;
-#endif
 
     enter ();
     calibrate_stats ();

@@ -944,11 +944,7 @@ void ranklist (void);
 /******************************************************************************/
 /***  redraw.c
 /******************************************************************************/
-#ifdef BRMH
 void intrupt (fd_set * readfds);
-#else
-void intrupt (void);
-#endif
 void redraw (void);
 void stline (int flag);
 void redrawTstats (void);

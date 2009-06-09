@@ -667,10 +667,7 @@ int refresh_interval = 0;
 
 #endif
 
-#ifdef BRMH
 int max_fd = 3;
-
-#endif
 
 #ifdef TOOLS
 W_Window toolsWin = NULL;

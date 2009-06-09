@@ -33,13 +33,9 @@ static time_t lastread;
 static int needredraw = 0;
 static unsigned long lastredraw = 0;
 
-#ifdef BRMH
 void
 intrupt (fd_set * readfds)
-#else
-void
-intrupt (void)
-#endif
+
 {
     time_t time (time_t *);
     unsigned long t;
@@ -53,11 +49,7 @@ intrupt (void)
 #endif
 
         needredraw |=
-#ifdef BRMH
             readFromServer (readfds);
-#else
-            readFromServer ();
-#endif
 
     t = msetime ();
     if (needredraw && (t >= lastredraw + redrawDelay * 100))

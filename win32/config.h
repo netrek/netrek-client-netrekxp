@@ -75,7 +75,6 @@
 
 #define PLIST1 
 #define PLIST 
-#define BRMH 
 #define DOC_WIN
 #define ROTATERACE
 
