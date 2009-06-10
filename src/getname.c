@@ -474,7 +474,7 @@ getname (char *defname,
                 secondsLeft--;
                 showreadme ();
                 sprintf (tempstr, "Seconds to go: %d ", secondsLeft);
-                W_WriteText (w, 150, 400, textColor, tempstr,
+                W_WriteText (w, 3 * TWINSIDE / 10, 4 * TWINSIDE / 5, textColor, tempstr,
                              strlen (tempstr), W_BoldFont);
                 if (secondsLeft == 0)
                 {
@@ -507,7 +507,7 @@ getname (char *defname,
         case W_EV_EXPOSE:
             displayStartup (defname);
             sprintf (tempstr, "Seconds to go: %d ", secondsLeft);
-            W_WriteText (w, 150, 400, textColor, tempstr, strlen (tempstr),
+            W_WriteText (w, 3 * TWINSIDE / 10, 4 * TWINSIDE / 5, textColor, tempstr, strlen (tempstr),
                          W_BoldFont);
             break;
         case W_EV_KEY:

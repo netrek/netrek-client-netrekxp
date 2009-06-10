@@ -824,7 +824,7 @@ int checkBold (char *line);
 void ClearMotd (void);
 void showMotdWin (W_Window motdwin, int atline);
 struct list;
-void showValues (struct list *data);
+void showValues (struct motd_line *data);
 void newMotdLine (char *line);
 void newMotdPic (int x, int y, int width, int height, char *bits, int page);
 void getResources (char *prog);

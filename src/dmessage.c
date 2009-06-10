@@ -107,6 +107,9 @@ dmessage (char *message,
                 LineToConsole ("You should probably pester the server god to update....\n");
             }
         }
+        if (flags == (MCONFIG + MINDIV + MVALID))
+            return;
+
         if ((flags == team) || (flags == take) || (flags == destroy))
         {
             W_MessageAllowedWindows (WAM_TEAM, 0, 0, color, message, len, shipFont (me));

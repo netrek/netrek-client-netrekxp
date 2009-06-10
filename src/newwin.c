@@ -2076,14 +2076,15 @@ checkBold (char *line)
     return (1);
 }
 
-struct list
+/* forward linked list of received motd lines */
+struct motd_line
 {
-    char bold;
-    struct list *next;
+    struct motd_line *next;
     char *data;
+    char bold;
 };
-static struct list *motddata = NULL;    /* pointer to first bit of
-                                         * motddata */
+/* pointer to first item in the list */
+static struct motd_line *motd_lines = NULL;
 static int first = 1;
 
 
@@ -2094,7 +2095,7 @@ void
 showMotdWin (W_Window motdwin, int atline)
 {
     int i, length, top, center;
-    struct list *data;
+    struct motd_line *data;
     int count;
     char buf[128];
 
@@ -2121,7 +2122,7 @@ showMotdWin (W_Window motdwin, int atline)
     if (first)
     {
         first = 0;
-        data = motddata;
+        data = motd_lines;
         while (data != NULL)
         {
             data->bold = (char) (checkBold (data->data));
@@ -2129,13 +2130,13 @@ showMotdWin (W_Window motdwin, int atline)
         }
     }
 
-    data = motddata;
+    data = motd_lines;
     for (i = 0; i < atline; i++)
     {
         if (data == NULL)
         {
             atline = 0;
-            data = motddata;
+            data = motd_lines;
             break;
         }
         data = data->next;
@@ -2166,13 +2167,7 @@ showMotdWin (W_Window motdwin, int atline)
             break;
     }
     if (paradise)
-    {
-        if (motdwin == w) {
-	    W_WriteText(mapw, GWINSIDE/2 - W_Textwidth * strlen(blk_refitstring) / 2, GWINSIDE - 20, textColor, blk_refitstring,
-		        strlen(blk_refitstring), W_RegularFont);
-        }
         showPics(motdwin, atline);
-    }
     showValues (data);
 }
 
@@ -2214,7 +2209,7 @@ showPics(W_Window win, int atline)
 /***   ATM: show the current values of the .sysdef parameters. */
 /******************************************************************************/
 void
-showValues (struct list *data)
+showValues (struct motd_line *data)
 {
     int i;
     static char *msg = "OPTIONS SET WHEN YOU STARTED WERE:";
@@ -2230,45 +2225,74 @@ showValues (struct list *data)
     }
     data = data->next;
 
-    W_WriteText (mapw, 20, 14 * W_Textheight, textColor, msg,
-                 strlen (msg), W_RegularFont);
-
-    for (i = 16; i < 50; i++)
+    if (paradise)
+    /* Use the full window for paradise, and no header */
     {
-        if (data == NULL)
-            break;
-        if (data->data[0] == '+')       /* quick boldface hack */
-            W_WriteText (mapw, 20, i * W_Textheight, textColor,
-                         data->data + 1, strlen (data->data) - 1, W_BoldFont);
-        else
-            W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
-                         strlen (data->data), W_RegularFont);
-        data = data->next;
-        if (!paradise)  // Extra line for non-paradise
+        for (i = 1; i < 50; i++)
+        {
+            if (data == NULL)
+                break;
+            if (data->data[0] == '+')       /* quick boldface hack */
+                W_WriteText (mapw, 20, i * W_Textheight, textColor,
+                             data->data + 1, strlen (data->data) - 1, W_BoldFont);
+            else
+                W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
+                             strlen (data->data), W_RegularFont);
+            data = data->next;
+        }
+        W_WriteText(mapw, GWINSIDE/2 - W_Textwidth * strlen(blk_refitstring) / 2, GWINSIDE - 20, textColor, blk_refitstring,
+                    strlen(blk_refitstring), W_RegularFont);
+    }
+    else
+    {
+        W_WriteText (mapw, 20, 14 * W_Textheight, textColor, msg,
+                     strlen (msg), W_RegularFont);
+
+        for (i = 16; i < 50; i++)
+        {
+            if (data == NULL)
+                break;
+            if (data->data[0] == '+')       /* quick boldface hack */
+                W_WriteText (mapw, 20, i * W_Textheight, textColor,
+                             data->data + 1, strlen (data->data) - 1, W_BoldFont);
+            else
+                W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
+                             strlen (data->data), W_RegularFont);
+            data = data->next;
             i++;
+        }
     }
 }
 
 /******************************************************************************/
 /***  ClearMotd()
-/***   Free the current motdData
+/***   Free the current motd_lines
 /******************************************************************************/
 void ClearMotd (void)
 {
-    struct list *temp, *temp2;
+    struct motd_line *next, *this;
+    struct piclist *temppic;
 
-    temp = motddata;            /* start of motd information */
-    while (temp != NULL)
-    {
-        temp2 = temp;
-        temp = temp->next;
-        free (temp2->data);
-        free (temp2);
+    while (motdPics) {
+	temppic = motdPics;
+	motdPics = temppic->next;
+	if (temppic->thepic)
+	    free(temppic->thepic);
+	free(temppic);
     }
-    // Probably need some stuff here from erase_motd()
 
-    first = 1;                  /* so that it'll check bold
-                                 * next time around */
+    next = motd_lines; /* start of motd information */
+    while (next != NULL)
+    {
+        this = next;
+        next = next->next;
+        free (this->data);
+        free (this);
+    }
+
+    /* check bold next time around */
+    first = 1;
+    motd_lines = NULL;
 }
 
 /******************************************************************************/
@@ -2277,62 +2301,69 @@ void ClearMotd (void)
 void
 newMotdLine (char *line)
 {
-    static struct list **temp = &motddata;
-    static int statmode = 0;    /* ATM */
+    static struct motd_line *old = NULL; /* previous item allocated */
+    static int statmode = 0;
+    struct motd_line *new;
 
     if (paradise)
     {
-    /* Inlined blk_parsemotd() paradise client function */
-    if (strncmp("BLK: ", line, 5) == 0) {
-        /* See if it's a refit string.*/
-        if (strncmp(&line[5], "REFIT", 5) == 0) {
-            strncpy(blk_refitstring, &line[10], 79);
-            blk_refitstring[79] = '\0';
+        /* Inlined blk_parsemotd() paradise client function */
+        if (strncmp("BLK: ", line, 5) == 0) {
+            /* See if it's a refit string.*/
+            if (strncmp(&line[5], "REFIT", 5) == 0) {
+                strncpy(blk_refitstring, &line[10], 79);
+                blk_refitstring[79] = '\0';
+            }
+            /* Check to see if it's a borgish feature being enabled. */
+            else if (strncmp(&line[5], "BORGISH ", 8) == 0) {
+                if (strncmp(&line[13], "FRCLOAK", 7) == 0)
+                    blk_friendlycloak = 1;
+            }
+            return;
         }
-        /* Check to see if it's a borgish feature being enabled. */
-        else if (strncmp(&line[5], "BORGISH ", 8) == 0) {
-            if (strncmp(&line[13], "FRCLOAK", 7) == 0)
-                blk_friendlycloak = 1;
-        }
-        return;
-    }
-    if ( strncmp("\t@@b", line, 4) == 0) // Between pages
-	return;
-    /*if (!currpage ||
-	(pagecount - 1) == currpage->page ||
-	motdlinestate == IN_SYSDEF) */
-	newMotdStuff = 1;	/* set flag for event loop */
-	first = 1;		/* check for bold again */
+        if ( strncmp("\t@@b", line, 4) == 0) // Between pages
+    	    return;
+        /*if (!currpage ||
+            (pagecount - 1) == currpage->page ||
+            motdlinestate == IN_SYSDEF) */
+        newMotdStuff = 1;       /* set flag for event loop */
+        first = 1;              /* check for bold again */
     }
 
-    if (!statmode && !strcmp (line, STATUS_TOKEN))
-        statmode = 1;
-    if (!statmode)
-        MaxMotdLine++;          /* ATM - don't show on left */
-    (*temp) = (struct list *) malloc (sizeof (struct list));
-
-    if ((*temp) == NULL)
-    {                           /* malloc error checking --
-                                 * 10/30/92 EM */
-        LineToConsole ("Warning:  Couldn't malloc space for a new motd line!");
-        return;
-    }
     /* Motd clearing code */
     if (strcmp (line, MOTDCLEARLINE) == 0)
     {
-        free(*temp);
+        W_ClearWindow (w);
         ClearMotd ();
-        motddata = NULL;
-        temp = &motddata;
         MaxMotdLine = 0;
         statmode = 0;
         return;
     }
+    
+    if (!strcmp(line, STATUS_TOKEN))
+        statmode = 1;
 
-    (*temp)->next = NULL;
-    (*temp)->data = malloc (strlen (line) + 1);
-    strcpy ((*temp)->data, line);
-    temp = &((*temp)->next);
+    new = (struct motd_line *) malloc(sizeof(struct motd_line));
+    if (new == NULL)
+        return;
+
+    if (!statmode)
+        MaxMotdLine++;
+
+#ifdef DEBUG
+    LineToConsole("%s\n", line);
+#endif
+    /* add new line to tail of list */
+    new->next = NULL;
+    new->bold = 0;
+    new->data = strdup(line);
+    if (motd_lines == NULL)
+        motd_lines = new;
+    else
+        old->next = new;
+
+    old = new;
+    showMotdWin(w, 0);
 }
 
 /******************************************************************************/
