@@ -2190,6 +2190,7 @@ sendMessage (char *mes,
 void
 handleMask (struct mask_spacket *packet)
 {
+    motd_refresh();
     tournMask = packet->mask;
 }
 
@@ -2878,6 +2879,7 @@ handleLtd (struct ltd_spacket *packet)
     ltd.weapons.plasma.damage.inflicted = ntohl(packet->wsdi);
     ltd.weapons.plasma.damage.taken = ntohl(packet->wsdt);
 
+#if 0
     LineToConsole("SP_LTD test output begins\n");
     dump_prefix("kt", "kills total"); dump_stat(kills.total);
     dump_prefix("kmax", "kills max"); dump_max(kills.max);
@@ -2960,6 +2962,7 @@ handleLtd (struct ltd_spacket *packet)
     dump_prefix("wsdi", "weap smack damage inflicted"); dump_stat(weapons.plasma.damage.inflicted);
     dump_prefix("wsdt", "weap smack damage taken"); dump_stat(weapons.plasma.damage.taken);
     LineToConsole("SP_LTD test output ends\n");
+#endif
 }
 
 void

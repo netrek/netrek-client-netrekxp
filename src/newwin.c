@@ -33,11 +33,35 @@
 extern HINSTANCE MyInstance;
 extern int metaHeight;   /* height of metaserver window */
 
-static int line = 0;
-int MaxMotdLine = 0;
+/* line number of motd to display at top of window */
+static int motd_offset = 0;
+
+/* number of motd lines received since clear */
+int motd_last = 0;
+
+/* number of times we have received a motd clear */
+int motd_clears = 0;
+
+/* whether a refresh of the motd should be done on the next SP_MASK */
+int motd_refresh_needed = 0;
+
+/* if a motd line from the server is this, the client will junk all motd *
+ * data it currently has.  New data may be received */
+#define MOTDCLEARLINE   "\033\030CLEAR_MOTD\000"
 
 #define LINESPERPARADISEPAGE        38
 #define LINESPERPAGE                28
+
+/* forward linked list of received motd lines */
+struct motd_line
+{
+    struct motd_line *next;
+    char *data;
+    int bold;
+};
+
+/* pointer to first item in the list */
+static struct motd_line *motd_lines = NULL;
 
 #define S_MOTD 0
 #define S_SYSDEF 1
@@ -48,14 +72,8 @@ int newMotdStuff = 0;	/* set to 1 when new motd packets arrive */
 static struct piclist *motdPics = NULL;
 static struct piclist **motd_buftail = &motdPics;
 
-/* if a motd line from the server is this, the client will junk all motd *
- * data it currently has.  New data may be received */
-#define MOTDCLEARLINE  "\033\030CLEAR_MOTD\000"
-
-#define SIZEOF(a)       (sizeof (a) / sizeof (*(a)))
-
 #define BOXSIDE         (TWINSIDE / 5)
-#define MENU_PAD 4
+#define MENU_PAD        4
 #define TILESIDE        16
 #define YOFF            0
 
@@ -1625,7 +1643,7 @@ entrywindow (int *team,
     *team = -1;
     startTime = time (0);
     if (me->p_whydead != KWINNER && me->p_whydead != KGENOCIDE)
-        showMotdWin (w, line);
+        showMotdWin (w, motd_offset);
 
     updatedeath ();
 
@@ -1690,8 +1708,7 @@ entrywindow (int *team,
                     UpdatePlayerList ();
                 if (paradise && newMotdStuff)
                 {
-                    showMotdWin (w, line);
-                    //showValues(mapw);
+                    showMotdWin (w, motd_offset);
                 }
                 showTimeLeft (elapsed, autoQuit);
                 lasttime = time (0);
@@ -1799,47 +1816,47 @@ entrywindow (int *team,
                     resetting = 1;
                     break;
                 case 'f':      /* Scroll motd forward */
-                    line = line + (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
-                    if (line > MaxMotdLine)
+                    motd_offset = motd_offset + (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
+                    if (motd_offset > motd_last)
                     {
-                        line = line - (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
+                        motd_offset = motd_offset - (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
                         break;
                     }
                     W_ClearWindow (w);
-                    showMotdWin (w, line);
+                    showMotdWin (w, motd_offset);
                     break;
                 case 'b':      /* Scroll motd backward */
-                    if (line == 0)
+                    if (motd_offset == 0)
                         break;
-                    line = line - (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
-                    if (line < 0)
-                        line = 0;
+                    motd_offset = motd_offset - (paradise ? LINESPERPARADISEPAGE : LINESPERPAGE);
+                    if (motd_offset < 0)
+                        motd_offset = 0;
                     W_ClearWindow (w);
-                    showMotdWin (w, line);
+                    showMotdWin (w, motd_offset);
                     break;
                 /* Paradise MOTD requires paging */
                 case 'F':      /* Scroll motd a bit forwards */
                     if (paradise)
                         break;
-                    line = line + 4;
-                    if (line > MaxMotdLine)
+                    motd_offset = motd_offset + 4;
+                    if (motd_offset > motd_last)
                     {
-                        line = line - 4;
+                        motd_offset = motd_offset - 4;
                         break;
                     }
                     W_ClearWindow (w);
-                    showMotdWin (w, line);
+                    showMotdWin (w, motd_offset);
                     break;
                 case 'B':      /* Scroll motd a bit backwards */
                     if (paradise)
                         break;
-                    if (line == 0)
+                    if (motd_offset == 0)
                         break;
-                    line = line - 4;
-                    if (line < 0)
-                        line = 0;
+                    motd_offset = motd_offset - 4;
+                    if (motd_offset < 0)
+                        motd_offset = 0;
                     W_ClearWindow (w);
-                    showMotdWin (w, line);
+                    showMotdWin (w, motd_offset);
                     break;
                 }
             }
@@ -1883,7 +1900,7 @@ entrywindow (int *team,
             else if (event.Window == w)
             {
             	if (me->p_whydead != KWINNER && me->p_whydead != KGENOCIDE)
-                    showMotdWin (w, line);
+                    showMotdWin (w, motd_offset);
             }
             else if (event.Window == helpWin)
 #ifdef RECORDGAME
@@ -2047,14 +2064,15 @@ checkBold (char *line)
     char *s, *t;
     int i;
     int end = 0;
+    
+    if (me == NULL)
+        return 0;
 
     if (strlen (line) < 60)
-        return (0);
+        return 0;
     s = line + 4;
     t = me->p_name;
 
-    if (me == NULL)
-        return (0);
 
     for (i = 0; i < 16; i++)
     {
@@ -2073,18 +2091,8 @@ checkBold (char *line)
         s++;
         t++;
     }
-    return (1);
+    return 1;
 }
-
-/* forward linked list of received motd lines */
-struct motd_line
-{
-    struct motd_line *next;
-    char *data;
-    int bold;
-};
-/* pointer to first item in the list */
-static struct motd_line *motd_lines = NULL;
 
 
 /******************************************************************************/
@@ -2165,7 +2173,8 @@ showMotdWin (W_Window motdwin, int atline)
     }
     if (paradise)
         showPics(motdwin, atline);
-    showValues (data);
+    //if (!motd_clears)
+        showValues(data);
 }
 
 /******************************************************************************/
@@ -2208,8 +2217,8 @@ showPics(W_Window win, int atline)
 void
 showValues (struct motd_line *data)
 {
-    int i;
-    static char *msg = "OPTIONS SET WHEN YOU STARTED WERE:";
+    int i, y;
+    static char *msg = "Server options set:";
 
     /* try to find the start of the info */
     while (1)
@@ -2223,17 +2232,19 @@ showValues (struct motd_line *data)
     data = data->next;
 
     if (paradise)
-    /* Use the full window for paradise, and no header */
     {
+        /* Use the full window for paradise, single line spacing, and no header */
         for (i = 1; i < 50; i++)
         {
+            y = i * W_Textheight;
+
             if (data == NULL)
                 break;
             if (data->data[0] == '+')       /* quick boldface hack */
-                W_WriteText (mapw, 20, i * W_Textheight, textColor,
+                W_WriteText (mapw, 20, y, textColor,
                              data->data + 1, strlen (data->data) - 1, W_BoldFont);
             else
-                W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
+                W_WriteText (mapw, 20, y, textColor, data->data,
                              strlen (data->data), W_RegularFont);
             data = data->next;
         }
@@ -2245,19 +2256,33 @@ showValues (struct motd_line *data)
         W_WriteText (mapw, 20, 14 * W_Textheight, textColor, msg,
                      strlen (msg), W_RegularFont);
 
-        for (i = 16; i < 50; i++)
+        for (i = 16; i < 50; i+=2)
         {
+            y = i * W_Textheight;
+
             if (data == NULL)
                 break;
             if (data->data[0] == '+')       /* quick boldface hack */
-                W_WriteText (mapw, 20, i * W_Textheight, textColor,
+                W_WriteText (mapw, 20, y, textColor,
                              data->data + 1, strlen (data->data) - 1, W_BoldFont);
             else
-                W_WriteText (mapw, 20, i * W_Textheight, textColor, data->data,
+                W_WriteText (mapw, 20, y, textColor, data->data,
                              strlen (data->data), W_RegularFont);
             data = data->next;
-            i++;
         }
+    }
+}
+
+/******************************************************************************/
+/***  motd_refresh()
+/***   Refresh the displayed MOTD
+/******************************************************************************/
+void motd_refresh (void)
+{
+    if (motd_refresh_needed)
+    {
+        showMotdWin(w, motd_offset);
+        motd_refresh_needed = 0;
     }
 }
 
@@ -2287,6 +2312,9 @@ void ClearMotd (void)
         free (this);
     }
     motd_lines = NULL;
+    motd_offset = 0;
+    motd_last = 0;
+    motd_clears++;
 }
 
 /******************************************************************************/
@@ -2328,7 +2356,6 @@ newMotdLine (char *line)
     {
         W_ClearWindow (w);
         ClearMotd ();
-        MaxMotdLine = 0;
         statmode = 0;
         return;
     }
@@ -2341,11 +2368,8 @@ newMotdLine (char *line)
         return;
 
     if (!statmode)
-        MaxMotdLine++;
+        motd_last++;
 
-#ifdef DEBUG
-    LineToConsole("%s\n", line);
-#endif
     /* add new line to tail of list */
     new->next = NULL;
     new->bold = -1;
@@ -2356,6 +2380,7 @@ newMotdLine (char *line)
         old->next = new;
 
     old = new;
+    motd_refresh_needed++;
 }
 
 /******************************************************************************/

@@ -103,7 +103,7 @@ int
 findslot (void)
 {
     int oldcount = -1;
-    extern int MaxMotdLine;
+    extern int motd_last;
     int WaitMotdLine = 0;
     int showMotd = booleanDefault ("showMotd", 1);
     W_Event event;
@@ -186,7 +186,7 @@ findslot (void)
                         {
                             WaitMotdLine += 28;
                             /* scroll to start if it goes over */
-                            if (WaitMotdLine > MaxMotdLine)
+                            if (WaitMotdLine > motd_last)
                                 WaitMotdLine = 0;
                         }
                         W_ClearWindow (motdWin);

@@ -821,6 +821,7 @@ int numShips (int owner);
 int realNumShips (int owner);
 int deadTeam (int owner);
 int checkBold (char *line);
+void motd_refresh (void);
 void ClearMotd (void);
 void showMotdWin (W_Window motdwin, int atline);
 struct list;
