@@ -2081,11 +2081,10 @@ struct motd_line
 {
     struct motd_line *next;
     char *data;
-    char bold;
+    int bold;
 };
 /* pointer to first item in the list */
 static struct motd_line *motd_lines = NULL;
-static int first = 1;
 
 
 /******************************************************************************/
@@ -2119,15 +2118,13 @@ showMotdWin (W_Window motdwin, int atline)
     else
         top = 10;
 
-    if (first)
+    data = motd_lines;
+    
+    while (data != NULL)
     {
-        first = 0;
-        data = motd_lines;
-        while (data != NULL)
-        {
-            data->bold = (char) (checkBold (data->data));
-            data = data->next;
-        }
+        if (data->bold == -1)
+            data->bold = checkBold(data->data);
+        data = data->next;
     }
 
     data = motd_lines;
@@ -2289,9 +2286,6 @@ void ClearMotd (void)
         free (this->data);
         free (this);
     }
-
-    /* check bold next time around */
-    first = 1;
     motd_lines = NULL;
 }
 
@@ -2327,7 +2321,6 @@ newMotdLine (char *line)
             (pagecount - 1) == currpage->page ||
             motdlinestate == IN_SYSDEF) */
         newMotdStuff = 1;       /* set flag for event loop */
-        first = 1;              /* check for bold again */
     }
 
     /* Motd clearing code */
@@ -2355,7 +2348,7 @@ newMotdLine (char *line)
 #endif
     /* add new line to tail of list */
     new->next = NULL;
-    new->bold = 0;
+    new->bold = -1;
     new->data = strdup(line);
     if (motd_lines == NULL)
         motd_lines = new;
@@ -2363,7 +2356,6 @@ newMotdLine (char *line)
         old->next = new;
 
     old = new;
-    showMotdWin(w, 0);
 }
 
 /******************************************************************************/
@@ -2383,10 +2375,7 @@ newMotdPic(int x, int y, int width, int height, char *bits, int page)
     }
  
     if ((currpage && page == currpage->page) || page == 0)
-    {
 	newMotdStuff = 1;	/* set flag for event loop */
-	first = 1;		/* check for bold again */
-    }
 
     tmp = (*motd_buftail) = (struct piclist *) malloc(sizeof(struct piclist));
     tmp->next = NULL;
