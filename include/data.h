@@ -629,6 +629,7 @@ extern int F_why_dead_2;
 extern int F_auto_weapons;
 extern int F_sp_rank;
 extern int F_sp_ltd;
+extern int F_tips;
 extern int F_terrain;		/* paradise */
 extern int F_armies_shipcap;	/* paradise */
 
@@ -794,6 +795,7 @@ extern int mapscaleFactor;      /* allows for scaling of galactic window, unused
 extern int fullBitmapRotation;  /* draw old bitmap sets to all angles */
 extern int hideConsole;         /* show console window or not */
 extern int autoPhaser;          /* phaser exact location of enemy target closest to cursor */
+extern int showTips;            /* clear MOTD and show server generated tip messages */
 
 extern struct context *context;
 #endif /* _h_data */

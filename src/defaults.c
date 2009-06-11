@@ -763,6 +763,12 @@ struct save_options save_options[] = {
             NULL
         }
     },
+    {"showTips", &showTips, RC_BOOL,
+        {
+            "Clear MOTD and show server generated tip messages",
+            NULL
+        }
+    },
     {"showTractorPressor", &showTractorPressor, RC_BOOL,
         {
             "Draw lines for tractor/pressor",
@@ -1777,6 +1783,7 @@ resetdefaults (void)
     showArmy = intDefault ("showArmy", showArmy);
     showCloakers = booleanDefault ("showCloakers", showCloakers);
     autoPhaser = booleanDefault ("autoPhaser", autoPhaser);
+    showTips = booleanDefault ("showTips", showTips);
     redrawDelay = intDefault ("redrawDelay", redrawDelay);
     planetHighlighting = booleanDefault ("planetHighlighting", planetHighlighting);
     rotatePlanets = booleanDefault ("rotatePlanets", rotatePlanets);

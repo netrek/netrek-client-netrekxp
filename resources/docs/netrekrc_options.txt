@@ -273,6 +273,7 @@ showPlanetNames:          (on/off) show planet names on tactical
 showPlanetOwner:          (on/off) show planet owner on galaxy
 showStars:                (on/off) show background stars
 showStats:                (on/off) show ship statistics
+showTips:                 (on/off) show server generated tip messages
 showTractorPressor:       (on/off) show tractors and pressors
 shrinkPhaserOnMiss:       (on/off) don't draw phaser line on miss
 singleMacro:              (string) macro keys that will trigger macro without macro mode

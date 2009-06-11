@@ -427,6 +427,9 @@ showStars: on
 # Show statistics window
 showStats: off
 
+# Clear MOTD and show server generated tip messages
+showTips: on
+
 # Draw lines for tractor/pressor
 showTractorPressor: on
 

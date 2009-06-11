@@ -722,6 +722,7 @@ int F_why_dead_2 = 0;
 int F_auto_weapons = 0;
 int F_sp_rank = 0;
 int F_sp_ltd = 0;
+int F_tips = 0;
 int F_terrain = 0;		/* paradise */
 int F_armies_shipcap = 0;	/* paradise */
 
@@ -876,5 +877,6 @@ int mapscaleFactor = 40;        /* allows for scaling of galactic window, unused
 int fullBitmapRotation = 1;     /* draw old bitmap sets to all angles */
 int hideConsole = 0;            /* show console window or not */
 int autoPhaser = 1;             /* phaser exact location of enemy target closest to cursor */
+int showTips = 0;               /* clear MOTD and show server generated tip messages */
 
 struct context *context;

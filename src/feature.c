@@ -105,6 +105,7 @@ struct feature features[] = {
     {"AUTO_WEAPONS", &F_auto_weapons, 'S', 1, 0, 0},
     {"SP_RANK", &F_sp_rank, 'S', 1, 0, 0},
     {"SP_LTD", &F_sp_ltd, 'S', 1, 0, 0},
+    {"TIPS", &F_tips, 'S', 1, 0, 0},
     {0, 0, 0, 0, 0, 0}
 };
 
@@ -131,6 +132,8 @@ reportFeatures (void)
                 value = useFullShipInfo;
             else if (!strcmp(f->name, "FULL_WEAPON_RESOLUTION"))
                 value = useFullWeapInfo;
+            else if (!strcmp(f->name, "TIPS"))
+                value = showTips;
             else if (!strcmp(f->name, "SP_GENERIC_32"))
             {
                 value = useGeneric32;

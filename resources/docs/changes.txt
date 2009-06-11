@@ -31,6 +31,11 @@ rank window now properly displays offense requirements for rank.
 to be sent to the client.
 8) Added netrekrc option "metaBroncoOnly" to only list Bronco/INL servers in
 the list of servers provided by the aggregate metaservers.
+9) Added support for server feature packet TIPS.  This clears the MOTD window
+and provides tips on how to improve your play based on data the server records
+of your current session.
+10) Added netrekrc option "showTips" to choose whether or not to display the
+server tip messages supplied by TIPS.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)
