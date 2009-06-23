@@ -2807,18 +2807,7 @@ draw_one_thingy(struct thingy *k)
     case SHP_MINE:
     case SHP_BOOM:
 */
-/*
-    case SHP_WARP_BEACON:
-	image = getImage(I_WARPBEACON);
-	frame = udcounter;
-	if (k->t_fuse > 4) {
-	    image = getImage(I_WARPFLASH);
-	}
-	if (++(k->t_fuse) > 6) {
-	    k->t_fuse = 0;
-	}
-	break;
-*/
+
     default:
         LineToConsole("Wierd...unknown thingy number (%d).\n", k->t_shape);
 	return;

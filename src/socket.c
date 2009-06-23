@@ -3387,9 +3387,6 @@ void handleThingy (struct thingy_spacket *packet)
                       GWIDTH / 2);
     }
 #endif
-
-    if (thetorp->t_shape == SHP_WARP_BEACON)
-	redrawall = 1;		// shoot, route has changed 
 }
 
 void handleThingyInfo (struct thingy_info_spacket *packet)
@@ -3407,9 +3404,6 @@ void handleThingyInfo (struct thingy_info_spacket *packet)
     thetorp = &thingies[ntohs(packet->tnum)];
 
     thetorp->t_owner = ntohs(packet->owner);
-
-    if (thetorp->t_shape == SHP_WARP_BEACON)
-	redrawall = 1;		// redraw the lines, I guess
 
     if (ntohs(packet->shape) == SHP_BOOM && thetorp->t_shape == SHP_BLANK) {
 	// FAT: redundant explosion; don't update p_ntorp

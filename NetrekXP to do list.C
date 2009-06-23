@@ -38,7 +38,7 @@ client as well.
 3) A bunch of gridline/zoom options should be made into netrekrc options.
 4) The galactic zoom doesn't work
 5) Some of the paradise packet types may need some work
-6) Still missing asteroids and (flashing) warpbeacons.
+6) Still missing asteroids.
 7) Show ratings on full/wide playerlist.
 9) Don't think there is gettarget support for astral bodies like nebulae and stars
 and black holes.  Might be an issue with macros.

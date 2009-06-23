@@ -512,7 +512,7 @@ udpSequenceCheck: on
 # 1-50 (or whatever server frame rate is)
 # Value may be constrained by server to be evenly divisible
 # by server frame rate
-updatesPerSec: 50
+updatesPerSec: 25
 
 # Crosscheck with server to make sure all planet information is
 # correct.  Prevents against lost planet updates which can cause

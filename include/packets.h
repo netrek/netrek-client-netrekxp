@@ -1229,7 +1229,7 @@ struct stats_s_spacket
    try to coordinate your additions with other hackers. */
 enum thingy_types {
     SHP_BLANK, SHP_MISSILE, SHP_BOOM, SHP_TORP, SHP_PLASMA, SHP_MINE,
-    SHP_PBOOM, SHP_FIGHTER, SHP_WARP_BEACON, SHP_FBOOM, SHP_DBOOM
+    SHP_PBOOM, SHP_FIGHTER, SHP_FBOOM, SHP_DBOOM
 };
 
 struct thingy_info_spacket {
