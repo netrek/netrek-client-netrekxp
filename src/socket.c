@@ -1315,7 +1315,7 @@ handleTorpInfo (struct torp_info_spacket *packet)
         {
             /* Fuse requires minimum value of 2 to ensure a redraw, fuse decremented
                before drawing torp in local.c */
-            thetorp->t_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 10);
+            thetorp->t_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 5);
         }
     }
 }
@@ -1991,7 +1991,7 @@ handlePlasmaInfo (struct plasma_info_spacket *packet)
         {
             /* Fuse requires minimum value of 2 to ensure a redraw, fuse decremented
                before drawing torp in local.c */
-            thetorp->pt_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 10);
+            thetorp->pt_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 5);
         }
     }
 }
@@ -3426,12 +3426,12 @@ void handleThingyInfo (struct thingy_info_spacket *packet)
 	  if(thetorp->t_shape == SHP_FIGHTER)
 	  {
 	    shape = SHP_FBOOM;
-	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10);
+	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 5);
 	  }
 	  if(thetorp->t_shape == SHP_MISSILE)
 	  {
 	    shape = SHP_DBOOM;
-	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10);
+	    thetorp->t_fuse = MAX(2, BMP_DRONEDET_FRAMES * server_ups / 5);
 	  }
 	}
 	thetorp->t_shape = shape;

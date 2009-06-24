@@ -1651,7 +1651,7 @@ DrawShips (void)
         {
             int i;
 
-            i = j->p_explode * 10 / server_ups;
+            i = j->p_explode * 5 / server_ups;
 
 #ifdef SOUND
             if (j->p_explode == 1)
@@ -2148,7 +2148,7 @@ DrawTorps (void)
                     else
                     {
                         /* Leave the torp to explode on its own */
-                        k->t_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                        k->t_updateFuse = BMP_TORPDET_FRAMES * server_ups / 5;
                         k->t_clear = 1;
                     }
                 }
@@ -2180,7 +2180,7 @@ DrawTorps (void)
             if (k->t_status == TEXPLODE)
             {
                 k->t_fuse--;
-                frame = k->t_fuse * 10 / server_ups;
+                frame = k->t_fuse * 5 / server_ups;
 
                 if (k->t_fuse < 0)
                 {
@@ -2193,7 +2193,7 @@ DrawTorps (void)
                     frame = BMP_TORPDET_FRAMES - 1;
 
 #ifdef SOUND
-                if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
+                if (k->t_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 5) - 1))
                 {
                     SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
@@ -2254,7 +2254,7 @@ DrawTorps (void)
                 {
                     k->t_fuse++;
 
-                    frame = k->t_fuse * 10 / server_ups;
+                    frame = k->t_fuse * 5 / server_ups;
 
                     if ((frame > BMP_TORP_FRAMES - 1) || (frame < 0))
                     {
@@ -2376,7 +2376,7 @@ DrawPlasmaTorps (void)
                 else
                 {
                     /* Leave the plasma to explode on its own */
-                    pt->pt_updateFuse = BMP_TORPDET_FRAMES * server_ups / 10;
+                    pt->pt_updateFuse = BMP_TORPDET_FRAMES * server_ups / 5;
                     pt->pt_clear = 1;
                 }
             }
@@ -2408,7 +2408,7 @@ DrawPlasmaTorps (void)
         if (pt->pt_status == PTEXPLODE)
         {
             pt->pt_fuse--;
-            frame = pt->pt_fuse * 10 / server_ups;
+            frame = pt->pt_fuse * 5 / server_ups;
 
             if (pt->pt_fuse < 0)
             {
@@ -2420,7 +2420,7 @@ DrawPlasmaTorps (void)
                 frame = BMP_TORPDET_FRAMES - 1;
 
 #ifdef SOUND
-            if (pt->pt_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 10) - 1))
+            if (pt->pt_fuse == (MAX(2, BMP_TORPDET_FRAMES * server_ups / 5) - 1))
             {
                 SetDistAngle(dx, dy);
                 // At short distances, don't use angular sound
@@ -2483,7 +2483,7 @@ DrawPlasmaTorps (void)
             {
                 pt->pt_fuse++;
 
-                frame = pt->pt_fuse * 10 / server_ups;
+                frame = pt->pt_fuse * 5 / server_ups;
 
                 if ((frame > BMP_TORP_FRAMES - 1) || (frame < 0))
                 {
@@ -2651,7 +2651,7 @@ draw_one_thingy(struct thingy *k)
 	break;
     case SHP_FBOOM:
         k->t_fuse--;
-        frame = k->t_fuse * 10 / server_ups;
+        frame = k->t_fuse * 5 / server_ups;
 
         if (k->t_fuse < 0)
         {
@@ -2663,7 +2663,7 @@ draw_one_thingy(struct thingy *k)
             frame = BMP_FIGHTERDET_FRAMES - 1;
 
 #ifdef SOUND
-                if (k->t_fuse == (MAX(2, BMP_FIGHTERDET_FRAMES * server_ups / 10) - 1))
+                if (k->t_fuse == (MAX(2, BMP_FIGHTERDET_FRAMES * server_ups / 5) - 1))
                 {
                     SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound
@@ -2693,7 +2693,7 @@ draw_one_thingy(struct thingy *k)
     case SHP_PBOOM:
     case SHP_DBOOM:
         k->t_fuse--;
-        frame = k->t_fuse * 10 / server_ups;
+        frame = k->t_fuse * 5 / server_ups;
 
         if (k->t_fuse < 0)
         {
@@ -2705,7 +2705,7 @@ draw_one_thingy(struct thingy *k)
             frame = BMP_DRONEDET_FRAMES - 1;
 
 #ifdef SOUND
-                if (k->t_fuse == (MAX(2, BMP_DRONEDET_FRAMES * server_ups / 10) - 1))
+                if (k->t_fuse == (MAX(2, BMP_DRONEDET_FRAMES * server_ups / 5) - 1))
                 {
                     SetDistAngle(dx, dy);
                     // At short distances, don't use angular sound

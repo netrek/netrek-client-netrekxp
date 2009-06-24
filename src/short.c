@@ -1100,7 +1100,7 @@ handleVTorpInfo (unsigned char *sbuf)
                 {
                     /* Fuse requires minimum value of 2 to ensure a redraw, fuse decremented
                     before drawing torp in local.c */
-                    thetorp->t_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 10);
+                    thetorp->t_fuse = MAX(2, BMP_TORPDET_FRAMES * server_ups / 5);
                 }
             }
         }                       /* if */

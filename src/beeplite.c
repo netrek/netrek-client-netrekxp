@@ -55,7 +55,7 @@ void litedefaults(void)
 
 void liteplanet(struct planet *l)
 {
-    beep_lite_cycle_time_planet = 10 * server_ups / 10;
+    beep_lite_cycle_time_planet = 10 * server_ups / 5;
     emph_planet_seq_n[l->pl_no] = beep_lite_cycle_time_planet;
     l->pl_flags |= PLREDRAW;			 /* Leave redraw on until * * 
 						  * done highlighting */
@@ -68,7 +68,7 @@ void liteplayer(struct player *j)
 
     redrawPlayer[j->p_no] = 1;
 
-    beep_lite_cycle_time_player = 10 * server_ups / 10;
+    beep_lite_cycle_time_player = 10 * server_ups / 5;
     emph_player_seq_n[j->p_no] = beep_lite_cycle_time_player;
 }
 
@@ -243,7 +243,7 @@ int makelite(struct distress * dist, char *pm)
 		    for (tts_len = 0; (*pm != '|' && tts_len < tts_max_len); tts_len++)
 		      lastIn[tts_len] = *pm++;
 		    lastIn[tts_len] = '\0';
-		    tts_timer = tts_time * server_ups / 10;
+		    tts_timer = tts_time * server_ups / 5;
 		}
 	        break;
 
