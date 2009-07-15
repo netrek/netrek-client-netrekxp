@@ -1,4 +1,4 @@
-Netrek XP 2010, Version 1.0:
+Netrek XP 2010, Version 1.0: (Released July-2009)
 
 General bug fixes:
 1) Many paradise bugs fixed.
@@ -36,6 +36,9 @@ and provides tips on how to improve your play based on data the server records
 of your current session.
 10) Added netrekrc option "showTips" to choose whether or not to display the
 server tip messages supplied by TIPS.
+11) Client version info now has 1 letter identifier to show where client was
+downloaded from (p = playnetrek.org, n = netrek.org, d = download.com).
+12) Addition of 4th metaserver to the metaserver list.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)
