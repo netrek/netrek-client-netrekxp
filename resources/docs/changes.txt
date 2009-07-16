@@ -38,7 +38,8 @@ of your current session.
 server tip messages supplied by TIPS.
 11) Client version info now has 1 letter identifier to show where client was
 downloaded from (p = playnetrek.org, n = netrek.org, d = download.com).
-12) Addition of 4th metaserver to the metaserver list.
+12) Addition of Netrek XP specific metaserver to the metaserver list, to work
+alongside the default netrek.org metaservers.
 
 
 Netrek XP 2009, Version 1.0: (Released July-2008)

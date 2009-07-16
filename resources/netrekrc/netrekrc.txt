@@ -138,7 +138,7 @@ fullBitmapRotation: on
 headingTic: off
 
 # Hide the DOS console window
-hideConsole: off
+hideConsole: on
 
 # Highlight friendly phasers
 highlightFriendlyPhasers: off
