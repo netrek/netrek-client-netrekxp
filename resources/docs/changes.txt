@@ -1,3 +1,11 @@
+Netrek XP 2010, Version 1.1: (Released xxxx)
+
+General bug fixes:
+1) Fixed bug where tips text sometimes remained on tactical window after
+reentry into game.
+2) Fixed bug where beeplite circle on tactical around ships that enter
+cloak phase did not disappear if display of cloakers on tactical was enabled.
+
 Netrek XP 2010, Version 1.0: (Released July-2009)
 
 General bug fixes:

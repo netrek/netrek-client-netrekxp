@@ -988,11 +988,27 @@ DrawShips (void)
                                     BMP_CLOAK_WIDTH,
                                     BMP_CLOAK_HEIGHT,
                                     0, cloakicon, myColor, w);
+#if defined (BEEPLITE)
+                clearzone[0][clearcount] = dx - (shield_width / 2 + 6) * SCALE / scaleFactor;
+                clearzone[1][clearcount] = dy - (shield_height / 2 + 6) * SCALE / scaleFactor;
+                clearzone[2][clearcount] = (shield_width + 12) * SCALE / scaleFactor;
+                clearzone[3][clearcount] = (shield_height + 12) * SCALE / scaleFactor;
+                clearcount++;
+#else
+                clearzone[0][clearcount] = dx - (shield_width / 2) * SCALE / scaleFactor;
+                clearzone[1][clearcount] = dy - (shield_height / 2) * SCALE / scaleFactor);
+                clearzone[2][clearcount] = shield_width * SCALE / scaleFactor;
+                clearzone[3][clearcount] = shield_height * SCALE / scaleFactor;
+                clearcount++;
+#endif
+                /* Old clear code, before had to worry about seeing shields and beeplite for cloaked ships */
+                /*
                 clearzone[0][clearcount] = dx - (BMP_CLOAK_WIDTH / 2) * SCALE / scaleFactor;
                 clearzone[1][clearcount] = dy - (BMP_CLOAK_HEIGHT / 2) * SCALE / scaleFactor;
                 clearzone[2][clearcount] = BMP_CLOAK_WIDTH * SCALE / scaleFactor;
                 clearzone[3][clearcount] = BMP_CLOAK_HEIGHT * SCALE / scaleFactor;
                 clearcount++;
+                */
 
                 goto shieldlabel;       /* draw the shield even when
                                          * cloaked */

@@ -2357,6 +2357,7 @@ newMotdLine (char *line)
         W_ClearWindow (w);
         ClearMotd ();
         statmode = 0;
+        W_FastClear = 1;
         return;
     }
     

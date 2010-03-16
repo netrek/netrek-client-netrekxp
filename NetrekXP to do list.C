@@ -29,6 +29,10 @@ rect doesn't take these into account.
 if you fly into the NW corner of the galaxy.  this was never anticipated!
 5) Tractor on/off and pressor on/off option, rather than just tractor on, pressor on.
 Maybe with enforced state?
+6) Remapping RCD keys via dist.* lines in netrekrc.txt does not work.  Distress key is
+changed, macro window in game confirms that key has been changed, but keymap is
+apparently never updated.  Remapping dist keys via ckeymap does work.  Changing output
+of distress message via dist.* line does work.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
