@@ -196,7 +196,10 @@ typedef short SHORT;
 #endif
 
 /* For math.h, really */
+#if _MSC_VER < 1500		/* versions lower than VC9 may require this */
 #define hypot _hypot
+#endif
+
 /* for io.h */
 #define read   _read
 #define close  _close

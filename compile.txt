@@ -1,4 +1,4 @@
-This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2005
+This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2005/2010
 Express Edition.  The client can also be compiled with MS Visual C++ 6.0, and the instructions
 below explain how to do so.  However, this compiler is no longer supported by the Netrek
 XP 2009 author as it is not free software (everything else needed for compiling is free).
@@ -22,8 +22,9 @@ First off, you will need the development package for SDL, as well as SDL-mixer.
 Refer to the SDL website for how to install it with your compiler/IDE.
 
 You will also need zlib, get the compiled DLL, lib, and headers here at:
-http://www.zlib.net/zlib123-dll.zip
+http://www.zlib.net/zlib125-dll.zip
 and follow the USAGE.txt for installation instructions for your compiler
+Note: Version number of zlib file may need to be changed, check web site for most recent version.
 
 If you're building with MS Visual C++:
 
@@ -39,7 +40,7 @@ files. Otherwise the compiler and linker won't find the correct paths.
 
 If you're building with Microsoft Visual Studio 2005
 
-This is the preferred compiler.  You will need the SDK from the web, as the software
+This is a preferred compiler.  You will need the SDK from the web, as the software
 doesn't come with the necessary files.  Additionally, DirectX SDK is probably needed too,
 for the SDL support.  You will also need the HTML help workshop (from Microsoft) to 
 compile the help file.  If you use the studio files that come with the source,
@@ -49,6 +50,13 @@ to properly install the Microsoft SDK.  The name of the article on this webpage 
 "Using Visual C++ 2005 Express Edition with the Microsoft Platform SDK"
 http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/
 Especially important are steps 3 and 4.  Step 4 was necessary to get winkey to compile.
+
+If you're building with Microsoft Visual Studio 2010
+
+This is a preferred compiler.  The SDK that comes with the compiler apparently has the
+necessary files unlike with 2005.   Additionally, DirectX SDK is probably needed too,
+for the SDL support.  You will also need the HTML help workshop (from Microsoft) to 
+compile the help file.
 
 Step 3:
 --------

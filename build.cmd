@@ -1,5 +1,5 @@
 set InstCWD="\netrek_files"
-set HelpCompiler="C:\Program Files\HTML Help Workshop\hhc.exe"
+set HelpCompiler="C:\Program Files (x86)\HTML Help Workshop\hhc.exe"
 rem set Compiler=VCC
 rem set Compiler=BCC
 set Compiler=CYGWIN

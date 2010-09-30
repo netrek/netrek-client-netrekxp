@@ -1,11 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "clientr", "clientr.vcproj", "{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "clientr", "clientr.vcxproj", "{AF2EDB01-9BF0-463A-96EF-046B5845BAE8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curslib", "src\cursors\curslib.vcproj", "{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curslib", "src\cursors\curslib.vcxproj", "{74EFAF4D-D9A0-421D-8A94-08DBB03D533C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winkey", "src\winkey\winkey.vcproj", "{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winkey", "src\winkey\winkey.vcxproj", "{DEBF4D2E-001E-47DA-A88C-8FF90C55C6ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
