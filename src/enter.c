@@ -54,6 +54,7 @@ openmem (void)
     initialize_plasmas();
     initialize_phasers();
     load_default_teams();
+    load_default_teamlogos();
     initialize_thingies();
     status2 = (struct status2 *) malloc(sizeof(*status2));
     status = (struct status *) malloc(sizeof(*status));

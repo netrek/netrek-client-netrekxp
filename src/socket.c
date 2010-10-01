@@ -3760,6 +3760,23 @@ load_default_teams(void)
     strcpy(teaminfo[4].shortname, "ALL");
 }
 
+void
+load_default_teamlogos(void)
+{
+    int i = number_of_teams;
+
+    switch (i) { /* TODO: add actual logos */
+      case 4:
+        teaminfo[3].shield_logo = W_StoreBitmap(1, 1, (char*)&i, w);
+      case 3:
+        teaminfo[2].shield_logo = W_StoreBitmap(1, 1, (char*)&i, w);
+      case 2:
+        teaminfo[1].shield_logo = W_StoreBitmap(1, 1, (char*)&i, w);
+      case 1:
+        teaminfo[0].shield_logo = W_StoreBitmap(1, 1, (char*)&i, w);
+    }
+}
+
 load_generic_teams(void)
 {
 /* needs to be converted to xpm */
@@ -3775,7 +3792,7 @@ load_generic_teams(void)
     teaminfo[-1].letter = 'I';
     strcpy(teaminfo[-1].shortname, "IND");
 
-//    load_default_teamlogos();	/* loads the first 4 team logos */
+    load_default_teamlogos();	/* loads the first 4 team logos */
 
     for (i = 0; i < number_of_teams; i++) {
 	sprintf(teaminfo[i].name, "Team #%d", i);

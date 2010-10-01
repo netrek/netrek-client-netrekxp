@@ -1136,6 +1136,7 @@ void initialize_phasers (void);
 void initialize_context (void);
 // Paradise handlers
 void build_default_configuration (void);
+void load_default_teamlogos (void);
 void load_default_teams (void);
 void initialize_thingies(void);
 void handlePacket32 (unsigned char *sbuf);
