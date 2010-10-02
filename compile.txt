@@ -1,4 +1,4 @@
-This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2005/2010
+This source tree was tested with Borland C Builder 5.5, and Microsoft Visual C++ 2010
 Express Edition.  The client can also be compiled with MS Visual C++ 6.0, and the instructions
 below explain how to do so.  However, this compiler is no longer supported by the Netrek
 XP 2009 author as it is not free software (everything else needed for compiling is free).
@@ -25,6 +25,11 @@ You will also need zlib, get the compiled DLL, lib, and headers here at:
 http://www.zlib.net/zlib125-dll.zip
 and follow the USAGE.txt for installation instructions for your compiler
 Note: Version number of zlib file may need to be changed, check web site for most recent version.
+Note: Zdll.lib beyond version 1.2.3 gives a linker warning which states
+  LNK4078: multiple '.text' sections found with different attributes
+Netrek still works ok, and using version 1.2.3 of Zdll.lib made the warning disappear.  Do not
+know how to fix with most recent pre-compiled zdll.lib.  Did not attempt to compile zdll.lib
+from scratch.
 
 If you're building with MS Visual C++:
 
@@ -40,7 +45,7 @@ files. Otherwise the compiler and linker won't find the correct paths.
 
 If you're building with Microsoft Visual Studio 2005
 
-This is a preferred compiler.  You will need the SDK from the web, as the software
+This is no longer supported.  You will need the SDK from the web, as the software
 doesn't come with the necessary files.  Additionally, DirectX SDK is probably needed too,
 for the SDL support.  You will also need the HTML help workshop (from Microsoft) to 
 compile the help file.  If you use the studio files that come with the source,
@@ -50,6 +55,11 @@ to properly install the Microsoft SDK.  The name of the article on this webpage 
 "Using Visual C++ 2005 Express Edition with the Microsoft Platform SDK"
 http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/
 Especially important are steps 3 and 4.  Step 4 was necessary to get winkey to compile.
+Versions up to Netrek XP 2010 v1.0 were developed with Visual Studio 2005.  In September
+2010 the build environment was changed to Visual Studio 2010.  Upgrading wizard converted
+vcproj files to vcxproj files, which are not backwards compatable with Studio 2005.  Using
+old version of clientr.sln in the repository allows for project to be built under Studio
+2005.
 
 If you're building with Microsoft Visual Studio 2010
 
