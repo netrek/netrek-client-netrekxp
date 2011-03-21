@@ -33,6 +33,7 @@ Maybe with enforced state?
 changed, macro window in game confirms that key has been changed, but keymap is
 apparently never updated.  Remapping dist keys via ckeymap does work.  Changing output
 of distress message via dist.* line does work.
+7) Remove mungscrollbars netrekrc option, causes problems in Windows 7.
 
 Paradise issues:
 1) Motd paging system gutted for sake of simplicity
